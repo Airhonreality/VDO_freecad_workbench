@@ -1,0 +1,284 @@
+{
+  "resolve_hinge": [
+    {
+      "entrada": {
+        "tipo_montaje": "parche"
+      },
+      "salida": {
+        "nombre": "Bisagra Cazoleta 35mm Cierre Suave - Recta (Parche)",
+        "proveedor": "Genérico / Taller",
+        "precio_unitario": 1.2,
+        "moneda": "USD",
+        "parametros_tecnicos": {
+          "tipo_montaje": "parche",
+          "brazo": "recta",
+          "diametro_cazoleta": 35.0,
+          "profundidad_cazoleta": 11.5,
+          "cota_k_default": 4.0,
+          "distancia_base_frente": 37.0,
+          "separacion_tornillos_base": 32.0,
+          "solape_nominal": 16.0,
+          "holgura_luz": 2.0
+        }
+      }
+    },
+    {
+      "entrada": {
+        "tipo_montaje": "semiparche"
+      },
+      "salida": {
+        "nombre": "Bisagra Cazoleta 35mm Cierre Suave - Acodada (Semiparche)",
+        "proveedor": "Genérico / Taller",
+        "precio_unitario": 1.3,
+        "moneda": "USD",
+        "parametros_tecnicos": {
+          "tipo_montaje": "semiparche",
+          "brazo": "acodada",
+          "diametro_cazoleta": 35.0,
+          "profundidad_cazoleta": 11.5,
+          "cota_k_default": 4.0,
+          "solape_nominal": 8.0,
+          "holgura_luz": 2.0
+        }
+      }
+    },
+    {
+      "entrada": {
+        "tipo_montaje": "embebida"
+      },
+      "salida": {
+        "nombre": "Bisagra Cazoleta 35mm Cierre Suave - Súper Acodada (Embebida)",
+        "proveedor": "Genérico / Taller",
+        "precio_unitario": 1.4,
+        "moneda": "USD",
+        "parametros_tecnicos": {
+          "tipo_montaje": "embebida",
+          "brazo": "super_acodada",
+          "diametro_cazoleta": 35.0,
+          "profundidad_cazoleta": 11.5,
+          "cota_k_default": 4.0,
+          "holgura_perimetral_min": 2.0
+        }
+      }
+    }
+  ],
+  "resolve_sliding": [
+    {
+      "entrada": {
+        "tipo_mueble": "closet"
+      },
+      "salida": {
+        "nombre": "Kit Corredizo Ducasse D-52 (Closet / Placard al Piso)",
+        "proveedor": "Ducasse Industrial",
+        "precio_unitario": 18.5,
+        "moneda": "USD",
+        "parametros_tecnicos": {
+          "aplicacion": "closet_placard",
+          "capacidad_peso_kg": 50.0,
+          "montaje": "al_piso_dentro_vano",
+          "ancho_minimo_hoja": 650.0,
+          "descuento_altura_hoja": 33.0,
+          "traslape_minimo": 35.0,
+          "ancho_piso_riel_doble": 60.0,
+          "espesor_hoja_min": 15.0
+        }
+      }
+    },
+    {
+      "entrada": {
+        "tipo_mueble": "mueble"
+      },
+      "salida": {
+        "nombre": "Sistema Corredizo Ducasse AL 1535 Madera (Muebles / Alacenas)",
+        "proveedor": "Ducasse Industrial",
+        "precio_unitario": 9.8,
+        "moneda": "USD",
+        "parametros_tecnicos": {
+          "aplicacion": "muebles_alacenas",
+          "capacidad_peso_kg": 15.0,
+          "montaje": "al_piso_dentro_vano",
+          "descuento_altura_hoja": 10.0,
+          "traslape_minimo": 25.0,
+          "ancho_piso_riel_doble": 26.0,
+          "espesor_hoja_min": 15.0,
+          "luz_cerrada_sin_cenefa": true
+        }
+      }
+    }
+  ],
+  "resolve_drawer_slide": [
+    {
+      "entrada": {
+        "tipo": "oculta",
+        "marca": "blum_tandem"
+      },
+      "salida": {
+        "nombre": "Corredera Oculta Blum Tandem",
+        "proveedor": "Blum",
+        "precio_unitario": 12.5,
+        "moneda": "USD",
+        "parametros_tecnicos": {
+          "tipo_corredera": "oculta",
+          "aplicacion": "cajon",
+          "delta_ancho": 49.0,
+          "longitudes_comerciales": [
+            300.0,
+            350.0,
+            400.0,
+            450.0,
+            500.0,
+            550.0
+          ],
+          "longitud_default": 550.0,
+          "cota_ranura_z": 10.0,
+          "diametro_pin_trasero": 6.0,
+          "profundidad_pin_trasero": 12.0,
+          "distancia_pin_borde_trasero": 8.0,
+          "prof_ranura_lateral": 4.0,
+          "notch_ancho": 35.0,
+          "notch_alto": 12.0,
+          "grosor_caja_ideal": 16.0,
+          "capacidad_peso_kg": 30.0
+        },
+        "sku": "BLUM-TANDEM"
+      }
+    },
+    {
+      "entrada": {
+        "tipo": "oculta",
+        "marca": "generica"
+      },
+      "salida": {
+        "nombre": "Corredera Oculta Genérica (42-49 mm)",
+        "proveedor": "Genérico",
+        "precio_unitario": 8.0,
+        "moneda": "USD",
+        "parametros_tecnicos": {
+          "tipo_corredera": "oculta",
+          "aplicacion": "cajon",
+          "delta_ancho": 45.0,
+          "longitudes_comerciales": [
+            300.0,
+            350.0,
+            400.0,
+            450.0,
+            500.0,
+            550.0,
+            600.0
+          ],
+          "longitud_default": 550.0,
+          "cota_ranura_z": 11.0,
+          "diametro_pin_trasero": 6.0,
+          "profundidad_pin_trasero": 12.0,
+          "distancia_pin_borde_trasero": 8.0,
+          "prof_ranura_lateral": 4.0,
+          "notch_ancho": 35.0,
+          "notch_alto": 12.0,
+          "grosor_caja_ideal": 16.0,
+          "capacidad_peso_kg": 25.0
+        },
+        "sku": "GEN-OCULTA"
+      }
+    }
+  ],
+  "calculate_sliding_doors": [
+    {
+      "entrada": {
+        "inner_w": 1000.0,
+        "inner_h": 2000.0,
+        "sku": "DUC-KIT-D52",
+        "n_hojas": 2
+      },
+      "salida": {
+        "sku": "DUC-KIT-D52",
+        "nombre": "Kit Corredizo Ducasse D-52 (Closet / Placard al Piso)",
+        "proveedor": "Ducasse Industrial",
+        "precio_unitario": 18.5,
+        "moneda": "USD",
+        "inner_w": 1000.0,
+        "inner_h": 2000.0,
+        "n_hojas": 2,
+        "descuento_altura_hoja": 33.0,
+        "traslape_minimo": 35.0,
+        "alto_hoja": 1967.0,
+        "ancho_hoja": 517.5,
+        "hojas": [
+          {
+            "hoja": 1,
+            "sku": "DUC-KIT-D52",
+            "nombre": "Kit Corredizo Ducasse D-52 (Closet / Placard al Piso)",
+            "proveedor": "Ducasse Industrial",
+            "ancho_corte": 517.5,
+            "alto_corte": 1967.0,
+            "descuento_altura_hoja": 33.0,
+            "traslape_minimo": 35.0
+          },
+          {
+            "hoja": 2,
+            "sku": "DUC-KIT-D52",
+            "nombre": "Kit Corredizo Ducasse D-52 (Closet / Placard al Piso)",
+            "proveedor": "Ducasse Industrial",
+            "ancho_corte": 517.5,
+            "alto_corte": 1967.0,
+            "descuento_altura_hoja": 33.0,
+            "traslape_minimo": 35.0
+          }
+        ]
+      }
+    },
+    {
+      "entrada": {
+        "inner_w": 1200.0,
+        "inner_h": 2200.0,
+        "sku": "DUC-AL-1535-MAD",
+        "n_hojas": 3
+      },
+      "salida": {
+        "sku": "DUC-AL-1535-MAD",
+        "nombre": "Sistema Corredizo Ducasse AL 1535 Madera (Muebles / Alacenas)",
+        "proveedor": "Ducasse Industrial",
+        "precio_unitario": 9.8,
+        "moneda": "USD",
+        "inner_w": 1200.0,
+        "inner_h": 2200.0,
+        "n_hojas": 3,
+        "descuento_altura_hoja": 10.0,
+        "traslape_minimo": 25.0,
+        "alto_hoja": 2190.0,
+        "ancho_hoja": 416.666667,
+        "hojas": [
+          {
+            "hoja": 1,
+            "sku": "DUC-AL-1535-MAD",
+            "nombre": "Sistema Corredizo Ducasse AL 1535 Madera (Muebles / Alacenas)",
+            "proveedor": "Ducasse Industrial",
+            "ancho_corte": 416.666667,
+            "alto_corte": 2190.0,
+            "descuento_altura_hoja": 10.0,
+            "traslape_minimo": 25.0
+          },
+          {
+            "hoja": 2,
+            "sku": "DUC-AL-1535-MAD",
+            "nombre": "Sistema Corredizo Ducasse AL 1535 Madera (Muebles / Alacenas)",
+            "proveedor": "Ducasse Industrial",
+            "ancho_corte": 416.666667,
+            "alto_corte": 2190.0,
+            "descuento_altura_hoja": 10.0,
+            "traslape_minimo": 25.0
+          },
+          {
+            "hoja": 3,
+            "sku": "DUC-AL-1535-MAD",
+            "nombre": "Sistema Corredizo Ducasse AL 1535 Madera (Muebles / Alacenas)",
+            "proveedor": "Ducasse Industrial",
+            "ancho_corte": 416.666667,
+            "alto_corte": 2190.0,
+            "descuento_altura_hoja": 10.0,
+            "traslape_minimo": 25.0
+          }
+        ]
+      }
+    }
+  ]
+}

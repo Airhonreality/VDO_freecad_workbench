@@ -1,0 +1,207 @@
+{
+  "calcular_fachada_base": [
+    {
+      "entrada": {
+        "w_vano": 500.0,
+        "h_vano": 700.0,
+        "tipo_montaje": "parche"
+      },
+      "salida": [
+        530.0,
+        730.0
+      ]
+    },
+    {
+      "entrada": {
+        "w_vano": 500.0,
+        "h_vano": 700.0,
+        "tipo_montaje": "semiparche"
+      },
+      "salida": [
+        256.0,
+        730.0
+      ]
+    },
+    {
+      "entrada": {
+        "w_vano": 500.0,
+        "h_vano": 700.0,
+        "tipo_montaje": "embebida"
+      },
+      "salida": [
+        496.0,
+        696.0
+      ]
+    },
+    {
+      "entrada": {
+        "w_vano": 1000.0,
+        "h_vano": 500.0,
+        "tipo_montaje": "parche",
+        "holgura": 4.0,
+        "solape": 10.0
+      },
+      "salida": [
+        1016.0,
+        516.0
+      ]
+    }
+  ],
+  "aplicar_sistema_apertura": [
+    {
+      "entrada": {
+        "h_fachada": 700.0,
+        "sistema_apertura": "gola_aluminio"
+      },
+      "salida": [
+        665.0,
+        "CORTE_RECTO_GOLA"
+      ]
+    },
+    {
+      "entrada": {
+        "h_fachada": 700.0,
+        "sistema_apertura": "inglete_45"
+      },
+      "salida": [
+        700.0,
+        "BISEL_45"
+      ]
+    },
+    {
+      "entrada": {
+        "h_fachada": 700.0,
+        "sistema_apertura": "tirador"
+      },
+      "salida": [
+        700.0,
+        "CANTO_ESTANDAR"
+      ]
+    },
+    {
+      "entrada": {
+        "h_fachada": 700.0,
+        "sistema_apertura": "push_open"
+      },
+      "salida": [
+        700.0,
+        "CANTO_ESTANDAR"
+      ]
+    }
+  ],
+  "necesita_descuento_gola": [
+    {
+      "entrada": {
+        "sistema_apertura": "gola_aluminio"
+      },
+      "salida": true
+    },
+    {
+      "entrada": {
+        "sistema_apertura": "tirador"
+      },
+      "salida": false
+    },
+    {
+      "entrada": {
+        "sistema_apertura": "inglete_45"
+      },
+      "salida": false
+    }
+  ],
+  "necesita_bisel_45": [
+    {
+      "entrada": {
+        "sistema_apertura": "inglete_45"
+      },
+      "salida": true
+    },
+    {
+      "entrada": {
+        "sistema_apertura": "tirador"
+      },
+      "salida": false
+    },
+    {
+      "entrada": {
+        "sistema_apertura": "gola_aluminio"
+      },
+      "salida": false
+    }
+  ],
+  "necesita_cantos_45": [
+    {
+      "entrada": {
+        "sistema_apertura": "inglete_45"
+      },
+      "salida": true
+    },
+    {
+      "entrada": {
+        "sistema_apertura": "tirador"
+      },
+      "salida": false
+    },
+    {
+      "entrada": {
+        "sistema_apertura": "gola_aluminio"
+      },
+      "salida": false
+    }
+  ],
+  "necesita_expulsor_magnetico": [
+    {
+      "entrada": {
+        "sistema_apertura": "push_open"
+      },
+      "salida": true
+    },
+    {
+      "entrada": {
+        "sistema_apertura": "tirador"
+      },
+      "salida": false
+    },
+    {
+      "entrada": {
+        "sistema_apertura": "gola_aluminio"
+      },
+      "salida": false
+    }
+  ],
+  "cantos_por_sistema_apertura": [
+    {
+      "entrada": {
+        "sistema_apertura": "tirador"
+      },
+      "salida": {
+        "norte": "FX",
+        "sur": "FX",
+        "este": "FX",
+        "oeste": "FX"
+      }
+    },
+    {
+      "entrada": {
+        "sistema_apertura": "gola_aluminio"
+      },
+      "salida": {
+        "norte": "CORTE_RECTO_GOLA",
+        "sur": "FX",
+        "este": "FX",
+        "oeste": "FX"
+      }
+    },
+    {
+      "entrada": {
+        "sistema_apertura": "inglete_45"
+      },
+      "salida": {
+        "norte": "BISEL_45",
+        "sur": "FX",
+        "este": "FX",
+        "oeste": "FX"
+      }
+    }
+  ]
+}

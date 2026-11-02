@@ -1,0 +1,28 @@
+{
+  "generar_divisiones_matriz": [
+    {
+      "entrada": {
+        "ancho": 600.0,
+        "alto": 700.0,
+        "n_divisiones": 3
+      },
+      "error": "generar_divisiones_matriz() missing 5 required positional arguments: 'divisiones_json', 'ancho_cavidad', 'alto_cavidad', 'fondo', and 'espesor'"
+    },
+    {
+      "entrada": {
+        "ancho": 1000.0,
+        "alto": 2000.0,
+        "n_divisiones": 4
+      },
+      "error": "generar_divisiones_matriz() missing 5 required positional arguments: 'divisiones_json', 'ancho_cavidad', 'alto_cavidad', 'fondo', and 'espesor'"
+    },
+    {
+      "entrada": {
+        "ancho": 400.0,
+        "alto": 500.0,
+        "n_divisiones": 2
+      },
+      "error": "generar_divisiones_matriz() missing 5 required positional arguments: 'divisiones_json', 'ancho_cavidad', 'alto_cavidad', 'fondo', and 'espesor'"
+    }
+  ]
+}

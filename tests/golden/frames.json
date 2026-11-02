@@ -1,0 +1,190 @@
+{
+  "normal": [
+    {
+      "entrada": {
+        "lado": "frente"
+      },
+      "salida": [
+        0.0,
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "entrada": {
+        "lado": "fondo"
+      },
+      "salida": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "entrada": {
+        "lado": "izquierda"
+      },
+      "salida": [
+        -1.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "opuesto": [
+    {
+      "entrada": {
+        "lado": "frente"
+      },
+      "salida": "fondo"
+    },
+    {
+      "entrada": {
+        "lado": "fondo"
+      },
+      "salida": "frente"
+    },
+    {
+      "entrada": {
+        "lado": "izquierda"
+      },
+      "salida": "derecha"
+    }
+  ],
+  "rotar_z": [
+    {
+      "entrada": {
+        "vector": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "grados": 90.0
+      },
+      "salida": [
+        6.123233995736766e-17,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "entrada": {
+        "vector": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "grados": 180.0
+      },
+      "salida": [
+        -1.2246467991473532e-16,
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "entrada": {
+        "vector": [
+          1.0,
+          1.0,
+          0.0
+        ],
+        "grados": 45.0
+      },
+      "salida": [
+        1.1102230246251565e-16,
+        1.414213562373095,
+        0.0
+      ]
+    }
+  ],
+  "normal_global": [
+    {
+      "entrada": {
+        "lado": "frente",
+        "rotacion_z": 0.0
+      },
+      "salida": [
+        0.0,
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "entrada": {
+        "lado": "fondo",
+        "rotacion_z": 90.0
+      },
+      "salida": [
+        -1.0,
+        6.123233995736766e-17,
+        0.0
+      ]
+    },
+    {
+      "entrada": {
+        "lado": "izquierda",
+        "rotacion_z": 45.0
+      },
+      "salida": [
+        -0.7071067811865476,
+        -0.7071067811865475,
+        0.0
+      ]
+    }
+  ],
+  "interpretar_lados": [
+    {
+      "entrada": {
+        "valor": "[frente, fondo]",
+        "por_defecto": [
+          "izquierda"
+        ]
+      },
+      "error": "Expecting value: line 1 column 2 (char 1)"
+    },
+    {
+      "entrada": {
+        "valor": "frente,derecha"
+      },
+      "salida": [
+        "frente",
+        "derecha"
+      ]
+    },
+    {
+      "entrada": {
+        "valor": null,
+        "por_defecto": [
+          "superior"
+        ]
+      },
+      "salida": [
+        "superior"
+      ]
+    }
+  ],
+  "serializar_lados": [
+    {
+      "entrada": {
+        "lados": [
+          "frente",
+          "fondo"
+        ]
+      },
+      "salida": "[\"frente\", \"fondo\"]"
+    },
+    {
+      "entrada": {
+        "lados": "izquierda,derecha"
+      },
+      "salida": "[\"izquierda\", \"derecha\"]"
+    },
+    {
+      "entrada": {
+        "lados": []
+      },
+      "salida": "[]"
+    }
+  ]
+}

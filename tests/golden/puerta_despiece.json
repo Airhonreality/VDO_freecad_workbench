@@ -1,0 +1,64 @@
+{
+  "calcular_dimensiones_batiente": [
+    {
+      "entrada": {
+        "ancho": 600,
+        "alto": 800,
+        "montaje": "parche"
+      },
+      "error": "calcular_dimensiones_batiente() missing 3 required positional arguments: 'W_neto', 'H_neto', and 'tipo_montaje'"
+    },
+    {
+      "entrada": {
+        "ancho": 600,
+        "alto": 800,
+        "montaje": "semiparche"
+      },
+      "error": "calcular_dimensiones_batiente() missing 3 required positional arguments: 'W_neto', 'H_neto', and 'tipo_montaje'"
+    },
+    {
+      "entrada": {
+        "ancho": 600,
+        "alto": 800,
+        "montaje": "embebida"
+      },
+      "error": "calcular_dimensiones_batiente() missing 3 required positional arguments: 'W_neto', 'H_neto', and 'tipo_montaje'"
+    }
+  ],
+  "cantidad_bisagras": [
+    {
+      "entrada": {
+        "alto": 900
+      },
+      "error": "cantidad_bisagras() missing 1 required positional argument: 'H'"
+    },
+    {
+      "entrada": {
+        "alto": 1000
+      },
+      "error": "cantidad_bisagras() missing 1 required positional argument: 'H'"
+    },
+    {
+      "entrada": {
+        "alto": 1500
+      },
+      "error": "cantidad_bisagras() missing 1 required positional argument: 'H'"
+    }
+  ],
+  "posiciones_cazoleta": [
+    {
+      "entrada": {
+        "alto": 800,
+        "n_bisagras": 2
+      },
+      "error": "posiciones_cazoleta() missing 1 required positional argument: 'H'"
+    },
+    {
+      "entrada": {
+        "alto": 1200,
+        "n_bisagras": 3
+      },
+      "error": "posiciones_cazoleta() missing 1 required positional argument: 'H'"
+    }
+  ]
+}

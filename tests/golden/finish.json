@@ -1,0 +1,137 @@
+{
+  "cantos_para_rol": [
+    {
+      "entrada": {
+        "rol": "lateral_izquierdo",
+        "lados_vistos": "frente"
+      },
+      "salida": {
+        "norte": "FX",
+        "sur": "FX",
+        "este": "FX",
+        "oeste": "RIG"
+      }
+    },
+    {
+      "entrada": {
+        "rol": "lateral_izquierdo",
+        "lados_vistos": "frente, fondo"
+      },
+      "salida": {
+        "norte": "FX",
+        "sur": "FX",
+        "este": "RIG",
+        "oeste": "RIG"
+      }
+    },
+    {
+      "entrada": {
+        "rol": "base",
+        "lados_vistos": "frente",
+        "tapa": "externo",
+        "base": "externo"
+      },
+      "salida": {
+        "norte": "FX",
+        "sur": "RIG",
+        "este": "FX",
+        "oeste": "FX"
+      }
+    }
+  ],
+  "aplicar_cantos": [
+    {
+      "entrada": {
+        "piezas": [
+          {
+            "rol": "lateral_izquierdo"
+          }
+        ],
+        "lados_vistos": "frente"
+      },
+      "salida": [
+        {
+          "rol": "lateral_izquierdo",
+          "cantos": {
+            "norte": "FX",
+            "sur": "FX",
+            "este": "FX",
+            "oeste": "RIG"
+          },
+          "lados_vistos": [
+            "frente"
+          ],
+          "lados_apoyados": []
+        }
+      ]
+    },
+    {
+      "entrada": {
+        "piezas": [
+          {
+            "rol": "base"
+          },
+          {
+            "rol": "techo"
+          }
+        ],
+        "lados_vistos": "frente, fondo"
+      },
+      "salida": [
+        {
+          "rol": "base",
+          "cantos": {
+            "norte": "RIG",
+            "sur": "RIG",
+            "este": "FX",
+            "oeste": "FX"
+          },
+          "lados_vistos": [
+            "frente",
+            "fondo"
+          ],
+          "lados_apoyados": []
+        },
+        {
+          "rol": "techo",
+          "cantos": {
+            "norte": "RIG",
+            "sur": "RIG",
+            "este": "FX",
+            "oeste": "FX"
+          },
+          "lados_vistos": [
+            "frente",
+            "fondo"
+          ],
+          "lados_apoyados": []
+        }
+      ]
+    },
+    {
+      "entrada": {
+        "piezas": [
+          {
+            "rol": "fondo"
+          }
+        ],
+        "lados_vistos": "frente"
+      },
+      "salida": [
+        {
+          "rol": "fondo",
+          "cantos": {
+            "norte": "FX",
+            "sur": "FX",
+            "este": "FX",
+            "oeste": "FX"
+          },
+          "lados_vistos": [
+            "frente"
+          ],
+          "lados_apoyados": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1032 @@
+{
+  "normalizar_modificador": [
+    {
+      "entrada": {},
+      "salida": {
+        "activo": false,
+        "orientacion": "paralela",
+        "ancho": 70.0,
+        "espesor": null,
+        "cara": "cara_a",
+        "alineacion_profundidad": "frente",
+        "modo_fabricacion": "pacha",
+        "alcance": "parcial",
+        "politica_repisa": "retroceder",
+        "prioridad_encuentro_tiras": "vertical_domina",
+        "comportamiento_choque_nucleo": "retroceso",
+        "esquinas": "vertical_domina",
+        "fabricacion": "pacha",
+        "choque_nucleo": "retroceso",
+        "bordes": {
+          "frente": {
+            "activo": false,
+            "ancho": 70.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": null,
+            "espesor": null,
+            "offset_borde": 0.0
+          },
+          "fondo": {
+            "activo": false,
+            "ancho": 70.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": null,
+            "espesor": null,
+            "offset_borde": 0.0
+          },
+          "izquierda": {
+            "activo": false,
+            "ancho": 70.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": null,
+            "espesor": null,
+            "offset_borde": 0.0
+          },
+          "derecha": {
+            "activo": false,
+            "ancho": 70.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": null,
+            "espesor": null,
+            "offset_borde": 0.0
+          }
+        },
+        "usa_bordes": false
+      }
+    },
+    {
+      "entrada": {
+        "activo": false
+      },
+      "salida": {
+        "activo": false,
+        "orientacion": "paralela",
+        "ancho": 70.0,
+        "espesor": null,
+        "cara": "cara_a",
+        "alineacion_profundidad": "frente",
+        "modo_fabricacion": "pacha",
+        "alcance": "parcial",
+        "politica_repisa": "retroceder",
+        "prioridad_encuentro_tiras": "vertical_domina",
+        "comportamiento_choque_nucleo": "retroceso",
+        "esquinas": "vertical_domina",
+        "fabricacion": "pacha",
+        "choque_nucleo": "retroceso",
+        "bordes": {
+          "frente": {
+            "activo": false,
+            "ancho": 70.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": null,
+            "espesor": null,
+            "offset_borde": 0.0
+          },
+          "fondo": {
+            "activo": false,
+            "ancho": 70.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": null,
+            "espesor": null,
+            "offset_borde": 0.0
+          },
+          "izquierda": {
+            "activo": false,
+            "ancho": 70.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": null,
+            "espesor": null,
+            "offset_borde": 0.0
+          },
+          "derecha": {
+            "activo": false,
+            "ancho": 70.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": null,
+            "espesor": null,
+            "offset_borde": 0.0
+          }
+        },
+        "usa_bordes": false
+      }
+    },
+    {
+      "entrada": {
+        "activo": true,
+        "orientacion": "paralela",
+        "ancho": 70.0,
+        "cara": "cara_a"
+      },
+      "salida": {
+        "activo": true,
+        "orientacion": "paralela",
+        "ancho": 70.0,
+        "espesor": null,
+        "cara": "cara_a",
+        "alineacion_profundidad": "frente",
+        "modo_fabricacion": "pacha",
+        "alcance": "parcial",
+        "politica_repisa": "retroceder",
+        "prioridad_encuentro_tiras": "vertical_domina",
+        "comportamiento_choque_nucleo": "retroceso",
+        "esquinas": "vertical_domina",
+        "fabricacion": "pacha",
+        "choque_nucleo": "retroceso",
+        "bordes": {
+          "frente": {
+            "activo": false,
+            "ancho": 70.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": null,
+            "espesor": null,
+            "offset_borde": 0.0
+          },
+          "fondo": {
+            "activo": false,
+            "ancho": 70.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": null,
+            "espesor": null,
+            "offset_borde": 0.0
+          },
+          "izquierda": {
+            "activo": false,
+            "ancho": 70.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": null,
+            "espesor": null,
+            "offset_borde": 0.0
+          },
+          "derecha": {
+            "activo": false,
+            "ancho": 70.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": null,
+            "espesor": null,
+            "offset_borde": 0.0
+          }
+        },
+        "usa_bordes": false
+      }
+    }
+  ],
+  "generar_tiras_perimetrales": [
+    {
+      "entrada": {
+        "largo_tablero": 600.0,
+        "ancho_tablero": 500.0,
+        "bordes": {},
+        "espesor_madre": 18.0
+      },
+      "salida": []
+    },
+    {
+      "entrada": {
+        "largo_tablero": 600.0,
+        "ancho_tablero": 500.0,
+        "bordes": {
+          "frente": {
+            "activo": true,
+            "ancho": 70.0
+          }
+        },
+        "espesor_madre": 18.0
+      },
+      "salida": [
+        {
+          "borde": "frente",
+          "nombre_sufijo": "Frente",
+          "x": 0.0,
+          "y": 0.0,
+          "w": 600.0,
+          "h": 70.0,
+          "largo": 600.0,
+          "ancho": 70.0,
+          "d": 18.0,
+          "espesor": 18.0,
+          "distancia_al_canto": 0.0,
+          "largo_tira": "marco_interior",
+          "encuentro_esquinas": {
+            "frente_izquierda": "vertical_domina",
+            "frente_derecha": "vertical_domina",
+            "fondo_izquierda": "vertical_domina",
+            "fondo_derecha": "vertical_domina"
+          },
+          "offset_borde": 0.0
+        }
+      ]
+    },
+    {
+      "entrada": {
+        "largo_tablero": 600.0,
+        "ancho_tablero": 500.0,
+        "bordes": {
+          "frente": {
+            "activo": true,
+            "ancho": 70.0
+          },
+          "fondo": {
+            "activo": true,
+            "ancho": 70.0
+          },
+          "izquierda": {
+            "activo": true,
+            "ancho": 70.0
+          },
+          "derecha": {
+            "activo": true,
+            "ancho": 70.0
+          }
+        },
+        "espesor_madre": 18.0
+      },
+      "salida": [
+        {
+          "borde": "frente",
+          "nombre_sufijo": "Frente",
+          "x": 70.0,
+          "y": 0.0,
+          "w": 460.0,
+          "h": 70.0,
+          "largo": 460.0,
+          "ancho": 70.0,
+          "d": 18.0,
+          "espesor": 18.0,
+          "distancia_al_canto": 0.0,
+          "largo_tira": "marco_interior",
+          "encuentro_esquinas": {
+            "frente_izquierda": "vertical_domina",
+            "frente_derecha": "vertical_domina",
+            "fondo_izquierda": "vertical_domina",
+            "fondo_derecha": "vertical_domina"
+          },
+          "offset_borde": 0.0
+        },
+        {
+          "borde": "fondo",
+          "nombre_sufijo": "Fondo",
+          "x": 70.0,
+          "y": 430.0,
+          "w": 460.0,
+          "h": 70.0,
+          "largo": 460.0,
+          "ancho": 70.0,
+          "d": 18.0,
+          "espesor": 18.0,
+          "distancia_al_canto": 0.0,
+          "largo_tira": "marco_interior",
+          "encuentro_esquinas": {
+            "frente_izquierda": "vertical_domina",
+            "frente_derecha": "vertical_domina",
+            "fondo_izquierda": "vertical_domina",
+            "fondo_derecha": "vertical_domina"
+          },
+          "offset_borde": 0.0
+        },
+        {
+          "borde": "izquierda",
+          "nombre_sufijo": "Izq",
+          "x": 0.0,
+          "y": 0.0,
+          "w": 70.0,
+          "h": 500.0,
+          "largo": 500.0,
+          "ancho": 70.0,
+          "d": 18.0,
+          "espesor": 18.0,
+          "distancia_al_canto": 0.0,
+          "largo_tira": "marco_interior",
+          "encuentro_esquinas": {
+            "frente_izquierda": "vertical_domina",
+            "frente_derecha": "vertical_domina",
+            "fondo_izquierda": "vertical_domina",
+            "fondo_derecha": "vertical_domina"
+          },
+          "offset_borde": 0.0
+        },
+        {
+          "borde": "derecha",
+          "nombre_sufijo": "Der",
+          "x": 530.0,
+          "y": 0.0,
+          "w": 70.0,
+          "h": 500.0,
+          "largo": 500.0,
+          "ancho": 70.0,
+          "d": 18.0,
+          "espesor": 18.0,
+          "distancia_al_canto": 0.0,
+          "largo_tira": "marco_interior",
+          "encuentro_esquinas": {
+            "frente_izquierda": "vertical_domina",
+            "frente_derecha": "vertical_domina",
+            "fondo_izquierda": "vertical_domina",
+            "fondo_derecha": "vertical_domina"
+          },
+          "offset_borde": 0.0
+        }
+      ]
+    }
+  ],
+  "calcular_geometria_reengrose": [
+    {
+      "entrada": {
+        "panel_base": {
+          "nombre": "P",
+          "largo": 600.0,
+          "ancho": 500.0,
+          "espesor": 18.0
+        },
+        "modifier": {
+          "activo": false
+        }
+      },
+      "salida": {
+        "base": {
+          "nombre": "P",
+          "rol": "base",
+          "largo": 600.0,
+          "ancho": 500.0,
+          "espesor": 18.0,
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "refuerzos": [],
+        "grupo_pacha": "",
+        "modificador": {
+          "activo": false,
+          "orientacion": "paralela",
+          "ancho": 70.0,
+          "espesor": null,
+          "cara": "cara_a",
+          "alineacion_profundidad": "frente",
+          "modo_fabricacion": "pacha",
+          "alcance": "parcial",
+          "politica_repisa": "retroceder",
+          "prioridad_encuentro_tiras": "vertical_domina",
+          "comportamiento_choque_nucleo": "retroceso",
+          "esquinas": "vertical_domina",
+          "fabricacion": "pacha",
+          "choque_nucleo": "retroceso",
+          "bordes": {
+            "frente": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "fondo": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "izquierda": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "derecha": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            }
+          },
+          "usa_bordes": false
+        }
+      }
+    },
+    {
+      "entrada": {
+        "panel_base": {
+          "nombre": "P",
+          "largo": 600.0,
+          "ancho": 500.0,
+          "espesor": 18.0
+        },
+        "modifier": {
+          "activo": true,
+          "orientacion": "paralela",
+          "ancho": 70.0
+        }
+      },
+      "salida": {
+        "base": {
+          "nombre": "P",
+          "rol": "base",
+          "largo": 600.0,
+          "ancho": 500.0,
+          "espesor": 18.0,
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "refuerzos": [
+          {
+            "nombre": "P_Reengrose",
+            "rol": "refuerzo",
+            "largo": 600.0,
+            "ancho": 70.0,
+            "espesor": 18.0,
+            "x": 0.0,
+            "y": 0.0,
+            "z": 18.0
+          }
+        ],
+        "grupo_pacha": "Pacha_P",
+        "modificador": {
+          "activo": true,
+          "orientacion": "paralela",
+          "ancho": 70.0,
+          "espesor": null,
+          "cara": "cara_a",
+          "alineacion_profundidad": "frente",
+          "modo_fabricacion": "pacha",
+          "alcance": "parcial",
+          "politica_repisa": "retroceder",
+          "prioridad_encuentro_tiras": "vertical_domina",
+          "comportamiento_choque_nucleo": "retroceso",
+          "esquinas": "vertical_domina",
+          "fabricacion": "pacha",
+          "choque_nucleo": "retroceso",
+          "bordes": {
+            "frente": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "fondo": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "izquierda": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "derecha": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            }
+          },
+          "usa_bordes": false
+        }
+      }
+    }
+  ],
+  "calcular_geometria_caja": [
+    {
+      "entrada": {
+        "caja": {
+          "nombre": "C",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 600,
+          "h": 500,
+          "d": 18
+        },
+        "modifier": {
+          "activo": false
+        }
+      },
+      "salida": {
+        "base": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 600.0,
+          "h": 500.0,
+          "d": 18.0
+        },
+        "refuerzos": [],
+        "grupo_pacha": "",
+        "modificador": {
+          "activo": false,
+          "orientacion": "paralela",
+          "ancho": 70.0,
+          "espesor": null,
+          "cara": "cara_a",
+          "alineacion_profundidad": "frente",
+          "modo_fabricacion": "pacha",
+          "alcance": "parcial",
+          "politica_repisa": "retroceder",
+          "prioridad_encuentro_tiras": "vertical_domina",
+          "comportamiento_choque_nucleo": "retroceso",
+          "esquinas": "vertical_domina",
+          "fabricacion": "pacha",
+          "choque_nucleo": "retroceso",
+          "bordes": {
+            "frente": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "fondo": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "izquierda": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "derecha": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            }
+          },
+          "usa_bordes": false
+        }
+      }
+    },
+    {
+      "entrada": {
+        "caja": {
+          "nombre": "C",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 600,
+          "h": 500,
+          "d": 18
+        },
+        "modifier": {
+          "activo": true,
+          "orientacion": "paralela",
+          "ancho": 70.0
+        }
+      },
+      "salida": {
+        "base": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 600.0,
+          "h": 500.0,
+          "d": 18.0
+        },
+        "refuerzos": [
+          {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 18.0,
+            "w": 600.0,
+            "h": 70.0,
+            "d": 18.0,
+            "nombre": "C_Reengrose",
+            "rol": "refuerzo",
+            "cara": "cara_a"
+          }
+        ],
+        "grupo_pacha": "Pacha_C",
+        "modificador": {
+          "activo": true,
+          "orientacion": "paralela",
+          "ancho": 70.0,
+          "espesor": null,
+          "cara": "cara_a",
+          "alineacion_profundidad": "frente",
+          "modo_fabricacion": "pacha",
+          "alcance": "parcial",
+          "politica_repisa": "retroceder",
+          "prioridad_encuentro_tiras": "vertical_domina",
+          "comportamiento_choque_nucleo": "retroceso",
+          "esquinas": "vertical_domina",
+          "fabricacion": "pacha",
+          "choque_nucleo": "retroceso",
+          "bordes": {
+            "frente": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "fondo": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "izquierda": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "derecha": {
+              "activo": false,
+              "ancho": 70.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            }
+          },
+          "usa_bordes": false
+        }
+      }
+    }
+  ],
+  "despiece_panel": [
+    {
+      "entrada": {
+        "nombre": "Panel",
+        "largo": 600.0,
+        "ancho": 500.0,
+        "espesor": 18.0,
+        "modifier": {
+          "activo": false
+        }
+      },
+      "salida": [
+        {
+          "nombre": "Panel",
+          "rol": "base",
+          "largo": 600.0,
+          "ancho": 500.0,
+          "espesor": 18.0,
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "tipo": "panel",
+          "orientacion": "vertical",
+          "cantidad": 1,
+          "material_ref": "melamina_standar",
+          "cantos": {
+            "norte": "FX",
+            "sur": "FX",
+            "este": "FX",
+            "oeste": "FX"
+          },
+          "grupo": "",
+          "grupo_pacha": "",
+          "operacion": "",
+          "rol_reengrose": "base"
+        }
+      ]
+    },
+    {
+      "entrada": {
+        "nombre": "Panel",
+        "largo": 600.0,
+        "ancho": 500.0,
+        "espesor": 18.0,
+        "modifier": {
+          "activo": true,
+          "orientacion": "paralela",
+          "ancho": 70.0
+        }
+      },
+      "salida": [
+        {
+          "nombre": "Panel",
+          "rol": "base",
+          "largo": 600.0,
+          "ancho": 500.0,
+          "espesor": 18.0,
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "tipo": "panel",
+          "orientacion": "vertical",
+          "cantidad": 1,
+          "material_ref": "melamina_standar",
+          "cantos": {
+            "norte": "FX",
+            "sur": "FX",
+            "este": "FX",
+            "oeste": "FX"
+          },
+          "grupo": "Pacha_Panel",
+          "grupo_pacha": "Pacha_Panel",
+          "operacion": "Encolar + canto de bloque unificado",
+          "rol_reengrose": "base",
+          "cantos_bloque": {
+            "norte": "RIG",
+            "sur": "RIG",
+            "este": "RIG",
+            "oeste": "RIG"
+          }
+        },
+        {
+          "nombre": "Panel_Reengrose",
+          "rol": "refuerzo",
+          "largo": 600.0,
+          "ancho": 70.0,
+          "espesor": 18.0,
+          "x": 0.0,
+          "y": 0.0,
+          "z": 18.0,
+          "tipo": "panel",
+          "orientacion": "vertical",
+          "cantidad": 1,
+          "material_ref": "melamina_standar",
+          "cantos": {
+            "norte": "FX",
+            "sur": "FX",
+            "este": "FX",
+            "oeste": "FX"
+          },
+          "grupo": "Pacha_Panel",
+          "grupo_pacha": "Pacha_Panel",
+          "operacion": "Encolar + canto de bloque unificado",
+          "rol_reengrose": "refuerzo",
+          "cantos_bloque": {
+            "norte": "RIG",
+            "sur": "RIG",
+            "este": "RIG",
+            "oeste": "RIG"
+          }
+        }
+      ]
+    }
+  ],
+  "despiece_caja": [
+    {
+      "entrada": {
+        "caja": {
+          "nombre": "C",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 600,
+          "h": 500,
+          "d": 18
+        },
+        "modifier": {
+          "activo": false
+        },
+        "ejes": {
+          "largo": "x",
+          "ancho": "y",
+          "espesor": "z"
+        }
+      },
+      "salida": [
+        {
+          "nombre": "C",
+          "tipo": "panel",
+          "orientacion": "vertical",
+          "largo": 600.0,
+          "ancho": 500.0,
+          "espesor": 18.0,
+          "cantidad": 1,
+          "material_ref": "melamina_standar",
+          "cantos": {
+            "norte": "FX",
+            "sur": "FX",
+            "este": "FX",
+            "oeste": "FX"
+          },
+          "grupo": "",
+          "grupo_pacha": "",
+          "operacion": "",
+          "rol_reengrose": "base"
+        }
+      ]
+    },
+    {
+      "entrada": {
+        "caja": {
+          "nombre": "C",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 600,
+          "h": 500,
+          "d": 18
+        },
+        "modifier": {
+          "activo": true,
+          "orientacion": "paralela",
+          "ancho": 70.0
+        },
+        "ejes": {
+          "largo": "x",
+          "ancho": "y",
+          "espesor": "z"
+        }
+      },
+      "salida": [
+        {
+          "nombre": "C",
+          "tipo": "panel",
+          "orientacion": "vertical",
+          "largo": 600.0,
+          "ancho": 500.0,
+          "espesor": 18.0,
+          "cantidad": 1,
+          "material_ref": "melamina_standar",
+          "cantos": {
+            "norte": "FX",
+            "sur": "FX",
+            "este": "FX",
+            "oeste": "FX"
+          },
+          "grupo": "Pacha_C",
+          "grupo_pacha": "Pacha_C",
+          "operacion": "Encolar + canto de bloque unificado",
+          "rol_reengrose": "base",
+          "cantos_bloque": {
+            "norte": "RIG",
+            "sur": "RIG",
+            "este": "RIG",
+            "oeste": "RIG"
+          }
+        },
+        {
+          "nombre": "C_Reengrose",
+          "tipo": "panel",
+          "orientacion": "vertical",
+          "largo": 600.0,
+          "ancho": 70.0,
+          "espesor": 18.0,
+          "cantidad": 1,
+          "material_ref": "melamina_standar",
+          "cantos": {
+            "norte": "FX",
+            "sur": "FX",
+            "este": "FX",
+            "oeste": "FX"
+          },
+          "grupo": "Pacha_C",
+          "grupo_pacha": "Pacha_C",
+          "operacion": "Encolar + canto de bloque unificado",
+          "rol_reengrose": "refuerzo",
+          "cantos_bloque": {
+            "norte": "RIG",
+            "sur": "RIG",
+            "este": "RIG",
+            "oeste": "RIG"
+          }
+        }
+      ]
+    }
+  ],
+  "resolver_politica_cantos": [
+    {
+      "entrada": {
+        "panel_base": {
+          "cantos": {}
+        },
+        "modifier": {
+          "activo": false
+        }
+      },
+      "salida": {
+        "base": {
+          "norte": "FX",
+          "sur": "FX",
+          "este": "FX",
+          "oeste": "FX"
+        },
+        "tira": {},
+        "bloque": {}
+      }
+    },
+    {
+      "entrada": {
+        "panel_base": {
+          "cantos": {}
+        },
+        "modifier": {
+          "activo": true,
+          "modo_fabricacion": "independiente"
+        }
+      },
+      "salida": {
+        "base": {
+          "norte": "FX",
+          "sur": "FX",
+          "este": "FX",
+          "oeste": "FX"
+        },
+        "tira": {
+          "norte": "RIG",
+          "sur": "RIG",
+          "este": "RIG",
+          "oeste": "RIG"
+        },
+        "bloque": {}
+      }
+    }
+  ],
+  "detectar_colision": [
+    {
+      "entrada": {
+        "a": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 10,
+          "h": 10,
+          "d": 10
+        },
+        "b": {
+          "x": 20,
+          "y": 0,
+          "z": 0,
+          "w": 10,
+          "h": 10,
+          "d": 10
+        }
+      },
+      "salida": false
+    },
+    {
+      "entrada": {
+        "a": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 10,
+          "h": 10,
+          "d": 10
+        },
+        "b": {
+          "x": 5,
+          "y": 0,
+          "z": 0,
+          "w": 10,
+          "h": 10,
+          "d": 10
+        }
+      },
+      "salida": true
+    }
+  ]
+}
