@@ -5,3 +5,12 @@ Macro/tests/output/
 VDO_GIT.txt
 v1-1/
 v1.1/
+
+# Dependencias JS del MCP local (no son código del workbench)
+node_modules/
+
+# Distribución generada (tools/build_zip.py); no se versiona
+dist/
+
+# Configuración local de Claude Code (por máquina, no se versiona)
+.claude/settings.local.json

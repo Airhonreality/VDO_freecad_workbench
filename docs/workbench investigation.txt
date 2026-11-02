@@ -1,0 +1,327 @@
+Estándar Oficial de Arquitectura y Empaquetado para Workbenches Profesionales en FreeCAD: Guía de Estructuración, Ciclo de Vida y Estrategia de Integración BIM
+Transformar un conjunto heterogéneo de scripts de Python en un entorno de trabajo (Workbench o Atelier) profesional, mantenible y distribuible en FreeCAD exige adoptar formalmente los estándares de empaquetado del software y las convenciones del gestor de complementos (Addon Manager). Un módulo profesional no solo debe ejecutar algoritmos geométricos correctamente, sino que debe garantizar la separación de la capa lógica de la interfaz de usuario, administrar eficientemente la carga diferida (lazy loading), cumplir los esquemas de metadatos estandarizados y ofrecer una integración arquitectónica robusta en el entorno visual.
+
+El Estándar Oficial de Empaquetado y Estructura de Directorios
+FreeCAD emplea una arquitectura modular en la que cada complemento reside en el directorio de módulos del usuario o del sistema. La ruta del directorio Mod varía según la plataforma operativa utilizada:
+
+Linux: ~/.local/share/FreeCAD/Mod/
+
+Windows: %APPDATA%\FreeCAD\Mod\ (habitualmente C:\Users\<Usuario>\AppData\Roaming\FreeCAD\Mod\)
+
+macOS: ~/Library/Application Support/FreeCAD/Mod/
+
+Evolución del Diseño Estructural: Organización Plana frente al Estándar Moderno
+Históricamente, los desarrolladores organizaban los módulos colocando todos los scripts de Python, archivos de interfaz y gráficos de manera plana en la raíz del directorio del complemento. Las directrices actuales de la Addon Academy de FreeCAD y el estándar del Addon Manager imponen una estructura modular basada en paquetes aislados de Python y una separación estricta de recursos.
+
+Componente del Módulo	Estructura Legada (Desordenada)	Estructura Moderna Estándar	Función Arquitectónica
+Manifiesto de Metadatos
+Ausente o metadata.txt
+
+/package.xml (Raíz del proyecto)
+
+Archivo manifiesto XML obligatorio para validación y distribución en el Addon Manager.
+
+Arranque Consola/Núcleo
+/Init.py
+
+/Init.py
+
+Punto de entrada para operaciones sin interfaz gráfica (modo headless).
+
+Arranque Interfaz Gráfica
+/InitGui.py
+
+/InitGui.py
+
+Registro de la clase Workbench, comandos y menús en la GUI.
+
+Código Fuente Principal
+Scripts dispersos en la raíz
+
+/freecad/MiWorkbench/
+
+Paquete Python aislado que evita colisiones en el espacio de nombres (namespace).
+
+Recursos Gráficos (Iconos)
+Archivos .png/.svg en la raíz
+
+/Resources/icons/
+
+Gráficos vectoriales SVG compilados o referenciados para botones y barras.
+
+Formularios de Interfaz
+Archivos .ui en la raíz
+
+/Resources/ui/
+
+Plantillas XML diseñadas en Qt Designer para diálogos y paneles.
+
+Traducciones e Idiomas
+Sin localización estructurada
+
+/Resources/translations/
+
+Archivos .ts y .qm para internacionalización mediante Qt Linguist.
+
+
+Especificación Formal de Metadatos: El Archivo package.xml
+Para que un complemento sea indexado por el Addon Manager oficial o desplegado mediante repositorios de Git corporativos, debe incluir en su raíz un archivo package.xml conforme a la especificación versión 1 de FreeCAD (basada en el estándar de empaquetado ROS REP 149). Este manifiesto declara formalmente la versión, licencias, datos de mantenimiento y dependencias tanto de Python como de otros complementos.
+
+XML
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<package format="1" xmlns="https://wiki.freecad.org/Package_Metadata">
+  <name>MiWorkbenchProfesional</name>
+  <description>Atelier profesional para diseño parametrizado e integración BIM</description>
+  <version>1.0.0</version>
+  <date>2026-03-30</date>
+  <maintainer email="ingenieria@empresa.com">Equipo de Desarrollo</maintainer>
+  <license>LGPL-2.1-or-later</license>
+  <url type="repository">https://github.com/empresa/MiWorkbenchProfesional</url>
+  <url type="readme">https://github.com/empresa/MiWorkbenchProfesional/blob/main/README.md</url>
+  <icon>Resources/icons/MiWorkbenchLogo.svg</icon>
+
+  <depend>BIM</depend>
+  <python-depend>requests</python-depend>
+
+  <content>
+    <workbench>
+      <classname>MiWorkbenchGui</classname>
+      <subdirectory>./</subdirectory>
+      <icon>Resources/icons/MiWorkbenchLogo.svg</icon>
+    </workbench>
+  </content>
+</package>
+El elemento <depend> especifica dependencias obligatorias de otros Workbenches de FreeCAD, mientras que <python-depend> instruye al Addon Manager sobre bibliotecas externas de PyPI que deben verificarse antes de completar la instalación.
+
+Arquitectura de Inicialización y Garantías de Ejecución en el Ciclo de Vida
+El motor de FreeCAD mantiene una separación estricta entre la capa lógica sin interfaz (App o modo consola) y la capa visual basada en Qt (Gui). Comprender esta dicotomía es fundamental para garantizar que el complemento no provoque fallos catastróficos durante la ejecución de scripts automatizados, entornos de integración continua (CI/CD) o sesiones de consola remota.
+
+Secuencia de Arranque del Sistema
+Durante la fase de inicialización de la aplicación, el ejecutable de FreeCAD escanea el directorio /Mod/ e inicia una secuencia de carga secuencial en dos fases:
+
+Fase de Consola (Init.py): Se ejecuta de forma incondicional en cualquier sesión de FreeCAD, independientemente de si existe un entorno gráfico activo. Este script no debe importar ningún módulo visual como FreeCADGui o PySide. Su función exclusiva es registrar manejadores de formatos de archivo mediante FreeCAD.addImportType() y FreeCAD.addExportType(), asentar tipos de datos personalizados e inicializar variables del núcleo.
+
+Fase Visual (InitGui.py): Se evalúa inmediatamente después de Init.py, pero únicamente si la variable FreeCAD.GuiUp devuelve el valor verdadero (True). Este archivo se encarga de definir la clase del Workbench derivada de Gui::PythonWorkbench e inscribirla en la interfaz principal mediante la llamada FreeCADGui.addWorkbench().
+
+Protocolo de Carga Diferida (Lazy Loading)
+Con el fin de optimizar el tiempo de arranque de FreeCAD, el estándar prohíbe importar librerías pesadas o construir comandos dentro del cuerpo principal de InitGui.py. La construcción real de la interfaz debe diferirse hasta que el usuario seleccione explícitamente el Workbench en el selector superior de la aplicación.
+
+El comportamiento de la clase Workbench se rige por un conjunto de métodos estandarizados que controlan su ciclo de vida:
+
+Python
+import FreeCAD
+import FreeCADGui
+
+class MiWorkbenchGui(FreeCADGui.Workbench):
+    """Estructura estandarizada para la gestión visual del Workbench."""
+
+    MenuText = "Mi Workbench Profesional"
+    ToolTip = "Estructura de herramientas profesionales integradas en BIM"
+    Icon = """
+    <svg width="64" height="64" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <rect width="60" height="60" x="2" y="2" rx="10" fill="#2b579a"/>
+    </svg>
+    """
+
+    def Initialize(self):
+        """Ejecutado UNA ÚNICA VEZ cuando el usuario activa el Workbench por primera vez."""
+        import freecad.MiWorkbench.commands as Cmds
+
+        # Registrar comandos en la infraestructura global de FreeCAD
+        Cmds.register_all_commands()
+
+        # Generar barras de herramientas
+        self.appendToolbar("Modelado Especializado", ["Cmd_Crear_Estructura", "Cmd_Modificar_Propiedades"])
+        self.appendToolbar("Análisis y Exportación", ["Cmd_Ejecutar_Analisis"])
+
+        # Generar entrada en el menú superior
+        self.appendMenu("Mi Workbench", ["Cmd_Crear_Estructura", "Cmd_Modificar_Propiedades", "Cmd_Ejecutar_Analisis"])
+
+        # Inscribir páginas de preferencias corporativas
+        pref_path = FreeCAD.getHomePath() + "Mod/MiWorkbench/Resources/ui/preferences.ui"
+        FreeCADGui.addPreferencePage(pref_path, "Mi Workbench")
+
+    def Activated(self):
+        """Ejecutado cada vez que el usuario conmuta hacia este Workbench."""
+        pass
+
+    def Deactivated(self):
+        """Ejecutado cada vez que el usuario conmuta hacia otro Workbench."""
+        pass
+
+    def ContextMenu(self, recipient):
+        """Permite inyectar acciones dinámicas en el menú contextual del ratón."""
+        self.appendContextMenu("Mi Workbench", ["Cmd_Crear_Estructura"])
+
+    def GetClassName(self):
+        return "Gui::PythonWorkbench"
+
+# Inscripción oficial en la interfaz de usuario
+FreeCADGui.addWorkbench(MiWorkbenchGui())
+Diseño de Interfaz de Usuario: Comandos, Barras, Menús y Paneles de Tareas
+Para que los scripts individuales adquieran la categoría de herramientas nativas dentro de FreeCAD, deben encapsularse utilizando el patrón de diseño Command.
+
+El Patrón Command de FreeCAD
+Cada acción interactiva se define como una clase Python que implementa métodos de consulta para recursos gráficos, descripciones contextuales y validaciones del estado del documento:
+
+Python
+import FreeCAD
+import FreeCADGui
+
+class CmdCrearEstructura:
+    def GetResources(self):
+        return {
+            'Pixmap': 'Resources/icons/CrearEstructura.svg',
+            'MenuText': 'Crear Estructura Paramétrica',
+            'ToolTip': 'Genera un nuevo elemento estructural parametrizado en el documento'
+        }
+
+    def IsActive(self):
+        # Valida que exista un documento 3D activo antes de habilitar el botón
+        return FreeCAD.ActiveDocument is not None
+
+    def Activated(self):
+        # Despliegue de la interfaz interactiva mediante un TaskPanel
+        from freecad.MiWorkbench.ui.task_panel import EstructuraTaskPanel
+        panel = EstructuraTaskPanel()
+        FreeCADGui.Control.showDialog(panel)
+
+FreeCADGui.addCommand("Cmd_Crear_Estructura", CmdCrearEstructura())
+Arquitectura de Diálogos: Paneles de Tareas (TaskPanel) frente a Ventanas Independientes (QDialog)
+Al construir interfaces interactivas, la plataforma ofrece dos alternativas con profundas diferencias en usabilidad y control de memoria. El estándar prefiere el uso de paneles de tareas (TaskPanel) integrados en la vista combinada (ComboView) lateral de FreeCAD sobre los diálogos flotantes tradicionales.
+
+Criterio Técnico
+Panel de Tareas Nativo (TaskPanel)
+
+Ventana Independiente (QDialog de PySide)
+
+Integración Visual
+Se acopla nativamente en la pestaña Tarea de la ComboView.
+
+Flota sobre el espacio de trabajo como una ventana separada.
+
+Control de Aceptación/Cancelación
+Administrado por el motor FreeCADGui.Control (accept(), reject()).
+
+Requiere instanciar e interceptar explícitamente un QDialogButtonBox.
+
+Interacción con la Vista 3D
+Mantiene la capacidad de rotar, zoom y seleccionar elementos 3D.
+
+Si es modal, bloquea por completo la interacción con el modelo 3D.
+
+Gestión de Memoria
+Ciclo de vida gestionado de forma nativa por FreeCAD.
+
+Requiere destrucción manual del puntero (deleteLater) para evitar fugas de memoria.
+Casos de Uso Aconsejados
+Creación y edición de geometría, herramientas de modelado directo.
+
+Configuración global del sistema, dashboards analíticos, interfaces de reporte.
+
+
+Para implementar un TaskPanel robusto que cargue formularios .ui de Qt Designer de manera limpia:
+
+Python
+import os
+from PySide2 import QtWidgets, QtUiTools, QtCore
+import FreeCAD
+import FreeCADGui
+
+class EstructuraTaskPanel:
+    def __init__(self):
+        ui_path = os.path.join(FreeCAD.getHomePath(), "Mod", "MiWorkbench", "Resources", "ui", "estructura.ui")
+        loader = QtUiTools.QUiLoader()
+        ui_file = QtCore.QFile(ui_path)
+        ui_file.open(QtCore.QFile.ReadOnly)
+        self.form = loader.load(ui_file)
+        ui_file.close()
+
+    def getStandardButtons(self):
+        return int(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
+
+    def isAllowedAlterSelection(self):
+        return True
+
+    def isAllowedAlterView(self):
+        return True
+
+    def isAllowedAlterDocument(self):
+        return True
+
+    def accept(self):
+        largo = self.form.spinBoxLargo.value()
+        doc = FreeCAD.ActiveDocument
+        obj = doc.addObject("Part::Box", "ElementoEstructura")
+        obj.Length = largo
+        doc.recompute()
+
+        FreeCADGui.Control.closeDialog()
+        return True
+
+    def reject(self):
+        FreeCADGui.Control.closeDialog()
+        return True
+Estrategia de Integración: ¿Atelier Autónomo vs. Extensión de BIM?
+A partir de FreeCAD 1.0, las herramientas arquitectónicas del antiguo módulo Arch fueron unificadas y consolidadas dentro del Workbench BIM. Al concebir un complemento destinado a interoperar con herramientas BIM, surge la decisión crucial sobre la modalidad de instalación e integración.
+
+Existen tres enfoques arquitectónicos principales para resolver esta integración:
+
+Opción A: Atelier Autónomo (Standalone Workbench)
+El complemento se registra como un Workbench independiente que figura directamente en la lista desplegable principal de módulos de FreeCAD.
+
+Esta opción ofrece un aislamiento total del espacio de nombres y elimina el riesgo de que errores en otros módulos afecten la carga del complemento. Además, cumple de forma óptima con los criterios del Addon Manager. No obstante, presenta como desventaja una usabilidad fragmentada, ya que exige al usuario conmutar de Workbench constantemente para alternar entre los comandos del complemento y las herramientas nativas de BIM.
+
+Opción B: Inyección Pura dentro de BIM (BIM Extension Overlay)
+El complemento no se registra como un Workbench en la lista principal, sino que detecta la carga de BIM e inyecta sus barras de herramientas y menús dentro de la estructura visual de BIM.
+
+Aunque ofrece una experiencia de usuario fluida al concentrar todas las herramientas en una sola interfaz, esta alternativa es altamente frágil. Si el usuario no activa el módulo BIM, o si la estructura interna de barras de BIM se modifica en versiones futuras de FreeCAD, el complemento no podrá inyectar sus barras o fallará silenciosamente durante el arranque.
+
+Opción C: La Solución Elegante y Robusta (Arquitectura Híbrida)
+El diseño más avanzado y profesional consiste en implementar una Arquitectura Híbrida (Atelier Autónomo con Capacidad de Inyección en BIM).
+
+Bajo este modelo, el complemento se empaqueta e instala formalmente como un Workbench independiente estandarizado. Esto garantiza la compatibilidad absoluta con el Addon Manager, la correcta lectura del manifiesto package.xml y la estabilidad en despliegues corporativos. Sin embargo, en lugar de aislar sus comandos, el complemento expone un conector que registra sus barras de herramientas en la infraestructura global de FreeCAD. Al detectar que el usuario se encuentra dentro del entorno BIM, permite activar dinámicamente sus barras dentro de BIM sin requerir la conmutación completa de módulo.
+
+Dimensión de Análisis	Opción A: Workbench Autónomo	Opción B: Inyección Pura en BIM	Opción C: Arquitectura Híbrida (Recomendada)
+Cumplimiento del Addon Manager
+Total: Estructura estándar 100% validada.
+
+Parcial: Puede generar confusión al no figurar en el selector.
+Excelente: Registrado como paquete oficial completo.
+
+Estabilidad y Robustez de API
+Alta: Independiente de cambios en otros módulos.
+
+Baja: Vulnerable a refactorizaciones en BIM.
+
+Alta: Si la inyección en BIM falla, el módulo autónomo sigue operativo.
+Experiencia de Usuario (UX)	Aceptable: Requiere conmutar de Workbench.
+Excelente: Herramientas unificadas en un solo entorno.
+
+Máxima: Operable como Workbench o como barra inyectada.
+
+Mantenibilidad Corporativa
+Sencilla: Aislamiento claro de código y dependencias.
+
+Compleja: Requiere auditorías constantes ante cambios en BIM.
+
+Óptima: Permite actualizaciones independientes y escalables.
+
+
+Conclusiones y Plan de Acción Recomendado
+Para convertir una colección heterogénea de scripts en un complemento profesional de nivel empresarial listo para el Addon Manager de FreeCAD o para despliegues corporativos centralizados, se aconseja ejecutar la siguiente hoja de ruta:
+
+Reorganización Estructural: Reestructurar el árbol de carpetas adoptando el estándar moderno. Trasladar los módulos lógicos a la ruta freecad/MiWorkbench/ y almacenar los recursos gráficos e interfaces en el directorio Resources/.
+
+Creación del Manifiesto package.xml: Elaborar el manifiesto XML en la raíz del repositorio especificando la versión, licencias, desarrolladores, clase GUI del Workbench y dependencias de librerías Python.
+
+Refactorización del Ciclo de Vida:
+
+Depurar Init.py para asegurar que permanezca completamente ajeno a las bibliotecas de interfaz gráfica (FreeCADGui, PySide).
+
+Implementar la carga diferida (lazy loading) dentro del método Initialize() en InitGui.py para evitar penalizaciones en el tiempo de arranque de FreeCAD.
+
+Adopción de la Arquitectura Híbrida: Registrar la clase principal como un Workbench autónomo formal para asegurar compatibilidad y aislamiento, incorporando a su vez hooks de inyección que permitan exponer sus barras de herramientas dentro de la interfaz de BIM para los usuarios que prefieran un entorno unificado.
+
+Auditoría y Validación de Empaquetado: Habilitar el Modo Desarrollador en las preferencias del Addon Manager (Editar → Preferencias → Addon Manager → Modo Desarrollador) y ejecutar la herramienta de verificación de metadatos integrada para certificar que el paquete cumple los estándares oficiales antes de su distribución o publicación.
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<package format="1" xmlns="https://wiki.freecad.org/Package_Metadata">
+  <name>VDO</name>
+  <description>Muebles paramétricos VDO (Veta de Oro): paneles, cofres, cajones y puertas generados por código.</description>
+  <version>1.1.0</version>
+  <date>2026-11-01</date>
+  <maintainer>Airhonreality</maintainer>
+  <!-- Licencia propietaria; el texto completo irá en LICENSE (ver PLAN_CONVERSION_WORKBENCH_VDO.md, D10) -->
+  <license>LicenseRef-VDO-Proprietary</license>
+  <icon>Resources/icons/vdo_workbench.svg</icon>
+
+  <content>
+    <workbench>
+      <name>VDO</name>
+      <classname>VDOWorkbench</classname>
+      <subdirectory>./</subdirectory>
+      <icon>Resources/icons/vdo_workbench.svg</icon>
+    </workbench>
+  </content>
+</package>
