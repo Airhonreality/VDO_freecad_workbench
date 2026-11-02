@@ -36,15 +36,12 @@ Uso programático:
 
 import csv
 
-try:
-    from freecad.vdo.core import vdo_defaults as _VDO_D
-    _CANTO_ESPESOR = {
-        "FX": 0.0,
-        "RIG": float(getattr(_VDO_D, "CANTO_GRUESO_DEFAULT", 2.0)),
-        "SMRG": float(getattr(_VDO_D, "CANTO_MEDIO_DEFAULT", 1.0)),
-    }
-except Exception:  # Ejecución aislada sin vdo_manifest.json
-    _CANTO_ESPESOR = {"FX": 0.0, "RIG": 2.0, "SMRG": 1.0}
+from freecad.vdo.core import vdo_defaults as _VDO_D
+_CANTO_ESPESOR = {
+    "FX": 0.0,
+    "RIG": float(getattr(_VDO_D, "CANTO_GRUESO_DEFAULT", 2.0)),
+    "SMRG": float(getattr(_VDO_D, "CANTO_MEDIO_DEFAULT", 1.0)),
+}
 
 # ----------------------------------------------------------------------
 # Presets de tablero (mm) — estándar de taller

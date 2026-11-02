@@ -127,159 +127,146 @@ class PuertaFeature:
         """Reconstruir la geometría de la puerta."""
         import json
 
-        try:
-            sistema = str(fp.TipoSistema)
-            montaje = str(fp.TipoMontaje)
-            sentido = str(fp.SentidoApertura)
-            apertura = str(fp.SistemaApertura)
+        sistema = str(fp.TipoSistema)
+        montaje = str(fp.TipoMontaje)
+        sentido = str(fp.SentidoApertura)
+        apertura = str(fp.SistemaApertura)
 
-            W = float(fp.Ancho)
-            H = float(fp.Alto)
-            t = float(fp.Espesor)
-            px = float(fp.PosX)
-            py = float(fp.PosY)
-            pz = float(fp.PosZ)
+        W = float(fp.Ancho)
+        H = float(fp.Alto)
+        t = float(fp.Espesor)
+        px = float(fp.PosX)
+        py = float(fp.PosY)
+        pz = float(fp.PosZ)
 
-            if W <= 0 or H <= 0 or t <= 0:
-                fp.Shape = _get_part().Shape()
-                return
-
-            # Fuerza de pistón (basculante)
-            if sistema == "Basculante Horizontal":
-                texto, comercial, F = descripcion_piston(W, H)
-                fp.FuerzaPistonRecomendada = texto
-            else:
-                fp.FuerzaPistonRecomendada = ""
-
-            # -------------------- Batiente / Basculante --------------------
-            if sistema in ("Batiente Vertical", "Basculante Horizontal"):
-
-                # Dimensiones de fachada segun montaje (solape para parche)
-                if montaje == MONTAJE_PARCHE:
-                    w_fach, h_fach = calcular_fachada_base(
-                        W, H, montaje,
-                        holgura=HOLGURA_PERIMETRAL_DEFAULT,
-                        solape=SOLAPE_PARCHE_NOMINAL)
-                    # Centrar la fachada sobre el hueco del vano
-                    px = px - (w_fach - W) / 2.0
-                    pz = pz - (h_fach - H) / 2.0
-                    # Panel apoyado en el plano exterior de la carcasa (Y=-t)
-                    py = py - t
-                else:
-                    w_fach, h_fach = W, H
-
-                # Ajuste de altura por sistema de apertura (gola)
-                H_efectiva, _descuento = ajuste_altura_apertura(apertura, h_fach)
-
-                shape = _get_part().makeBox(w_fach, t, H_efectiva)
-
-                # Chaflán 45° en el canto de agarre (borde superior delantero)
-                if necesita_cantos_45(apertura):
-                    arista = _arista_borde(shape, 2, H_efectiva, 0)
-                    if arista is None:
-                        arista = _arista_borde(shape, 2, H_efectiva, 1)
-                    if arista is not None:
-                        try:
-                            shape = shape.makeChamfer(3.0, 3.0, [arista])
-                        except Exception:
-                            shape = shape.makeChamfer(3.0, [arista])
-
-                # Cazoletas de bisagra (solo batiente)
-                if sistema == "Batiente Vertical":
-                    bis = bisagras_para_puerta(h_fach, montaje,
-                                               prefer_sku=fp.HardwareSKU or None)
-                    radio = bis["diametro_cazoleta"] / 2.0
-                    prof = bis["profundidad_cazoleta"]
-                    cota_x = bis["cota_x"]
-
-                    if sentido == "Izquierda":
-                        cup_xs = [cota_x]
-                    elif sentido == "Derecha":
-                        cup_xs = [w_fach - cota_x]
-                    elif sentido == "Doble":
-                        cup_xs = [cota_x, w_fach - cota_x]
-                    else:
-                        cup_xs = [cota_x]
-
-                    for cup_z in bis["posiciones_z"]:
-                        for cup_x in cup_xs:
-                            if 0 < cup_x < w_fach and 0 < cup_z < h_fach:
-                                cyl = _cilindro_cazoleta(cup_x, cup_z, t,
-                                                         radio, prof)
-                                shape = shape.cut(cyl)
-
-                solidos = [s for s in ([shape] if shape is not None else [])
-                           if not s.isNull() and s.Volume > 1e-9]
-                fp.Shape = _get_part().makeCompound(solidos) if solidos else _get_part().Shape()
-                # LocalPlacement: geometría ya está en origen local (0,0,0).
-                # La posición relativa al vano del COCO se guarda aquí y
-                # se combina con ParentCOCO al final de execute().
-                fp.LocalPlacement = _get_app().Placement(
-                    _get_app().Vector(px, py, pz), _get_app().Rotation())
-
-            # -------------------- Corrediza --------------------
-            elif sistema == "Corrediza":
-                n_hojas = 3 if sentido == "Doble" else 2
-                tipo_mueble = "closet"
-                res = calcular_corrediza(W, H, tipo_mueble=tipo_mueble,
-                                         n_hojas=n_hojas,
-                                         prefer_sku=fp.HardwareSKU or None)
-                w_hoja = float(res["ancho_hoja"])
-                h_hoja = float(res["alto_hoja"])
-                traslape = float(res["traslape_minimo"])
-
-                # Paso en profundidad según el riel del catálogo
-                tecnicos = res.get("parametros_tecnicos", {})
-                paso_y = float(tecnicos.get("ancho_piso_riel_doble", t + 4.0))
-                if paso_y <= 0:
-                    paso_y = t + 4.0
-
-                hojas = []
-                for i in range(n_hojas):
-                    hoja = _get_part().makeBox(w_hoja, t, h_hoja)
-                    # Desfasar en X con traslape y en Y con el paso del riel
-                    x_i = i * (w_hoja - traslape)
-                    y_i = i * paso_y
-                    hoja.Placement = _get_app().Placement(
-                        _get_app().Vector(x_i, y_i, 0), _get_app().Rotation())
-                    hojas.append(hoja.transformShape(hoja.Placement.toMatrix()))
-
-                # Chaflán 45° si aplica (solo en la hoja delantera)
-                if necesita_cantos_45(apertura) and hojas:
-                    arista = _arista_borde(hojas[0], 2, h_hoja, 0)
-                    if arista is not None:
-                        try:
-                            hojas[0] = hojas[0].makeChamfer(3.0, 3.0, [arista])
-                        except Exception:
-                            hojas[0] = hojas[0].makeChamfer(3.0, [arista])
-
-                # Validar que no haya intersección de volúmenes (common == 0)
-                for a in range(len(hojas)):
-                    for b in range(a + 1, len(hojas)):
-                        if hojas[a].common(hojas[b]).Volume > 1e-6:
-                            _get_app().Console.PrintWarning(
-                                f"[VDO Puerta] Hojas {a+1} y {b+1} se "
-                                f"intersectan (common > 0).\n")
-
-                solidos = [h for h in hojas if not h.isNull() and h.Volume > 1e-9]
-                fp.Shape = _get_part().makeCompound(solidos) if solidos else _get_part().Shape()
-                fp.LocalPlacement = _get_app().Placement(
-                    _get_app().Vector(px, py, pz), _get_app().Rotation())
-                fp.FuerzaPistonRecomendada = ""
-
-            else:
-                fp.Shape = _get_part().Shape()
-
-            # --- Vínculo rígido padre-hijo ---
-            # No escribir fp.Placement aquí: solo CocoFeature.execute() es
-            # la fuente de verdad del placement mundial del hijo.
-            # LocalPlacement almacena la pose relativa al vano del COCO.
-
-        except Exception as e:
-            _get_app().Console.PrintError(f"[VDO Puerta] Error en execute(): {e}\n")
-            import traceback
-            _get_app().Console.PrintError(traceback.format_exc())
+        if W <= 0 or H <= 0 or t <= 0:
             fp.Shape = _get_part().Shape()
+            return
+
+        # Fuerza de pistón (basculante)
+        if sistema == "Basculante Horizontal":
+            texto, comercial, F = descripcion_piston(W, H)
+            fp.FuerzaPistonRecomendada = texto
+        else:
+            fp.FuerzaPistonRecomendada = ""
+
+        # -------------------- Batiente / Basculante --------------------
+        if sistema in ("Batiente Vertical", "Basculante Horizontal"):
+
+            # Dimensiones de fachada segun montaje (solape para parche)
+            if montaje == MONTAJE_PARCHE:
+                w_fach, h_fach = calcular_fachada_base(
+                    W, H, montaje,
+                    holgura=HOLGURA_PERIMETRAL_DEFAULT,
+                    solape=SOLAPE_PARCHE_NOMINAL)
+                # Centrar la fachada sobre el hueco del vano
+                px = px - (w_fach - W) / 2.0
+                pz = pz - (h_fach - H) / 2.0
+                # Panel apoyado en el plano exterior de la carcasa (Y=-t)
+                py = py - t
+            else:
+                w_fach, h_fach = W, H
+
+            # Ajuste de altura por sistema de apertura (gola)
+            H_efectiva, _descuento = ajuste_altura_apertura(apertura, h_fach)
+
+            shape = _get_part().makeBox(w_fach, t, H_efectiva)
+
+            # Chaflán 45° en el canto de agarre (borde superior delantero)
+            if necesita_cantos_45(apertura):
+                arista = _arista_borde(shape, 2, H_efectiva, 0)
+                if arista is None:
+                    arista = _arista_borde(shape, 2, H_efectiva, 1)
+                if arista is not None:
+                    shape = shape.makeChamfer(3.0, 3.0, [arista])
+
+            # Cazoletas de bisagra (solo batiente)
+            if sistema == "Batiente Vertical":
+                bis = bisagras_para_puerta(h_fach, montaje,
+                                           prefer_sku=fp.HardwareSKU or None)
+                radio = bis["diametro_cazoleta"] / 2.0
+                prof = bis["profundidad_cazoleta"]
+                cota_x = bis["cota_x"]
+
+                if sentido == "Izquierda":
+                    cup_xs = [cota_x]
+                elif sentido == "Derecha":
+                    cup_xs = [w_fach - cota_x]
+                elif sentido == "Doble":
+                    cup_xs = [cota_x, w_fach - cota_x]
+                else:
+                    cup_xs = [cota_x]
+
+                for cup_z in bis["posiciones_z"]:
+                    for cup_x in cup_xs:
+                        if 0 < cup_x < w_fach and 0 < cup_z < h_fach:
+                            cyl = _cilindro_cazoleta(cup_x, cup_z, t,
+                                                     radio, prof)
+                            shape = shape.cut(cyl)
+
+            solidos = [s for s in ([shape] if shape is not None else [])
+                       if not s.isNull() and s.Volume > 1e-9]
+            fp.Shape = _get_part().makeCompound(solidos) if solidos else _get_part().Shape()
+            # LocalPlacement: geometría ya está en origen local (0,0,0).
+            # La posición relativa al vano del COCO se guarda aquí y
+            # se combina con ParentCOCO al final de execute().
+            fp.LocalPlacement = _get_app().Placement(
+                _get_app().Vector(px, py, pz), _get_app().Rotation())
+
+        # -------------------- Corrediza --------------------
+        elif sistema == "Corrediza":
+            n_hojas = 3 if sentido == "Doble" else 2
+            tipo_mueble = "closet"
+            res = calcular_corrediza(W, H, tipo_mueble=tipo_mueble,
+                                     n_hojas=n_hojas,
+                                     prefer_sku=fp.HardwareSKU or None)
+            w_hoja = float(res["ancho_hoja"])
+            h_hoja = float(res["alto_hoja"])
+            traslape = float(res["traslape_minimo"])
+
+            # Paso en profundidad según el riel del catálogo
+            tecnicos = res.get("parametros_tecnicos", {})
+            paso_y = float(tecnicos.get("ancho_piso_riel_doble", t + 4.0))
+            if paso_y <= 0:
+                paso_y = t + 4.0
+
+            hojas = []
+            for i in range(n_hojas):
+                hoja = _get_part().makeBox(w_hoja, t, h_hoja)
+                # Desfasar en X con traslape y en Y con el paso del riel
+                x_i = i * (w_hoja - traslape)
+                y_i = i * paso_y
+                hoja.Placement = _get_app().Placement(
+                    _get_app().Vector(x_i, y_i, 0), _get_app().Rotation())
+                hojas.append(hoja.transformShape(hoja.Placement.toMatrix()))
+
+            # Chaflán 45° si aplica (solo en la hoja delantera)
+            if necesita_cantos_45(apertura) and hojas:
+                arista = _arista_borde(hojas[0], 2, h_hoja, 0)
+                if arista is not None:
+                    hojas[0] = hojas[0].makeChamfer(3.0, 3.0, [arista])
+
+            # Validar que no haya intersección de volúmenes (common == 0)
+            for a in range(len(hojas)):
+                for b in range(a + 1, len(hojas)):
+                    if hojas[a].common(hojas[b]).Volume > 1e-6:
+                        _get_app().Console.PrintWarning(
+                            f"[VDO Puerta] Hojas {a+1} y {b+1} se "
+                            f"intersectan (common > 0).\n")
+
+            solidos = [h for h in hojas if not h.isNull() and h.Volume > 1e-9]
+            fp.Shape = _get_part().makeCompound(solidos) if solidos else _get_part().Shape()
+            fp.LocalPlacement = _get_app().Placement(
+                _get_app().Vector(px, py, pz), _get_app().Rotation())
+            fp.FuerzaPistonRecomendada = ""
+
+        else:
+            fp.Shape = _get_part().Shape()
+
+        # --- Vínculo rígido padre-hijo ---
+        # No escribir fp.Placement aquí: solo CocoFeature.execute() es
+        # la fuente de verdad del placement mundial del hijo.
+        # LocalPlacement almacena la pose relativa al vano del COCO.
 
 
 # ---------------------------------------------------------------------

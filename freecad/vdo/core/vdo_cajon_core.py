@@ -65,12 +65,9 @@ def _aplicar_corte(solido, herramienta):
     """Aplica una sustracción booleana segura."""
     if solido is None or herramienta is None:
         return solido
-    try:
-        resultado = solido.cut(herramienta)
-        if resultado is not None and resultado.isValid():
-            return resultado
-    except Exception:
-        pass
+    resultado = solido.cut(herramienta)
+    if resultado is not None and resultado.isValid():
+        return resultado
     return solido
 
 

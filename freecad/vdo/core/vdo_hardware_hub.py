@@ -142,13 +142,14 @@ def _cargar_catalogo():
     Nunca lanza FileNotFoundError: si el archivo falta o está mal formado,
     devuelve un dict vacío y se confía en los datos de fallback integrados.
     """
+    datos = {}
     try:
         with open(_CATALOGO_PATH, encoding="utf-8") as _fh:
             datos = json.load(_fh)
-        if isinstance(datos, dict):
-            return datos
     except (FileNotFoundError, json.JSONDecodeError, OSError, ValueError):
-        pass
+        datos = {}
+    if isinstance(datos, dict):
+        return datos
     return {}
 
 
@@ -229,10 +230,13 @@ def resolve_hinge(tipo_montaje, prefer_sku=None, catalogo=None):
     tipo_montaje = str(tipo_montaje).strip().lower()
     if prefer_sku:
         prefer_sku = str(prefer_sku)
+        hw = None
         try:
-            return get_hardware(prefer_sku, catalogo)
+            hw = get_hardware(prefer_sku, catalogo)
         except KeyError:
-            pass
+            hw = None
+        if hw is not None:
+            return hw
     sku = _DEFAULT_HINGE_BY_MONTAJE.get(tipo_montaje)
     if sku is None:
         raise KeyError(
@@ -282,35 +286,38 @@ def resolve_drawer_slide(tipo="oculta", marca="blum_tandem", catalogo=None):
     sku_encontrado = None
 
     # 1. Intento directo: el caller ya pasó un SKU del catálogo.
+    hw = None
     try:
         hw = get_hardware(marca, catalogo)
-        if hw["parametros_tecnicos"].get("tipo_corredera") in (tipo, None, ""):
-            sku_encontrado = marca
-            return {**hw, "sku": sku_encontrado}
     except KeyError:
-        pass
+        hw = None
+    if hw is not None and hw["parametros_tecnicos"].get("tipo_corredera") in (tipo, None, ""):
+        sku_encontrado = marca
+        return {**hw, "sku": sku_encontrado}
 
     # 2. Normalización: blum_tandem -> BLUM-TANDEM
     normalizada = marca.upper().replace("_", "-")
     if normalizada != marca:
+        hw = None
         try:
             hw = get_hardware(normalizada, catalogo)
-            if hw["parametros_tecnicos"].get("tipo_corredera") in (tipo, None, ""):
-                sku_encontrado = normalizada
-                return {**hw, "sku": sku_encontrado}
         except KeyError:
-            pass
+            hw = None
+        if hw is not None and hw["parametros_tecnicos"].get("tipo_corredera") in (tipo, None, ""):
+            sku_encontrado = normalizada
+            return {**hw, "sku": sku_encontrado}
 
     # 3. Tabla de mapeo de claves del manifest.
     sku = _MARCA_A_SKU.get(marca.lower())
     if sku:
+        hw = None
         try:
             hw = get_hardware(sku, catalogo)
-            if hw["parametros_tecnicos"].get("tipo_corredera") in (tipo, None, ""):
-                sku_encontrado = sku
-                return {**hw, "sku": sku_encontrado}
         except KeyError:
-            pass
+            hw = None
+        if hw is not None and hw["parametros_tecnicos"].get("tipo_corredera") in (tipo, None, ""):
+            sku_encontrado = sku
+            return {**hw, "sku": sku_encontrado}
 
     # 4. Búsqueda por familia si se pasó el tipo genérico.
     familia = "corredera_oculta" if tipo == "oculta" else "corredera_telescopica"

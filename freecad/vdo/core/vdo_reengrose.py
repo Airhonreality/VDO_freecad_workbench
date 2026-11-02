@@ -1780,16 +1780,18 @@ def generar_mocheo_repisa(repisa, reengrose_vertical, politica=None):
 
 def desde_objeto(obj):
     texto = getattr(obj, "VDO_Reengrose_JSON", "") or ""
+    guardado = None
     if texto:
         try:
             guardado = json.loads(texto)
-            if (isinstance(guardado, dict)
-                    and any(clave in guardado for clave in
-                            ("bordes", "esquinas", "fabricacion",
-                             "choque_nucleo"))):
-                return ReengroseModifier(guardado)
         except (TypeError, ValueError):
-            pass
+            guardado = None
+    if (guardado is not None
+            and isinstance(guardado, dict)
+            and any(clave in guardado for clave in
+                    ("bordes", "esquinas", "fabricacion",
+                     "choque_nucleo"))):
+        return ReengroseModifier(guardado)
     datos = {}
     for clave, prop in PROPS.items():
         datos[clave] = getattr(obj, prop, DEFAULTS[clave])

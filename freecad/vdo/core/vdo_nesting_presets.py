@@ -56,14 +56,8 @@ class NestingPresetManager:
         """Obtiene todos los presets disponibles."""
         prefs = NestingPresetManager.get_prefs()
         presets_json = prefs.GetString("Presets", "{}")
-
-        try:
-            data = json.loads(presets_json)
-            return data.get("presets", DEFAULT_PRESETS)
-        except Exception as exc:
-            _get_app().Console.PrintWarning(
-                f"[VDO] No se pudieron leer presets: {exc}\n")
-            return NestingPresetManager.DEFAULT_PRESETS
+        data = json.loads(presets_json)
+        return data.get("presets", DEFAULT_PRESETS)
 
     @staticmethod
     def get_preset(name):
@@ -76,13 +70,7 @@ class NestingPresetManager:
         """Guarda un nuevo preset."""
         prefs = NestingPresetManager.get_prefs()
         presets_json = prefs.GetString("Presets", "{}")
-
-        try:
-            data = json.loads(presets_json)
-        except Exception as exc:
-            _get_app().Console.PrintWarning(
-                f"[VDO] No se pudieron leer presets: {exc}\n")
-            data = {"list": [], "presets": {}}
+        data = json.loads(presets_json)
 
         if "list" not in data:
             data["list"] = []
@@ -108,13 +96,7 @@ class NestingPresetManager:
         """Elimina un preset."""
         prefs = NestingPresetManager.get_prefs()
         presets_json = prefs.GetString("Presets", "{}")
-
-        try:
-            data = json.loads(presets_json)
-        except Exception as exc:
-            _get_app().Console.PrintWarning(
-                f"[VDO] No se pudieron leer presets: {exc}\n")
-            return False
+        data = json.loads(presets_json)
 
         if name in data.get("presets", {}):
             del data["presets"][name]
@@ -145,31 +127,26 @@ class NestingPresetManager:
     @staticmethod
     def import_presets_from_json(filepath):
         """Importa presets desde un archivo JSON."""
-        try:
-            with open(filepath, 'r', encoding='utf-8') as f:
-                new_presets = json.load(f)
+        with open(filepath, 'r', encoding='utf-8') as f:
+            new_presets = json.load(f)
 
-            prefs = NestingPresetManager.get_prefs()
-            existing_data = json.loads(prefs.GetString("Presets", "{}"))
+        prefs = NestingPresetManager.get_prefs()
+        existing_data = json.loads(prefs.GetString("Presets", "{}"))
 
-            if "presets" not in existing_data:
-                existing_data["presets"] = {}
-            if "list" not in existing_data:
-                existing_data["list"] = []
+        if "presets" not in existing_data:
+            existing_data["presets"] = {}
+        if "list" not in existing_data:
+            existing_data["list"] = []
 
-            for name, config in new_presets.items():
-                existing_data["presets"][name] = config
-                if name not in existing_data["list"]:
-                    existing_data["list"].append(name)
+        for name, config in new_presets.items():
+            existing_data["presets"][name] = config
+            if name not in existing_data["list"]:
+                existing_data["list"].append(name)
 
-            prefs.SetString("Presets", json.dumps(existing_data))
-            _get_app().Console.PrintMessage(
-                f"[VDO Nesting] Presets importados desde: {filepath}")
-            return True
-        except Exception as e:
-            _get_app().Console.PrintMessage(
-                f"[VDO Nesting] Error importando presets: {e}")
-            return False
+        prefs.SetString("Presets", json.dumps(existing_data))
+        _get_app().Console.PrintMessage(
+            f"[VDO Nesting] Presets importados desde: {filepath}")
+        return True
 
 
 # Inicializar presets al cargar el módulo

@@ -80,13 +80,14 @@ def _m1_capas():
         src = p.read_text(encoding="utf-8")
         if "freecad.vdo.core" in src or "freecad.vdo.cad" in src:
             violaciones.append(str(p.relative_to(ROOT)))
-    # app no debe importar cad ni ui
+    # app no debe importar ui (ui → app, no al revés)
+    # app → cad está permitido (cad es el adaptador de escritura que app usa)
     if APP.exists():
         for p in sorted(APP.rglob("*.py")):
             if "__pycache__" in p.parts:
                 continue
             src = p.read_text(encoding="utf-8")
-            if "freecad.vdo.cad" in src or "freecad.vdo.ui" in src:
+            if "freecad.vdo.ui" in src:
                 violaciones.append(str(p.relative_to(ROOT)))
     # cad no debe importar ui ni app
     if CAD.exists():

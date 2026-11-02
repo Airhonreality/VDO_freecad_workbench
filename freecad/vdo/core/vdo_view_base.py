@@ -35,10 +35,7 @@ def diagnostico_viewprovider(obj):
     """Texto de diagnóstico para depurar el proxy de un módulo VDO."""
     if obj is None:
         return "Sin objeto."
-    try:
-        vp = obj.ViewObject
-    except Exception as exc:
-        return f"{obj.Name}: sin ViewObject ({exc})"
+    vp = obj.ViewObject
     proxy = getattr(vp, "Proxy", None)
     metodos = [m for m in ("_abrir_panel", "setupContextMenu",
                            "doubleClicked", "setEdit", "get_panel_class")

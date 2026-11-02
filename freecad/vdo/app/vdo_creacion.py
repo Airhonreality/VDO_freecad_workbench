@@ -42,12 +42,7 @@ def crear_modulo_interactivo(module_key: str, config: dict | None = None):
     En FreeCADCmd (sin GUI) crea el módulo y lo deja en el origen,
     sin panel ni colocación interactiva.
     """
-    try:
-        spec = get_spec(module_key)
-    except Exception as exc:
-        import FreeCAD as App
-        App.Console.PrintError(f"[VDO] {exc}\n")
-        return None
+    spec = get_spec(module_key)
 
     doc = _cad_vdo_guard()
     if doc is None:
@@ -65,42 +60,22 @@ def crear_modulo_interactivo(module_key: str, config: dict | None = None):
     obj = None
     tx_propia = False
     if not doc.HasPendingTransaction:
-        try:
-            doc.openTransaction(
-                f"Crear y colocar {spec.get('label', module_key)}")
-            tx_propia = True
-        except Exception as exc:
-            import FreeCAD as App
-            App.Console.PrintWarning(
-                f"[VDO] No se pudo abrir transacción: {exc}\n")
+        doc.openTransaction(
+            f"Crear y colocar {spec.get('label', module_key)}")
+        tx_propia = True
 
     def cancelar():
         if tx_propia:
-            try:
-                doc.abortTransaction()
-            except Exception:
-                pass
+            doc.abortTransaction()
         if obj is not None:
-            try:
-                if doc.getObject(obj.Name) is not None:
-                    doc.removeObject(obj.Name)
-            except Exception:
-                pass
-        try:
-            doc.recompute()
-        except Exception:
-            pass
+            if doc.getObject(obj.Name) is not None:
+                doc.removeObject(obj.Name)
+        doc.recompute()
 
     def confirmar():
-        try:
-            doc.recompute()
-        except Exception:
-            pass
+        doc.recompute()
         if tx_propia:
-            try:
-                doc.commitTransaction()
-            except Exception:
-                pass
+            doc.commitTransaction()
 
     try:
         obj = spec["factory_fn"](cfg)
@@ -116,10 +91,7 @@ def crear_modulo_interactivo(module_key: str, config: dict | None = None):
         App.Console.PrintMessage(
             "[VDO] " + diagnostico_viewprovider(obj) + "\n")
 
-        try:
-            obj.ViewObject.Visibility = False
-        except Exception:
-            pass
+        obj.ViewObject.Visibility = False
 
         panel_cls = resolver_panel(spec)
         estado = {"finalizado": False}
@@ -141,12 +113,3 @@ def crear_modulo_interactivo(module_key: str, config: dict | None = None):
         panel_cls = resolver_panel(spec)
         # La vista/señal del panel se conecta desde app/composicion (F6).
         return obj
-
-    except Exception as exc:
-        cancelar()
-        import FreeCAD as App
-        App.Console.PrintError(
-            f"[VDO] Error creando módulo '{module_key}': {exc}\n")
-        import traceback
-        App.Console.PrintError(traceback.format_exc())
-        return None

@@ -56,10 +56,7 @@ def ancla_local(obj, anclaje=None):
       Z: inferior (min) / superior (max)
     """
     anclaje = anclaje or getattr(obj, "VDO_Anclaje", ANCLAJE_DEFAULT)
-    try:
-        bb = obj.Shape.BoundBox
-    except Exception:
-        bb = None
+    bb = obj.Shape.BoundBox
     if bb is None:
         xmin = xmax = ymin = ymax = zmin = zmax = 0.0
     else:

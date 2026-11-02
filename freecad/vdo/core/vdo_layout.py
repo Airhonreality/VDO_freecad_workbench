@@ -629,10 +629,7 @@ def _extras_modificador(reengroses, clave, espesor):
     mod = (reengroses or {}).get(clave)
     if not mod:
         return (0.0, 0.0)
-    try:
-        return VDO_RE.extras_por_cara(mod, espesor)
-    except Exception:
-        return (0.0, 0.0)
+    return VDO_RE.extras_por_cara(mod, espesor)
 
 
 def _extras_borde(reengroses, clave, espesor):

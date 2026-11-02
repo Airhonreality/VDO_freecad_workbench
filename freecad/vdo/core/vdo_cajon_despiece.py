@@ -108,8 +108,12 @@ def obtener_marca(marca_id):
     """
     # --- Intento 1: catálogo de Capa H ---------------------------------
     if H is not None:
+        hw = None
         try:
             hw = H.resolve_drawer_slide(tipo="oculta", marca=marca_id)
+        except (KeyError, ValueError):
+            hw = None
+        if hw is not None:
             tecnicos = hw["parametros_tecnicos"]
             mecanizado = {
                 "diam_taladro": float(
@@ -138,8 +142,6 @@ def obtener_marca(marca_id):
                 "precio_unitario": hw.get("precio_unitario", 0.0),
                 "moneda": hw.get("moneda", "USD"),
             }
-        except (KeyError, ValueError):
-            pass
 
         # --- Intento 2: fallback al manifest (archivo viejo) ---
         marcas = _MANIFEST.get("correderas_ocultas", {})
@@ -149,11 +151,14 @@ def obtener_marca(marca_id):
         disponibles = sorted(_MANIFEST.get("correderas_ocultas", {}).keys())
         if H is not None:
             try:
+                disponibles_h = sorted(
+                    H.get_family("corredera_oculta").keys())
                 disponibles = sorted(
-                    list(dict.fromkeys(
-                        list(H.get_family("corredera_oculta").keys()) + disponibles)))
-            except Exception:
-                pass
+                    list(dict.fromkeys(disponibles_h + disponibles)))
+            except KeyError:
+                disponibles_h = []
+                disponibles = sorted(
+                    list(dict.fromkeys(disponibles_h + disponibles)))
         raise ValueError(
             f"Marca de corredera desconocida: '{marca_id}'. "
             f"Disponibles: {', '.join(disponibles)}")
@@ -166,11 +171,14 @@ def obtener_marca(marca_id):
     disponibles = sorted(_MANIFEST.get("correderas_ocultas", {}).keys())
     if H is not None:
         try:
+            disponibles_h = sorted(
+                H.get_family("corredera_oculta").keys())
             disponibles = sorted(
-                list(dict.fromkeys(
-                    list(H.get_family("corredera_oculta").keys()) + disponibles)))
-        except Exception:
-            pass
+                list(dict.fromkeys(disponibles_h + disponibles)))
+        except KeyError:
+            disponibles_h = []
+            disponibles = sorted(
+                list(dict.fromkeys(disponibles_h + disponibles)))
     raise ValueError(
         f"Marca de corredera desconocida: '{marca_id}'. "
         f"Disponibles: {', '.join(disponibles)}")
@@ -189,8 +197,10 @@ def listar_marcas():
                 H.get_family("corredera_oculta").keys())
             combinadas = list(dict.fromkeys(catalogo_keys + manifest_keys))
             return sorted(combinadas)
-        except Exception:
-            pass
+        except KeyError:
+            catalogo_keys = []
+            combinadas = list(dict.fromkeys(catalogo_keys + manifest_keys))
+            return sorted(combinadas)
     return manifest_keys
 
 
@@ -588,11 +598,13 @@ if __name__ == "__main__":
     assert d3["guia"]["lg"] == 500.0 and d3["guia"]["auto"] is False
 
     # --- Guía imposible ---
+    lanzó_value_error = False
     try:
         calcular_despiece(dict(config, prof_libre=200))
-        raise AssertionError("Debía fallar con ProfInt=200")
     except ValueError:
-        pass
+        lanzó_value_error = True
+    if not lanzó_value_error:
+        raise AssertionError("Debía fallar con ProfInt=200")
 
     # --- Grosor 18mm avisa ---
     d4 = calcular_despiece(dict(config, grosor_caja=18.0))

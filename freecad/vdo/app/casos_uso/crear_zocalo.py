@@ -27,21 +27,18 @@ class ParametrosZocalo:
 
 def crear_zocalo(contexto, documento, params: ParametrosZocalo) -> Resultado:
     """Crea un zócalo en el documento usando el plano puro de core/."""
-    try:
-        cfg = {
-            "nombre": params.nombre,
-            "ancho": params.ancho,
-            "fondo": params.fondo,
-            "alto_zocalo": params.alto_zocalo,
-            "espesor_tablero": params.espesor_tablero,
-            "distancia_frente": params.distancia_frente,
-            "distancia_costados": params.distancia_costados,
-            "distancia_trasera": params.distancia_trasera,
-            "tiene_trasera": params.tiene_trasera,
-            "amarres_intermedios": params.amarres_intermedios,
-            "material_ref": params.material_ref,
-        }
-        obj = make_zocalo(cfg)
-        return Resultado(ok=True, objeto=obj)
-    except Exception as exc:  # noqa: BLE001 - borde de caso de uso
-        return Resultado(ok=False, mensaje=str(exc))
+    cfg = {
+        "nombre": params.nombre,
+        "ancho": params.ancho,
+        "fondo": params.fondo,
+        "alto_zocalo": params.alto_zocalo,
+        "espesor_tablero": params.espesor_tablero,
+        "distancia_frente": params.distancia_frente,
+        "distancia_costados": params.distancia_costados,
+        "distancia_trasera": params.distancia_trasera,
+        "tiene_trasera": params.tiene_trasera,
+        "amarres_intermedios": params.amarres_intermedios,
+        "material_ref": params.material_ref,
+    }
+    obj = make_zocalo(cfg)
+    return Resultado(ok=True, objeto=obj)

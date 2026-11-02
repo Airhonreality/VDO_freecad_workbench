@@ -94,12 +94,9 @@ def aplicar_rotacion(obj, grados):
 
 def _boundbox_local(obj):
     """BoundBox en coordenadas locales (FreeCAD 1.1 aplica Placement a Shape)."""
-    try:
-        shape = obj.Shape.copy()
-        if shape.isNull():
-            return None
-        shape.transformShape(obj.Placement.inverse().toMatrix(), True)
-        bb = shape.BoundBox
-        return bb if bb.isValid() else None
-    except Exception:
+    shape = obj.Shape.copy()
+    if shape.isNull():
         return None
+    shape.transformShape(obj.Placement.inverse().toMatrix(), True)
+    bb = shape.BoundBox
+    return bb if bb.isValid() else None

@@ -150,10 +150,8 @@ def _validar_orientacion(configuracion):
 
 
 def _limpiar_expresion(obj, prop):
-    try:
-        obj.clearExpression(prop)
-    except Exception:
-        pass
+    """Limpia la expresión de una propiedad si existe."""
+    obj.clearExpression(prop)
 
 
 def aplicar_mapeo_orientacion(obj, orientacion):
@@ -227,39 +225,30 @@ class PanelFeature:
         obj.Proxy = self
 
     def execute(self, fp):
-        try:
-            largo = float(fp.Largo)
-            ancho = float(fp.Ancho)
-            espesor = float(fp.Espesor)
-            if largo <= 0 or ancho <= 0 or espesor <= 0:
-                fp.Shape = _get_part().Shape()
-                return
+        largo = float(fp.Largo)
+        ancho = float(fp.Ancho)
+        espesor = float(fp.Espesor)
+        if largo <= 0 or ancho <= 0 or espesor <= 0:
+            fp.Shape = _get_part().Shape()
+            return
 
-            base = _get_part().makeBox(largo, ancho, espesor)
-            try:
-                mod = VDO_RE.desde_objeto(fp)
-                if hasattr(fp, "VDO_Reengrose_JSON"):
-                    fp.VDO_Reengrose_JSON = mod.to_json()
-                if not mod.activo:
-                    fp.Shape = base
-                    return
-                geo = VDO_RE.calcular_geometria_reengrose(
-                    {"nombre": fp.Label or fp.Name,
-                     "largo": largo, "ancho": ancho, "espesor": espesor},
-                    mod)
-                shapes = [base]
-                for pieza in geo["refuerzos"]:
-                    forma = forma_ref(pieza)
-                    if forma is not None:
-                        shapes.append(forma)
-                fp.Shape = _get_part().makeCompound(shapes)
-            except VDO_RE.ReengroseError as exc:
-                _get_app().Console.PrintWarning(
-                    f"[VDO] Reengrose ignorado en '{fp.Label}': {exc}\n")
-                fp.Shape = base
-        except Exception as exc:
-            _get_app().Console.PrintError(
-                f"[VDO] Error generando panel: {exc}\n")
+        base = _get_part().makeBox(largo, ancho, espesor)
+        mod = VDO_RE.desde_objeto(fp)
+        if hasattr(fp, "VDO_Reengrose_JSON"):
+            fp.VDO_Reengrose_JSON = mod.to_json()
+        if not mod.activo:
+            fp.Shape = base
+            return
+        geo = VDO_RE.calcular_geometria_reengrose(
+            {"nombre": fp.Label or fp.Name,
+             "largo": largo, "ancho": ancho, "espesor": espesor},
+            mod)
+        shapes = [base]
+        for pieza in geo["refuerzos"]:
+            forma = forma_ref(pieza)
+            if forma is not None:
+                shapes.append(forma)
+        fp.Shape = _get_part().makeCompound(shapes)
 
     def dumps(self):
         return None
