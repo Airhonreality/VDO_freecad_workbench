@@ -9,8 +9,17 @@ v1.1/
 # Dependencias JS del MCP local (no son código del workbench)
 node_modules/
 
+# Entorno virtual local (F0.3)
+.venv/
+
+# Logs
+*.log
+
 # Distribución generada (tools/build_zip.py); no se versiona
 dist/
+
+# Métricas generadas por verificar.py (se versionan explícitamente: base.json, final.json)
+# docs/metricas/*.tmp.json  (temporales, no se versionan)
 
 # Configuración local de Claude Code (por máquina, no se versiona)
 .claude/settings.local.json
