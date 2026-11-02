@@ -1,36 +1,34 @@
 # -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_defaults.py
-# Proveedor único de valores por defecto desde vdo_manifest.json
-# Carga directamente el JSON (evita caché de módulos Python)
+# Proveedor único de valores por defecto desde vdo_manifest.json.
+# Sin estado mutable de módulo (M-08): el manifiesto se pasa como parámetro
+# o se carga fresco por llamada (sin caché en _MANIFEST).
 # =====================================================================
-
-import json
-import os
-import importlib
 
 from freecad.vdo.core.vdo_manifest import _obtener_json as _cargar_json_fresco
 
-# Cargar JSON fresco (NO cacheado)
-_MANIFEST = _cargar_json_fresco()
 
-def get_param(ruta, default=None):
+def get_param(ruta, default=None, manifest=None):
     """
     Obtiene un parámetro del manifest por ruta de acceso.
 
     Ejemplo:
         get_param("parametros_locales.alto.valor")  → 720
-        get_param("parametros_globales.canto_grueso.valor")  → 2
+        get_param("parametros_globales.espesor_default.valor", 18, manifiesto)
 
     Args:
         ruta (str): Ruta separada por puntos
         default: Valor si no encuentra
+        manifest: dict del manifiesto (si None, se carga fresco por llamada)
 
     Returns:
         El valor encontrado o default
     """
+    if manifest is None:
+        manifest = _cargar_json_fresco()
     partes = ruta.split(".")
-    valor = _MANIFEST
+    valor = manifest
 
     try:
         for parte in partes:
@@ -40,6 +38,11 @@ def get_param(ruta, default=None):
         if default is not None:
             return default
         raise ValueError(f"Parámetro no encontrado en manifest: {ruta}")
+
+
+def cargar_manifest():
+    """Devuelve el manifiesto cargado fresco (sin caché de módulo)."""
+    return _cargar_json_fresco()
 
 
 # === DIMENSIONES LOCALES (Params) ===

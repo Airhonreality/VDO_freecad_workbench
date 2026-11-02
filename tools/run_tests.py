@@ -97,23 +97,28 @@ def main():
         tid = t.id()
         # _FailedTest tiene id "unittest.loader._FailedTest.<modulo>";
         # los tests normales tienen "modulo.Clase.metodo".
-        partes = tid.split(".")
-        if len(partes) >= 3 and partes[0] == "unittest" and partes[1] == "loader":
-            nombre_modulo = partes[-1]
+        # Los errores de setUpClass tienen id "setUpClass (module.Class)".
+        nombre_modulo = None
+        if tid.startswith("setUpClass ") or tid.startswith("setUpModule "):
+            # Formato: "setUpClass (module.Class)" o "setUpModule (module)"
+            interno = tid.split("(", 1)[1].rstrip(")")
+            nombre_modulo = interno.split(".")[0]
+        elif len(tid.split(".")) >= 3 and tid.split(".")[0] == "unittest" and tid.split(".")[1] == "loader":
+            nombre_modulo = tid.split(".")[-1]
         else:
-            nombre_modulo = partes[0]
+            nombre_modulo = tid.split(".")[0]
         nombre_archivo = os.path.basename(nombre_modulo + ".py")
         if nombre_archivo in omisiones:
-            errores_reclasificados.append((tid, _ultima(tb)))
+            errores_reclasificados.append((tid, _ultima(tb), nombre_archivo))
         else:
             errores_reales.append((t, tb))
     filas = [("FALLO", t.id(), _ultima(tb)) for t, tb in resultado.failures]
     filas += [("ERROR", t.id(), _ultima(tb)) for t, tb in errores_reales]
-    filas += [("SKIP", tid, "omitado (requiere entorno: " + nombre_archivo + ")")
-              for tid, _ in errores_reclasificados]
+    filas += [("SKIP", tid, "omitado (requiere entorno: " + na + ")")
+              for tid, _, na in errores_reclasificados]
     malos = {t.id() for t, _ in resultado.failures + errores_reales}
     omitidos = {t.id() for t, _ in resultado.skipped}
-    omitidos |= {tid for tid, _ in errores_reclasificados}
+    omitidos |= {tid for tid, _, _ in errores_reclasificados}
     # Los NO_EJECUTADO que estén en omisiones.txt también son skips (su
     # setUpClass/setUpModule saltó por falta de entorno).
     no_ejecutados_reclasificados = []

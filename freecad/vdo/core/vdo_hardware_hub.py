@@ -2,7 +2,11 @@
 """Capa H - Motor puro de consulta del catálogo de herrajes VDO.
 
 No importa FreeCAD ni Qt. Solo lógica, JSON y decimales.
+Sin estado mutable de módulo (M-08): el catálogo se carga fresco por llamada
+o se inyecta como parámetro.
 """
+
+from __future__ import annotations
 
 import json
 import os
@@ -148,72 +152,85 @@ def _cargar_catalogo():
     return {}
 
 
-_CATALOGO = _cargar_catalogo()
+def _catalogo_completo():
+    """Devuelve el catálogo con fallbacks inyectados, cargado fresco.
 
-# Si el catálogo en disco no tiene las familias esperadas, inyectar los
-# datos de fallback integrados para que el Hub nunca devuelva vacío.
-for _fam in ("bisagra_cazoleta", "sistema_corredizo"):
-    if _fam not in _CATALOGO or not _CATALOGO[_fam]:
-        if _fam == "bisagra_cazoleta":
-            _CATALOGO[_fam] = dict(_FALLBACK_BISAGRA)
-        elif _fam == "sistema_corredizo":
-            _CATALOGO[_fam] = dict(_FALLBACK_CORREDIZO)
+    No guarda en variable de módulo: cada llamada lee de disco. Así no hay
+    estado mutable de módulo (M-08). El llamador puede inyectar su propio
+    catálogo si ya lo cargó una vez (app/composicion.py).
+    """
+    catalogo = _cargar_catalogo()
+    for _fam in ("bisagra_cazoleta", "sistema_corredizo"):
+        if _fam not in catalogo or not catalogo[_fam]:
+            if _fam == "bisagra_cazoleta":
+                catalogo[_fam] = dict(_FALLBACK_BISAGRA)
+            elif _fam == "sistema_corredizo":
+                catalogo[_fam] = dict(_FALLBACK_CORREDIZO)
+    return catalogo
 
 
-def _index_sku():
+def _index_sku(catalogo):
     indice = {}
     for familia in _FAMILIAS:
-        for sku in _CATALOGO.get(familia, {}):
+        for sku in catalogo.get(familia, {}):
             indice[sku] = familia
     return indice
 
 
-_SKU_A_FAMILIA = _index_sku()
+def _resolver_catalogo(catalogo=None):
+    """Devuelve (catalogo, sku_a_familia). Si catalogo es None, carga fresco."""
+    if catalogo is None:
+        catalogo = _catalogo_completo()
+    sku_a_familia = _index_sku(catalogo)
+    return catalogo, sku_a_familia
 
 
-def get_hardware(sku):
+def get_hardware(sku, catalogo=None):
     """Devuelve el diccionario completo del herraje (comercial + técnicos).
 
     Lanza KeyError descriptivo si el SKU no existe.
+
+    Args:
+        sku: SKU del herraje.
+        catalogo: dict opcional (inyectado). Si None, se carga fresco.
     """
+    catalogo, sku_a_familia = _resolver_catalogo(catalogo)
     sku = str(sku)
-    familia = _SKU_A_FAMILIA.get(sku)
+    familia = sku_a_familia.get(sku)
     if familia is None:
         raise KeyError(
             f"SKU {sku!r} no registrado en el catálogo de herrajes VDO.")
-    return _CATALOGO[familia][sku]
+    return catalogo[familia][sku]
 
 
-def get_family(familia):
+def get_family(familia, catalogo=None):
     """Devuelve todos los SKUs registrados bajo una familia."""
+    catalogo, _ = _resolver_catalogo(catalogo)
     familia = str(familia)
     if familia not in _FAMILIAS:
         raise KeyError(
             f"Familia {familia!r} no existe en el catálogo de herrajes VDO.")
-    return dict(_CATALOGO.get(familia, {}))
+    return dict(catalogo.get(familia, {}))
 
 
-def query_family(familia):
-    """Alias público de ``get_family`` para consultas de familia de herraje.
-
-    Devuelve los SKUs de una familia (ej. "bisagra_cazoleta",
-    "sistema_corredizo").
-    """
-    return get_family(familia)
+def query_family(familia, catalogo=None):
+    """Alias público de ``get_family`` para consultas de familia de herraje."""
+    return get_family(familia, catalogo)
 
 
-def resolve_hinge(tipo_montaje, prefer_sku=None):
+def resolve_hinge(tipo_montaje, prefer_sku=None, catalogo=None):
     """Helper para puertas batientes.
 
     Devuelve la bisagra de cazoleta 35 mm segun el tipo de montaje
     (parche / semiparche / embebida). Si se pide prefer_sku y existe,
     se devuelve ese SKU directamente.
     """
+    catalogo, _ = _resolver_catalogo(catalogo)
     tipo_montaje = str(tipo_montaje).strip().lower()
     if prefer_sku:
         prefer_sku = str(prefer_sku)
         try:
-            return get_hardware(prefer_sku)
+            return get_hardware(prefer_sku, catalogo)
         except KeyError:
             pass
     sku = _DEFAULT_HINGE_BY_MONTAJE.get(tipo_montaje)
@@ -221,25 +238,26 @@ def resolve_hinge(tipo_montaje, prefer_sku=None):
         raise KeyError(
             f"Tipo de montaje de bisagra {tipo_montaje!r} no soportado. "
             f"Validos: {tuple(_DEFAULT_HINGE_BY_MONTAJE)}.")
-    return get_hardware(sku)
+    return get_hardware(sku, catalogo)
 
 
-def resolve_sliding(tipo_mueble="closet"):
+def resolve_sliding(tipo_mueble="closet", catalogo=None):
     """Helper para puertas corredizas.
 
     closet/placard -> DUC-KIT-D52
     mueble/alacena   -> DUC-AL-1535-MAD
     """
+    catalogo, _ = _resolver_catalogo(catalogo)
     tipo_mueble = str(tipo_mueble).strip().lower()
     sku = _DEFAULT_SLIDING_BY_MUEBLE.get(tipo_mueble)
     if sku is None:
         raise KeyError(
             f"Tipo de mueble corredizo {tipo_mueble!r} no soportado. "
             f"Validos: {tuple(_DEFAULT_SLIDING_BY_MUEBLE)}.")
-    return get_hardware(sku)
+    return get_hardware(sku, catalogo)
 
 
-def resolve_drawer_slide(tipo="oculta", marca="blum_tandem"):
+def resolve_drawer_slide(tipo="oculta", marca="blum_tandem", catalogo=None):
     """Helper para correderas de cajón.
 
     Devuelve el diccionario completo del herraje (comercial +
@@ -252,18 +270,20 @@ def resolve_drawer_slide(tipo="oculta", marca="blum_tandem"):
     Args:
         tipo: tipo de corredera ("oculta" o "telescopica").
         marca: SKU del catálogo o clave del manifest.
+        catalogo: dict opcional (inyectado). Si None, se carga fresco.
 
     Returns:
         dict: entrada completa del catálogo para esa corredera,
         con una clave adicional ``"sku"`` que indica el SKU resuelto.
     """
+    catalogo, sku_a_familia = _resolver_catalogo(catalogo)
     tipo = str(tipo).strip().lower()
     marca = str(marca).strip()
     sku_encontrado = None
 
     # 1. Intento directo: el caller ya pasó un SKU del catálogo.
     try:
-        hw = get_hardware(marca)
+        hw = get_hardware(marca, catalogo)
         if hw["parametros_tecnicos"].get("tipo_corredera") in (tipo, None, ""):
             sku_encontrado = marca
             return {**hw, "sku": sku_encontrado}
@@ -274,7 +294,7 @@ def resolve_drawer_slide(tipo="oculta", marca="blum_tandem"):
     normalizada = marca.upper().replace("_", "-")
     if normalizada != marca:
         try:
-            hw = get_hardware(normalizada)
+            hw = get_hardware(normalizada, catalogo)
             if hw["parametros_tecnicos"].get("tipo_corredera") in (tipo, None, ""):
                 sku_encontrado = normalizada
                 return {**hw, "sku": sku_encontrado}
@@ -285,7 +305,7 @@ def resolve_drawer_slide(tipo="oculta", marca="blum_tandem"):
     sku = _MARCA_A_SKU.get(marca.lower())
     if sku:
         try:
-            hw = get_hardware(sku)
+            hw = get_hardware(sku, catalogo)
             if hw["parametros_tecnicos"].get("tipo_corredera") in (tipo, None, ""):
                 sku_encontrado = sku
                 return {**hw, "sku": sku_encontrado}
@@ -295,33 +315,34 @@ def resolve_drawer_slide(tipo="oculta", marca="blum_tandem"):
     # 4. Búsqueda por familia si se pasó el tipo genérico.
     familia = "corredera_oculta" if tipo == "oculta" else "corredera_telescopica"
     try:
-        familia_skus = get_family(familia)
+        familia_skus = get_family(familia, catalogo)
     except KeyError:
         familia_skus = {}
     if marca.lower() in {s.lower() for s in familia_skus}:
         for sku_cand in familia_skus:
             if sku_cand.lower() == marca.lower():
-                hw = get_hardware(sku_cand)
+                hw = get_hardware(sku_cand, catalogo)
                 sku_encontrado = sku_cand
                 return {**hw, "sku": sku_encontrado}
 
     raise KeyError(
         f"Corredera {tipo} / {marca!r} no encontrada en el catálogo de "
-        f"herrajes VDO. SKUs disponibles: {sorted(_SKU_A_FAMILIA)}.")
+        f"herrajes VDO. SKUs disponibles: {sorted(sku_a_familia)}.")
 
 
-def calculate_sliding_doors(inner_w, inner_h, sku, n_hojas=2):
+def calculate_sliding_doors(inner_w, inner_h, sku, n_hojas=2, catalogo=None):
     """Calcula el despiece de hojas corredizas.
 
     H_hoja = inner_h - descuento_altura_hoja
     W_hoja = (inner_w + (n_hojas - 1) * traslape) / n_hojas
     """
+    catalogo, _ = _resolver_catalogo(catalogo)
     inner_w = float(inner_w)
     inner_h = float(inner_h)
     n_hojas = int(n_hojas)
     if n_hojas < 1:
         raise ValueError("n_hojas debe ser >= 1.")
-    herraje = get_hardware(sku)
+    herraje = get_hardware(sku, catalogo)
     tecnicos = herraje["parametros_tecnicos"]
     descuento = float(tecnicos["descuento_altura_hoja"])
     traslape = float(tecnicos["traslape_minimo"])
