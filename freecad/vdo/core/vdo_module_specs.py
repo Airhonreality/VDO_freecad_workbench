@@ -192,6 +192,3 @@ def get_spec(module_key):
     spec["panel_ref"] = base["panel"]
     return spec
 
-
-def listar_modulos():
-    return sorted(MODULE_SPECS.keys())

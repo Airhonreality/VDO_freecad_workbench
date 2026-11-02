@@ -34,37 +34,12 @@ def get_hardware(hardware_id):
     return _obtener_json().get("herrajes", {}).get(hardware_id)
 
 
-def get_process(process_id):
-    """Obtiene especificación de proceso."""
-    return _obtener_json().get("procesos", {}).get(process_id)
-
-
-def validar_compatibilidad(material_id, hardware_id):
-    """Valida si herraje es compatible con material."""
-    material = get_material(material_id)
-    hardware = get_hardware(hardware_id)
-    if not material or not hardware:
-        return False
-    compatible_hw = material.get("herrajes_compatibles", [])
-    return hardware_id in compatible_hw
-
-
 def calcular_costo_material(material_id, area_m2):
     """Calcula costo de material."""
     material = get_material(material_id)
     if not material:
         return 0
     return material.get("costo_m2", 0) * area_m2
-
-
-def listar_materiales():
-    """Lista todos los materiales disponibles."""
-    return list(_obtener_json().get("materiales", {}).keys())
-
-
-def listar_herrajes():
-    """Lista todos los herrajes disponibles."""
-    return list(_obtener_json().get("herrajes", {}).keys())
 
 
 def get_loader():

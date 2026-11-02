@@ -32,16 +32,6 @@ from freecad.vdo.core.vdo_puerta_despiece import (
 # Utilidades de geometría
 # ---------------------------------------------------------------------
 
-def _aristas_en_plano(shape, coord_idx, valor, tol=1e-6):
-    """Aristas de ``shape`` cuyos vértices tienen coord_idx == valor."""
-    out = []
-    for arista in shape.Edges:
-        pts = [v.Point for v in arista.Vertexes]
-        if all(abs(p[coord_idx] - valor) < tol for p in pts):
-            out.append(arista)
-    return out
-
-
 def _arista_borde(shape, coord_fijo, valor_fijo, coord_var, tol=1e-6):
     """Arista donde todos los vértices tienen coord_fijo == valor_fijo."""
     for arista in shape.Edges:

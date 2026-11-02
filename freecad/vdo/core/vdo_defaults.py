@@ -39,11 +39,6 @@ def get_param(ruta, default=None, manifest=None):
         raise ValueError(f"Parámetro no encontrado en manifest: {ruta}")
 
 
-def cargar_manifest():
-    """Devuelve el manifiesto cargado fresco (sin caché de módulo)."""
-    return _cargar_json_fresco()
-
-
 # === DIMENSIONES LOCALES (Params) ===
 ALTO_DEFAULT = get_param("parametros_locales.alto.valor", 720)
 ANCHO_DEFAULT = get_param("parametros_locales.ancho.valor", 600)
@@ -76,11 +71,6 @@ ORIENTACION_DEFAULT = (
     "horizontal" if "horizontal" in ORIENTACIONES_VALIDAS
     else (ORIENTACIONES_VALIDAS[0] if ORIENTACIONES_VALIDAS else "horizontal")
 )
-
-
-def listar_orientaciones():
-    """Lista las claves de orientaciones válidas desde el manifest."""
-    return ORIENTACIONES_VALIDAS
 
 
 def obtener_mapeo_orientacion(orientacion):

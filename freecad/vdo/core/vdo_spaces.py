@@ -326,11 +326,6 @@ def generar_texto_resumen(espacios_resueltos, eje_label="X"):
     return f"Eje {eje_label}:\n" + "\n".join(lineas) if lineas else ""
 
 
-def crear_config_por_defecto():
-    """Crea una configuración de espacios por defecto (sin divisiones)."""
-    return [SpaceNode(space_type=ESPACIO_RESTANTE, space_id="V1")]
-
-
 def calcular_espacio_libre(espacios_json, espacio_total, espesor):
     """Calcula el espacio libre total y el último vano remanente.
 

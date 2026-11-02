@@ -77,13 +77,6 @@ def _modo_obstaculo(obstaculo):
     )
 
 
-def _prioridad_obstaculo(obstaculo):
-    valor = obstaculo.get("prioridad")
-    if valor:
-        return valor
-    return None
-
-
 def _corte_expandido(corte, es_vertical):
     corte = dict(corte)
     if es_vertical:

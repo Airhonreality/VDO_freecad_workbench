@@ -1452,33 +1452,6 @@ def vector_anclaje_y(panel_real):
     }
 
 
-def frente_panel(panel_real):
-    return vector_anclaje_y(panel_real)["frente"]
-
-
-def anclar_refuerzo_a_panel(refuerzo, panel_real, alineacion="frente"):
-    """Ancla una tira de ancho Y a la cara real del panel padre."""
-    datos = _aabb_dict(refuerzo)
-    _px, py, _pz, _pw, ph, _pd = _aabb(panel_real)
-    alineacion = str(alineacion or "frente").strip().lower()
-    alto_tira = min(datos["h"], ph)
-    if alineacion == "fondo":
-        datos["y"] = py + ph - alto_tira
-    elif alineacion == "centrado":
-        datos["y"] = py + (ph - alto_tira) / 2.0
-    else:
-        datos["y"] = py
-    datos["h"] = alto_tira
-    return datos
-
-
-def anclar_refuerzos_a_panel(panel_real, refuerzos, alineacion="frente"):
-    return [
-        anclar_refuerzo_a_panel(ref, panel_real, alineacion)
-        for ref in (refuerzos or [])
-    ]
-
-
 def recortar_tira_contra_tira(perdedora, ganadora, tolerancia=1e-6):
     """Parte la tira perdedora fuera del volumen de la tira ganadora.
 

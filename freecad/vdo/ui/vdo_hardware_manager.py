@@ -414,12 +414,6 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
                 break
 
 
-def lanzar_gestor_herrajes(parent=None):
-    """Punto de entrada para lanzar el diálogo desde FreeCAD o tests."""
-    dialogo = VDOHardwareManagerDialog(parent)
-    return dialogo.exec_()
-
-
 if __name__ == "__main__":
     app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
     dialogo = VDOHardwareManagerDialog()

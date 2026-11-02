@@ -69,12 +69,6 @@ def extraer_piezas_panel(obj):
     return piezas
 
 
-def extraer_pieza(obj):
-    """Compatibilidad: devuelve la pieza base del panel."""
-    piezas = extraer_piezas_panel(obj)
-    return piezas[0] if piezas else {}
-
-
 def extraer_piezas_del_documento(modo="todo"):
     """
     Extrae piezas de melamina del documento
@@ -142,17 +136,6 @@ def extraer_piezas_del_documento(modo="todo"):
                                 f"[VDO] JSON de paneles invalido: {exc}\n")
 
     return piezas
-
-
-def agrupar_piezas_por_material(piezas):
-    """Agrupa piezas por material para optimización"""
-    agrupadas = {}
-    for pieza in piezas:
-        mat = pieza["material_ref"]
-        if mat not in agrupadas:
-            agrupadas[mat] = []
-        agrupadas[mat].append(pieza)
-    return agrupadas
 
 
 def generar_csv_opencutlist(piezas, output_path):

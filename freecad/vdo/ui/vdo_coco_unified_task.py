@@ -1312,9 +1312,3 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
             return False
 
 
-
-def abrir_editor_unificado(obj=None):
-    """Abre el editor unificado para un COCO."""
-    panel = CocoUnifiedTaskPanel(obj)
-    Gui.Control.showDialog(panel)
-    return panel
