@@ -8,7 +8,7 @@
 # =====================================================================
 
 import FreeCAD as App
-from freecad.vdo.qt_compat import QtCore
+from freecad.vdo.qt_compat import QtCore, QtWidgets
 
 
 def cerrar_dialogo():
@@ -98,3 +98,26 @@ class VDOTransactionMixin:
     def _vdo_call_cancel(self):
         if self._vdo_on_cancel:
             QtCore.QTimer.singleShot(0, self._vdo_on_cancel)
+
+    # -----------------------------------------------------------------
+    # API estándar de Task Panel (compartida por todos los paneles)
+    # -----------------------------------------------------------------
+    def reject(self):
+        """Rechaza cambios: aborta transacción, avisa al flujo y cierra."""
+        if getattr(self, "_vdo_aceptado", False):
+            return True
+        self._vdo_abort()
+        self._vdo_call_cancel()
+        return True
+
+    def clicked(self, button):
+        """Slot genérico de clic en botones del panel (sin acción por defecto)."""
+        pass
+
+    def getStandardButtons(self):
+        """Botones estándar del cuadro de diálogo del Task Panel."""
+        return QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel
+
+    def helpRequested(self):
+        """Solicitud de ayuda (sin acción por defecto)."""
+        pass

@@ -69,3 +69,23 @@ Registro fase a fase conforme a `docs/PLAN_REFACTOR_VDO.md` (§5).
 - Pendiente para revisión humana: verificar visual el acento `#007acc` en FreeCAD con GUI (pendiente de disponibilidad de `freecadcmd` con GUI).
 
 ---
+
+## Fase F4 — Base de paneles de tarea
+- Rama / commit: `refactor/f4-base-paneles`
+- Estado: completada
+- Pasos hechos:
+  1. `ui/vdo_task_base.py`: `VDOTransactionMixin` pasa a ser la base única de Task Panels y recibe los métodos idénticos `reject`, `clicked`, `getStandardButtons` y `helpRequested` (D-12). Se añadió la importación de `QtWidgets` (necesaria para `QDialogButtonBox`).
+  2. Se eliminaron las copias de esos 4 métodos de los 5 paneles vivos: `vdo_cajon_task.py`, `vdo_panel_task.py`, `vdo_puerta_task.py`, `vdo_zocalo_task.py`, `vdo_coco_unified_task.py`. Todos heredan de `VDOTransactionMixin`, por lo que ahora usan la implementación de la base.
+  3. `accept` NO se movió a la base: su cuerpo difiere por panel (campos distintos que asignar), por lo que moverlo cambiaría comportamiento; se deja en cada panel (justificado por la regla de paridad de comportamiento, §0.4).
+- Métricas antes → después (de §3):
+  - `def reject` en `freecad/vdo/ui`: 5 → 1 (solo la base).
+  - Grupos de clones de `reject` (`clones.py`): 1 → 0.
+  - Líneas Python (`freecad/`, `tests/`, `tools/`): 27.868 → 27.816.
+  - Archivos Python en `freecad/`: 62 (sin cambio).
+- Tests (modo puro): 93 OK / 0 fallos / 11 errores (PySide/FreeCAD ausente, esperables) / 3 skip.
+- Tests (FreeCAD): pendiente de verificación.
+- Decisiones nuevas tomadas (no previstas en §2): ninguna.
+- Desviaciones de este plan y motivo: `accept` no se migró a la base porque no es idéntico entre paneles (moverlo rompería la paridad de comportamiento).
+- Pendiente para revisión humana: ninguna.
+
+---

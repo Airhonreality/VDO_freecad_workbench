@@ -348,18 +348,3 @@ class PanelTaskPanel(VDOTransactionMixin):
             App.Console.PrintError(traceback.format_exc())
             return False
 
-    def reject(self):
-        if getattr(self, "_vdo_aceptado", False):
-            return True
-        self._vdo_abort()
-        self._vdo_call_cancel()
-        return True
-
-    def clicked(self, button):
-        pass
-
-    def getStandardButtons(self):
-        return QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel
-
-    def helpRequested(self):
-        pass
