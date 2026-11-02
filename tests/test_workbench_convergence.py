@@ -28,9 +28,8 @@ _RAIZ = os.path.dirname(_AQUI)
 
 import FreeCAD as App
 
-_HAS_GUI = bool(
-    getattr(App, "GuiUp", False)
-    and (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")))
+from tests.soporte.requisitos import requiere_gui
+
 
 try:
     from PySide6 import QtWidgets
@@ -64,15 +63,12 @@ def _get_qapp():
     return app
 
 
-@unittest.skipUnless(_HAS_GUI, "requiere sesion grafica")
+@requiere_gui
 class TestWorkbenchConvergence(unittest.TestCase):
-    __test__ = _HAS_GUI
     """Pruebas de integración del flujo de convergencia del Workbench VDO."""
 
     @classmethod
     def setUpClass(cls):
-        if not _HAS_GUI:
-            raise unittest.SkipTest("requiere sesion grafica")
         cls.qapp = _get_qapp()
         cls.doc = App.newDocument("DocConvergenciaVDO")
 

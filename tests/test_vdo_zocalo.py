@@ -1,6 +1,7 @@
 import json
 import os
 import unittest
+from tests.soporte.requisitos import requiere_freecad
 
 try:
     import FreeCAD as App
@@ -19,7 +20,7 @@ def _freecad_real():
         return False
 
 
-@unittest.skipIf(Z is None, "requiere FreeCAD")
+@requiere_freecad
 class ZocaloGeometryTests(unittest.TestCase):
     def test_geometria_con_trasera(self):
         g = Z.calcular_geometria_zocalo(
@@ -66,7 +67,7 @@ class ZocaloGeometryTests(unittest.TestCase):
             Z.calcular_geometria_zocalo(600, 580, 100, 18, 50, 0, 20,
                                         True, -1)
 
-    @unittest.skipIf(not _freecad_real(), "requiere FreeCAD real")
+    @requiere_freecad
     def test_make_zocalo_sin_solapes(self):
         doc = App.newDocument("TestZocalo")
         try:

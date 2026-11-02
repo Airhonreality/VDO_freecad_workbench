@@ -11,6 +11,8 @@
 import os
 import unittest
 
+from tests.soporte.requisitos import requiere_freecad, requiere_qt
+
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 try:
@@ -55,6 +57,8 @@ def _get_qapp():
     return app
 
 
+@requiere_freecad
+@requiere_qt
 class TestSingleDockConvergence(unittest.TestCase):
     """Verifica la fusión total del Inspector Universal en un Dock único lateral."""
 

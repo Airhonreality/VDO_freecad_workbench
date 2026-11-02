@@ -21,6 +21,8 @@ import os
 import sys
 import unittest
 
+from tests.soporte.requisitos import requiere_freecad, requiere_qt
+
 # Forzar plataforma offscreen para entornos sin display (freecadcmd / CI).
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -30,8 +32,6 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-_HAS_FREECAD = importlib.util.find_spec("FreeCAD") is not None
-_HAS_QT = importlib.util.find_spec("PySide6") is not None or importlib.util.find_spec("PySide2") is not None
 
 
 def _obtener_qapp():
@@ -43,7 +43,8 @@ def _obtener_qapp():
     return app
 
 
-@unittest.skipUnless(_HAS_FREECAD and _HAS_QT, "FreeCAD y PySide requeridos")
+@requiere_freecad
+@requiere_qt
 class UniversalInspectorTests(unittest.TestCase):
     """Pruebas del inspector universal con contexto FreeCAD + Qt."""
 

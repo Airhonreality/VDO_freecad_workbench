@@ -24,7 +24,7 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-from tests.soporte.freecad_falso import instalado, requiere_freecad
+from tests.soporte.freecad_falso import instalado
 
 # Instalar mocks de FreeCAD/Part antes de importar core (que los necesita a nivel
 # de módulo). Se restauran al terminar el proceso.
@@ -254,7 +254,6 @@ class TestHardwareHubIntegracion(unittest.TestCase):
 # Tests de lógica de booleanos (mock de Part)
 # ---------------------------------------------------------------------
 
-@requiere_freecad("usa el mock de Part; con FreeCAD real no aplica")
 class TestBooleanLogicMocked(unittest.TestCase):
     """Validación de la lógica de coordenadas para operaciones booleanas.
 

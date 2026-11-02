@@ -46,14 +46,10 @@ import contextlib
 
 from tests.soporte.requisitos import requiere_gui
 
-_HAS_GUI = (QtWidgets is not None
-            and getattr(App, "GuiUp", False)
-            and (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")))
 
 
-@unittest.skipUnless(_HAS_GUI, "requiere sesion grafica")
+@requiere_gui
 class TestGuiWiring(unittest.TestCase):
-    __test__ = _HAS_GUI
     @classmethod
     def setUpClass(cls):
         # Asegurar QApplication

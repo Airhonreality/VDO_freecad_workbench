@@ -11,18 +11,19 @@ except BaseException:
 
 from freecad.vdo.core import vdo_panel_core as P
 from freecad.vdo.core import vdo_reengrose as R
-from freecad.vdo.ui import vdo_export_cutting_list as E
+try:
+    from freecad.vdo.ui import vdo_export_cutting_list as E
+except ImportError:
+    E = None  # sin FreeCADGui el módulo se niega a cargar; los tests que lo usan lo exigen
 
 try:
     from freecad.vdo.ui.vdo_panel_task import PanelTaskPanel
 except Exception:
     PanelTaskPanel = None
 
-from tests.soporte.requisitos import requiere_gui
+from tests.soporte.qt import qapplication
+from tests.soporte.requisitos import requiere_freecad, requiere_gui, requiere_qt
 
-_HAS_GUI = (QtWidgets is not None
-            and getattr(App, "GuiUp", False)
-            and (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")))
 
 
 def _sin_solapes(shape):
@@ -34,9 +35,8 @@ def _sin_solapes(shape):
     return True
 
 
-@unittest.skipUnless(_HAS_GUI, "requiere sesion grafica")
+@requiere_freecad
 class ReengroseL1Tests(unittest.TestCase):
-    __test__ = _HAS_GUI
     def setUp(self):
         self.doc = App.newDocument("TestReengroseL1")
 
@@ -107,7 +107,9 @@ class ReengroseL1Tests(unittest.TestCase):
         self.assertEqual(mod.orientacion, "transversal")
         self.assertEqual(mod.ancho, 55.0)
 
+    @requiere_qt
     def test_ui_tooltips_y_accept(self):
+        qapplication()
         obj = self.crear(
             "P_UI", modo_fabricacion="independiente", ancho=70)
         panel = PanelTaskPanel(obj=obj, auto_transaction=False)
@@ -123,8 +125,3 @@ class ReengroseL1Tests(unittest.TestCase):
         self.doc.recompute()
         self.assertAlmostEqual(float(obj.VDO_Reengrose_Ancho), 55.0)
 
-
-suite = unittest.defaultTestLoader.loadTestsFromTestCase(ReengroseL1Tests)
-resultado = unittest.TextTestRunner(verbosity=2).run(suite)
-if not resultado.wasSuccessful():
-    raise SystemExit(1)

@@ -21,11 +21,9 @@ try:
 except BaseException:
     CocoUnifiedTaskPanel = None
 
-from tests.soporte.requisitos import requiere_gui
+from tests.soporte.qt import qapplication
+from tests.soporte.requisitos import requiere_freecad, requiere_gui, requiere_qt
 
-_HAS_GUI = (QtWidgets is not None
-            and getattr(App, "GuiUp", False)
-            and (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")))
 
 
 def max_common(shape):
@@ -57,9 +55,8 @@ def mod(**cambios):
     return base
 
 
-@unittest.skipUnless(_HAS_GUI, "requiere sesion grafica")
+@requiere_freecad
 class CocoReengroseAvanzadoTests(unittest.TestCase):
-    __test__ = _HAS_GUI
     def setUp(self):
         self.doc = App.newDocument("TestCocoAvanzado")
 
@@ -328,7 +325,9 @@ class CocoReengroseAvanzadoTests(unittest.TestCase):
         self.assertAlmostEqual(rangos[1][0], 309.0)
         self.assertAlmostEqual(rangos[1][1], 582.0)
 
+    @requiere_qt
     def test_ui_contextual_modos_nuevos(self):
+        qapplication()
         obj = self._coco({}, "C_UINuevo")
         panel = CocoUnifiedTaskPanel(obj=obj, auto_transaction=False)
         editor = panel.editor_divisiones
@@ -354,7 +353,9 @@ class CocoReengroseAvanzadoTests(unittest.TestCase):
             "inglete_45")
         self.assertAlmostEqual(max_common(obj.Shape), 0.0)
 
+    @requiere_qt
     def test_esquinas_independientes_ui(self):
+        qapplication()
         obj = self._coco({}, "C_EsqIndep")
         panel = CocoUnifiedTaskPanel(obj=obj, auto_transaction=False)
         editor = panel.editor_divisiones
@@ -381,7 +382,9 @@ class CocoReengroseAvanzadoTests(unittest.TestCase):
         self.assertTrue(obj.Shape.isValid())
         self.assertAlmostEqual(max_common(obj.Shape), 0.0)
 
+    @requiere_qt
     def test_sync_esquinas_ui(self):
+        qapplication()
         obj = self._coco({}, "C_EsqSync")
         panel = CocoUnifiedTaskPanel(obj=obj, auto_transaction=False)
         editor = panel.editor_divisiones
@@ -413,9 +416,3 @@ class CocoReengroseAvanzadoTests(unittest.TestCase):
         self.assertTrue(obj.Shape.isValid())
         self.assertAlmostEqual(max_common(obj.Shape), 0.0)
 
-
-suite = unittest.defaultTestLoader.loadTestsFromTestCase(
-    CocoReengroseAvanzadoTests)
-resultado = unittest.TextTestRunner(verbosity=2).run(suite)
-if not resultado.wasSuccessful():
-    raise SystemExit(1)

@@ -20,26 +20,15 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-_HAS_FREECAD = importlib.util.find_spec("FreeCAD") is not None
-_HAS_GUI = bool(
-    getattr(App, "GuiUp", False)
-    and (__import__("os").environ.get("DISPLAY")
-         or __import__("os").environ.get("WAYLAND_DISPLAY")))
+from tests.soporte.requisitos import requiere_gui
 
 
-def _requiere_freecad(msg="FreeCAD no disponible en este entorno"):
-    return unittest.skipUnless(_HAS_FREECAD, msg)
-
-
-@unittest.skipUnless(_HAS_FREECAD and _HAS_GUI, "requiere FreeCAD y sesion grafica")
+@requiere_gui
 class SelectionBridgeTests(unittest.TestCase):
-    __test__ = _HAS_GUI
     """Pruebas del puente de selección con contexto FreeCAD."""
 
     @classmethod
     def setUpClass(cls):
-        if not _HAS_GUI:
-            raise unittest.SkipTest("requiere sesion grafica")
         import FreeCAD as App
         import Part
 

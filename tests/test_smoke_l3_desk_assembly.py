@@ -41,7 +41,11 @@ from freecad.vdo.core import vdo_layout as VL
 from freecad.vdo.core import vdo_module_props as VMOD
 from freecad.vdo.core import vdo_panel_core as VP
 from freecad.vdo.core import vdo_reengrose as VR
-from freecad.vdo.ui import vdo_export_cutting_list as VEL
+from tests.soporte.requisitos import requiere_freecad
+try:
+    from freecad.vdo.ui import vdo_export_cutting_list as VEL
+except ImportError:
+    VEL = None  # sin FreeCADGui el módulo se niega a cargar; la clase lo exige
 
 # ---------------------------------------------------------------------------
 # Matriz de resultados: {cadena, punto, resultado, motivo}
@@ -160,6 +164,7 @@ REQUIRED_API = [
 ]
 
 
+@requiere_freecad
 class TestSmokeL3DeskAssembly(unittest.TestCase):
 
     # ------------------------------------------------------------------ setup

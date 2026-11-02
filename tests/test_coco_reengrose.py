@@ -18,15 +18,13 @@ from freecad.vdo.core.vdo_layout import Layout
 try:
     from freecad.vdo.ui import vdo_export_cutting_list as E
     from freecad.vdo.ui.vdo_coco_unified_task import CocoUnifiedTaskPanel
-except Exception:
+except ImportError:
     E = None
     CocoUnifiedTaskPanel = None
 
-from tests.soporte.requisitos import requiere_gui
+from tests.soporte.qt import qapplication
+from tests.soporte.requisitos import requiere_freecad, requiere_gui, requiere_qt
 
-_HAS_GUI = (QtWidgets is not None
-            and getattr(App, "GuiUp", False)
-            and (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")))
 
 
 def max_common(shape):
@@ -46,9 +44,8 @@ def layout_2x2():
     return layout
 
 
-@unittest.skipUnless(_HAS_GUI, "requiere sesion grafica")
+@requiere_freecad
 class CocoReengroseTests(unittest.TestCase):
-    __test__ = _HAS_GUI
     def setUp(self):
         self.doc = App.newDocument("TestCocoReengrose")
 
@@ -168,7 +165,9 @@ class CocoReengroseTests(unittest.TestCase):
         self.assertTrue(obj.Shape.isValid())
         self.assertAlmostEqual(max_common(obj.Shape), 0.0)
 
+    @requiere_qt
     def test_ui_contextual(self):
+        qapplication()
         obj = C.make_coco(self.doc, {
             "nombre": "C_UI",
             "alto": 720,
@@ -218,8 +217,3 @@ class CocoReengroseTests(unittest.TestCase):
         self.assertAlmostEqual(obj.Shape.BoundBox.ZMax, 720.0)
         self.assertEqual(obj.VDO_Reengrose_JSON, "{}")
 
-
-suite = unittest.defaultTestLoader.loadTestsFromTestCase(CocoReengroseTests)
-resultado = unittest.TextTestRunner(verbosity=2).run(suite)
-if not resultado.wasSuccessful():
-    raise SystemExit(1)

@@ -45,37 +45,29 @@ class _MockPart:
         def extrude(self, vector):
             m = _MockShape()
             m.Volume = 100.0
-            m.isValid.return_value = True
-            m.cut.return_value = m
             return m
 
     @staticmethod
     def makeBox(x, y, z, base=None):
         m = _MockShape()
         m.Volume = float(x) * float(y) * float(z)
-        m.isValid.return_value = True
-        m.cut.return_value = m
         return m
 
     @staticmethod
     def makeCylinder(radius, height, base=None, direction=None):
         m = _MockShape()
         m.Volume = 3.14159 * float(radius) ** 2 * float(height)
-        m.isValid.return_value = True
-        m.cut.return_value = m
         return m
 
     @staticmethod
     def makePolygon(points, closed=False):
         m = _MockShape()
-        m.isValid.return_value = True
         return m
 
     @staticmethod
     def makeCompound(solids):
         m = _MockShape()
         m.Volume = sum(getattr(s, "Volume", 0) for s in solids)
-        m.isValid.return_value = True
         return m
 
 
@@ -89,6 +81,10 @@ class _MockShape:
         m = _MockShape()
         m.Volume = self.Volume
         return m
+
+    def translate(self, vector):
+        """Igual que Shape.translate de FreeCAD: modifica en sitio y no devuelve nada."""
+        return None
 
 
 class _MockConsole:
@@ -168,37 +164,3 @@ class instalado:
         self._previos.clear()
         return False
 
-
-def requiere_freecad(mensaje="requiere FreeCAD real"):
-    """Decorador de clase/método que salta si no hay FreeCAD real.
-
-    Verifica que FreeCAD sea un módulo genuino (no un mock instalado por
-    ``instalado()`` en ``sys.modules``) y que tenga ``newDocument``.
-    """
-    try:
-        import FreeCAD
-        desde_mock = not isinstance(FreeCAD, ModuleType)
-        disponible = (not desde_mock) and hasattr(FreeCAD, "newDocument")
-    except ImportError:
-        disponible = False
-
-    import unittest
-
-    return unittest.skipUnless(disponible, mensaje)
-
-
-def requiere_qt(mensaje="requiere Qt / PySide"):
-    """Decorador de clase/método que salta si no hay PySide."""
-    try:
-        from PySide6 import QtCore
-        disponible = True
-    except ImportError:
-        try:
-            from PySide2 import QtCore
-            disponible = True
-        except ImportError:
-            disponible = False
-
-    import unittest
-
-    return unittest.skipUnless(disponible, mensaje)

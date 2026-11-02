@@ -66,13 +66,22 @@ def main():
 
     filas = [("FALLO", t.id(), _ultima(tb)) for t, tb in resultado.failures]
     filas += [("ERROR", t.id(), _ultima(tb)) for t, tb in resultado.errors]
-    filas += [("SKIP", t.id(), "") for t, _ in resultado.skipped]
+    filas += [("SKIP", t.id(), motivo) for t, motivo in resultado.skipped]
 
     ejecutados_o_omitidos = {t.id() for t, _ in resultado.failures + resultado.errors + resultado.skipped}
+    # Si setUpClass omite la clase (entorno ausente), sus tests no llegan a iniciarse.
+    # Se reportan como SKIP con el mismo motivo impreso por setUpClass, no como NO_EJECUTADO.
+    omitidas_por_clase = {}
+    for t, motivo in resultado.skipped:
+        tid_sc = t.id()
+        if tid_sc.startswith("setUpClass (") and tid_sc.endswith(")"):
+            omitidas_por_clase[tid_sc[len("setUpClass ("):-1]] = motivo
     for tid in todos:
         if tid not in ejecutados_o_omitidos:
             if tid in resultado.iniciados:
                 filas.append(("OK", tid, ""))
+            elif tid.rsplit(".", 1)[0] in omitidas_por_clase:
+                filas.append(("SKIP", tid, omitidas_por_clase[tid.rsplit(".", 1)[0]]))
             else:
                 filas.append(("NO_EJECUTADO", tid, ""))
 

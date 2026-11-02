@@ -1,77 +1,103 @@
 """Decoradores de detección de entorno en tiempo de ejecución.
 
-Cada decorador omite el test (SkipTest) solo si el entorno lo exige,
-con el motivo exacto detectado. Nunca se usa una lista blanca de omisiones.
+Un test se omite (``unittest.SkipTest`` con motivo) solo si el entorno lo
+exige. Nunca por lista. Sirven para funciones y para clases.
+
+Detección:
+  - ``requiere_freecad``: el ``FreeCAD`` importado debe ser el binario real.
+    Un mock de ``freecad_falso`` en ``sys.modules`` NO cuenta: el binario real
+    expone ``Version()`` y ``getHomePath()``, y el mock no las define.
+  - ``requiere_gui``: FreeCAD real con ``GuiUp`` activo, ``FreeCADGui``
+    importable y ``DISPLAY`` o ``WAYLAND_DISPLAY`` definidos.
+  - ``requiere_qt``: alguno de PySide6, PySide2 o PySide importable.
+
+Uso:
+    @requiere_freecad
+    class MiTests(unittest.TestCase): ...
+
+    @requiere_gui(motivo="necesita panel")
+    def test_panel(self): ...
 """
 
 from __future__ import annotations
 
-import functools
-import sys
+import importlib
+import os
 import unittest
+from collections.abc import Callable
+from typing import Any
 
 
-def _skip(motivo: str):
-    def deco(fn):
-        @functools.wraps(fn)
-        def wrapper(*args, **kwargs):
-            raise unittest.SkipTest(motivo)
-        return wrapper
-    return deco
+def _freecad_real() -> Any | None:
+    """Devuelve el módulo FreeCAD real o None. Un mock no supera la comprobación."""
+    try:
+        fc = importlib.import_module("FreeCAD")
+    except ImportError:
+        return None
+    version = getattr(fc, "Version", None)
+    home = getattr(fc, "getHomePath", None)
+    if not callable(version) or not callable(home):
+        return None
+    try:
+        v = version()
+        h = home()
+    except (TypeError, AttributeError, RuntimeError):
+        return None
+    if not isinstance(v, list) or not v or not h:
+        return None
+    return fc
 
 
-def requiere_freecad(fn=None, *, motivo: str | None = None):
-    """Omite si no se puede importar FreeCAD de verdad (no mock)."""
+def _gui_real() -> bool:
+    fc = _freecad_real()
+    if fc is None or not getattr(fc, "GuiUp", 0):
+        return False
+    if not (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")):
+        return False
+    try:
+        importlib.import_module("FreeCADGui")
+    except ImportError:
+        return False
+    return True
 
-    def _comprueba():
+
+def _qt_disponible() -> bool:
+    for nombre in ("PySide6", "PySide2", "PySide"):
         try:
-            import FreeCAD
-            return True
+            importlib.import_module(nombre)
         except ImportError:
-            return False
-
-    m = motivo or "requiere FreeCAD real (import FreeCAD falló)"
-    if _comprueba():
-        return (lambda f: f) if fn is None else fn
-    return _skip(m)
-
-
-def requiere_gui(fn=None, *, motivo: str | None = None):
-    """Omite si no hay sesión gráfica (FreeCADGui + DISPLAY/WAYLAND_DISPLAY)."""
-
-    def _comprueba():
-        try:
-            import FreeCADGui
-        except ImportError:
-            return False
-        if not sys.stdout.isatty() and not (
-            __import__("os").environ.get("DISPLAY")
-            or __import__("os").environ.get("WAYLAND_DISPLAY")
-        ):
-            # No hay variable de display: entorno headless.
-            return False
+            continue
         return True
-
-    m = motivo or "requiere GUI (FreeCADGui + DISPLAY/WAYLAND_DISPLAY)"
-    if _comprueba():
-        return (lambda f: f) if fn is None else fn
-    return _skip(m)
+    return False
 
 
-def requiere_qt(fn=None, *, motivo: str | None = None):
-    """Omite si PySide6 no es importable."""
+def _fabrica(condicion: Callable[[], bool], motivo_defecto: str):
+    """Crea un decorador con y sin argumentos. Omite solo si ``condicion()`` es falsa."""
 
-    def _comprueba():
-        try:
-            import PySide6
-            return True
-        except ImportError:
-            return False
+    def decorador_con_motivo(fn=None, *, motivo: str | None = None):
+        texto = motivo or motivo_defecto
 
-    m = motivo or "requiere PySide6 (import falló)"
-    if _comprueba():
-        return (lambda f: f) if fn is None else fn
-    return _skip(m)
+        def aplicar(obj):
+            if condicion():
+                return obj
+            return unittest.skip(texto)(obj)
 
+        return aplicar if fn is None else aplicar(fn)
+
+    return decorador_con_motivo
+
+
+requiere_freecad = _fabrica(
+    lambda: _freecad_real() is not None,
+    "requiere FreeCAD real (import falló o solo hay un mock)",
+)
+requiere_gui = _fabrica(
+    _gui_real,
+    "requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)",
+)
+requiere_qt = _fabrica(
+    _qt_disponible,
+    "requiere PySide6/PySide2/PySide (ninguno importable)",
+)
 
 __all__ = ["requiere_freecad", "requiere_gui", "requiere_qt"]

@@ -16,6 +16,7 @@ except NameError:
 _RAIZ = os.path.dirname(_AQUI)
 
 from freecad.vdo.core import vdo_puerta_despiece as D
+from tests.soporte.requisitos import requiere_freecad
 
 
 class DespieceBatienteTests(unittest.TestCase):
@@ -152,15 +153,11 @@ class SistemasAperturaTests(unittest.TestCase):
 class CoreImportTests(unittest.TestCase):
     """Pruebas de importación del núcleo (sin GUI)."""
 
-    @unittest.skipUnless(
-        importlib.util.find_spec("FreeCAD") is not None,
-        "FreeCAD no disponible en este entorno")
+    @requiere_freecad
     def test_import_core(self):
         from freecad.vdo.core import vdo_puerta_core
 
-    @unittest.skipUnless(
-        importlib.util.find_spec("FreeCAD") is not None,
-        "FreeCAD no disponible en este entorno")
+    @requiere_freecad
     def test_make_puerta_existe(self):
         from freecad.vdo.core.vdo_puerta_core import make_puerta
         self.assertTrue(callable(make_puerta))
