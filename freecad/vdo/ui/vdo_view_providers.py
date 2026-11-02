@@ -85,7 +85,8 @@ class VDOViewProviderBase:
                     None, "VDO",
                     f"No se pudo abrir el panel de {obj.Name}:\n{exc}")
             except Exception:
-                pass
+                App.Console.PrintWarning(
+                    "[VDO] No se pudo mostrar el diálogo de error")
             return False
 
     # -----------------------------------------------------------------
@@ -135,7 +136,8 @@ class VDOViewProviderBase:
             try:
                 _gui().Control.closeDialog()
             except Exception:
-                pass
+                App.Console.PrintWarning(
+                    "[VDO] No se pudo cerrar el diálogo activo")
         return True
 
     # -----------------------------------------------------------------
@@ -280,7 +282,8 @@ class ViewProviderCajon(VDOViewProviderBase):
         try:
             vobj.Visibility = True
         except Exception:
-            pass
+            App.Console.PrintWarning(
+                "[VDO] No se pudo establecer la visibilidad del objeto")
 
     def get_panel_class(self):
         from freecad.vdo.ui.vdo_cajon_task import CajonTaskPanel

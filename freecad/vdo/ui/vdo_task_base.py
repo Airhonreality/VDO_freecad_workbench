@@ -17,7 +17,7 @@ def cerrar_dialogo():
         import FreeCADGui as Gui
         Gui.Control.closeDialog()
     except Exception:
-        pass
+        App.Console.PrintWarning("[VDO] No se pudo cerrar el diálogo activo")
 
 
 class VDOTransactionMixin:

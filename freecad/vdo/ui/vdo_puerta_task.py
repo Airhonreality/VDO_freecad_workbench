@@ -338,10 +338,10 @@ class PuertaTaskPanel(VDOTransactionMixin):
         self.combo_sku.clear()
         try:
             skus = sorted(H.query_family(familia).keys())
-            if skus:
-                self.combo_sku.addItems(skus)
         except KeyError:
-            pass
+            skus = []
+        if skus:
+            self.combo_sku.addItems(skus)
         self.combo_sku.blockSignals(False)
 
     def _actualizar_visibilidad(self):

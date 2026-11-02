@@ -801,7 +801,8 @@ class DivisionesEditor(QtWidgets.QWidget):
                 if vistos:
                     return list(vistos)
             except Exception:
-                pass
+                App.Console.PrintWarning(
+                    "[VDO] No se pudo leer la exposición del objeto")
         return [VDO_FR.FRENTE]
 
     def _cantos_pieza(self, rol, clave=None, es_reengrose=False):
@@ -820,7 +821,8 @@ class DivisionesEditor(QtWidgets.QWidget):
                     cantos = (
                         plan.get("tira") or plan.get("bloque") or cantos)
                 except Exception:
-                    pass
+                    App.Console.PrintWarning(
+                        "[VDO] No se pudo resolver la política de cantos")
         return cantos
 
     def _piezas_fisicas(self):
@@ -1541,7 +1543,8 @@ class DivisionesEditor(QtWidgets.QWidget):
                 try:
                     self.layout.set_split(cell, AXIS_X, 2)
                 except LayoutError:
-                    pass
+                    App.Console.PrintWarning(
+                        "[VDO] No se pudo dividir la celda del layout")
                 self._rebuild_y_avisar()
         else:
             # vacio / puerta / cajon: limpiar subdivisiones si las hay

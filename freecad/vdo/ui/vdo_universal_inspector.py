@@ -380,7 +380,8 @@ class PaginaChasis(_PaginaBase):
                     self.box_chassis.setChassisConfig(cfg)
                     return
                 except Exception:
-                    pass
+                    App.Console.PrintWarning(
+                        "[VDO] No se pudo cargar VDO_Chassis_JSON")
 
             cfg_default = {
                 "caras": {
@@ -418,13 +419,15 @@ class PaginaChasis(_PaginaBase):
                                     "Configuración semiótica de Capa 1")
                     obj.VDO_Chassis_JSON = json.dumps(cfg)
                 except Exception:
-                    pass
+                    App.Console.PrintWarning(
+                        "[VDO] No se pudo añadir propiedad VDO_Chassis_JSON")
 
             doc = getattr(obj, "Document", None)
             if doc is not None:
                 doc.recompute()
         except Exception:
-            pass
+            App.Console.PrintWarning(
+                "[VDO] No se pudo persistir la configuración del chasis")
 
 
 # ----------------------------------------------------------------------
@@ -824,7 +827,8 @@ class PaginaPieza(_PaginaBase):
                     self.box_controller.setConfig(cfg)
                     return
                 except Exception:
-                    pass
+                    App.Console.PrintWarning(
+                        "[VDO] No se pudo cargar VDO_Reengrose_JSON")
 
             self.box_controller.setConfig({
                 "activo": True,
@@ -866,12 +870,14 @@ class PaginaPieza(_PaginaBase):
                     obj.addProperty("App::PropertyString", "VDO_Reengrose_JSON", "VDO", "Regrueso JSON")
                     obj.VDO_Reengrose_JSON = json.dumps(cfg)
                 except Exception:
-                    pass
+                    App.Console.PrintWarning(
+                        "[VDO] No se pudo añadir propiedad VDO_Reengrose_JSON")
             doc = getattr(obj, "Document", None)
             if doc is not None:
                 doc.recompute()
         except Exception:
-            pass
+            App.Console.PrintWarning(
+                "[VDO] No se pudo persistir VDO_Reengrose_JSON")
 
 
 # ----------------------------------------------------------------------
@@ -1273,7 +1279,8 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
                     reengroses=reengroses,
                 )
             except Exception:
-                pass
+                App.Console.PrintWarning(
+                    "[VDO] No se pudo actualizar el visor 2D")
 
         # 5. Regenerar Árbol Maestro
         self._regenerar_arbol_maestro(obj, piezas, resolved, contenido_por_celda)
@@ -1435,7 +1442,8 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
                 if doc is not None:
                     doc.recompute()
             except Exception:
-                pass
+                App.Console.PrintWarning(
+                    "[VDO] No se pudieron actualizar las dimensiones del header")
         self._actualizar_vista_completa()
 
     def _on_habitante_vano_cambiado(self, tipo_hab, cfg):
@@ -1451,7 +1459,8 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
                     obj.addProperty("App::PropertyString", prop_name, "VDO", prop_name)
                     setattr(obj, prop_name, prop_val)
             except Exception:
-                pass
+                App.Console.PrintWarning(
+                    f"[VDO] No se pudo guardar propiedad {prop_name}")
 
         celda_lbl = cfg.get("celda", "(x1, y1)")
         texto_div = getattr(obj, "VDO_Divisiones", "") or ""
@@ -1488,7 +1497,8 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
             if doc is not None:
                 doc.recompute()
         except Exception:
-            pass
+            App.Console.PrintWarning(
+                "[VDO] No se pudo recomputar el documento")
 
         self._actualizar_vista_completa()
 
@@ -1527,10 +1537,13 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
             self._ir_a_nivel(page, target_type)
 
         except Exception:
+            App.Console.PrintWarning(
+                "[VDO] Error navegando a nivel de página")
             try:
                 self._ir_a_nivel(PAGE_CHASIS, VDOSelectionBridge.TARGET_UNKNOWN)
             except Exception:
-                pass
+                App.Console.PrintWarning(
+                    "[VDO] No se pudo navegar a la página de chasis")
 
     # ------------------------------------------------------------------
     # API pública y Ciclo de Vida
@@ -1554,7 +1567,8 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
                 self._puente.detach()
                 self._puente = None
         except Exception:
-            pass
+            App.Console.PrintWarning(
+                "[VDO] No se pudo desregistrar el observer de selección")
 
     def __enter__(self):
         return self

@@ -239,6 +239,7 @@ def _m6_paneles_delgados():
 def _m7_errores():
     except_pass = 0
     except_exception_core_cad_app = 0
+    # except … pass: cero en todo el paquete
     for base in (CORE, CAD, APP, UI, FREECAD / "vdo" / "commands.py"):
         if not base.exists():
             continue
@@ -253,19 +254,30 @@ def _m7_errores():
                 continue
             for nodo in ast.walk(t):
                 if isinstance(nodo, ast.Try):
-                    # except … pass
                     for handler in nodo.handlers:
                         cuerpo = handler.body
                         if (len(cuerpo) == 1
                                 and isinstance(cuerpo[0], ast.Pass)):
                             except_pass += 1
-                        # except Exception
+    # except Exception: cero solo en core/cad/app
+    for base in (CORE, CAD, APP):
+        if not base.exists():
+            continue
+        paths = sorted(base.rglob("*.py"))
+        for p in paths:
+            if "__pycache__" in p.parts:
+                continue
+            src = p.read_text(encoding="utf-8")
+            try:
+                t = ast.parse(src)
+            except SyntaxError:
+                continue
+            for nodo in ast.walk(t):
+                if isinstance(nodo, ast.Try):
+                    for handler in nodo.handlers:
                         tipo = handler.type
-                        if tipo is not None:
-                            if (isinstance(tipo, ast.Name) and tipo.id == "Exception"):
-                                except_exception_core_cad_app += 1
-                            elif isinstance(tipo, ast.Attribute):
-                                pass
+                        if tipo is not None and isinstance(tipo, ast.Name) and tipo.id == "Exception":
+                            except_exception_core_cad_app += 1
     _registrar("R7_except_pass", except_pass, 0, except_pass == 0,
                f"{except_pass} except … pass")
     _registrar("R7_except_exception_core_cad_app", except_exception_core_cad_app, 0,

@@ -379,12 +379,14 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                 try:
                     self.obj.AltoZocalo = float(base_info["altura"])
                 except Exception:
-                    pass
+                    App.Console.PrintWarning(
+                        "[VDO] No se pudo establecer AltoZocalo")
             if "separacion_frente" in base_info and hasattr(self.obj, "DistanciaFrente"):
                 try:
                     self.obj.DistanciaFrente = float(base_info["separacion_frente"])
                 except Exception:
-                    pass
+                    App.Console.PrintWarning(
+                        "[VDO] No se pudo establecer DistanciaFrente")
 
             try:
                 if hasattr(self.obj, "VDO_Chassis_JSON"):
@@ -394,14 +396,16 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                                         "Configuración semiótica de Capa 1")
                     self.obj.VDO_Chassis_JSON = json.dumps(cfg)
             except Exception:
-                pass
+                App.Console.PrintWarning(
+                    "[VDO] No se pudo guardar VDO_Chassis_JSON")
 
             doc = getattr(self.obj, "Document", None)
             if doc is not None:
                 try:
                     doc.recompute()
                 except Exception:
-                    pass
+                    App.Console.PrintWarning(
+                        "[VDO] No se pudo recomputar el documento")
         self._actualizar_resumen()
 
     def _crear_tab_espacios(self, layout, axis):
@@ -1084,7 +1088,8 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                 try:
                     doc.removeObject(hijo.Name)
                 except Exception:
-                    pass
+                    App.Console.PrintWarning(
+                        f"[VDO] No se pudo remover el hijo {hijo.Name}")
 
         coco_obj.Hijos = hijos_nuevos
 
@@ -1225,12 +1230,14 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                     try:
                         self.obj.AltoZocalo = float(base_info["altura"])
                     except Exception:
-                        pass
+                        App.Console.PrintWarning(
+                            "[VDO] No se pudo establecer AltoZocalo")
                 if "separacion_frente" in base_info and hasattr(self.obj, "DistanciaFrente"):
                     try:
                         self.obj.DistanciaFrente = float(base_info["separacion_frente"])
                     except Exception:
-                        pass
+                        App.Console.PrintWarning(
+                            "[VDO] No se pudo establecer DistanciaFrente")
 
                 try:
                     if hasattr(self.obj, "VDO_Chassis_JSON"):
@@ -1240,7 +1247,8 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                                             "Configuración semiótica de Capa 1")
                         self.obj.VDO_Chassis_JSON = json.dumps(cfg)
                 except Exception:
-                    pass
+                    App.Console.PrintWarning(
+                        "[VDO] No se pudo persistir VDO_Chassis_JSON")
 
             anclaje = self.combo_anclaje.currentData()
             if anclaje:

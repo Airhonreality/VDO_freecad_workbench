@@ -159,7 +159,8 @@ class CmdPuerta(_ComandoCreacion):
                 if hasattr(Gui.Control, "activeDialog") and Gui.Control.activeDialog():
                     Gui.Control.closeDialog()
             except Exception:
-                pass
+                App.Console.PrintWarning(
+                    "[VDO] No se pudo cerrar el diálogo activo")
         super().Activated()
 
 

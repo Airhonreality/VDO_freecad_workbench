@@ -59,7 +59,7 @@ class ColocadorModulo:
         try:
             import Draft  # noqa: F401  (inicializa Gui.Snapper)
         except Exception:
-            pass
+            App.Console.PrintWarning("[VDO] Draft no disponible para colocación")
 
         snapper = getattr(Gui, "Snapper", None)
         if snapper is not None:
@@ -163,7 +163,8 @@ class ColocadorModulo:
                     self._aplicar(punto)
                     self._finalizar()
         except Exception:
-            pass
+            App.Console.PrintWarning(
+                "[VDO] Error procesando clic de colocación")
 
     def _event_key(self, event_cb):
         if self._finalizado or coin is None:
@@ -172,7 +173,7 @@ class ColocadorModulo:
             if event_cb.getEvent().getKey() == coin.SoKeyboardEvent.ESCAPE:
                 self._cancelar()
         except Exception:
-            pass
+            App.Console.PrintWarning("[VDO] Error procesando tecla ESC")
 
     def _punto_bajo_cursor(self, pos):
         pos = (pos[0], pos[1])
@@ -203,7 +204,8 @@ class ColocadorModulo:
         try:
             self.obj.ViewObject.Visibility = True
         except Exception:
-            pass
+            App.Console.PrintWarning(
+                "[VDO] No se pudo mostrar el ViewObject")
         self._visible = True
 
     def _aplicar(self, punto):
@@ -228,7 +230,8 @@ class ColocadorModulo:
             try:
                 Gui.Snapper.getPoint()
             except Exception:
-                pass
+                App.Console.PrintWarning(
+                    "[VDO] No se pudo finalizar el Snapper de Draft")
         self._status("")
         if self.on_cancel:
             self.on_cancel()
@@ -241,7 +244,8 @@ class ColocadorModulo:
             try:
                 self._view.removeEventCallbackPivy(tipo, callback)
             except Exception:
-                pass
+                App.Console.PrintWarning(
+                    "[VDO] No se pudo remover callback de lugar")
         self._callbacks = []
 
     def _status(self, mensaje):
@@ -250,7 +254,7 @@ class ColocadorModulo:
             if mw is not None:
                 mw.statusBar().showMessage(mensaje)
         except Exception:
-            pass
+            App.Console.PrintWarning("[VDO] No se pudo actualizar la barra de estado")
 
 
 def iniciar_colocacion(obj, on_done=None, on_cancel=None, anclaje=None):

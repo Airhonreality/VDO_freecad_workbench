@@ -311,7 +311,8 @@ class PanelTaskPanel(VDOTransactionMixin):
                     try:
                         self.obj.clearExpression(prop)
                     except Exception:
-                        pass
+                        App.Console.PrintWarning(
+                            f"[VDO] No se pudo limpiar expresión de {prop}")
                     setattr(self.obj, prop, spin.value_float())
 
             mod_reengrose = self._leer_reengrose()

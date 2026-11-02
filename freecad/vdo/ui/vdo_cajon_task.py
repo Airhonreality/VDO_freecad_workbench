@@ -475,7 +475,8 @@ class CajonTaskPanel(VDOTransactionMixin):
             d = calcular_despiece(config)
             self.header.actualizar(d.get("fachada", {}))
         except Exception:
-            pass
+            App.Console.PrintWarning(
+                "[VDO] No se pudo actualizar el header del cajón")
 
     # -----------------------------------------------------------------
     # Aceptar / Cancelar

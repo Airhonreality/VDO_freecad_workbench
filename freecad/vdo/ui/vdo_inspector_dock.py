@@ -43,7 +43,8 @@ class VDOInspectorDockWidget(QtWidgets.QDockWidget):
             try:
                 self.inspector.cerrar_inspector()
             except Exception:
-                pass
+                App.Console.PrintWarning(
+                    "[VDO] No se pudo cerrar el inspector")
         super().closeEvent(event)
 
 

@@ -114,7 +114,8 @@ class VDOSelectionBridge:
                 if nombre_proxy in ("VanoFeature", "Vano"):
                     return self.TARGET_VANO
         except Exception:
-            pass
+            App.Console.PrintWarning(
+                "[VDO] Error clasificando objeto de selección")
 
         # Fallback por propiedades de firma (sin depender del Label)
         try:
@@ -145,7 +146,8 @@ class VDOSelectionBridge:
                     and self._tiene_prop(obj, "VDO_Orientacion")):
                 return self.TARGET_PANEL
         except Exception:
-            pass
+            App.Console.PrintWarning(
+                "[VDO] Error en fallback de clasificación por propiedades")
 
         return self.TARGET_UNKNOWN
 
@@ -167,9 +169,8 @@ class VDOSelectionBridge:
             if self._callback is not None:
                 self._callback(obj, target_type)
         except Exception:
-            # Anti-crash: ningún error de Python escapa a la Report View
-            # durante un clic del ratón.
-            pass
+            App.Console.PrintWarning(
+                "[VDO] Error en addSelection del puente")
 
     def clearSelection(self, doc_name):
         """Se dispara cuando se limpia la selección."""
@@ -179,7 +180,8 @@ class VDOSelectionBridge:
             if self._callback is not None:
                 self._callback(None, self.TARGET_UNKNOWN)
         except Exception:
-            pass
+            App.Console.PrintWarning(
+                "[VDO] Error en clearSelection del puente")
 
     # ------------------------------------------------------------------
     # Consulta de estado
