@@ -11,6 +11,8 @@
 import os
 import unittest
 
+from tests.soporte.qt import qapplication
+
 from tests.soporte.requisitos import requiere_freecad, requiere_qt
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -51,10 +53,7 @@ from freecad.vdo.ui.vdo_view_providers import (
 
 
 def _get_qapp():
-    app = QtWidgets.QApplication.instance()
-    if app is None:
-        app = QtWidgets.QApplication([])
-    return app
+    return qapplication()
 
 
 @requiere_freecad

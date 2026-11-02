@@ -10,12 +10,14 @@ Sin pantalla usa la plataforma ``offscreen``.
 
 from __future__ import annotations
 
+import atexit
 import importlib
 import os
 import sys
 from typing import Any
 
 _APP: Any | None = None
+_LIMPIEZA_REGISTRADA = False
 
 
 def qapplication() -> Any:
@@ -29,7 +31,27 @@ def qapplication() -> Any:
     if not (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")):
         os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
     _APP = qtw.QApplication(sys.argv[:1] or ["vdo-tests"])
+    global _LIMPIEZA_REGISTRADA
+    if not _LIMPIEZA_REGISTRADA:
+        atexit.register(_cerrar_widgets)
+        _LIMPIEZA_REGISTRADA = True
     return _APP
+
+
+def _cerrar_widgets() -> None:
+    """Cierra y libera los widgets de nivel superior antes de que termine el proceso.
+
+    Sin esto, widgets vivos al cerrar el intérprete hacen que Qt aborte o
+    haga segfault al destruirse (SIGSEGV 139 / 'pure virtual method called').
+    Se ejecuta después de escribir el resumen del runner.
+    """
+    app = _APP
+    if app is None:
+        return
+    for widget in list(app.topLevelWidgets()):
+        widget.close()
+        widget.deleteLater()
+    app.processEvents()
 
 
 def _modulo_qt() -> str:

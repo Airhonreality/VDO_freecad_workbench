@@ -8,6 +8,8 @@ import os
 import sys
 import unittest
 
+from tests.soporte.qt import qapplication
+
 import FreeCAD as App
 
 try:
@@ -52,10 +54,7 @@ from tests.soporte.requisitos import requiere_gui
 class TestGuiWiring(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # Asegurar QApplication
-        cls.app = QtWidgets.QApplication.instance()
-        if cls.app is None:
-            cls.app = QtWidgets.QApplication(sys.argv)
+        cls.app = qapplication()
 
     def setUp(self):
         self.doc_name = "DocWiringVDO"

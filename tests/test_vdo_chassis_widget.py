@@ -15,6 +15,8 @@ import os
 import sys
 import unittest
 
+from tests.soporte.qt import qapplication
+
 try:
     from PySide import QtCore, QtWidgets
 except ImportError:
@@ -26,9 +28,7 @@ except ImportError:
 from freecad.vdo.ui import vdo_chassis_widget as CW
 
 # Asegurar QApplication para pruebas GUI en modo headless
-_app = QtWidgets.QApplication.instance()
-if not _app:
-    _app = QtWidgets.QApplication(sys.argv)
+_app = qapplication()
 
 
 class TestVDOChassisWidget(unittest.TestCase):

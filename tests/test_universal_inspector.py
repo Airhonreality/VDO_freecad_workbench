@@ -21,6 +21,8 @@ import os
 import sys
 import unittest
 
+from tests.soporte.qt import qapplication
+
 from tests.soporte.requisitos import requiere_freecad, requiere_qt
 
 # Forzar plataforma offscreen para entornos sin display (freecadcmd / CI).
@@ -36,11 +38,7 @@ _RAIZ = os.path.dirname(_AQUI)
 
 def _obtener_qapp():
     """Devuelve la QApplication existente (FreeCADGui) o crea una offscreen."""
-    from PySide6 import QtWidgets  # type: ignore
-    app = QtWidgets.QApplication.instance()
-    if app is None:
-        app = QtWidgets.QApplication([])
-    return app
+    return qapplication()
 
 
 @requiere_freecad

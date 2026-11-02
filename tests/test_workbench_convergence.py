@@ -18,6 +18,8 @@ Verifica:
 import os
 import unittest
 
+from tests.soporte.qt import qapplication
+
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 try:
@@ -57,10 +59,7 @@ from freecad.vdo.ui.vdo_universal_inspector import (
 
 
 def _get_qapp():
-    app = QtWidgets.QApplication.instance()
-    if app is None:
-        app = QtWidgets.QApplication([])
-    return app
+    return qapplication()
 
 
 @requiere_gui
