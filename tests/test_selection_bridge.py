@@ -19,8 +19,6 @@ try:
 except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
-if _RAIZ not in sys.path:
-    sys.path.insert(0, _RAIZ)
 
 _HAS_FREECAD = importlib.util.find_spec("FreeCAD") is not None
 

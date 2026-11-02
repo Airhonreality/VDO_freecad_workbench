@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """
+import FreeCAD as App
 vdo_chassis_widget.py
 
 Widget de Corte Transversal Interactivo 2D para la Envolvente / Chasis Paramétrico (Capa 1).
@@ -1140,7 +1141,7 @@ if __name__ == "__main__":
 
     def on_change(cfg):
         activas = [c for c, d in cfg["caras"].items() if d.get("activa")]
-        print(f"[VDO Chassis Event] Caras activas: {activas} | Encuentros: {cfg['encuentros']} | Base: {cfg['base']['estrategia']}")
+        App.Console.PrintMessage(f"[VDO Chassis Event] Caras activas: {activas} | Encuentros: {cfg['encuentros']} | Base: {cfg['base']['estrategia']}")
 
     widget.sigChassisChanged.connect(on_change)
 

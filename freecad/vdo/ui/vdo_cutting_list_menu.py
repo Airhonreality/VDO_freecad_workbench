@@ -75,7 +75,7 @@ def mostrar_menu():
 
     # Mostrar y obtener resultado
     if dialog.exec() != QtWidgets.QDialog.Accepted:
-        print("❌ Cancelado")
+        App.Console.PrintMessage("❌ Cancelado")
         return None
 
     # Determinar modo seleccionado
@@ -91,14 +91,14 @@ def abrir_lista_corte():
     """Punto de entrada del comando: menú de modo y preview. Requiere GUI."""
     import FreeCADGui as Gui  # noqa: F401  (solo disponible con GUI)
 
-    print("=" * 70)
-    print("VDO CUTTING LIST - Exportador con Preview")
-    print("=" * 70)
+    App.Console.PrintMessage("=" * 70)
+    App.Console.PrintMessage("VDO CUTTING LIST - Exportador con Preview")
+    App.Console.PrintMessage("=" * 70)
     if not App.ActiveDocument:
-        print("No hay documento activo")
+        App.Console.PrintMessage("No hay documento activo")
         return
     modo = mostrar_menu()
     if not modo:
         return
-    print(f"\nModo seleccionado: {modo.upper()}")
+    App.Console.PrintMessage(f"\nModo seleccionado: {modo.upper()}")
     vdo_cutting_list_preview.main(modo=modo)

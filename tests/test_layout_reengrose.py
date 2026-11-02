@@ -1,8 +1,6 @@
 import os
-import sys
 import unittest
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from freecad.vdo.core import vdo_reengrose as R
 from freecad.vdo.core.vdo_layout import Layout, resolve_layout

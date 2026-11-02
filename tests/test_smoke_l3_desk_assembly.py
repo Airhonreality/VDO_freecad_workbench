@@ -22,8 +22,6 @@ import json
 import unittest
 
 _MACRO_DIR = "/home/javi/.local/share/FreeCAD/Macro"
-if _MACRO_DIR not in sys.path:
-    sys.path.insert(0, _MACRO_DIR)
 
 import FreeCAD as App
 import Part

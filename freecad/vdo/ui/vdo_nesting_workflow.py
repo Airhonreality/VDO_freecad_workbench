@@ -11,7 +11,7 @@ from pathlib import Path
 # Bootstrap
 _vdo_macro_dir = os.path.dirname(os.path.abspath(__file__))
 
-import FreeCAD
+import FreeCAD as App
 import FreeCADGui
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 
@@ -185,12 +185,12 @@ class NestingDialog(QtWidgets.QDialog):
         """Ejecuta nesting en background."""
         doc = FreeCAD.ActiveDocument
 
-        print("=" * 70)
-        print(f"🔲 NESTING - Modo: {self.mode.upper()}")
-        print("=" * 70)
+        App.Console.PrintMessage("=" * 70)
+        App.Console.PrintMessage(f"🔲 NESTING - Modo: {self.mode.upper()}")
+        App.Console.PrintMessage("=" * 70)
 
         # Preparar piezas
-        print(f"\n📦 Preparando {len(self.selected_parts)} pieza(s)...")
+        App.Console.PrintMessage(f"\n📦 Preparando {len(self.selected_parts)} pieza(s)...")
 
         try:
             preparer = ShapePreparer(doc, {
@@ -208,9 +208,9 @@ class NestingDialog(QtWidgets.QDialog):
                         up_direction="Z+"
                     )
                     shapes.append(shape)
-                    print(f"  ✅ {obj.Label}")
+                    App.Console.PrintMessage(f"  ✅ {obj.Label}")
                 except Exception as e:
-                    print(f"  ❌ {obj.Label}: {e}")
+                    App.Console.PrintMessage(f"  ❌ {obj.Label}: {e}")
 
             if not shapes:
                 FreeCAD.Console.PrintError("No se pudieron preparar piezas\n")
@@ -224,8 +224,8 @@ class NestingDialog(QtWidgets.QDialog):
             generations = self.spin_generations.value()
 
             # Ejecutar nesting
-            print(f"\n🔄 Ejecutando nesting ({algo})...")
-            print(f"   Tablero: {width}×{height} mm, Espaciado: {spacing} mm")
+            App.Console.PrintMessage(f"\n🔄 Ejecutando nesting ({algo})...")
+            App.Console.PrintMessage(f"   Tablero: {width}×{height} mm, Espaciado: {spacing} mm")
 
             sheets, unplaced, steps, elapsed = nest(
                 parts=shapes,
@@ -242,16 +242,16 @@ class NestingDialog(QtWidgets.QDialog):
             )
 
             # Resultados
-            print(f"\n✅ Nesting completado en {elapsed:.2f}s")
-            print(f"   Tableros utilizados: {len(sheets)}")
-            print(f"   Piezas no colocadas: {len(unplaced)}")
+            App.Console.PrintMessage(f"\n✅ Nesting completado en {elapsed:.2f}s")
+            App.Console.PrintMessage(f"   Tableros utilizados: {len(sheets)}")
+            App.Console.PrintMessage(f"   Piezas no colocadas: {len(unplaced)}")
 
             for i, sheet in enumerate(sheets):
                 efficiency = (sheet.used_area / (sheet.width * sheet.height)) * 100
-                print(f"     Sheet {i+1}: {len(sheet.parts)} piezas, {efficiency:.1f}% utilización")
+                App.Console.PrintMessage(f"     Sheet {i+1}: {len(sheet.parts)} piezas, {efficiency:.1f}% utilización")
 
             # Dibujar layouts en documento
-            print(f"\n📐 Dibujando layouts...")
+            App.Console.PrintMessage(f"\n📐 Dibujando layouts...")
             layout_group = doc.addObject("App::DocumentObjectGroup", "NestingLayout")
 
             for sheet_idx, sheet in enumerate(sheets):
@@ -265,8 +265,8 @@ class NestingDialog(QtWidgets.QDialog):
 
             doc.recompute()
 
-            print(f"\n📊 Layouts creados: {layout_group.Label}")
-            print("   Puedes exportar a DXF si lo necesitas")
+            App.Console.PrintMessage(f"\n📊 Layouts creados: {layout_group.Label}")
+            App.Console.PrintMessage("   Puedes exportar a DXF si lo necesitas")
 
             # Mensaje de éxito
             QtWidgets.QMessageBox.information(

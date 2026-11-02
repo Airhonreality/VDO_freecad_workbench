@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """
+import FreeCAD as App
 vdo_box_controller.py
 
 Controlador espacial 2D de tablero al estilo Figma Box Model / CSS DevTools.
@@ -1220,7 +1221,7 @@ if __name__ == "__main__":
 
     def on_change(cfg):
         activos = [b for b, d in cfg["bordes"].items() if d["activo"]]
-        print(f"[VDO Box Event] Activos={activos} Esquinas={cfg['esquinas']} Uniforme={cfg['uniforme']}")
+        App.Console.PrintMessage(f"[VDO Box Event] Activos={activos} Esquinas={cfg['esquinas']} Uniforme={cfg['uniforme']}")
 
     widget.sigConfigChanged.connect(on_change)
 

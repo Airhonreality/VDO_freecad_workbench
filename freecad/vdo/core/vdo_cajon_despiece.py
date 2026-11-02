@@ -8,6 +8,7 @@
 #   LI       = ancho libre interior del mueble (pared a pared)
 #   ProfInt  = profundidad libre interior del mueble
 #   LG       = largo nominal de la guía (auto: max(comerciales ≤ ProfInt))
+import FreeCAD as App
 #   Delta    = reducción por herraje (ej. Blum Tandem 16mm → 49 mm)
 #   Gcaja    = grosor de laterales/trasera/frente interior (15-16 mm)
 #   Gfondo   = grosor del piso (6-12 mm)
@@ -548,9 +549,9 @@ def calcular_despiece(config):
 # SELF-TEST (desde la raíz del repo: python3 -m freecad.vdo.core.vdo_cajon_despiece)
 # =====================================================================
 if __name__ == "__main__":
-    print("=" * 64)
-    print("[VDO] Self-test vdo_cajon_despiece.py")
-    print("=" * 64)
+    App.Console.PrintMessage("=" * 64)
+    App.Console.PrintMessage("[VDO] Self-test vdo_cajon_despiece.py")
+    App.Console.PrintMessage("=" * 64)
 
     config = {
         "ancho_libre": 600.0,      # LI
@@ -598,10 +599,10 @@ if __name__ == "__main__":
     d4 = calcular_despiece(dict(config, grosor_caja=18.0))
     assert any("15/16" in a for a in d4["avisos"]), d4["avisos"]
 
-    print("✅ Todas las aserciones pasaron")
-    print(f"   LG={d['guia']['lg']}  ancho_ext={d['caja']['ancho_exterior']}"
+    App.Console.PrintMessage("✅ Todas las aserciones pasaron")
+    App.Console.PrintMessage(f"   LG={d['guia']['lg']}  ancho_ext={d['caja']['ancho_exterior']}"
           f"  ancho_contra={d['caja']['ancho_contra']}"
           f"  piso={d['caja']['ancho_piso']}x{d['caja']['largo_piso']}")
-    print(f"   Piezas: {[p['nombre'] for p in d['piezas']]}")
+    App.Console.PrintMessage(f"   Piezas: {[p['nombre'] for p in d['piezas']]}")
     if d["avisos"]:
-        print(f"   ⚠️  Avisos: {d['avisos']}")
+        App.Console.PrintMessage(f"   ⚠️  Avisos: {d['avisos']}")

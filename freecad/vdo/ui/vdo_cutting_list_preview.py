@@ -153,11 +153,11 @@ class CuttingListPreviewPanel:
                 # GRIS: no se exporta
                 obj.ViewObject.ShapeColor = (0.7, 0.7, 0.7, 0.5)
 
-        print(f"✅ {len(self.piezas_coloreadas)} piezas coloreadas en ROJO")
+        App.Console.PrintMessage(f"✅ {len(self.piezas_coloreadas)} piezas coloreadas en ROJO")
 
     def aceptar(self):
         """Genera CSV y cierra dialog"""
-        print(f"\n✅ Exportando {len(self.piezas)} piezas...")
+        App.Console.PrintMessage(f"\n✅ Exportando {len(self.piezas)} piezas...")
 
         # Restaurar colores
         self._restaurar_colores()
@@ -179,12 +179,12 @@ class CuttingListPreviewPanel:
                 "CSV Files (*.csv);;All Files (*)"
             )
         except Exception as e:
-            print(f"❌ Error abriendo el diálogo de archivo: {e}")
+            App.Console.PrintMessage(f"❌ Error abriendo el diálogo de archivo: {e}")
             App.Console.PrintError(f"[VDO] Error abriendo diálogo: {e}\n")
             return
 
         if not output_file:
-            print("❌ Exportación cancelada (o el diálogo se cerró sin elegir archivo)")
+            App.Console.PrintMessage("❌ Exportación cancelada (o el diálogo se cerró sin elegir archivo)")
             App.Console.PrintWarning("[VDO] Exportación cancelada\n")
             Gui.Control.closeDialog()
             return
@@ -194,20 +194,20 @@ class CuttingListPreviewPanel:
             ok = vdo_export_cutting_list.generar_csv_opencutlist(
                 self.piezas, output_file)
         except Exception as e:
-            print(f"❌ Error generando CSV: {e}")
+            App.Console.PrintMessage(f"❌ Error generando CSV: {e}")
             App.Console.PrintError(f"[VDO] Error generando CSV: {e}\n")
             return
 
         if ok:
-            print(f"✅ CSV generado: {output_file}")
-            print("\n📌 Próximo paso: Usa el archivo CSV con tu optimizador de corte")
+            App.Console.PrintMessage(f"✅ CSV generado: {output_file}")
+            App.Console.PrintMessage("\n📌 Próximo paso: Usa el archivo CSV con tu optimizador de corte")
             App.Console.PrintMessage(f"[VDO] Lista de corte exportada: {output_file}\n")
 
         Gui.Control.closeDialog()
 
     def cancelar(self):
         """Cancela y restaura colores"""
-        print("❌ Exportación cancelada")
+        App.Console.PrintMessage("❌ Exportación cancelada")
         self._restaurar_colores()
         Gui.Control.closeDialog()
 
@@ -235,27 +235,27 @@ def main(modo="todo"):
     """
     Modo: "seleccion" | "grupo" | "todo"
     """
-    print("=" * 70)
-    print(f"🔍 CUTTING LIST PREVIEW - {modo.upper()}")
-    print("=" * 70)
+    App.Console.PrintMessage("=" * 70)
+    App.Console.PrintMessage(f"🔍 CUTTING LIST PREVIEW - {modo.upper()}")
+    App.Console.PrintMessage("=" * 70)
 
     doc = App.ActiveDocument
     if not doc:
-        print("❌ No hay documento activo")
+        App.Console.PrintMessage("❌ No hay documento activo")
         return False
 
     # Extraer piezas según modo (lógica unificada: paneles + contenedores)
-    print(f"\n📦 Extrayendo piezas (modo: {modo})...")
+    App.Console.PrintMessage(f"\n📦 Extrayendo piezas (modo: {modo})...")
     piezas = vdo_export_cutting_list.extraer_piezas_del_documento(modo)
 
     if not piezas:
-        print("❌ No se encontraron piezas de melamina para exportar")
+        App.Console.PrintMessage("❌ No se encontraron piezas de melamina para exportar")
         return False
 
-    print(f"✅ {len(piezas)} piezas encontradas")
+    App.Console.PrintMessage(f"✅ {len(piezas)} piezas encontradas")
 
     # Mostrar preview
-    print("\n🎨 Mostrando preview (piezas en ROJO)...")
+    App.Console.PrintMessage("\n🎨 Mostrando preview (piezas en ROJO)...")
     mostrar_preview(piezas, modo)
 
     return True

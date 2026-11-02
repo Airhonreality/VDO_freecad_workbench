@@ -1853,7 +1853,7 @@ if __name__ == "__main__":
     for _tramo in _res["tira_segmentos"]:
         assert not detectar_colision(_tramo, _division)
 
-    print("vdo_reengrose: pruebas Capa 0 OK")
+    App.Console.PrintMessage("vdo_reengrose: pruebas Capa 0 OK")
 
 
 # ----------------------------------------------------------------------

@@ -279,7 +279,7 @@ def crear_pieza(configuracion):
 
     doc = vdo_guardian.vdo_guard()
     if not doc:
-        print("❌ [VDO Error] No hay documento activo.")
+        App.Console.PrintMessage("❌ [VDO Error] No hay documento activo.")
         return None
 
     nombre = configuracion.get("nombre", "Panel")
@@ -301,7 +301,7 @@ def crear_pieza(configuracion):
         panel = None
 
     if panel:
-        print(f"⚠️ '{nombre}' ya existe. Actualizando...")
+        App.Console.PrintMessage(f"⚠️ '{nombre}' ya existe. Actualizando...")
         add_reengrose_props(panel)
     else:
         panel = doc.addObject("Part::FeaturePython", nombre)
@@ -354,5 +354,5 @@ def crear_pieza(configuracion):
         panel.Placement = App.Placement()
 
     doc.recompute()
-    print(f"✅ Panel '{nombre}' configurado: orientacion='{orientacion}'")
+    App.Console.PrintMessage(f"✅ Panel '{nombre}' configurado: orientacion='{orientacion}'")
     return panel

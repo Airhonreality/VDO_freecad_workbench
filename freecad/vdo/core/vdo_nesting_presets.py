@@ -5,7 +5,7 @@
 # Guardar/cargar configuraciones predefinidas en preferencias de FreeCAD
 # =====================================================================
 
-import FreeCAD
+import FreeCAD as App
 import json
 
 class NestingPresetManager:
@@ -40,7 +40,7 @@ class NestingPresetManager:
                 "presets": NestingPresetManager.DEFAULT_PRESETS
             }
             prefs.SetString("Presets", json.dumps(presets_data))
-            print("[VDO Nesting] Presets inicializados con valores por defecto")
+            App.Console.PrintMessage("[VDO Nesting] Presets inicializados con valores por defecto")
 
     @staticmethod
     def get_all_presets():
@@ -51,7 +51,9 @@ class NestingPresetManager:
         try:
             data = json.loads(presets_json)
             return data.get("presets", NestingPresetManager.DEFAULT_PRESETS)
-        except:
+        except Exception as exc:
+            FreeCAD.Console.PrintWarning(
+                f"[VDO] No se pudieron leer presets: {exc}\n")
             return NestingPresetManager.DEFAULT_PRESETS
 
     @staticmethod
@@ -68,7 +70,9 @@ class NestingPresetManager:
 
         try:
             data = json.loads(presets_json)
-        except:
+        except Exception as exc:
+            FreeCAD.Console.PrintWarning(
+                f"[VDO] No se pudieron leer presets: {exc}\n")
             data = {"list": [], "presets": {}}
 
         if "list" not in data:
@@ -89,7 +93,7 @@ class NestingPresetManager:
             data["list"].append(name)
 
         prefs.SetString("Presets", json.dumps(data))
-        print(f"[VDO Nesting] Preset '{name}' guardado")
+        App.Console.PrintMessage(f"[VDO Nesting] Preset '{name}' guardado")
 
     @staticmethod
     def delete_preset(name):
@@ -99,7 +103,9 @@ class NestingPresetManager:
 
         try:
             data = json.loads(presets_json)
-        except:
+        except Exception as exc:
+            FreeCAD.Console.PrintWarning(
+                f"[VDO] No se pudieron leer presets: {exc}\n")
             return False
 
         if name in data.get("presets", {}):
@@ -109,7 +115,7 @@ class NestingPresetManager:
             data["list"].remove(name)
 
         prefs.SetString("Presets", json.dumps(data))
-        print(f"[VDO Nesting] Preset '{name}' eliminado")
+        App.Console.PrintMessage(f"[VDO Nesting] Preset '{name}' eliminado")
         return True
 
     @staticmethod
@@ -124,7 +130,7 @@ class NestingPresetManager:
         presets = NestingPresetManager.get_all_presets()
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(presets, f, indent=2, ensure_ascii=False)
-        print(f"[VDO Nesting] Presets exportados a: {filepath}")
+        App.Console.PrintMessage(f"[VDO Nesting] Presets exportados a: {filepath}")
 
     @staticmethod
     def import_presets_from_json(filepath):
@@ -148,10 +154,10 @@ class NestingPresetManager:
                     existing_data["list"].append(name)
 
             prefs.SetString("Presets", json.dumps(existing_data))
-            print(f"[VDO Nesting] Presets importados desde: {filepath}")
+            App.Console.PrintMessage(f"[VDO Nesting] Presets importados desde: {filepath}")
             return True
         except Exception as e:
-            print(f"[VDO Nesting] Error importando presets: {e}")
+            App.Console.PrintMessage(f"[VDO Nesting] Error importando presets: {e}")
             return False
 
 

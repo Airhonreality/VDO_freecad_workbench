@@ -10,8 +10,6 @@ try:
 except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
-if _RAIZ not in sys.path:
-    sys.path.insert(0, _RAIZ)
 
 from freecad.vdo.core import vdo_hardware_hub as H
 class HardwareHubTests(unittest.TestCase):

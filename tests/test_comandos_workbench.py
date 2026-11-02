@@ -13,8 +13,6 @@ import sys
 import unittest
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if RAIZ not in sys.path:
-    sys.path.insert(0, RAIZ)
 
 _RE_EXEC = re.compile(r"(?<![\w.])exec\(")  # exec() builtin; no .exec() de Qt
 
@@ -43,7 +41,6 @@ class SinExecTests(unittest.TestCase):
 _HIJO = r"""
 import os, sys
 raiz = {raiz!r}
-sys.path.insert(0, raiz)
 import FreeCAD as App
 from freecad.vdo import commands as C
 import json

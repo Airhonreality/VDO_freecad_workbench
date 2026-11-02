@@ -59,7 +59,7 @@ def extraer_piezas_panel(obj):
             material_ref=getattr(obj, "VDO_Material_Ref", "melamina_standar"),
             orientacion=orientacion)
     except VDO_RE.ReengroseError as exc:
-        print(f"⚠️  Reengrose inválido en '{obj.Label}': {exc}")
+        App.Console.PrintMessage(f"⚠️  Reengrose inválido en '{obj.Label}': {exc}")
         piezas = VDO_RE.despiece_panel(
             obj.Label, largo, ancho, espesor, VDO_RE.ReengroseModifier(),
             cantos=cantos,
@@ -89,7 +89,7 @@ def extraer_piezas_del_documento(modo="todo"):
 
     doc = App.ActiveDocument
     if not doc:
-        print("❌ No hay documento activo")
+        App.Console.PrintMessage("❌ No hay documento activo")
         return []
 
     piezas = []
@@ -108,8 +108,9 @@ def extraer_piezas_del_documento(modo="todo"):
                         try:
                             paneles_json = json.loads(obj.VDO_Paneles_JSON)
                             piezas.extend(paneles_json)
-                        except:
-                            pass
+                        except Exception as exc:
+                            App.Console.PrintWarning(
+                                f"[VDO] JSON de paneles invalido: {exc}\n")
 
     elif modo == "grupo":
         # Solo el módulo activo
@@ -122,10 +123,11 @@ def extraer_piezas_del_documento(modo="todo"):
                     try:
                         paneles_json = json.loads(modulo.VDO_Paneles_JSON)
                         piezas.extend(paneles_json)
-                    except:
-                        pass
+                    except Exception as exc:
+                        App.Console.PrintWarning(
+                            f"[VDO] JSON de paneles invalido: {exc}\n")
 
-    else:  # "todo"
+    else:  # "todo":
         # Todas las piezas del documento
         for obj in doc.Objects:
             if hasattr(obj, "VDO_Tipo"):
@@ -137,8 +139,9 @@ def extraer_piezas_del_documento(modo="todo"):
                         try:
                             paneles_json = json.loads(obj.VDO_Paneles_JSON)
                             piezas.extend(paneles_json)
-                        except:
-                            pass
+                        except Exception as exc:
+                            App.Console.PrintWarning(
+                                f"[VDO] JSON de paneles invalido: {exc}\n")
 
     return piezas
 
@@ -158,7 +161,7 @@ def generar_csv_opencutlist(piezas, output_path):
     """Genera CSV compatible con OpenCutList"""
 
     if not vdo_manifest.get_loader():
-        print("❌ No se pudo cargar configuración VDO")
+        App.Console.PrintMessage("❌ No se pudo cargar configuración VDO")
         return False
 
     try:
@@ -190,7 +193,7 @@ def generar_csv_opencutlist(piezas, output_path):
                 material = vdo_manifest.get_material(mat_id)
 
                 if not material:
-                    print(f"⚠️  Material no encontrado: {mat_id}")
+                    App.Console.PrintMessage(f"⚠️  Material no encontrado: {mat_id}")
                     continue
 
                 # Construir string de material (sin hardcode)
@@ -234,33 +237,33 @@ def generar_csv_opencutlist(piezas, output_path):
                 "TOTAL COSTO MATERIAL", "", "", "", "", "", "",
                 f"{total_costo:.2f}", "", "", "", "", "", ""])
 
-        print(f"✅ Exportado: {output_path}")
-        print(f"💰 Costo total de material: ${total_costo:.2f}")
+        App.Console.PrintMessage(f"✅ Exportado: {output_path}")
+        App.Console.PrintMessage(f"💰 Costo total de material: ${total_costo:.2f}")
         return True
 
     except Exception as e:
-        print(f"❌ Error escribiendo CSV: {e}")
+        App.Console.PrintMessage(f"❌ Error escribiendo CSV: {e}")
         return False
 
 
 def main(modo="todo"):
     """Main: Extrae, previsualia, exporta"""
-    print("=" * 70)
-    print(f"📊 VDO EXPORT CUTTING LIST - {modo.upper()}")
-    print("=" * 70)
+    App.Console.PrintMessage("=" * 70)
+    App.Console.PrintMessage(f"📊 VDO EXPORT CUTTING LIST - {modo.upper()}")
+    App.Console.PrintMessage("=" * 70)
 
     # Extraer piezas
-    print(f"\n🔍 Extrayendo piezas ({modo})...")
+    App.Console.PrintMessage(f"\n🔍 Extrayendo piezas ({modo})...")
     piezas = extraer_piezas_del_documento(modo)
 
     if not piezas:
-        print("⚠️  No se encontraron piezas de melamina para exportar")
+        App.Console.PrintMessage("⚠️  No se encontraron piezas de melamina para exportar")
         return False
 
-    print(f"✅ {len(piezas)} piezas encontradas")
+    App.Console.PrintMessage(f"✅ {len(piezas)} piezas encontradas")
 
     # Mostrar preview (colorear y confirmar)
-    print("\n🎨 Mostrando preview...")
+    App.Console.PrintMessage("\n🎨 Mostrando preview...")
     from freecad.vdo.ui import vdo_cutting_list_preview
     vdo_cutting_list_preview.main(modo=modo)
 

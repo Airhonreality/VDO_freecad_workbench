@@ -17,8 +17,6 @@ import sys
 import unittest
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if RAIZ not in sys.path:
-    sys.path.insert(0, RAIZ)
 
 def _freecad_real_en_hijo():
     """¿Hay un FreeCAD real? Se pregunta a un proceso hijo: en el padre, test_cajon_core puede
@@ -30,7 +28,6 @@ def _freecad_real_en_hijo():
 _SCRIPT_HIJO = r"""
 import importlib, json, os, sys
 raiz = {raiz!r}
-sys.path.insert(0, raiz)
 import FreeCAD  # noqa
 antes = set(sys.modules)
 carpeta = os.path.join(raiz, "freecad", "vdo", "core")

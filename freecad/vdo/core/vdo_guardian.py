@@ -19,7 +19,7 @@ def _obtener_hoja(doc, nombre):
     if hoja is None:
         hoja = doc.addObject("Spreadsheet::Sheet", nombre)
         hoja.Label = nombre
-        print(f"[VDO Guardian] Creada hoja: {nombre}")
+        App.Console.PrintMessage(f"[VDO Guardian] Creada hoja: {nombre}")
     return hoja
 
 
@@ -46,7 +46,7 @@ def _asegurar_parametros(hoja, fila_inicio, fila_valor, fila_descripcion,
             hoja.setAlias(f"{fila_valor}{fila}", nombre)
         if "descripcion" in info and info["descripcion"]:
             hoja.set(f"{fila_descripcion}{fila}", f"'{info['descripcion']}")
-        print(f"[VDO Guardian] Parametro '{nombre}' = {info['valor']} mm")
+        App.Console.PrintMessage(f"[VDO Guardian] Parametro '{nombre}' = {info['valor']} mm")
 
 
 def asegurar_hoja_global(doc):
@@ -88,7 +88,7 @@ def asegurar_documento():
     doc = App.ActiveDocument
     if doc is None:
         doc = App.newDocument("VDO")
-        print("[VDO Guardian] No había documento activo; se creó VDO.")
+        App.Console.PrintMessage("[VDO Guardian] No había documento activo; se creó VDO.")
     return doc
 
 
@@ -102,6 +102,6 @@ def vdo_guard(doc=None):
 
     doc.recompute()
     version = VM.VDO_MANIFEST["version"]
-    print(f"[VDO Guardian] Entorno asegurado v{version}: "
+    App.Console.PrintMessage(f"[VDO Guardian] Entorno asegurado v{version}: "
           f"{hoja_global.Name} + {hoja_local.Name}")
     return doc

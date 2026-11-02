@@ -15,8 +15,6 @@ try:
 except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
-if _RAIZ not in sys.path:
-    sys.path.insert(0, _RAIZ)
 
 from freecad.vdo.core import vdo_layout as VDO_LAYOUT
 from freecad.vdo.core import vdo_reengrose as VDO_RE
@@ -46,6 +44,36 @@ def _buscar_celda(resuelto, etiqueta):
         if celda.label == etiqueta:
             return celda
     raise AssertionError(f"No se encontro la celda resuelta {etiqueta!r}.")
+
+
+def _escanean_fuente_freecad():
+    """Genera el codigo fuente de todos los modulos de freecad/."""
+    raiz = os.path.join(_RAIZ, "freecad")
+    for carpeta, _dirs, archivos in os.walk(raiz):
+        for nombre in archivos:
+            if nombre.endswith(".py"):
+                with open(os.path.join(carpeta, nombre), encoding="utf-8") as fh:
+                    yield fh.read()
+
+
+class TestReglasCalidadFreecad(unittest.TestCase):
+    """Verifica las reglas de calidad D-16 (exceptos visibles) y D-17 (sin print)."""
+
+    def test_no_print_en_freecad(self):
+        """No debe haber llamadas a print() en freecad/ (usa App.Console)."""
+        patron = re.compile(r"^\s*print\(", re.MULTILINE)
+        for fuente in _escanean_fuente_freecad():
+            self.assertIsNone(
+                patron.search(fuente),
+                "Se encontro una llamada a print() en freecad/; usar App.Console.")
+
+    def test_no_except_desnudo_en_freecad(self):
+        """No debe haber 'except:' desnudo en freecad/."""
+        patron = re.compile(r"except:\s*$", re.MULTILINE)
+        for fuente in _escanean_fuente_freecad():
+            self.assertIsNone(
+                patron.search(fuente),
+                "Se encontro 'except:' desnudo en freecad/; usar 'except Exception'.")
 
 
 def _contrato_vano(celda):

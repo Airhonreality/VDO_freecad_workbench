@@ -15,8 +15,6 @@ try:
 except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
-if _RAIZ not in sys.path:
-    sys.path.insert(0, _RAIZ)
 
 from freecad.vdo.core import vdo_puerta_despiece as D
 class DespieceBatienteTests(unittest.TestCase):
