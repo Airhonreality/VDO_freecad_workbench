@@ -19,7 +19,7 @@ from freecad.vdo.core.vdo_spaces import (
     calcular_espacio_libre
 )
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
-from freecad.vdo.ui.vdo_coco_divisions_task import DivisionesEditor
+from freecad.vdo.ui.vdo_widgets_coco import DivisionesEditor
 from freecad.vdo.core.vdo_module_props import (
     ANCLAJES, ANCLAJE_DEFAULT, ANCLAJE_LABELS,
     add_common_props, aplicar_rotacion

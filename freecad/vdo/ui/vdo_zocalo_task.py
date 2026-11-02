@@ -9,7 +9,7 @@ from freecad.vdo.qt_compat import QtGui, QtWidgets
 
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 
-from freecad.vdo.ui.vdo_coco_divisions_task import PanelHeaderWidget
+from freecad.vdo.ui.vdo_widgets_coco import PanelHeaderWidget
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
 from freecad.vdo.core.vdo_module_props import (
     ANCLAJES, ANCLAJE_DEFAULT, ANCLAJE_LABELS,
