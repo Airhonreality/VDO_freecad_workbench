@@ -1,0 +1,18 @@
+{
+  "cota_k": 4.0,
+  "cota_x": 21.5,
+  "diametro_cazoleta": 35.0,
+  "moneda": "USD",
+  "n_bisagras": 2,
+  "nombre": "Bisagra Cazoleta 35mm Cierre Suave - Recta (Parche)",
+  "posiciones_z": [
+    100.0,
+    700.0
+  ],
+  "precio_unitario": 1.2,
+  "profundidad_cazoleta": 11.5,
+  "proveedor": "Genérico / Taller",
+  "sku": "PARCHE",
+  "tipo_montaje": "parche",
+  "total": 2.4
+}

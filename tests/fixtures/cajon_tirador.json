@@ -1,0 +1,229 @@
+{
+  "avisos": [],
+  "caja": {
+    "alto_contra": 102.5,
+    "alto_lateral": 120.0,
+    "ancho_contra": 519.0,
+    "ancho_exterior": 551.0,
+    "ancho_piso": 539.0,
+    "grosor": 16.0,
+    "grosor_piso": 6.0,
+    "largo_lateral": 550.0,
+    "largo_piso": 550.0,
+    "montaje_trasera": "entre_laterales",
+    "z_piso": 11.5
+  },
+  "fachada": {
+    "alto": 221.0,
+    "alto_nominal": 221.0,
+    "ancho": 581.0,
+    "cantos": {
+      "este": "FX",
+      "norte": "FX",
+      "oeste": "FX",
+      "sur": "FX"
+    },
+    "espesor": 18.0,
+    "necesita_bisel_45": false,
+    "necesita_expulsor": false,
+    "necesita_gola": false,
+    "operacion_canto": "CANTO_ESTANDAR",
+    "sistema_apertura": "tirador",
+    "tipo_montaje": "parche"
+  },
+  "guia": {
+    "auto": true,
+    "delta": 49.0,
+    "lg": 550.0,
+    "marca": "blum_tandem",
+    "prof_int": 580.0
+  },
+  "mecanizados": {
+    "diam_taladro": 6.0,
+    "dist_taladro_borde_trasero": 8.0,
+    "eje_ranura": 11.5,
+    "grosor_fondo": 6.0,
+    "marca": "blum_tandem",
+    "notch_alto": 12.0,
+    "notch_ancho": 35.0,
+    "prof_ranura_lateral": 4.0,
+    "prof_taladro": 12.0
+  },
+  "piezas": [
+    {
+      "ancho": 120.0,
+      "cantidad": 1,
+      "espesor": 16.0,
+      "largo": 550.0,
+      "material_ref": "melamina_standar",
+      "mecanizados": [
+        {
+          "ancho": 6.0,
+          "cara": "interna",
+          "largo": 550.0,
+          "prof": 4.0,
+          "tipo": "ranura_piso",
+          "z_base": 11.5
+        },
+        {
+          "prof": 12.0,
+          "tipo": "taladro_fondo",
+          "x_centrada": true,
+          "y_desde_trasero": 8.0,
+          "ø": 6.0
+        }
+      ],
+      "nombre": "Cajon_Lateral_Izq",
+      "tipo": "panel"
+    },
+    {
+      "ancho": 120.0,
+      "cantidad": 1,
+      "espesor": 16.0,
+      "largo": 550.0,
+      "material_ref": "melamina_standar",
+      "mecanizados": [
+        {
+          "ancho": 6.0,
+          "cara": "interna",
+          "largo": 550.0,
+          "prof": 4.0,
+          "tipo": "ranura_piso",
+          "z_base": 11.5
+        },
+        {
+          "prof": 12.0,
+          "tipo": "taladro_fondo",
+          "x_centrada": true,
+          "y_desde_trasero": 8.0,
+          "ø": 6.0
+        }
+      ],
+      "nombre": "Cajon_Lateral_Der",
+      "tipo": "panel"
+    },
+    {
+      "ancho": 102.5,
+      "cantidad": 1,
+      "espesor": 16.0,
+      "largo": 519.0,
+      "material_ref": "melamina_standar",
+      "mecanizados": [
+        {
+          "alto": 12.0,
+          "ancho": 35.0,
+          "lados": "ambos",
+          "tipo": "notch_inferior"
+        }
+      ],
+      "nombre": "Cajon_Contrafrente",
+      "tipo": "panel"
+    },
+    {
+      "ancho": 102.5,
+      "cantidad": 1,
+      "espesor": 16.0,
+      "largo": 519.0,
+      "material_ref": "melamina_standar",
+      "mecanizados": [
+        {
+          "cara": "inferior",
+          "nota": "Gancho de acople (locking device) según ficha",
+          "tipo": "zona_locking_device"
+        }
+      ],
+      "nombre": "Cajon_Frente_Interior",
+      "tipo": "panel"
+    },
+    {
+      "ancho": 539.0,
+      "cantidad": 1,
+      "espesor": 6.0,
+      "largo": 550.0,
+      "material_ref": "melamina_standar",
+      "mecanizados": [],
+      "nombre": "Cajon_Piso",
+      "tipo": "panel"
+    },
+    {
+      "ancho": 221.0,
+      "cantidad": 1,
+      "cantos": {
+        "este": "FX",
+        "norte": "FX",
+        "oeste": "FX",
+        "sur": "FX"
+      },
+      "espesor": 18.0,
+      "largo": 581.0,
+      "material_ref": "melamina_standar",
+      "mecanizados": [
+        {
+          "caras": 4,
+          "nota": "Fachada: 4 cantos (convención VDO)",
+          "tipo": "canto"
+        },
+        {
+          "cara": "superior",
+          "nota": "Sistema de apertura: tirador",
+          "tipo": "CANTO_ESTANDAR"
+        }
+      ],
+      "nombre": "Cajon_Fachada",
+      "operacion_canto": "CANTO_ESTANDAR",
+      "sistema_apertura": "tirador",
+      "tipo": "panel"
+    }
+  ],
+  "posiciones": {
+    "contra_frente": {
+      "largo_x": 519.0,
+      "largo_y": 16.0,
+      "largo_z": 102.5,
+      "x": 16.0,
+      "y": 534.0,
+      "z": 17.5
+    },
+    "fachada": {
+      "largo_x": 581.0,
+      "largo_y": 18.0,
+      "largo_z": 221.0,
+      "x": -15.0,
+      "y": -18.0,
+      "z": 0.0
+    },
+    "frente_interior": {
+      "largo_x": 519.0,
+      "largo_y": 16.0,
+      "largo_z": 102.5,
+      "x": 16.0,
+      "y": 0.0,
+      "z": 17.5
+    },
+    "lateral_derecho": {
+      "largo_x": 16.0,
+      "largo_y": 550.0,
+      "largo_z": 120.0,
+      "x": 535.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "lateral_izquierdo": {
+      "largo_x": 16.0,
+      "largo_y": 550.0,
+      "largo_z": 120.0,
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "piso": {
+      "largo_x": 539.0,
+      "largo_y": 550.0,
+      "largo_z": 6.0,
+      "x": 6.0,
+      "y": 0.0,
+      "z": 11.5
+    }
+  },
+  "tipo_corredera": "oculta"
+}

@@ -1,0 +1,38 @@
+{
+  "alto_hoja": 1967.0,
+  "ancho_hoja": 617.5,
+  "descuento_altura_hoja": 33.0,
+  "hojas": [
+    {
+      "alto_corte": 1967.0,
+      "ancho_corte": 617.5,
+      "descuento_altura_hoja": 33.0,
+      "hoja": 1,
+      "nombre": "Kit Corredizo Ducasse D-52 (Closet / Placard al Piso)",
+      "proveedor": "Ducasse Industrial",
+      "sku": "DUC-KIT-D52",
+      "traslape_minimo": 35.0
+    },
+    {
+      "alto_corte": 1967.0,
+      "ancho_corte": 617.5,
+      "descuento_altura_hoja": 33.0,
+      "hoja": 2,
+      "nombre": "Kit Corredizo Ducasse D-52 (Closet / Placard al Piso)",
+      "proveedor": "Ducasse Industrial",
+      "sku": "DUC-KIT-D52",
+      "traslape_minimo": 35.0
+    }
+  ],
+  "inner_h": 2000.0,
+  "inner_w": 1200.0,
+  "moneda": "USD",
+  "n_hojas": 2,
+  "nombre": "Kit Corredizo Ducasse D-52 (Closet / Placard al Piso)",
+  "precio_unitario": 18.5,
+  "proveedor": "Ducasse Industrial",
+  "sku": "DUC-KIT-D52",
+  "sku_resuelto": "DUC-KIT-D52",
+  "tipo_mueble": "closet",
+  "traslape_minimo": 35.0
+}
