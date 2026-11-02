@@ -130,6 +130,14 @@ def necesita_bisel_45(sistema_apertura: str) -> bool:
     return str(sistema_apertura).strip().lower() == APERTURA_45_GRADOS
 
 
+def necesita_cantos_45(sistema_apertura: str) -> bool:
+    """True si el sistema requiere bisel a 45° en el canto de agarre.
+
+    Alias de `necesita_bisel_45` para el vocabulario de puertas.
+    """
+    return necesita_bisel_45(sistema_apertura)
+
+
 def necesita_expulsor_magnetico(sistema_apertura: str) -> bool:
     """True si el sistema inyecta expulsor magnetico al BOM (push_open)."""
     return str(sistema_apertura).strip().lower() == APERTURA_PUSH_OPEN
@@ -194,6 +202,7 @@ __all__ = [
     "aplicar_sistema_apertura",
     "necesita_descuento_gola",
     "necesita_bisel_45",
+    "necesita_cantos_45",
     "necesita_expulsor_magnetico",
     "cantos_por_sistema_apertura",
     # Utilidades

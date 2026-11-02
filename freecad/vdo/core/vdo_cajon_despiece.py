@@ -14,20 +14,14 @@
 #   Gfrente  = grosor de la fachada (18 mm)
 # =====================================================================
 
-import json
-import os
-import sys
+from freecad.vdo.core.vdo_manifest import _obtener_json
+
+_MANIFEST = _obtener_json()
 
 # Tipologías de corredera (compatibles con vdo_cajon_core.py)
 CORREDERA_TELESCOPICA = "telescopica"
 CORREDERA_OCULTA = "oculta"
 CAJA_METALICA = "metalica"
-
-_here = os.path.dirname(os.path.abspath(__file__))
-_manifest_path = os.path.join(_here, "vdo_manifest.json")
-
-with open(_manifest_path, "r", encoding="utf-8") as _f:
-    _MANIFEST = json.load(_f)
 
 try:
     from freecad.vdo.core import vdo_hardware_hub as H
@@ -49,7 +43,6 @@ except ImportError:
     APERTURA_TIRADOR = "tirador"
     APERTURA_GOLA = "gola_aluminio"
     APERTURA_45_GRADOS = "inglete_45"
-    APERTURA_PUSH_OPEN = "push_open"
     OPERACION_CANTO_ESTANDAR = "CANTO_ESTANDAR"
     OPERACION_CANTO_GOLA = "CORTE_RECTO_GOLA"
     OPERACION_CANTO_45 = "BISEL_45"
@@ -99,9 +92,6 @@ except ImportError:
 
     def necesita_bisel_45(sistema):
         return sistema == APERTURA_45_GRADOS
-
-    def necesita_expulsor_magnetico(sistema):
-        return sistema == APERTURA_PUSH_OPEN
 
 
 def obtener_marca(marca_id):

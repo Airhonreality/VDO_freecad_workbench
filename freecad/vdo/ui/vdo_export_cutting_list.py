@@ -20,7 +20,7 @@ except ImportError:
 
 # Importar loader
 _macro_dir = Path(__file__).parent
-from freecad.vdo.core import vdo_loader
+from freecad.vdo.core import vdo_manifest
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 
 
@@ -157,8 +157,7 @@ def agrupar_piezas_por_material(piezas):
 def generar_csv_opencutlist(piezas, output_path):
     """Genera CSV compatible con OpenCutList"""
 
-    loader = vdo_loader.get_loader()
-    if not loader:
+    if not vdo_manifest.get_loader():
         print("❌ No se pudo cargar configuración VDO")
         return False
 
@@ -188,7 +187,7 @@ def generar_csv_opencutlist(piezas, output_path):
             total_costo = 0
             for pieza in piezas:
                 mat_id = pieza["material_ref"]
-                material = loader.get_material(mat_id)
+                material = vdo_manifest.get_material(mat_id)
 
                 if not material:
                     print(f"⚠️  Material no encontrado: {mat_id}")
@@ -207,7 +206,7 @@ def generar_csv_opencutlist(piezas, output_path):
 
                 # Calcular costo
                 area_m2 = (pieza["largo"] * pieza["ancho"]) / 1000000
-                costo_unitario = loader.calcular_costo_material(mat_id, area_m2)
+                costo_unitario = vdo_manifest.calcular_costo_material(mat_id, area_m2)
                 costo_total = costo_unitario * pieza["cantidad"]
                 total_costo += costo_total
 

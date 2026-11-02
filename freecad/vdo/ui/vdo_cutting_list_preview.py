@@ -25,7 +25,7 @@ from freecad.vdo.qt_compat import QtCore, QtWidgets
 
 _macro_dir = Path(__file__).parent
 from freecad.vdo.ui import vdo_export_cutting_list
-from freecad.vdo.core import vdo_loader
+from freecad.vdo.core import vdo_manifest
 
 
 class CuttingListPreviewPanel:
@@ -59,13 +59,12 @@ class CuttingListPreviewPanel:
         self.tabla.setRowCount(len(piezas))
         self.tabla.setMaximumHeight(200)
 
-        loader = vdo_loader.get_loader()
         total_costo = 0
 
         for row, pieza in enumerate(piezas):
             nombre = QtWidgets.QTableWidgetItem(pieza.get("nombre", "???"))
             mat_id = pieza.get("material_ref", "")
-            material = loader.get_material(mat_id) if loader else None
+            material = vdo_manifest.get_material(mat_id)
             mat_str = material["nombre"] if material else mat_id
             mat_item = QtWidgets.QTableWidgetItem(mat_str)
 
@@ -77,7 +76,7 @@ class CuttingListPreviewPanel:
             # Costo
             if material:
                 area_m2 = (pieza["largo"] * pieza["ancho"]) / 1000000
-                costo = loader.calcular_costo_material(mat_id, area_m2)
+                costo = vdo_manifest.calcular_costo_material(mat_id, area_m2)
                 total_costo += costo
                 costo_item = QtWidgets.QTableWidgetItem(f"${costo:.2f}")
             else:

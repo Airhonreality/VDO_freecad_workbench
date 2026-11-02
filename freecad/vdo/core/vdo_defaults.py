@@ -9,16 +9,7 @@ import json
 import os
 import importlib
 
-def _cargar_json_fresco():
-    """Carga vdo_manifest.json directamente, sin caché."""
-    macro_dir = os.path.dirname(os.path.abspath(__file__))
-    json_path = os.path.join(macro_dir, "vdo_manifest.json")
-
-    if not os.path.exists(json_path):
-        raise FileNotFoundError(f"vdo_manifest.json no encontrado en: {json_path}")
-
-    with open(json_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
+from freecad.vdo.core.vdo_manifest import _obtener_json as _cargar_json_fresco
 
 # Cargar JSON fresco (NO cacheado)
 _MANIFEST = _cargar_json_fresco()

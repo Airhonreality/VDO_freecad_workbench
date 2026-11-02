@@ -26,6 +26,7 @@ from freecad.vdo.core.vdo_facade_contract import (
     OPERACION_CANTO_ESTANDAR, OPERACION_CANTO_GOLA, OPERACION_CANTO_45,
     calcular_fachada_base, aplicar_sistema_apertura,
     necesita_descuento_gola, necesita_bisel_45, necesita_expulsor_magnetico,
+    necesita_cantos_45,
     cantos_por_sistema_apertura,
     SISTEMAS_APERTURA_VALIDOS,
 )
@@ -246,6 +247,12 @@ class TestFuncionesAuxiliares(unittest.TestCase):
         self.assertFalse(necesita_expulsor_magnetico(APERTURA_TIRADOR))
         self.assertFalse(necesita_expulsor_magnetico(APERTURA_GOLA))
         self.assertFalse(necesita_expulsor_magnetico(APERTURA_45_GRADOS))
+
+    def test_necesita_cantos_45(self):
+        self.assertTrue(necesita_cantos_45(APERTURA_45_GRADOS))
+        self.assertFalse(necesita_cantos_45(APERTURA_TIRADOR))
+        self.assertFalse(necesita_cantos_45(APERTURA_GOLA))
+        self.assertFalse(necesita_cantos_45(APERTURA_PUSH_OPEN))
 
     def test_cantos_por_sistema_apertura(self):
         """Los cantos se asignan correctamente por sistema de apertura."""

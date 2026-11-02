@@ -16,6 +16,7 @@ from freecad.vdo.core.vdo_facade_contract import (
     SOLAPE_PARCHE_NOMINAL, BISEL_45_ANGULO_DEFAULT, CALLE_ENTRE_FRENTES_DEFAULT,
     calcular_fachada_base, aplicar_sistema_apertura,
     necesita_descuento_gola, necesita_bisel_45, necesita_expulsor_magnetico,
+    necesita_cantos_45,
     cantos_por_sistema_apertura,
 )
 from freecad.vdo.core.vdo_hardware_hub import resolve_hinge, resolve_sliding, calculate_sliding_doors
@@ -328,21 +329,7 @@ def ajuste_altura_apertura(tipo_apertura, H):
     return (round(h_ajustada, 6), round(descuento, 6))
 
 
-def necesita_expulsor_magnetico(tipo_apertura):
-    """True si inyecta expulsor magnetico al BOM (push_open)."""
-    return necesita_expulsor_magnetico_contrato(tipo_apertura)
 
-
-def necesita_expulsor_magnetico_contrato(tipo_apertura):
-    """Wrapper interno para evitar colisión de nombres."""
-    contrato = _normalizar_apertura(tipo_apertura)
-    return contrato == APERTURA_PUSH_OPEN
-
-
-def necesita_cantos_45(tipo_apertura):
-    """True si aplica bisel a 45° en el canto de agarre."""
-    contrato = _normalizar_apertura(tipo_apertura)
-    return contrato == APERTURA_45_GRADOS
 
 
 __all__ = [
