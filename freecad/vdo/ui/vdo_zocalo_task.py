@@ -7,7 +7,7 @@
 import FreeCAD as App
 from freecad.vdo.qt_compat import QtGui, QtWidgets
 
-from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
+from freecad.vdo.ui.vdo_form_builder import FormBuilder
 
 from freecad.vdo.ui.vdo_widgets_coco import PanelHeaderWidget
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
@@ -49,110 +49,82 @@ class ZocaloTaskPanel(VDOTransactionMixin):
         self.header = PanelHeaderWidget()
         main_layout.addWidget(self.header)
 
+        self._form_builder = FormBuilder(widget)
+
         grupo_dim = QtWidgets.QGroupBox("Dimensiones del mueble")
         grid_dim = QtWidgets.QGridLayout(grupo_dim)
 
-        grid_dim.addWidget(QtWidgets.QLabel("Ancho (mm):"), 0, 0)
-        self.spin_ancho = VDO_DoubleSpinBox()
-        self.spin_ancho.setRange(1, 4000)
-        self.spin_ancho.setSuffix(" mm")
-        self.spin_ancho.setDecimals(1)
-        self.spin_ancho.setToolTip(
-            "Ancho total del mueble; define el largo de la tira frontal.")
-        grid_dim.addWidget(self.spin_ancho, 0, 1)
-
-        grid_dim.addWidget(QtWidgets.QLabel("Fondo (mm):"), 1, 0)
-        self.spin_fondo = VDO_DoubleSpinBox()
-        self.spin_fondo.setRange(1, 2000)
-        self.spin_fondo.setSuffix(" mm")
-        self.spin_fondo.setDecimals(1)
-        self.spin_fondo.setToolTip(
-            "Fondo total del mueble; limita el largo de los laterales.")
-        grid_dim.addWidget(self.spin_fondo, 1, 1)
-
-        grid_dim.addWidget(QtWidgets.QLabel("Alto zócalo (mm):"), 2, 0)
-        self.spin_alto = VDO_DoubleSpinBox()
-        self.spin_alto.setRange(1, 400)
-        self.spin_alto.setSuffix(" mm")
-        self.spin_alto.setDecimals(1)
-        self.spin_alto.setToolTip(
-            "Altura física del zócalo (por ejemplo 100 o 120 mm).")
-        grid_dim.addWidget(self.spin_alto, 2, 1)
-
-        grid_dim.addWidget(QtWidgets.QLabel("Espesor tablero (mm):"), 3, 0)
-        self.spin_espesor = QtWidgets.QSpinBox()
-        self.spin_espesor.setRange(1, 40)
-        self.spin_espesor.setSuffix(" mm")
-        self.spin_espesor.setToolTip(
-            "Espesor de las tiras de melamina del zócalo.")
-        grid_dim.addWidget(self.spin_espesor, 3, 1)
+        self.spin_ancho = self._campo(grid_dim, 0, "Ancho (mm):",
+                                      "ancho", "double_spin", (1, 4000), 1,
+                                      " mm",
+                                      "Ancho total del mueble; define el "
+                                      "largo de la tira frontal.")
+        self.spin_fondo = self._campo(grid_dim, 1, "Fondo (mm):",
+                                      "fondo", "double_spin", (1, 2000), 1,
+                                      " mm",
+                                      "Fondo total del mueble; limita el "
+                                      "largo de los laterales.")
+        self.spin_alto = self._campo(grid_dim, 2, "Alto zócalo (mm):",
+                                     "alto", "double_spin", (1, 400), 1,
+                                     " mm",
+                                     "Altura física del zócalo (por ejemplo "
+                                     "100 o 120 mm).")
+        self.spin_espesor = self._campo(grid_dim, 3, "Espesor tablero (mm):",
+                                        "espesor", "spin", (1, 40), None,
+                                        " mm",
+                                        "Espesor de las tiras de melamina "
+                                        "del zócalo.")
 
         main_layout.addWidget(grupo_dim)
 
         grupo_sep = QtWidgets.QGroupBox("Separación y encuentros")
         grid_sep = QtWidgets.QGridLayout(grupo_sep)
 
-        grid_sep.addWidget(QtWidgets.QLabel("Separación frontal:"), 0, 0)
-        self.spin_frente = VDO_DoubleSpinBox()
-        self.spin_frente.setRange(0, 500)
-        self.spin_frente.setSuffix(" mm")
-        self.spin_frente.setDecimals(1)
-        self.spin_frente.setToolTip(
-            "Distancia desde el frente del mueble hacia adentro. "
-            "Deja espacio libre para no golpear los pies.")
-        grid_sep.addWidget(self.spin_frente, 0, 1)
-
-        grid_sep.addWidget(QtWidgets.QLabel("Distancia costados:"), 1, 0)
-        self.spin_costados = VDO_DoubleSpinBox()
-        self.spin_costados.setRange(0, 500)
-        self.spin_costados.setSuffix(" mm")
-        self.spin_costados.setDecimals(1)
-        self.spin_costados.setToolTip(
-            "Separación desde cada costado del mueble (0 = al ras).")
-        grid_sep.addWidget(self.spin_costados, 1, 1)
-
-        grid_sep.addWidget(QtWidgets.QLabel("Distancia trasera:"), 2, 0)
-        self.spin_trasera = VDO_DoubleSpinBox()
-        self.spin_trasera.setRange(0, 500)
-        self.spin_trasera.setSuffix(" mm")
-        self.spin_trasera.setDecimals(1)
-        self.spin_trasera.setToolTip(
-            "Separación desde el fondo del mueble para librar el rodapié "
-            "de la pared.")
-        grid_sep.addWidget(self.spin_trasera, 2, 1)
-
-        self.chk_trasera = QtWidgets.QCheckBox("Tiene trasera")
-        self.chk_trasera.setToolTip(
-            "Cierra el cajón del zócalo por detrás.")
-        grid_sep.addWidget(self.chk_trasera, 3, 0, 1, 2)
+        self.spin_frente = self._campo(grid_sep, 0, "Separación frontal:",
+                                       "frente", "double_spin", (0, 500), 1,
+                                       " mm",
+                                       "Distancia desde el frente del mueble "
+                                       "hacia adentro. Deja espacio libre "
+                                       "para no golpear los pies.")
+        self.spin_costados = self._campo(grid_sep, 1, "Distancia costados:",
+                                         "costados", "double_spin", (0, 500),
+                                         1, " mm",
+                                         "Separación desde cada costado del "
+                                         "mueble (0 = al ras).")
+        self.spin_trasera = self._campo(grid_sep, 2, "Distancia trasera:",
+                                        "trasera", "double_spin", (0, 500),
+                                        1, " mm",
+                                        "Separación desde el fondo del mueble "
+                                        "para librar el rodapié de la pared.")
+        self.chk_trasera = self._campo(grid_sep, 3, "Tiene trasera",
+                                       "trasera_habilitada", "checkbox",
+                                       None, None, None,
+                                       "Cierra el cajón del zócalo por "
+                                       "detrás.", fila=3, colspan=2)
 
         main_layout.addWidget(grupo_sep)
 
         grupo_est = QtWidgets.QGroupBox("Estructura")
         grid_est = QtWidgets.QGridLayout(grupo_est)
 
-        grid_est.addWidget(QtWidgets.QLabel("Divisiones interiores:"), 0, 0)
-        self.spin_amarres = QtWidgets.QSpinBox()
-        self.spin_amarres.setRange(0, 20)
-        self.spin_amarres.setToolTip(
-            "Partes iguales del hueco interior entre frente y trasera. "
-            "Se resuelven con el motor de división de vanos (vdo_layout).")
-        grid_est.addWidget(self.spin_amarres, 0, 1)
+        self.spin_amarres = self._campo(grid_est, 0, "Divisiones interiores:",
+                                        "amarres", "spin", (0, 20), None, None,
+                                        "Partes iguales del hueco interior "
+                                        "entre frente y trasera. Se resuelven "
+                                        "con el motor de división de vanos "
+                                        "(vdo_layout).")
 
         main_layout.addWidget(grupo_est)
 
         grupo_coloc = QtWidgets.QGroupBox("Colocación")
         grid_coloc = QtWidgets.QGridLayout(grupo_coloc)
 
-        grid_coloc.addWidget(QtWidgets.QLabel("Rotación Z:"), 0, 0)
-        self.spin_rotacion = VDO_DoubleSpinBox()
-        self.spin_rotacion.setRange(-360.0, 360.0)
-        self.spin_rotacion.setDecimals(1)
-        self.spin_rotacion.setSuffix(" °")
-        self.spin_rotacion.setWrapping(True)
-        self.spin_rotacion.setToolTip(
-            "Rotación de colocación alrededor de Z. No cambia la geometría.")
-        grid_coloc.addWidget(self.spin_rotacion, 0, 1)
+        self.spin_rotacion = self._campo(grid_coloc, 0, "Rotación Z:",
+                                         "rotacion", "double_spin",
+                                         (-360.0, 360.0), 1, " °",
+                                         "Rotación de colocación alrededor "
+                                         "de Z. No cambia la geometría.",
+                                         wrapping=True)
 
         grid_coloc.addWidget(QtWidgets.QLabel("Anclaje:"), 1, 0)
         self.combo_anclaje = QtWidgets.QComboBox()
@@ -193,6 +165,50 @@ class ZocaloTaskPanel(VDOTransactionMixin):
         self.chk_trasera.setChecked(True)
 
         return widget
+
+    def _campo(self, grid, fila, etiqueta, clave, tipo, rango=None,
+               decimales=None, sufijo=None, tooltip=None, wrapping=False,
+               fila_check=None, colspan=1):
+        """Añade un campo al builder y lo coloca en el grid del grupo."""
+        espec = {
+            "tipo": tipo,
+            "etiqueta": etiqueta,
+            "clave": clave,
+            "valor_defecto": self._valor_defecto(clave, tipo),
+            "rango": rango,
+            "decimales": decimales,
+            "sufijo": sufijo,
+            "tooltip": tooltip,
+        }
+        if tipo == "combo":
+            espec["items"] = [
+                (ANCLAJE_LABELS.get(a, a), a) for a in ANCLAJES]
+        campo = self._form_builder.agregar(espec)
+        w = campo.crear_widget()
+        if wrapping and tipo == "double_spin":
+            w.setWrapping(True)
+        if tipo == "checkbox":
+            grid.addWidget(QtWidgets.QLabel(etiqueta), fila_check, 0)
+            grid.addWidget(w, fila_check, 1, 1, colspan)
+        elif tipo == "combo":
+            grid.addWidget(QtWidgets.QLabel(etiqueta), fila, 0)
+            grid.addWidget(w, fila, 1)
+        else:
+            grid.addWidget(QtWidgets.QLabel(etiqueta), fila, 0)
+            grid.addWidget(w, fila, 1)
+        return w
+
+    @staticmethod
+    def _valor_defecto(clave, tipo):
+        defectos = {
+            "ancho": 600.0, "fondo": 580.0, "alto": 120.0, "espesor": 18,
+            "frente": 0.0, "costados": 0.0, "trasera": 0.0,
+            "amarres": 0, "rotacion": 0.0, "trasera_habilitada": True,
+        }
+        valor = defectos.get(clave, 0.0)
+        if tipo == "spin":
+            return int(valor)
+        return valor
 
     # -----------------------------------------------------------------
     def _on_trasera(self, activo):

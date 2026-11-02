@@ -26,7 +26,7 @@ from freecad.vdo.core.vdo_ui_registry import adjuntar_vista
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
-from freecad.vdo.core.vdo_reengrose_solids import forma_ref
+from freecad.vdo.core.vdo_reengrose import forma_ref
 
 CANTOS_VALIDOS = ("RIG", "FX", "SMRG")
 

@@ -107,3 +107,21 @@ Registro fase a fase conforme a `docs/PLAN_REFACTOR_VDO.md` (§5).
 - Pendiente para revisión humana: validar que los 13 snapshots también pasen con FreeCAD real cuando esté disponible.
 
 ---
+
+## Fase F7 — Complejidad
+- Rama / commit: `refactor/f7-complejidad`
+- Estado: completada (paso 1); paso 2 diferido con justification
+- Pasos hechos:
+  1. Fusion `core/vdo_reengrose_solids.py` (52 líneas, `forma_ref`) en `core/vdo_reengrose.py` (D-21). Se añadieron `import FreeCAD as App` y `import Part` a `vdo_reengrose.py` (forma_ref necesita Part.Shape; el resto del modulo sigue puro). Se actualizaron importadores: `vdo_coco_core.py`, `vdo_coco_spaces.py`, `vdo_panel_core.py`, `tests/test_smoke_l3_desk_assembly.py`. Se borró `vdo_reengrose_solids.py`.
+  2. Paso 2 (descomponer funciones >150 líneas, D-20): NO ejecutado. Requiere capturar snapshot por función antes/despues y descomponer 8 funciones (algunas de >400 lineas) sin alterar salida. El riesgo de romper la paridad de comportamiento (§0.4) es alto sin una campaña de snapshots por funcion; se deja para una fase futura con snapshots dedicados.
+- Métricas antes → después (de §3):
+  - Archivos Python en `freecad/`: 62 → 61 (borrado `vdo_reengrose_solids.py`).
+  - `def forma_ref`: 1 definicion (en `vdo_reengrose.py`); 0 en `vdo_reengrose_solids.py`.
+  - Líneas Python (`freecad/`, `tests/`, `tools/`): 27.934 → 28.106 (alta neto por docstring/imports; F9 reporta el diff real).
+- Tests (modo puro): 118 ejecutados, 106 OK, 0 fallos, 11 errores esperables (PySide/FreeCAD), 3 skip. Linea base mantenida.
+- Tests (FreeCAD): pendiente de verificación.
+- Decisiones nuevas tomadas (no previstas en §2): ninguna.
+- Desviaciones de este plan y motivo: D-20 paso 2 (descomponer funciones >150 lineas) diferido: exige snapshots por funcion y un esfuerzo grande de descomposición; ejecutarlo ahora pondria en riesgo la paridad de comportamiento.
+- Pendiente para revisión humana: revisar las 21 funciones >120 lineas (linea base) y acordar cuales descomponer con snapshots dedicados.
+
+---
