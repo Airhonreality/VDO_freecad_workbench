@@ -1,3 +1,5 @@
+> **SUSTITUIDO.** Este plan queda reemplazado por `docs/PLAN_MAESTRO_VDO.md`, que incorpora sus fases F1–F9 y las costuras P0–P9. No ejecutar este documento.
+
 # Plan de refactorización VDO
 
 Documento ejecutable por un agente. Las decisiones de la sección 2 están **cerradas**: no se
