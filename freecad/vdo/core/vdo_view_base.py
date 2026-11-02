@@ -6,9 +6,11 @@
 # Los ViewProviders y el acceso a paneles/Inspector viven en
 # freecad/vdo/ui/vdo_view_providers.py (D24): el motor los pide por
 # core/vdo_ui_registry.py y no los importa.
+#
+# Nota: este modulo es puro (no importa FreeCAD). diagnostico_viewprovider
+# accede a atributos del objeto pasado por el llamador (UI/comandos),
+# no importa FreeCAD a nivel de modulo.
 # =====================================================================
-
-import FreeCAD as App
 
 
 def _es_coco(obj):

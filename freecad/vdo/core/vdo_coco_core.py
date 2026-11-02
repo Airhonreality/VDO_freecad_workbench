@@ -18,7 +18,7 @@ from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core import vdo_finish as VDO_FINISH
 from freecad.vdo.core import vdo_reengrose as VDO_RE
-from freecad.vdo.core.vdo_reengrose import forma_ref
+from freecad.vdo.cad.geometria import forma_ref
 
 
 def _cargar_reengroses(obj):

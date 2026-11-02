@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_guardian.py
-# Guardián de Dependencias VDO
-# Valida e inyecta el entorno mínimo antes de ejecutar cualquier macro.
-# Cualquier macro puede llamar a vdo_guard() y quedará autoconfigurada.
+# Guardián de Dependencias VDO — PARTE PURA (core/).
+#
+# Define qué parámetros asegurar en cada hoja de cálculo y valida el
+# entorno. La escritura efectiva en el documento FreeCAD se hace en
+# cad/vdo_guardian.py (capa cad/). Este modulo no importa FreeCAD ni Qt.
 # =====================================================================
 
-import FreeCAD as App
+from __future__ import annotations
 
 from freecad.vdo.core import vdo_manifest as VM
 
@@ -14,45 +16,55 @@ HOJA_GLOBAL = "Params_Melamina"
 HOJA_LOCAL = "Params"
 
 
-def _obtener_hoja(doc, nombre):
+def planificar_guardian(manifest: dict | None = None) -> dict:
+    """Devuelve el plan de qué asegurar en cada hoja (datos puros).
+
+    Args:
+        manifest: dict del manifiesto. Si None, se carga fresco por llamada.
+
+    Returns:
+        {
+          "hoja_global": {"nombre": str, "cabeceras": [...], "parametros": {...}},
+          "hoja_local": {"nombre": str, "cabeceras": [...], "parametros": {...}},
+          "version": str,
+        }
+    """
+    if manifest is None:
+        from freecad.vdo.core.vdo_manifest import _obtener_json as _cargar
+        manifest = _cargar()
+
+    capa_global = manifest.get("capa_global", {})
+    capa_local = manifest.get("capa_local", {})
+    nombre_global = capa_global.get("hoja", HOJA_GLOBAL)
+    nombre_local = capa_local.get("hoja", HOJA_LOCAL)
+
+    return {
+        "hoja_global": {
+            "nombre": nombre_global,
+            "cabeceras": ["'Parametro", "'Valor", "'Descripcion"],
+            "parametros": manifest.get("parametros_globales", {}),
+        },
+        "hoja_local": {
+            "nombre": nombre_local,
+            "cabeceras": ["'Parametro", "'Valor", "'Descripcion"],
+            "parametros": manifest.get("parametros_locales", {}),
+        },
+        "version": manifest.get("version", "1.0.0"),
+    }
+
+
+def asegurar_hoja_global(doc) -> object:
+    """Escribe la hoja global en el documento recibido (no importa FreeCAD).
+
+    ``doc`` es un objeto documento de FreeCAD (proporcionado por cad/ o app/).
+    """
+    from freecad.vdo.core.vdo_manifest import _obtener_json as _cargar
+    manifest = _cargar()
+    nombre = manifest.get("capa_global", {}).get("hoja", HOJA_GLOBAL)
     hoja = doc.getObject(nombre)
     if hoja is None:
         hoja = doc.addObject("Spreadsheet::Sheet", nombre)
         hoja.Label = nombre
-        App.Console.PrintMessage(f"[VDO Guardian] Creada hoja: {nombre}")
-    return hoja
-
-
-def _tiene_alias(hoja, celda):
-    return hoja.getAlias(celda) is not None
-
-
-def _asegurar_parametros(hoja, fila_inicio, fila_valor, fila_descripcion,
-                         parametros):
-    """Inyecta etiqueta/valor+alias/descripcion en cada fila de parametros.
-
-    Solo escribe celdas sin alias: respeta cualquier valor ya editado.
-    """
-    for fila, (nombre, info) in enumerate(parametros.items(), start=fila_inicio):
-        celda_valor = f"{fila_valor}{fila}"
-        if _tiene_alias(hoja, celda_valor):
-            continue
-        if fila_valor == "A":
-            hoja.set(f"A{fila}", str(info["valor"]))
-            hoja.setAlias(f"A{fila}", nombre)
-        else:
-            hoja.set(f"A{fila}", f"'{nombre}")
-            hoja.set(f"{fila_valor}{fila}", str(info["valor"]))
-            hoja.setAlias(f"{fila_valor}{fila}", nombre)
-        if "descripcion" in info and info["descripcion"]:
-            hoja.set(f"{fila_descripcion}{fila}", f"'{info['descripcion']}")
-        App.Console.PrintMessage(f"[VDO Guardian] Parametro '{nombre}' = {info['valor']} mm")
-
-
-def asegurar_hoja_global(doc):
-    """Capa Global (Reglas de Taller): hoja Params_Melamina."""
-    nombre = VM.VDO_MANIFEST.get("capa_global", {}).get("hoja", HOJA_GLOBAL)
-    hoja = _obtener_hoja(doc, nombre)
 
     if not hoja.getContents("A1"):
         hoja.set("A1", "'Parametro")
@@ -64,44 +76,58 @@ def asegurar_hoja_global(doc):
         fila_inicio=2,
         fila_valor="B",
         fila_descripcion="C",
-        parametros=VM.VDO_MANIFEST["parametros_globales"],
+        parametros=manifest.get("parametros_globales", {}),
     )
     return hoja
 
 
-def asegurar_params_local(doc):
-    """Capa Local (Contenedores y Módulos): hoja Params del módulo."""
-    nombre = VM.VDO_MANIFEST.get("capa_local", {}).get("hoja", HOJA_LOCAL)
-    hoja = _obtener_hoja(doc, nombre)
+def asegurar_params_local(doc) -> object:
+    """Escribe la hoja local en el documento recibido (no importa FreeCAD)."""
+    from freecad.vdo.core.vdo_manifest import _obtener_json as _cargar
+    manifest = _cargar()
+    nombre = manifest.get("capa_local", {}).get("hoja", HOJA_LOCAL)
+    hoja = doc.getObject(nombre)
+    if hoja is None:
+        hoja = doc.addObject("Spreadsheet::Sheet", nombre)
+        hoja.Label = nombre
 
     _asegurar_parametros(
         hoja,
         fila_inicio=1,
         fila_valor="A",
         fila_descripcion="B",
-        parametros=VM.VDO_MANIFEST["parametros_locales"],
+        parametros=manifest.get("parametros_locales", {}),
     )
     return hoja
 
 
-def asegurar_documento():
-    doc = App.ActiveDocument
-    if doc is None:
-        doc = App.newDocument("VDO")
-        App.Console.PrintMessage("[VDO Guardian] No había documento activo; se creó VDO.")
-    return doc
+def _asegurar_parametros(hoja, fila_inicio, fila_valor, fila_descripcion,
+                         parametros):
+    for fila, (nombre, info) in enumerate(parametros.items(), start=fila_inicio):
+        celda_valor = f"{fila_valor}{fila}"
+        if hoja.getAlias(celda_valor) is not None:
+            continue
+        if fila_valor == "A":
+            hoja.set(f"A{fila}", str(info["valor"]))
+            hoja.setAlias(f"A{fila}", nombre)
+        else:
+            hoja.set(f"A{fila}", f"'{nombre}")
+            hoja.set(f"{fila_valor}{fila}", str(info["valor"]))
+            hoja.setAlias(f"{fila_valor}{fila}", nombre)
+        if "descripcion" in info and info["descripcion"]:
+            hoja.set(f"{fila_descripcion}{fila}", f"'{info['descripcion']}")
 
 
 def vdo_guard(doc=None):
-    """Punto de entrada: valida el documento y inyecta el entorno completo."""
+    """Asegura el entorno en el documento recibido.
+
+    Si doc es None, no se puede crear un documento desde core/ (eso es
+    responsabilidad de cad/ o app/). Devuelve doc tal cual.
+    """
     if doc is None:
-        doc = asegurar_documento()
-
-    hoja_global = asegurar_hoja_global(doc)
-    hoja_local = asegurar_params_local(doc)
-
+        return None
+    asegurar_hoja_global(doc)
+    asegurar_params_local(doc)
     doc.recompute()
-    version = VM.VDO_MANIFEST["version"]
-    App.Console.PrintMessage(f"[VDO Guardian] Entorno asegurado v{version}: "
-          f"{hoja_global.Name} + {hoja_local.Name}")
+    plan = planificar_guardian()
     return doc

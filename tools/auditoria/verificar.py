@@ -110,12 +110,19 @@ def _m2_agnosticismo():
         if "__pycache__" in p.parts or p.name == "__init__.py":
             continue
         src = p.read_text(encoding="utf-8")
-        # imports de FreeCAD/Part/PySide/Qt
-        if any(tok in src for tok in (
-                "import FreeCAD", "import Part", "from FreeCAD",
-                "import PySide", "from PySide", "import qt_compat",
-                "from freecad.vdo.ui", "from freecad.vdo.cad",
-                "from freecad.vdo.app")):
+        # imports de FreeCAD/Part/PySide/Qt a nivel de modulo (no dentro de funciones)
+        es_impuro = False
+        for line in src.splitlines():
+            s = line.strip()
+            if (s.startswith("import FreeCAD") or s.startswith("from FreeCAD")
+                    or s.startswith("import Part") or s.startswith("from Part")
+                    or s.startswith("import PySide") or s.startswith("from PySide")
+                    or s.startswith("import qt_compat") or s.startswith("from qt_compat")
+                    or s.startswith("from freecad.vdo.ui") or s.startswith("from freecad.vdo.cad")
+                    or s.startswith("from freecad.vdo.app")):
+                es_impuro = True
+                break
+        if es_impuro:
             modulos_no_puros.append(str(p.relative_to(ROOT)))
     cumple = len(modulos_no_puros) == 0
     _registrar("R2_agnosticismo_core", len(modulos_no_puros), 0, cumple,

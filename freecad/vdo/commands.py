@@ -53,7 +53,7 @@ class _ComandoCreacion(_ComandoBase):
     CONFIG = {}
 
     def Activated(self):
-        from freecad.vdo.core.vdo_creation_flow import crear_modulo_interactivo
+        from freecad.vdo.app.vdo_creacion import crear_modulo_interactivo
         crear_modulo_interactivo(self.MODULE_KEY, dict(self.CONFIG))
 
 
@@ -63,8 +63,10 @@ class CmdCrearHoja(_ComandoBase):
     ICONO = "vdo_workbench.svg"
 
     def Activated(self):
-        from freecad.vdo.core import vdo_guardian
-        vdo_guardian.vdo_guard()
+        from freecad.vdo.app.puertos import crear_documento
+        doc = crear_documento()
+        from freecad.vdo.cad.vdo_guardian import vdo_guard
+        vdo_guard(doc)
         App.Console.PrintMessage(
             "[VDO] Entorno listo: [Params_Melamina] y [Params] garantizados por el Guardián.\n")
 

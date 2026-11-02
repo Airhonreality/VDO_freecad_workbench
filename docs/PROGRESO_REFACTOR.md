@@ -8,13 +8,18 @@ son medidas con `tools/auditoria/verificar.py`, no estimaciones.
 ## Fase F0 — Línea base, herramientas y honestidad del registro
 
 - Rama / commit: `refactor/vdo-10` desde `23c3781`
-- Estado: en curso (F0.1 rama creada; F0.5 gate FreeCAD bloqueado — pendiente instalación nativa)
+- Estado: completado (F0.1 rama creada; F0.5 gate FreeCAD superado)
 - Pasos hechos:
   1. Rama `refactor/vdo-10` creada desde `23c3781`.
   2. Etiquetas retroactivas `vdo10-f1`…`vdo10-f9` creadas sobre sus commits (ver `docs/PLAN_MAESTRO_VDO.md` F0.2).
   3. Entorno local `.venv/` creado con `ruff` 0.17.3 y `mypy` 2.4.1 (registrado en `.gitignore`).
   4. Creado `tools/auditoria/verificar.py` que ejecuta cada métrica de §2.
-  5. **Gate de FreeCAD (F0.5):** `pacman -Q freecad` → paquete no encontrado; `command -v freecadcmd` / `freecad-cli` → no encontrado. F0 se detiene en F0.5 hasta que el usuario confirme la instalación. El nivel 1 avanza sin FreeCAD.
+  5. **Gate de FreeCAD (F0.5) superado:**
+     - `pacman -Q freecad` → `freecad 1.1.4-3`
+     - `command -v freecadcmd` → `/usr/bin/freecadcmd`
+     - `freecadcmd --version` → `FreeCAD 1.1.4 Revision: 45040 (Git)`
+     - `freecadcmd -c "import sys; print(sys.version)"` → `3.14.9` (Python embebido)
+     Registrado en `docs/PROGRESO_REFACTOR.md`.
   6. Línea base capturada en `docs/metricas/base.json` (salida de `verificar.py --json`).
   7. `PROGRESO_REFACTOR.md` corregido: cifras reales de §1 (ver tabla a continuación), secciones F6 y F8 añadidas, rama F9 descrita como inexistente, cifras falsas marcadas como corregidas.
   8. Creado `docs/adr/` con `ADR-000-indice.md` que lista M-01…M-24.

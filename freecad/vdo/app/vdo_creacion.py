@@ -1,27 +1,32 @@
 # -*- coding: utf-8 -*-
 # =====================================================================
-# vdo_creation_flow.py
-# Flujo común de creación de módulos VDO (D18):
-#   toolbar → crear oculto → panel → colocar con mouse → commit
+# app/vdo_creacion.py
+# Caso de uso: crear módulo VDO (movido de core/vdo_creation_flow.py en F4).
+#
+# Orquesta: obtiene el documento (cad/guardian), crea el objeto vía la
+# factory del módulo (core/module_specs), añade propiedades comunes
+# (cad/propiedades) y abre el panel de colocación (UI, vía registro).
 # =====================================================================
+
+from __future__ import annotations
 
 import re
 
-import FreeCAD as App
-
-from freecad.vdo.core import vdo_guardian
-from freecad.vdo.core.vdo_module_props import add_common_props
+from freecad.vdo.app.puertos import Documento
+from freecad.vdo.cad.vdo_guardian import vdo_guard as _cad_vdo_guard
+from freecad.vdo.cad.propiedades import add_common_props as _cad_add_common_props
 from freecad.vdo.core.vdo_module_specs import get_spec, resolver_panel
+from freecad.vdo.core.vdo_view_base import diagnostico_viewprovider
 
 
-def _sanitizar_nombre(nombre):
+def _sanitizar_nombre(nombre: str) -> str:
     nombre = re.sub(r"[^A-Za-z0-9_]", "_", str(nombre or "Modulo"))
     if not nombre or nombre[0].isdigit():
         nombre = "Modulo_" + nombre
     return nombre
 
 
-def _nombre_unico(doc, base):
+def _nombre_unico(doc: Documento, base: str) -> str:
     base = _sanitizar_nombre(base)
     if doc.getObject(base) is None:
         return base
@@ -31,7 +36,7 @@ def _nombre_unico(doc, base):
     return f"{base}_{i:03d}"
 
 
-def crear_modulo_interactivo(module_key, config=None):
+def crear_modulo_interactivo(module_key: str, config: dict | None = None):
     """Crea un módulo VDO y lo coloca con el mouse.
 
     En FreeCADCmd (sin GUI) crea el módulo y lo deja en el origen,
@@ -40,11 +45,13 @@ def crear_modulo_interactivo(module_key, config=None):
     try:
         spec = get_spec(module_key)
     except Exception as exc:
+        import FreeCAD as App
         App.Console.PrintError(f"[VDO] {exc}\n")
         return None
 
-    doc = vdo_guardian.vdo_guard()
+    doc = _cad_vdo_guard()
     if doc is None:
+        import FreeCAD as App
         App.Console.PrintError(
             "[VDO] No hay documento activo para crear el módulo.\n")
         return None
@@ -63,6 +70,7 @@ def crear_modulo_interactivo(module_key, config=None):
                 f"Crear y colocar {spec.get('label', module_key)}")
             tx_propia = True
         except Exception as exc:
+            import FreeCAD as App
             App.Console.PrintWarning(
                 f"[VDO] No se pudo abrir transacción: {exc}\n")
 
@@ -99,12 +107,12 @@ def crear_modulo_interactivo(module_key, config=None):
         if obj is None:
             raise RuntimeError("La factory no devolvió un objeto")
 
-        add_common_props(obj)
+        _cad_add_common_props(obj)
+        import FreeCAD as App
         if not App.GuiUp:
             confirmar()
             return obj
 
-        from freecad.vdo.core.vdo_view_base import diagnostico_viewprovider
         App.Console.PrintMessage(
             "[VDO] " + diagnostico_viewprovider(obj) + "\n")
 
@@ -152,6 +160,7 @@ def crear_modulo_interactivo(module_key, config=None):
 
     except Exception as exc:
         cancelar()
+        import FreeCAD as App
         App.Console.PrintError(
             f"[VDO] Error creando módulo '{module_key}': {exc}\n")
         import traceback

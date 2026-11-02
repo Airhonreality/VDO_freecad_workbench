@@ -42,7 +42,7 @@ from freecad.vdo.core import vdo_module_props as VMOD
 from freecad.vdo.core import vdo_frames as VFR
 from freecad.vdo.core import vdo_defaults as VD
 from freecad.vdo.core import vdo_facade_contract as VFC
-from freecad.vdo.core.vdo_reengrose import forma_ref as VRS
+from freecad.vdo.cad.geometria import forma_ref as VRS
 # ---------------------------------------------------------------------------
 # Matriz de resultados: {cadena, punto, resultado, motivo}
 # resultado: PASS | FAIL | GAP
