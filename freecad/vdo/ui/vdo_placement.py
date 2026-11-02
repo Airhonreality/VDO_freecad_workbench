@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_placement.py
 # Colocación interactiva de módulos VDO.
@@ -13,9 +12,7 @@
 
 import FreeCAD as App
 
-from freecad.vdo.app.vdo_api import (
-    ANCLAJE_DEFAULT, ancla_local, leer_rotacion, rotacion_z
-)
+from freecad.vdo.app.vdo_api import ANCLAJE_DEFAULT, ancla_local, leer_rotacion, rotacion_z
 
 try:
     import FreeCADGui as Gui
@@ -57,7 +54,7 @@ class ColocadorModulo:
             return False
 
         try:
-            import Draft  # noqa: F401  (inicializa Gui.Snapper)
+            import Draft
         except Exception:
             App.Console.PrintWarning("[VDO] Draft no disponible para colocación")
 

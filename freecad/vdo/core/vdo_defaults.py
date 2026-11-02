@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_defaults.py
 # Proveedor único de valores por defecto desde vdo_manifest.json.

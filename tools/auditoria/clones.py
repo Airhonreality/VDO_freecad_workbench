@@ -1,4 +1,9 @@
-import ast, sys, pathlib, hashlib, collections
+import ast
+import collections
+import hashlib
+import pathlib
+import sys
+
 root = pathlib.Path(sys.argv[1])
 bodies = collections.defaultdict(list)
 for p in root.rglob("*.py"):

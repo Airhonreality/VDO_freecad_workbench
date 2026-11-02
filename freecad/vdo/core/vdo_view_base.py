@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_view_base.py
 # Utilidades de clasificación de objetos VDO para el motor (sin GUI).

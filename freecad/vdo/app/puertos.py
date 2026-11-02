@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """app/puertos.py — Puerto único Documento (M-06).
 
 Define la interfaz ``Documento`` que app/ usa para crear, leer y escribir
@@ -34,7 +33,7 @@ class Documento(Protocol):
     def recompute(self) -> None: ...
 
     @property
-    def ActiveDocument(self) -> "Documento | None": ...
+    def ActiveDocument(self) -> Documento | None: ...
 
     @property
     def Name(self) -> str: ...

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_form_builder.py
 # Constructor declarativo de formularios para los Task Panels VDO (D-15).

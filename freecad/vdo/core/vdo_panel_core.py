@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_panel_core.py
 # Motor unificado de paneles VDO — AXIOMA 5: agnóstico de semántica
@@ -14,30 +13,16 @@
 # (clic derecho, doble clic, panel de configuración y colocación).
 # =====================================================================
 
-import sys
 
 
 # Bootstrap
 
-from freecad.vdo.core import vdo_guardian
+from freecad.vdo.cad.geometria import forma_ref
 from freecad.vdo.core import vdo_defaults as VDO_D
+from freecad.vdo.core import vdo_guardian
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
-from freecad.vdo.cad.geometria import forma_ref
-
-
-
-def _get_app():
-    """Importa FreeCAD de forma perezosa."""
-    import FreeCAD as App
-    return App
-
-
-def _get_part():
-    """Importa Part de forma perezosa."""
-    import Part
-    return Part
-
+from freecad.vdo.core.vdo_helpers import _get_app, _get_part
 
 CANTOS_VALIDOS = ("RIG", "FX", "SMRG")
 

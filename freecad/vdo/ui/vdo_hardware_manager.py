@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Gestor visual de herrajes VDO (Capa H - UI).
 
 Diálogo flotante en PySide para inspeccionar y editar el catálogo de
@@ -9,10 +8,9 @@ de FreeCAD.
 import json
 import os
 
-from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-
-from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 from freecad.vdo.app.vdo_api import vdo_hardware_hub as H
+from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _CATALOGO_PATH = os.path.join(_HERE, "vdo_hardware_catalog.json")

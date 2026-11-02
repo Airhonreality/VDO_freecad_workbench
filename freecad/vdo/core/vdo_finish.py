@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Politica de acabados VDO: lados vistos -> cantos por borde.
 
 No escribe geometria. Recibe piezas descritas por ``rol`` y devuelve el
@@ -6,7 +5,6 @@ mismo listado con un diccionario ``cantos`` por borde de tablero.
 """
 
 from freecad.vdo.core import vdo_frames as FR
-
 
 CANTO_VISTO = "RIG"
 CANTO_OCULTO = "FX"

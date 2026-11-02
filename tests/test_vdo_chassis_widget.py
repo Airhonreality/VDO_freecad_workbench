@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 tests/test_vdo_chassis_widget.py
 
@@ -12,9 +11,9 @@ Verifica:
   - Emisión reactiva de la señal sigChassisChanged.
 """
 
-import unittest
-import sys
 import os
+import sys
+import unittest
 
 try:
     from PySide import QtCore, QtWidgets
@@ -25,6 +24,7 @@ except ImportError:
         from PySide2 import QtCore, QtWidgets
 
 from freecad.vdo.ui import vdo_chassis_widget as CW
+
 # Asegurar QApplication para pruebas GUI en modo headless
 _app = QtWidgets.QApplication.instance()
 if not _app:

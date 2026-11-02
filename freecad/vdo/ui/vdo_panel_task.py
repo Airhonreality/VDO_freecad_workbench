@@ -1,23 +1,24 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_panel_task.py
 # Panel de configuración del módulo Panel VDO.
 # =====================================================================
 
 import FreeCAD as App
-from freecad.vdo.qt_compat import QtGui, QtWidgets
 
-from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox, VDO_ExpressionInput
-
-from freecad.vdo.app.vdo_api import vdo_defaults as VDO_D
-from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
 from freecad.vdo.app.vdo_api import (
-    ANCLAJES, ANCLAJE_DEFAULT, ANCLAJE_LABELS,
-    add_common_props, aplicar_rotacion
+    ANCLAJE_DEFAULT,
+    ANCLAJE_LABELS,
+    ANCLAJES,
+    CANTOS_VALIDOS,
+    add_common_props,
+    add_reengrose_props,
+    aplicar_rotacion,
 )
-from freecad.vdo.app.vdo_api import (
-    CANTOS_VALIDOS, add_reengrose_props)
+from freecad.vdo.app.vdo_api import vdo_defaults as VDO_D
 from freecad.vdo.app.vdo_api import vdo_reengrose as VDO_RE
+from freecad.vdo.qt_compat import QtGui, QtWidgets
+from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox, VDO_ExpressionInput
+from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
 
 
 class PanelTaskPanel(VDOTransactionMixin):

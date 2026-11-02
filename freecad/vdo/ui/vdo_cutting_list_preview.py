@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 vdo_cutting_list_preview.py
 Preview visual antes de exportar a OpenCutList
@@ -24,8 +23,8 @@ except ImportError:
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 
 _macro_dir = Path(__file__).parent
-from freecad.vdo.ui import vdo_export_cutting_list
 from freecad.vdo.app.vdo_api import vdo_manifest
+from freecad.vdo.ui import vdo_export_cutting_list
 
 
 class CuttingListPreviewPanel:

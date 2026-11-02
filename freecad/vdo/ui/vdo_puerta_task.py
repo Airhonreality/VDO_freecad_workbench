@@ -1,31 +1,35 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_puerta_task.py
 # Capa 4 - Task Panel PySide para Puertas y Cierres (L2).
 # Construido con VDOTransactionMixin y el Manifiesto de UI VDO.
 # =====================================================================
 
-from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-
 import FreeCAD as App
 
+from freecad.vdo.app.vdo_api import (
+    ANCLAJE_LABELS,
+    ANCLAJES,
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+    OPERACION_CANTO_45,
+    OPERACION_CANTO_ESTANDAR,
+    OPERACION_CANTO_GOLA,
+    SISTEMAS_APERTURA,
+    add_common_props,
+    ajuste_altura_apertura,
+    bisagras_para_puerta,
+    calcular_corrediza,
+    cantos_por_sistema_apertura,
+    descripcion_piston,
+    necesita_cantos_45,
+    necesita_expulsor_magnetico,
+)
+from freecad.vdo.app.vdo_api import vdo_hardware_hub as H
+from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
-from freecad.vdo.app.vdo_api import add_common_props, ANCLAJES, ANCLAJE_LABELS
-
-from freecad.vdo.app.vdo_api import vdo_hardware_hub as H
-from freecad.vdo.app.vdo_api import (
-    bisagras_para_puerta,
-    descripcion_piston,
-    calcular_corrediza,
-    SISTEMAS_APERTURA,
-    necesita_expulsor_magnetico,
-    necesita_cantos_45,
-    ajuste_altura_apertura,
-    APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN,
-    OPERACION_CANTO_ESTANDAR, OPERACION_CANTO_GOLA, OPERACION_CANTO_45,
-    cantos_por_sistema_apertura,
-)
 
 FAMILIAS = ["Batiente Vertical", "Basculante Horizontal", "Corrediza"]
 SENTIDOS_BATIENTE = ["Izquierda", "Derecha", "Doble"]
@@ -233,8 +237,8 @@ class PuertaTaskPanel(VDOTransactionMixin):
         self.lbl_piston = QtWidgets.QLabel("")
         self.lbl_piston.setWordWrap(True)
         self.lbl_piston.setStyleSheet(
-            f"QLabel {{ background: #1e4a1e; color: #8fbc8f; padding: 6px; "
-            f"border: 1px solid #3a7a3a; font-weight: bold; }}")
+            "QLabel { background: #1e4a1e; color: #8fbc8f; padding: 6px; "
+            "border: 1px solid #3a7a3a; font-weight: bold; }")
         grid_p.addWidget(self.lbl_piston, 0, 0, 1, 2)
         main.addWidget(self.grp_piston)
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Contexto para instalar y restaurar mocks de FreeCAD/Part en sys.modules.
 
 Uso:
@@ -133,15 +132,15 @@ class instalado:
 
     _MODULOS = ("FreeCAD", "Part")
 
-    def __init__(self, usar_mock: Optional[bool] = None):
+    def __init__(self, usar_mock: bool | None = None):
         if usar_mock is None:
             try:
-                import FreeCAD  # noqa: F401
+                import FreeCAD
                 usar_mock = False
             except ImportError:
                 usar_mock = True
         self.usar_mock = usar_mock
-        self._previos: dict[str, Optional[ModuleType]] = {}
+        self._previos: dict[str, ModuleType | None] = {}
 
     def __enter__(self):
         if not self.usar_mock:
@@ -191,11 +190,11 @@ def requiere_freecad(mensaje="requiere FreeCAD real"):
 def requiere_qt(mensaje="requiere Qt / PySide"):
     """Decorador de clase/método que salta si no hay PySide."""
     try:
-        from PySide6 import QtCore  # noqa: F401
+        from PySide6 import QtCore
         disponible = True
     except ImportError:
         try:
-            from PySide2 import QtCore  # noqa: F401
+            from PySide2 import QtCore
             disponible = True
         except ImportError:
             disponible = False

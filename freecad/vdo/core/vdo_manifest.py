@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_manifest.py
 # Cargador de manifesto JSON para VDO
@@ -19,7 +18,7 @@ def _obtener_json():
     if not os.path.exists(json_path):
         raise FileNotFoundError(f"vdo_manifest.json no encontrado en: {json_path}")
 
-    with open(json_path, 'r', encoding='utf-8') as f:
+    with open(json_path, encoding='utf-8') as f:
         return json.load(f)
 
 

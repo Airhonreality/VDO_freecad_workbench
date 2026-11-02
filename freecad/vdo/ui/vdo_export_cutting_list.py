@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 vdo_export_cutting_list.py
 Exporta lista de corte desde modelo VDO a CSV para OpenCutList
@@ -8,8 +7,8 @@ Sin hardcode: Lee especificaciones desde vdo_manifest.json
 Filtro: Solo exporta paneles de melamina (excluye muros, paneles BIM, etc)
 """
 
-import sys
 import csv
+import sys
 from pathlib import Path
 
 try:

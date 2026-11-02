@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_layout.py
 # Motor puro de la matriz de vanos del COCO.
@@ -24,26 +23,9 @@
 #   (x1,y1), (x2,y1), (x2.1,y1), (x2.1,y1.2), ...
 # =====================================================================
 
-import copy
 import json
-import math
 
 from freecad.vdo.core import vdo_reengrose as VDO_RE
-
-
-
-
-def _get_app():
-    """Importa FreeCAD de forma perezosa."""
-    import FreeCAD as App
-    return App
-
-
-def _get_part():
-    """Importa Part de forma perezosa."""
-    import Part
-    return Part
-
 
 VERSION = 2
 AXIS_X = "X"

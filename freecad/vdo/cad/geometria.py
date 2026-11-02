@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """geometria.py — conversión de planes de dominio (números/tuplas) a formas FreeCAD.
 
 Único módulo de cad/ que construye Part.Shape a partir de diccionarios de

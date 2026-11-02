@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
 """app/casos_uso/crear_zocalo.py — Caso de uso: crear zócalo."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
 
 from freecad.vdo.app.casos_uso import Resultado
 from freecad.vdo.core.vdo_zocalo_core import make_zocalo

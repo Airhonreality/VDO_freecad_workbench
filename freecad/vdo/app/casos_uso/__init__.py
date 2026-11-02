@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """app/casos_uso/ — Un caso de uso por operación de usuario (M-04, F6).
 
 Cada caso de uso recibe un Contexto y un Documento (puerto) y devuelve un

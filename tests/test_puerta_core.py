@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Pruebas unitarias del submódulo de Puertas y Cierres (L2).
 
 Capa 0 (despiece): fórmulas de corte, Newtons, holguras, cazoletas.
@@ -17,6 +16,8 @@ except NameError:
 _RAIZ = os.path.dirname(_AQUI)
 
 from freecad.vdo.core import vdo_puerta_despiece as D
+
+
 class DespieceBatienteTests(unittest.TestCase):
     """Pruebas de fórmulas de corte para puertas batientes."""
 
@@ -140,11 +141,11 @@ class SistemasAperturaTests(unittest.TestCase):
         self.assertEqual(desc, 0.0)
 
     def test_necesita_expulsor(self):
-        self.assertTrue(D.necesita_expulsor_magnetico("push_open_mecanico"))
+        self.assertTrue(D.necesita_expulsor_magnetico("push_open"))
         self.assertFalse(D.necesita_expulsor_magnetico("tirador"))
 
     def test_necesita_cantos_45(self):
-        self.assertTrue(D.necesita_cantos_45("fachada_a_45_grados"))
+        self.assertTrue(D.necesita_cantos_45("inglete_45"))
         self.assertFalse(D.necesita_cantos_45("tirador"))
 
 
@@ -155,7 +156,7 @@ class CoreImportTests(unittest.TestCase):
         importlib.util.find_spec("FreeCAD") is not None,
         "FreeCAD no disponible en este entorno")
     def test_import_core(self):
-        from freecad.vdo.core import vdo_puerta_core  # noqa: F401
+        from freecad.vdo.core import vdo_puerta_core
 
     @unittest.skipUnless(
         importlib.util.find_spec("FreeCAD") is not None,

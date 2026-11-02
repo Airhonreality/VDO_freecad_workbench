@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """verificar.py — ejecuta cada métrica de la rúbrica §2 y devuelve código ≠ 0 si falla.
 
 Uso:
@@ -13,7 +12,6 @@ from __future__ import annotations
 
 import ast
 import json
-import os
 import re
 import subprocess
 import sys
@@ -195,7 +193,7 @@ def _m5_estado_inmutable():
                     if isinstance(target, ast.Name):
                         idn = target.id
                         # constantes = mayúsculas con guión bajo
-                        if not (idn.isupper() or idn.isidentifier() and idn == idn.upper()):
+                        if not (idn.isupper() or (idn.isidentifier() and idn == idn.upper())):
                             asignaciones_mutables.append(f"{p.relative_to(ROOT)}:{target.lineno}:{idn}")
             elif isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name):
                 idn = nodo.target.id
@@ -352,9 +350,7 @@ def _contar_defs_no_usadas() -> int:
         except SyntaxError:
             continue
         for nodo in ast.walk(t):
-            if isinstance(nodo, ast.FunctionDef):
-                definiciones.setdefault(nodo.name, []).append(str(p.relative_to(ROOT)))
-            elif isinstance(nodo, ast.ClassDef):
+            if isinstance(nodo, ast.FunctionDef) or isinstance(nodo, ast.ClassDef):
                 definiciones.setdefault(nodo.name, []).append(str(p.relative_to(ROOT)))
 
     usados: set[str] = set()

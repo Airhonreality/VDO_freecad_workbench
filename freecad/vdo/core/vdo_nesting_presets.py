@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_nesting_presets.py
 # Gestor de presets de tableros para nesting.
@@ -8,6 +7,8 @@
 # =====================================================================
 
 import json
+
+from freecad.vdo.core.vdo_helpers import _get_app
 
 # Presets estándar del taller (2440×1830 es estándar EN)
 DEFAULT_PRESETS = {
@@ -19,12 +20,6 @@ DEFAULT_PRESETS = {
 }
 
 PREFS_PATH = "User parameter:BaseApp/Preferences/NestingWorkbench/VDO"
-
-
-def _get_app():
-    """Importa FreeCAD de forma perezosa (solo cuando se necesita)."""
-    import FreeCAD as App
-    return App
 
 
 class NestingPresetManager:
@@ -127,7 +122,7 @@ class NestingPresetManager:
     @staticmethod
     def import_presets_from_json(filepath):
         """Importa presets desde un archivo JSON."""
-        with open(filepath, 'r', encoding='utf-8') as f:
+        with open(filepath, encoding='utf-8') as f:
             new_presets = json.load(f)
 
         prefs = NestingPresetManager.get_prefs()

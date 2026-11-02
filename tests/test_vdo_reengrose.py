@@ -1,8 +1,9 @@
 import os
 import unittest
 
-
 from freecad.vdo.core import vdo_reengrose as R
+
+
 class ReengrosePureTests(unittest.TestCase):
     def setUp(self):
         self.panel = {

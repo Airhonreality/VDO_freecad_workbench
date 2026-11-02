@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # tests/test_single_dock_convergence.py
 # Pruebas de integración del Dock Lateral Único Consolidado:
@@ -31,16 +30,19 @@ except ImportError:
         from PySide import QtCore, QtWidgets
 
 from freecad.vdo.core.vdo_coco_core import CocoFeature
-from freecad.vdo.ui.vdo_view_providers import ViewProviderCoco
 from freecad.vdo.core.vdo_panel_core import PanelFeature
-from freecad.vdo.ui.vdo_view_providers import enfocar_inspector_universal, abrir_panel_objeto
 from freecad.vdo.ui.vdo_inspector_dock import (
-    obtener_o_crear_dock_inspector,
-    VDOUniversalInspectorWidget,
     PAGE_CHASIS,
-    PAGE_VANO,
-    PAGE_PIEZA,
     PAGE_CIERRE,
+    PAGE_PIEZA,
+    PAGE_VANO,
+    VDOUniversalInspectorWidget,
+    obtener_o_crear_dock_inspector,
+)
+from freecad.vdo.ui.vdo_view_providers import (
+    ViewProviderCoco,
+    abrir_panel_objeto,
+    enfocar_inspector_universal,
 )
 
 

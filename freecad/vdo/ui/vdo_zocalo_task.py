@@ -1,22 +1,23 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_zocalo_task.py
 # Task Panel PySide del zócalo paramétrico VDO.
 # =====================================================================
 
 import FreeCAD as App
-from freecad.vdo.qt_compat import QtGui, QtWidgets
 
-from freecad.vdo.ui.vdo_form_builder import FormBuilder
-
-from freecad.vdo.ui.vdo_widgets_coco import PanelHeaderWidget
-from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
 from freecad.vdo.app.vdo_api import (
-    ANCLAJES, ANCLAJE_DEFAULT, ANCLAJE_LABELS,
-    add_common_props, aplicar_rotacion
+    ANCLAJE_DEFAULT,
+    ANCLAJE_LABELS,
+    ANCLAJES,
+    ZocaloError,
+    add_common_props,
+    aplicar_rotacion,
+    calcular_geometria_zocalo,
 )
-from freecad.vdo.app.vdo_api import calcular_geometria_zocalo, ZocaloError
-
+from freecad.vdo.qt_compat import QtGui, QtWidgets
+from freecad.vdo.ui.vdo_form_builder import FormBuilder
+from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
+from freecad.vdo.ui.vdo_widgets_coco import PanelHeaderWidget
 
 CANTOS_FRENTE = {
     "norte": "RIG", "sur": "RIG", "este": "RIG", "oeste": "RIG"}

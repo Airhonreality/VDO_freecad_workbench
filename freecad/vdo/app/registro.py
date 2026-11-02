@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """app/registro.py — Canal único de logging (M-14).
 
 Envuelve App.Console cuando hay FreeCAD, y usa logging de respaldo

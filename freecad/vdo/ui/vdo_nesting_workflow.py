@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_nesting_workflow.py
 # Workflow automatizado: Selección → Nesting → Visualización
 # =====================================================================
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Bootstrap
@@ -13,6 +12,7 @@ _vdo_macro_dir = os.path.dirname(os.path.abspath(__file__))
 
 import FreeCAD as App
 import FreeCADGui
+
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 
 try:
@@ -251,7 +251,7 @@ class NestingDialog(QtWidgets.QDialog):
                 App.Console.PrintMessage(f"     Sheet {i+1}: {len(sheet.parts)} piezas, {efficiency:.1f}% utilización")
 
             # Dibujar layouts en documento
-            App.Console.PrintMessage(f"\n📐 Dibujando layouts...")
+            App.Console.PrintMessage("\n📐 Dibujando layouts...")
             layout_group = doc.addObject("App::DocumentObjectGroup", "NestingLayout")
 
             for sheet_idx, sheet in enumerate(sheets):

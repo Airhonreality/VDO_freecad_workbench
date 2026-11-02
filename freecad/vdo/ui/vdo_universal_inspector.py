@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_universal_inspector.py
 # Inspector Universal Reactivo Consolidado — Sistema VDO (FreeCAD).
@@ -14,16 +13,16 @@
 # Sincronización bidireccional total entre 3D, 2D, Árbol y Páginas.
 # =====================================================================
 
-import os
 import json
+import os
 
 # Forzar plataforma offscreen si no hay display (freecadcmd / CI).
 if os.environ.get("QT_QPA_PLATFORM") is None:
     os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-
 import FreeCAD as App
+
+from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
 try:
     import FreeCADGui as Gui
@@ -48,7 +47,7 @@ except ImportError:  # pragma: no cover
     CocoPreview2D = None
 
 try:
-    from freecad.vdo.app.vdo_api import Layout, resolve_layout, cavidad_interior
+    from freecad.vdo.app.vdo_api import Layout, cavidad_interior, resolve_layout
 except ImportError:  # pragma: no cover
     Layout = None
     resolve_layout = None
@@ -56,7 +55,6 @@ except ImportError:  # pragma: no cover
 
 from freecad.vdo.app.vdo_api import vdo_hardware_hub as HH
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
-
 
 # ----------------------------------------------------------------------
 # Constantes de navegación del QStackedWidget
@@ -1477,10 +1475,7 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
             if cell is not None:
                 layout.set_split(cell, cfg.get("eje", "Y"), int(cfg.get("n_partes", 2)))
                 _guardar_prop("VDO_Divisiones", layout.dumps())
-        elif tipo_hab == "cajon":
-            contenido[celda_lbl] = cfg
-            _guardar_prop("VDO_Contenido_JSON", json.dumps(contenido))
-        elif tipo_hab == "puerta":
+        elif tipo_hab == "cajon" or tipo_hab == "puerta":
             contenido[celda_lbl] = cfg
             _guardar_prop("VDO_Contenido_JSON", json.dumps(contenido))
         elif tipo_hab == "vacio":
@@ -1601,9 +1596,9 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
 
 
 __all__ = [
-    "VDOUniversalInspectorWidget",
     "PAGE_CHASIS",
-    "PAGE_VANO",
-    "PAGE_PIEZA",
     "PAGE_CIERRE",
+    "PAGE_PIEZA",
+    "PAGE_VANO",
+    "VDOUniversalInspectorWidget",
 ]

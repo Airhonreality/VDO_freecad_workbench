@@ -1,42 +1,31 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_puerta_core.py
 # Capa 2 - PuertaFeature (Part::FeaturePython) con mecanizados booleanos
 # y chaflanes para el submódulo de Puertas y Cierres (L2).
 # =====================================================================
 
-def _get_app():
-    """Importa FreeCAD de forma perezosa."""
-    import FreeCAD as App
-    return App
-
-
-def _get_part():
-    """Importa Part de forma perezosa."""
-    import Part
-    return Part
 
 
 from freecad.vdo.core.vdo_facade_contract import (
-    MONTAJE_PARCHE, MONTAJE_SEMIPARCHE, MONTAJE_EMBEBIDA,
-    APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN,
-    HOLGURA_PERIMETRAL_DEFAULT, SOLAPE_PARCHE_NOMINAL,
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+    HOLGURA_PERIMETRAL_DEFAULT,
+    MONTAJE_PARCHE,
+    SOLAPE_PARCHE_NOMINAL,
     calcular_fachada_base,
 )
-from freecad.vdo.core.vdo_puerta_despiece import (
-    bisagras_para_puerta,
-    descripcion_piston,
-    calcular_corrediza,
-    COTA_CAZOLETA_X,
-    CAZALETA_PROFUNDIDAD,
-    CAZALETA_DIAMETRO,
-    necesita_expulsor_magnetico,
-    necesita_cantos_45,
-    ajuste_altura_apertura,
-)
-
 from freecad.vdo.core.vdo_module_props import add_common_props
-
+from freecad.vdo.core.vdo_puerta_despiece import (
+    CAZALETA_DIAMETRO,
+    CAZALETA_PROFUNDIDAD,
+    ajuste_altura_apertura,
+    bisagras_para_puerta,
+    calcular_corrediza,
+    descripcion_piston,
+    necesita_cantos_45,
+)
 
 # ---------------------------------------------------------------------
 # Utilidades de geometría
@@ -125,7 +114,6 @@ class PuertaFeature:
 
     def execute(self, fp):
         """Reconstruir la geometría de la puerta."""
-        import json
 
         sistema = str(fp.TipoSistema)
         montaje = str(fp.TipoMontaje)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_cajon_task.py
 # Task Panel PySide para el cajón con corredera oculta (Trinidad v2).
@@ -6,33 +5,49 @@
 
 import FreeCAD as App
 import FreeCADGui as Gui
-from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-
-from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 
 from freecad.vdo.app.vdo_api import (
+    _FAMILIAS as _HW_FAMILIAS,  # para verificar disponibilidad
+)
+from freecad.vdo.app.vdo_api import (
+    ANCLAJE_DEFAULT,
+    ANCLAJE_LABELS,
+    ANCLAJES,
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+    CAJA_METALICA,
+    CORREDERA_OCULTA,
+    CORREDERA_TELESCOPICA,
+    MONTAJE_EMBEBIDA,
+    MONTAJE_PARCHE,
+    MONTAJE_SEMIPARCHE,
+    OPERACION_CANTO_45,
+    OPERACION_CANTO_ESTANDAR,
+    OPERACION_CANTO_GOLA,
+    add_common_props,
+    aplicar_rotacion,
+    cantos_por_sistema_apertura,
+    get_family,
     listar_marcas,
-    CORREDERA_TELESCOPICA, CORREDERA_OCULTA, CAJA_METALICA,
-    APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN,
+    resolve_drawer_slide,
+)
+from freecad.vdo.app.vdo_api import (
+    APERTURA_45_GRADOS as FA_45,
+)
+from freecad.vdo.app.vdo_api import (
+    APERTURA_GOLA as FA_GOLA,
+)
+from freecad.vdo.app.vdo_api import (
+    APERTURA_PUSH_OPEN as FA_PUSH,
 )
 from freecad.vdo.app.vdo_api import (
     APERTURA_TIRADOR as FA_TIRADOR,
-    APERTURA_GOLA as FA_GOLA,
-    APERTURA_45_GRADOS as FA_45,
-    APERTURA_PUSH_OPEN as FA_PUSH,
-    OPERACION_CANTO_ESTANDAR, OPERACION_CANTO_GOLA, OPERACION_CANTO_45,
-    MONTAJE_PARCHE, MONTAJE_SEMIPARCHE, MONTAJE_EMBEBIDA,
-    cantos_por_sistema_apertura,
 )
-from freecad.vdo.app.vdo_api import (
-    resolve_drawer_slide, get_family,
-    _FAMILIAS as _HW_FAMILIAS,  # para verificar disponibilidad
-)
+from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
-from freecad.vdo.app.vdo_api import (
-    ANCLAJES, ANCLAJE_DEFAULT, ANCLAJE_LABELS,
-    add_common_props, aplicar_rotacion,
-)
 
 
 # ---------------------------------------------------------------------

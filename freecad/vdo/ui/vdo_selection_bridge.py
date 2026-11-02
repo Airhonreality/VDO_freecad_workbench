@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_selection_bridge.py
 # Puente de reactividad de selección nativa (Sistema VDO).

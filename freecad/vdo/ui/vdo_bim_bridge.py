@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Puente VDO → BIM (integración opcional, "Opción C" de la investigación).
 
 VDO sigue siendo un workbench autónomo. Además, cuando BIM está activo, añade al menú

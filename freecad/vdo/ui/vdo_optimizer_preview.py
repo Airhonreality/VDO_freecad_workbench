@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 vdo_optimizer_preview.py
 Render de preview (SVG) del resultado del optimizador de corte VDO.
@@ -59,7 +58,7 @@ def render_svg(sheets, unplaced, path,
         f"<svg xmlns='http://www.w3.org/2000/svg' "
         f"width='{int(_PAD * 2 + max(1000, 1000))}' height='{int(total_h)}' "
         f"viewBox='0 0 {int(_PAD * 2 + max(1000, 1000))} {int(total_h)}'>")
-    parts.append(f"<rect width='100%' height='100%' fill='#ffffff'/>")
+    parts.append("<rect width='100%' height='100%' fill='#ffffff'/>")
     parts.append(
         f"<text x='{_PAD}' y='{_PAD - 10}' font-size='20' font-weight='bold' "
         f"{_FONT} fill='#222'>VDO · Plan de corte</text>")

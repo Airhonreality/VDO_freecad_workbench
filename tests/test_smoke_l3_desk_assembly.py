@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =============================================================================
 # tests/test_smoke_l3_desk_assembly.py
 # Smoke Test automatizado - Módulo Compuesto L3
@@ -15,10 +14,10 @@
 # Cadena 5: Lista de Materiales y Despiece Unificado (vdo_export_cutting_list)
 # =============================================================================
 
+import json
+import math
 import os
 import sys
-import math
-import json
 import unittest
 
 _MACRO_DIR = os.environ.get(
@@ -29,20 +28,21 @@ _MACRO_DIR = os.environ.get(
 import FreeCAD as App
 import Part
 
-from freecad.vdo.core import vdo_layout as VL
-from freecad.vdo.core import vdo_coco_spaces as VCS
-from freecad.vdo.core import vdo_coco_core as VCC
+from freecad.vdo.cad.geometria import forma_ref as VRS
 from freecad.vdo.core import vdo_cajon_core as VCJ
 from freecad.vdo.core import vdo_cajon_despiece as VCD
+from freecad.vdo.core import vdo_coco_core as VCC
+from freecad.vdo.core import vdo_coco_spaces as VCS
+from freecad.vdo.core import vdo_defaults as VD
+from freecad.vdo.core import vdo_facade_contract as VFC
+from freecad.vdo.core import vdo_frames as VFR
 from freecad.vdo.core import vdo_hardware_hub as HH
+from freecad.vdo.core import vdo_layout as VL
+from freecad.vdo.core import vdo_module_props as VMOD
 from freecad.vdo.core import vdo_panel_core as VP
 from freecad.vdo.core import vdo_reengrose as VR
 from freecad.vdo.ui import vdo_export_cutting_list as VEL
-from freecad.vdo.core import vdo_module_props as VMOD
-from freecad.vdo.core import vdo_frames as VFR
-from freecad.vdo.core import vdo_defaults as VD
-from freecad.vdo.core import vdo_facade_contract as VFC
-from freecad.vdo.cad.geometria import forma_ref as VRS
+
 # ---------------------------------------------------------------------------
 # Matriz de resultados: {cadena, punto, resultado, motivo}
 # resultado: PASS | FAIL | GAP
@@ -72,7 +72,7 @@ def top_edges(shape):
     bb = shape.BoundBox
     out = []
     for e in shape.Edges:
-        if all(getattr(v, "Z", None) is not None and v.Z > bb.ZMax - 0.5
+        if all(getattr(v, "Z", None) is not None and bb.ZMax - 0.5 < v.Z
                for v in e.Vertexes):
             out.append(e)
     return out
@@ -84,7 +84,7 @@ def front_top_edge(shape):
     out = []
     for e in shape.Edges:
         if all(getattr(v, "Z", None) is not None and getattr(v, "Y", None) is not None
-                 and v.Z > bb.ZMax - 0.5 and v.Y < bb.YMin + 0.5
+                 and bb.ZMax - 0.5 < v.Z and bb.YMin + 0.5 > v.Y
                  for v in e.Vertexes):
             out.append(e)
     return out
@@ -147,8 +147,8 @@ REQUIRED_API = [
     ("freecad.vdo.ui.vdo_export_cutting_list", "extraer_piezas_del_documento"),
     ("freecad.vdo.ui.vdo_export_cutting_list", "generar_csv_opencutlist"),
     ("freecad.vdo.core.vdo_module_props", "add_common_props"),
-    ("freecad.vdo.core.vdo_module_props", "aplicar_rotacion"),
-    ("freecad.vdo.core.vdo_module_props", "rotacion_z"),
+    ("freecad.vdo.cad.propiedades", "aplicar_rotacion"),
+    ("freecad.vdo.cad.propiedades", "rotacion_z"),
     ("freecad.vdo.core.vdo_frames", "normal"),
     ("freecad.vdo.core.vdo_facade_contract", "calcular_fachada_base"),
     ("freecad.vdo.core.vdo_facade_contract", "aplicar_sistema_apertura"),

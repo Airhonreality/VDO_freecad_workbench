@@ -1,35 +1,19 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_coco_core.py
 # Motor unificado de cofres VDO (COCO = Contenedor Cohesivo)
 # FeaturePython con ViewProvider para Task Panel visual
 # =====================================================================
 
-import sys
 import json
 
-
-from freecad.vdo.core import vdo_guardian
-from freecad.vdo.core import vdo_defaults as VDO_D
-from freecad.vdo.core import vdo_module_props as VDO_MOD
-from freecad.vdo.core import vdo_frames as VDO_FR
-from freecad.vdo.core import vdo_finish as VDO_FINISH
-from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.cad.geometria import forma_ref
-
-
-
-
-def _get_app():
-    """Importa FreeCAD de forma perezosa."""
-    import FreeCAD as App
-    return App
-
-
-def _get_part():
-    """Importa Part de forma perezosa."""
-    import Part
-    return Part
+from freecad.vdo.core import vdo_defaults as VDO_D
+from freecad.vdo.core import vdo_finish as VDO_FINISH
+from freecad.vdo.core import vdo_frames as VDO_FR
+from freecad.vdo.core import vdo_guardian
+from freecad.vdo.core import vdo_module_props as VDO_MOD
+from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.core.vdo_helpers import _get_app, _get_part
 
 
 def _cargar_reengroses(obj):
@@ -407,7 +391,7 @@ class CocoFeature:
 
         # --- Resolucion general tira contra tira y tira contra nucleo ---
         division_tiras = list(getattr(resuelto, "tiras", []) or [])
-        from freecad.vdo.core.vdo_coco_spaces import resolver_tiras, _shape_tira
+        from freecad.vdo.core.vdo_coco_spaces import _shape_tira, resolver_tiras
 
         # Las tiras de carcasa con "interrumpir_tira" se segmentan
         # de forma controlada alrededor de las divisiones.

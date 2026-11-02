@@ -2,9 +2,9 @@ import json
 import os
 import unittest
 
-
 try:
     import FreeCAD as App
+
     from freecad.vdo.core import vdo_zocalo_core as Z
 except Exception:
     App = None

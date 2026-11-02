@@ -1,7 +1,6 @@
 import os
 import unittest
 
-
 from freecad.vdo.core import vdo_reengrose as R
 from freecad.vdo.core.vdo_layout import Layout, resolve_layout
 

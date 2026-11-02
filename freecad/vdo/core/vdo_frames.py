@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Marco local unico VDO y vocabulario de lados.
 
 Contrato:
@@ -12,7 +11,6 @@ Este modulo es puro: no importa FreeCAD ni Qt.
 
 import json
 import math
-
 
 FRENTE = "frente"
 FONDO = "fondo"

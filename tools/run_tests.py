@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Runner único de la suite VDO. Sirve en modo puro y en modo FreeCAD.
 
 Variables de entorno:
@@ -148,10 +147,8 @@ def main():
     with open(salida, "w", encoding="utf-8") as f:
         for estado, tid, detalle in filas:
             f.write("{} {}{}\n".format(estado, tid, (" :: " + detalle[:300]) if detalle else ""))
-        f.write("\nRESUMEN ejecutados={} fallos={} errores={} skip={} no_ejecutado={}\n".format(
-            n_ok + n_fail + n_error + n_skip, n_fail, n_error, n_skip, n_no_exec))
-    print("RESUMEN ejecutados={} fallos={} errores={} skip={} no_ejecutado={} -> {}".format(
-        n_ok + n_fail + n_error + n_skip, n_fail, n_error, n_skip, n_no_exec, salida))
+        f.write(f"\nRESUMEN ejecutados={n_ok + n_fail + n_error + n_skip} fallos={n_fail} errores={n_error} skip={n_skip} no_ejecutado={n_no_exec}\n")
+    print(f"RESUMEN ejecutados={n_ok + n_fail + n_error + n_skip} fallos={n_fail} errores={n_error} skip={n_skip} no_ejecutado={n_no_exec} -> {salida}")
 
 
 main()

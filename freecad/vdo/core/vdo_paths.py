@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Rutas de recursos del propio módulo VDO.
 
 Solo resuelve rutas dentro del repo (relativas a este archivo). No busca rutas de

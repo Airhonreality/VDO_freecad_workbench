@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ViewProviders VDO y acceso a paneles/Inspector (capa de interfaz).
 
 Movido desde core/ (D24): un ViewProvider es código de GUI de FreeCAD. El motor lo pide
@@ -9,8 +8,7 @@ import os
 
 import FreeCAD as App
 
-from freecad.vdo.app.vdo_api import ruta_icono
-from freecad.vdo.app.vdo_api import _es_coco, _es_cajon, _es_zocalo, _es_panel
+from freecad.vdo.app.vdo_api import _es_cajon, _es_coco, _es_panel, _es_zocalo, ruta_icono
 
 
 def _gui():

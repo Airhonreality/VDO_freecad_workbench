@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """cad/vdo_guardian.py — Escritura del entorno Guardián en el documento FreeCAD.
 
 Esta es la parte CAD (capa cad/) del Guardián. Crea y asegura hojas de
@@ -12,8 +11,8 @@ from __future__ import annotations
 
 import FreeCAD as App
 
-from freecad.vdo.core import vdo_manifest as VM
 from freecad.vdo.core import vdo_defaults as VDO_D
+from freecad.vdo.core import vdo_manifest as VM
 
 HOJA_GLOBAL = "Params_Melamina"
 HOJA_LOCAL = "Params"
@@ -49,7 +48,7 @@ def _asegurar_parametros(hoja, fila_inicio, fila_valor, fila_descripcion,
             hoja.set(f"A{fila}", f"'{nombre}")
             hoja.set(f"{fila_valor}{fila}", str(info["valor"]))
             hoja.setAlias(f"{fila_valor}{fila}", nombre)
-        if "descripcion" in info and info["descripcion"]:
+        if info.get("descripcion"):
             hoja.set(f"{fila_descripcion}{fila}", f"'{info['descripcion']}")
         App.Console.PrintMessage(
             f"[VDO Guardian] Parametro '{nombre}' = {info['valor']} mm")

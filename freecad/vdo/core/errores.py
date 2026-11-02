@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """core/errores.py — Jerarquía tipada de errores VDO (M-13).
 
 Todos los errores de dominio heredan de ``VDOError``. Se prohíbe
@@ -40,4 +39,4 @@ class GeometriaError(VDOError):
     """Error de geometría (p. ej. reengrose que no cabe en la pieza)."""
 
 
-__all__ = ["VDOError", "ParametroInvalido", "ReglaDeDominio", "CatalogoError", "GeometriaError"]
+__all__ = ["CatalogoError", "GeometriaError", "ParametroInvalido", "ReglaDeDominio", "VDOError"]

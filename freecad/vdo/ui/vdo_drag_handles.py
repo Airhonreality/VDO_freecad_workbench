@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_drag_handles.py
 # Sistema de handles interactivos 3D para redimensionamiento COCO
@@ -7,10 +6,11 @@
 # Fase 3: Mapping drag 3D → parámetros
 # =====================================================================
 
+import math
+
 import FreeCAD as App
 import FreeCADGui as Gui
 from pivy import coin
-import math
 
 from freecad.vdo.ui.vdo_view_providers import VDOViewProviderBase
 

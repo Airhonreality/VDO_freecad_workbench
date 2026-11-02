@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # tests/test_cajon_core.py
 # Suite de pruebas del CajonFeature (Trinidad de Cajones v2).
@@ -32,22 +31,37 @@ from tests.soporte.freecad_falso import instalado, requiere_freecad
 _instalado_ctx = instalado()
 _instalado_ctx.__enter__()
 
-from freecad.vdo.core.vdo_cajon_despiece import (
-    calcular_despiece, listar_marcas, obtener_marca,
-    CORREDERA_TELESCOPICA, CORREDERA_OCULTA, CAJA_METALICA,
-    APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN,
-)
 from freecad.vdo.core import vdo_facade_contract as FC
 from freecad.vdo.core import vdo_hardware_hub as H
 from freecad.vdo.core.vdo_cajon_core import (
-    _corte_notch_lateral, _corte_pin_trasero, _corte_ranura_piso,
-    _aplicar_bisel_45_fachada, _aplicar_corte,
-    CORREDERA_TELESCOPICA as CC_TEL, CORREDERA_OCULTA as CC_OCU,
     CAJA_METALICA as CC_MET,
 )
-
-from tests.soporte.freecad_falso import instalado, requiere_freecad
-
+from freecad.vdo.core.vdo_cajon_core import (
+    CORREDERA_OCULTA as CC_OCU,
+)
+from freecad.vdo.core.vdo_cajon_core import (
+    CORREDERA_TELESCOPICA as CC_TEL,
+)
+from freecad.vdo.core.vdo_cajon_core import (
+    _aplicar_bisel_45_fachada,
+    _aplicar_corte,
+    _corte_notch_lateral,
+    _corte_pin_trasero,
+    _corte_ranura_piso,
+)
+from freecad.vdo.core.vdo_cajon_despiece import (
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+    CAJA_METALICA,
+    CORREDERA_OCULTA,
+    CORREDERA_TELESCOPICA,
+    calcular_despiece,
+    listar_marcas,
+    obtener_marca,
+)
+from tests.soporte.freecad_falso import instalado
 
 # ---------------------------------------------------------------------
 # Configuración base de prueba
@@ -257,7 +271,6 @@ class TestBooleanLogicMocked(unittest.TestCase):
 
     def test_notch_reduce_volumen(self):
         """El notch en lateral reduce el volumen respecto al prisma puro."""
-        from freecad.vdo.core.vdo_cajon_core import _corte_notch_lateral
 
         # Simular: prisma puro = 1000, con notch = 800 (reducción)
         self.mock_solid.cut.return_value = MagicMock()
@@ -278,7 +291,6 @@ class TestBooleanLogicMocked(unittest.TestCase):
 
     def test_pin_hole_reduce_volumen(self):
         """El taladro de pin reduce el volumen del testero trasero."""
-        from freecad.vdo.core.vdo_cajon_core import _corte_pin_trasero
 
         self.mock_solid.cut.return_value = MagicMock()
         self.mock_solid.cut.return_value.isValid.return_value = True
@@ -297,7 +309,6 @@ class TestBooleanLogicMocked(unittest.TestCase):
 
     def test_ranura_piso_reduce_volumen(self):
         """La ranura para piso delgado reduce el volumen del lateral."""
-        from freecad.vdo.core.vdo_cajon_core import _corte_ranura_piso
 
         self.mock_solid.cut.return_value = MagicMock()
         self.mock_solid.cut.return_value.isValid.return_value = True
@@ -312,7 +323,6 @@ class TestBooleanLogicMocked(unittest.TestCase):
 
     def test_bisel_45_crea_herramienta_triangular(self):
         """El bisel 45° crea una herramienta de corte triangular extruida."""
-        from freecad.vdo.core.vdo_cajon_core import _aplicar_bisel_45_fachada
 
         self.mock_solid.cut.return_value = MagicMock()
         self.mock_solid.cut.return_value.isValid.return_value = True
@@ -326,7 +336,6 @@ class TestBooleanLogicMocked(unittest.TestCase):
 
     def test_aplicar_corte_devuelve_original_si_falla(self):
         """Si el corte produce resultado invalido, se devuelve el solido original."""
-        from freecad.vdo.core.vdo_cajon_core import _aplicar_corte
 
         solido_original = MagicMock()
         solido_original.isValid.return_value = True

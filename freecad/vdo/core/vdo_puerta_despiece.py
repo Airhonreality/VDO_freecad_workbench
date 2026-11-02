@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_puerta_despiece.py
 # Capa 0 - Fórmulas de corte, cálculo de Newtons, holguras y posiciones
@@ -9,17 +8,30 @@
 from __future__ import annotations
 
 from freecad.vdo.core.vdo_facade_contract import (
-    MONTAJE_PARCHE, MONTAJE_SEMIPARCHE, MONTAJE_EMBEBIDA,
-    HOLGURA_PERIMETRAL_DEFAULT, GOLA_DESCUENTO_ALTURA_DEFAULT,
-    APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN,
-    OPERACION_CANTO_ESTANDAR, OPERACION_CANTO_GOLA, OPERACION_CANTO_45,
-    SOLAPE_PARCHE_NOMINAL, BISEL_45_ANGULO_DEFAULT, CALLE_ENTRE_FRENTES_DEFAULT,
-    calcular_fachada_base, aplicar_sistema_apertura,
-    necesita_descuento_gola, necesita_bisel_45, necesita_expulsor_magnetico,
-    necesita_cantos_45,
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+    BISEL_45_ANGULO_DEFAULT,
+    GOLA_DESCUENTO_ALTURA_DEFAULT,
+    HOLGURA_PERIMETRAL_DEFAULT,
+    MONTAJE_EMBEBIDA,
+    MONTAJE_PARCHE,
+    MONTAJE_SEMIPARCHE,
+    SOLAPE_PARCHE_NOMINAL,
+    aplicar_sistema_apertura,
+    calcular_fachada_base,
     cantos_por_sistema_apertura,
+    necesita_bisel_45,
+    necesita_cantos_45,
+    necesita_descuento_gola,
+    necesita_expulsor_magnetico,
 )
-from freecad.vdo.core.vdo_hardware_hub import resolve_hinge, resolve_sliding, calculate_sliding_doors
+from freecad.vdo.core.vdo_hardware_hub import (
+    calculate_sliding_doors,
+    resolve_hinge,
+    resolve_sliding,
+)
 
 # ---------------------------------------------------------------------
 # Constantes de taller (fuente única: vdo_facade_contract.py)
@@ -348,8 +360,7 @@ __all__ = [
     "APERTURA_TIRADOR", "APERTURA_GOLA", "APERTURA_45_GRADOS", "APERTURA_PUSH_OPEN",
     "MONTAJE_PARCHE", "MONTAJE_SEMIPARCHE", "MONTAJE_EMBEBIDA",
     "SISTEMAS_APERTURA", "APERTURA_DESCUENTO_ALTO",
-    "GOLA_DESCUENTO_ALTURA_DEFAULT", "HOLGURA_PERIMETRAL_DEFAULT",
-    "SOLAPE_PARCHE_NOMINAL", "BISEL_45_ANGULO_DEFAULT",
+    "GOLA_DESCUENTO_ALTURA_DEFAULT", "SOLAPE_PARCHE_NOMINAL", "BISEL_45_ANGULO_DEFAULT",
     "calcular_fachada_base", "aplicar_sistema_apertura",
     "necesita_descuento_gola", "necesita_bisel_45",
     "necesita_expulsor_magnetico", "necesita_cantos_45",

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_coco_divisions_task.py
 # Editor de la matriz de vanos del COCO:
@@ -8,23 +7,27 @@
 import json
 
 import FreeCAD as App
-from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
-from freecad.vdo.app.vdo_api import vdo_reengrose as VDO_RE
+from freecad.vdo.app.vdo_api import (
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+    AXIS_X,
+    AXIS_Y,
+    Layout,
+    LayoutError,
+    cavidad_interior,
+    make_cajon,
+    make_puerta,
+    resolve_layout,
+)
+from freecad.vdo.app.vdo_api import vdo_defaults as VDO_D
 from freecad.vdo.app.vdo_api import vdo_finish as VDO_FIN
 from freecad.vdo.app.vdo_api import vdo_frames as VDO_FR
-
-from freecad.vdo.app.vdo_api import vdo_defaults as VDO_D
-from freecad.vdo.app.vdo_api import (
-    Layout, LayoutError, AXIS_X, AXIS_Y, cavidad_interior, resolve_layout,
-)
+from freecad.vdo.app.vdo_api import vdo_reengrose as VDO_RE
+from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_coco_preview2d import CocoPreview2D
-from freecad.vdo.app.vdo_api import make_puerta
-from freecad.vdo.app.vdo_api import make_cajon
-from freecad.vdo.app.vdo_api import (
-    APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN,
-)
-
 
 ROLE_DATA = QtCore.Qt.UserRole + 1
 ROLE_KIND = QtCore.Qt.UserRole + 2

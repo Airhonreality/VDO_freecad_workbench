@@ -1,4 +1,7 @@
-import ast, sys, pathlib
+import ast
+import pathlib
+import sys
+
 root = pathlib.Path(sys.argv[1])
 rows = []
 fn_long = []

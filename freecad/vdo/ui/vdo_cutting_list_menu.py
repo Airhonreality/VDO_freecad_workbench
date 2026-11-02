@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Menú de exportación de lista de corte (migrado de Macro/vdo_cutting_list.FCMacro).
 
 Muestra el diálogo de modo (todo / selección / módulo) y, al confirmar, abre el preview
@@ -89,7 +88,7 @@ def mostrar_menu():
 
 def abrir_lista_corte():
     """Punto de entrada del comando: menú de modo y preview. Requiere GUI."""
-    import FreeCADGui as Gui  # noqa: F401  (solo disponible con GUI)
+    import FreeCADGui as Gui
 
     App.Console.PrintMessage("=" * 70)
     App.Console.PrintMessage("VDO CUTTING LIST - Exportador con Preview")

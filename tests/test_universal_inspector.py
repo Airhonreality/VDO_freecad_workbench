@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Suite de pruebas del Inspector Universal Reactivo (VDOUniversalInspector).
 
 Ejecución vía CLI:
@@ -62,9 +61,9 @@ class UniversalInspectorTests(unittest.TestCase):
         cls.PanelFeature = PanelFeature
 
         from freecad.vdo.ui.vdo_universal_inspector import (
-            VDOUniversalInspectorWidget,
             PAGE_CHASIS,
             PAGE_PIEZA,
+            VDOUniversalInspectorWidget,
         )
         cls.VDOUniversalInspectorWidget = VDOUniversalInspectorWidget
         cls.PAGE_CHASIS = PAGE_CHASIS

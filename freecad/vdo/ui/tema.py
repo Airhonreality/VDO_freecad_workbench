@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
-# vdo_theme.py
+# tema.py
 # Tokens de tema visual VDO: fuente única de color para la UI.
 # D-10: acento unificado en #007acc (antes #0098ff en muchos sitios).
 # D-24: definición única de get_svg_icon.
@@ -86,12 +85,26 @@ def get_svg_icon(name: str, size: int = 22,
     cache[key] = icon
     return icon
 __all__ = [
-    "FONDO", "FONDO2", "FONDO3",
-    "TEXTO", "TEXTO_SUAVE", "TEXTO_CLARO", "TEXTO_SUAVE2",
-    "BORDE", "BORDE_SUAVE", "BORDE_ACTIVO", "BORDE_CLARO",
-    "ACEINTO", "ACEINTO_HOVER",
-    "ERROR", "EXITO", "AVISO",
-    "ESTILO_BOTON_PRIMARIO", "ESTILO_BOTON_SECUNDARIO",
-    "ESTILO_INPUT", "ESTILO_GROUPBOX", "estilo_boton",
+    "ACEINTO",
+    "ACEINTO_HOVER",
+    "AVISO",
+    "BORDE",
+    "BORDE_ACTIVO",
+    "BORDE_CLARO",
+    "BORDE_SUAVE",
+    "ERROR",
+    "ESTILO_BOTON_PRIMARIO",
+    "ESTILO_BOTON_SECUNDARIO",
+    "ESTILO_GROUPBOX",
+    "ESTILO_INPUT",
+    "EXITO",
+    "FONDO",
+    "FONDO2",
+    "FONDO3",
+    "TEXTO",
+    "TEXTO_CLARO",
+    "TEXTO_SUAVE",
+    "TEXTO_SUAVE2",
+    "estilo_boton",
     "get_svg_icon",
 ]

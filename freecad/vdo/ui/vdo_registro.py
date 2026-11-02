@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Rellena el registro del motor con las piezas de interfaz (D24).
 
 Nota F5: vdo_ui_registry se elimino de core. Las vistas se adjuntan desde

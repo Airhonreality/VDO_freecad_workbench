@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """cad/propiedades.py — Escritura de propiedades comunes en objetos FreeCAD.
 
 Parte CAD del antiguo vdo_module_props.py. Escribe propiedades de

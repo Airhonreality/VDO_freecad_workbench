@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Genera dist/VDO-<versión>.zip con solo lo necesario para el workbench.
 
 La versión se lee de package.xml (única fuente de verdad, D11).

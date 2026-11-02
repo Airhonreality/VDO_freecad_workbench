@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 vdo_optimizer_core.py
 Optimizador de corte 2D (nesting de RECTÁNGULOS) para tableros de melamina.
@@ -37,6 +36,7 @@ Uso programático:
 import csv
 
 from freecad.vdo.core import vdo_defaults as _VDO_D
+
 _CANTO_ESPESOR = {
     "FX": 0.0,
     "RIG": float(getattr(_VDO_D, "CANTO_GRUESO_DEFAULT", 2.0)),

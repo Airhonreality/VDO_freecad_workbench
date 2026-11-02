@@ -1,15 +1,15 @@
-# -*- coding: utf-8 -*-
 """
 tests/test_gui_wiring.py
 Verificación de cableado definitivo de entrada y cierre de cadena en FreeCAD GUI.
 """
 
+import json
 import os
 import sys
-import json
 import unittest
 
 import FreeCAD as App
+
 try:
     import FreeCADGui as Gui
 except ImportError:
@@ -17,13 +17,16 @@ except ImportError:
 
 from PySide import QtCore, QtWidgets
 
-from freecad.vdo.ui.vdo_universal_inspector import VDOUniversalInspectorWidget
-from freecad.vdo.ui.vdo_inspector_dock import obtener_o_crear_dock_inspector
+from freecad.vdo.core.vdo_coco_core import make_coco
 from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
 from freecad.vdo.ui.vdo_coco_unified_task import CocoUnifiedTaskPanel
-from freecad.vdo.core.vdo_coco_core import make_coco
-from freecad.vdo.ui.vdo_view_providers import ViewProviderCoco
-from freecad.vdo.ui.vdo_view_providers import enfocar_inspector_universal, abrir_panel_objeto
+from freecad.vdo.ui.vdo_inspector_dock import obtener_o_crear_dock_inspector
+from freecad.vdo.ui.vdo_universal_inspector import VDOUniversalInspectorWidget
+from freecad.vdo.ui.vdo_view_providers import (
+    ViewProviderCoco,
+    abrir_panel_objeto,
+    enfocar_inspector_universal,
+)
 
 
 class TestGuiWiring(unittest.TestCase):

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_cajon_despiece.py
 # Fórmulas de despiece del cajón con corredera oculta (Blum Tandem etc)
@@ -30,14 +29,25 @@ except ImportError:
 
 try:
     from freecad.vdo.core.vdo_facade_contract import (
-        APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN,
-        OPERACION_CANTO_ESTANDAR, OPERACION_CANTO_GOLA, OPERACION_CANTO_45,
-        HOLGURA_PERIMETRAL_DEFAULT, GOLA_DESCUENTO_ALTURA_DEFAULT,
+        APERTURA_45_GRADOS,
+        APERTURA_GOLA,
+        APERTURA_PUSH_OPEN,
+        APERTURA_TIRADOR,
+        GOLA_DESCUENTO_ALTURA_DEFAULT,
+        HOLGURA_PERIMETRAL_DEFAULT,
+        MONTAJE_EMBEBIDA,
+        MONTAJE_PARCHE,
+        MONTAJE_SEMIPARCHE,
+        OPERACION_CANTO_45,
+        OPERACION_CANTO_ESTANDAR,
+        OPERACION_CANTO_GOLA,
         SOLAPE_PARCHE_NOMINAL,
-        MONTAJE_PARCHE, MONTAJE_SEMIPARCHE, MONTAJE_EMBEBIDA,
+        aplicar_sistema_apertura,
         calcular_fachada_base,
-        aplicar_sistema_apertura, cantos_por_sistema_apertura,
-        necesita_descuento_gola, necesita_bisel_45, necesita_expulsor_magnetico,
+        cantos_por_sistema_apertura,
+        necesita_bisel_45,
+        necesita_descuento_gola,
+        necesita_expulsor_magnetico,
     )
 except ImportError:
     APERTURA_TIRADOR = "tirador"

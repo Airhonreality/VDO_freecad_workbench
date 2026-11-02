@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Capa H - Motor puro de consulta del catálogo de herrajes VDO.
 
 No importa FreeCAD ni Qt. Solo lógica, JSON y decimales.
@@ -388,11 +387,11 @@ def calculate_sliding_doors(inner_w, inner_h, sku, n_hojas=2, catalogo=None):
 
 
 __all__ = [
-    "get_hardware",
+    "calculate_sliding_doors",
     "get_family",
+    "get_hardware",
     "query_family",
+    "resolve_drawer_slide",
     "resolve_hinge",
     "resolve_sliding",
-    "resolve_drawer_slide",
-    "calculate_sliding_doors",
 ]

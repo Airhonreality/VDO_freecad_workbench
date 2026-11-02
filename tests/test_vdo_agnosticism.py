@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Auditoria de agnosticidad de los motores VDO.
 
 Comprueba que ``vdo_layout``, ``vdo_reengrose`` y la resolucion de vanos
@@ -19,7 +18,6 @@ _RAIZ = os.path.dirname(_AQUI)
 from freecad.vdo.core import vdo_layout as VDO_LAYOUT
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.core.vdo_layout import AXIS_X, AXIS_Y, Layout, Track, resolve_layout
-
 
 TOL = 1e-6
 _MODULOS_GUI = (

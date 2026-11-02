@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_qt.py
 # Controles Qt con entrada decimal independiente del locale.

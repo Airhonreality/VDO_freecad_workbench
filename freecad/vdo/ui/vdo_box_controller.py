@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 import FreeCAD as App
 vdo_box_controller.py
@@ -19,11 +18,9 @@ Totalmente agnóstico de FreeCAD: compatible con PySide, PySide2 y PySide6.
 
 import sys
 
-from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets, QtSvg
-
-from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 from freecad.vdo.app.vdo_api import vdo_reengrose as VDO_RE
-
+from freecad.vdo.qt_compat import QtCore, QtGui, QtSvg, QtWidgets
+from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 
 # ----------------------------------------------------------------------
 # Iconos Vectoriales Lucide Embebidos (SVG)
@@ -51,7 +48,7 @@ LUCIDE_ICONS = {
 _ICON_CACHE = {}
 
 
-from freecad.vdo.ui.vdo_theme import get_svg_icon as _svg_icon
+from freecad.vdo.ui.tema import get_svg_icon as _svg_icon
 
 get_svg_icon = lambda name, size=22: _svg_icon(
     name, size, icons_map=LUCIDE_ICONS, cache=_ICON_CACHE)

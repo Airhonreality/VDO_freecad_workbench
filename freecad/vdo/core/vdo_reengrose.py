@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Motor agnostico de reengroses y pachas para piezas L1.
 
 Trabaja en coordenadas locales del tablero:

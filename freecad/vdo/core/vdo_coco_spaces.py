@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_coco_spaces.py
 # Motor de geometría para divisiones internas del COCO
@@ -11,22 +10,8 @@
 # =====================================================================
 
 
-from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.cad.geometria import forma_ref
-
-
-
-
-def _get_app():
-    """Importa FreeCAD de forma perezosa."""
-    import FreeCAD as App
-    return App
-
-
-def _get_part():
-    """Importa Part de forma perezosa."""
-    import Part
-    return Part
+from freecad.vdo.core import vdo_reengrose as VDO_RE
 
 
 def _clave_pieza(pieza):

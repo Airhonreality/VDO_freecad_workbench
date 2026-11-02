@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Compuerta de la Fase 3 (PLAN_CONVERSION_WORKBENCH_VDO.md, sección 6).
 
 - Estática (corre en modo puro): ningún exec() en el paquete ni en InitGui.py/Init.py.

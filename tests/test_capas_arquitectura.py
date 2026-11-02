@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Regla de capas (docs/REVISION_ARQUITECTURA_CAPAS.md, sección 1). Corre en modo puro.
 
 El motor (freecad/vdo/core/) no puede importar la interfaz ni FreeCADGui/Qt, ni a nivel de

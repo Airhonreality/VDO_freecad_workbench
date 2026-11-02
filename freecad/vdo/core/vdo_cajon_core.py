@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_cajon_core.py
 # Motor del cajón con corredera oculta VDO (FeaturePython).
@@ -17,33 +16,29 @@
 # =====================================================================
 
 import json
-import sys
 
-
-def _get_app():
-    """Importa FreeCAD de forma perezosa."""
-    import FreeCAD as App
-    return App
-
-
-def _get_part():
-    """Importa Part de forma perezosa."""
-    import Part
-    return Part
-
-
-from freecad.vdo.core import vdo_guardian
 from freecad.vdo.core import vdo_defaults as VDO_D
+from freecad.vdo.core import vdo_guardian
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core.vdo_cajon_despiece import (
-    calcular_despiece, listar_marcas,
-    CORREDERA_TELESCOPICA, CORREDERA_OCULTA, CAJA_METALICA,
-    APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN,
-    necesita_bisel_45, necesita_descuento_gola,
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+    CAJA_METALICA,
+    CORREDERA_OCULTA,
+    CORREDERA_TELESCOPICA,
+    calcular_despiece,
+    listar_marcas,
+    necesita_bisel_45,
 )
-from freecad.vdo.core.vdo_facade_contract import BISEL_45_ANGULO_DEFAULT, MONTAJE_PARCHE, MONTAJE_SEMIPARCHE, MONTAJE_EMBEBIDA
-from freecad.vdo.core.vdo_hardware_hub import resolve_drawer_slide
-
+from freecad.vdo.core.vdo_facade_contract import (
+    BISEL_45_ANGULO_DEFAULT,
+    MONTAJE_EMBEBIDA,
+    MONTAJE_PARCHE,
+    MONTAJE_SEMIPARCHE,
+)
+from freecad.vdo.core.vdo_helpers import _get_app, _get_part
 
 # ---------------------------------------------------------------------
 # Helpers geométricos puros (coordenadas relativas calculadas)

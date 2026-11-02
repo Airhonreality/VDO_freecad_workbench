@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """app/composicion.py — Composición única del contexto VDO (M-06, M-08).
 
 Construye el contexto una vez por sesión: manifiesto y catálogo inmutables,
@@ -7,10 +6,8 @@ pasados como parámetro a los casos de uso. Sin estado mutable de módulo.
 
 from __future__ import annotations
 
-from typing import Any
-
-from freecad.vdo.core import vdo_manifest as VM
 from freecad.vdo.core import vdo_hardware_hub as HH
+from freecad.vdo.core import vdo_manifest as VM
 
 
 class Contexto:

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_facade_contract.py
 # Capa 0 Pura - Contrato Universal de Cierres Frontales (Fachadas y Puertas)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Pruebas de la Capa H - Catalogo de herrajes VDO."""
 
 import os
@@ -12,6 +11,8 @@ except NameError:
 _RAIZ = os.path.dirname(_AQUI)
 
 from freecad.vdo.core import vdo_hardware_hub as H
+
+
 class HardwareHubTests(unittest.TestCase):
     def test_get_hardware_ducasse_d52(self):
         hw = H.get_hardware("DUC-KIT-D52")

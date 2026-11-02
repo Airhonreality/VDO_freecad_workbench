@@ -1,0 +1,28 @@
+[project]
+name = "vdo"
+version = "2.0.0"
+description = "Workbench de muebles paramétricos para FreeCAD"
+requires-python = ">=3.10"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "W", "B", "UP", "C901", "SIM", "I", "RUF"]
+ignore = []
+
+[tool.ruff.per-file-ignores]
+"freecad/vdo/cad/**" = ["F401"]
+"freecad/vdo/commands.py" = ["F401"]
+"freecad/vdo/app/vdo_api.py" = ["F401"]
+"freecad/vdo/ui/**" = ["F401", "E501"]
+"tests/**" = ["E501", "F401"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+explicit_package_bases = true
+packages = ["freecad.vdo.core", "freecad.vdo.app", "freecad.vdo.cad"]
+ignore_missing_imports = true

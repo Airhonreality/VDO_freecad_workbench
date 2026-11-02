@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_optimizer_dialog.py  (migrado de Macro/vdo_optimizer.FCMacro)
 # Optimizador de corte 2D para tableros VDO: diálogo con preview embebido.
@@ -15,8 +14,8 @@ import os
 
 import FreeCAD as App
 
-from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.app.vdo_api import vdo_optimizer_core as core
+from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui import vdo_optimizer_view as view
 
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 tests/test_workbench_convergence.py
 
@@ -37,19 +36,19 @@ except ImportError:
     except ImportError:
         from PySide import QtWidgets
 
+from freecad.vdo.core import vdo_hardware_hub as HH
+from freecad.vdo.core.vdo_cajon_core import CajonFeature
 from freecad.vdo.core.vdo_coco_core import CocoFeature
 from freecad.vdo.core.vdo_panel_core import PanelFeature
 from freecad.vdo.core.vdo_puerta_core import PuertaFeature
-from freecad.vdo.core.vdo_cajon_core import CajonFeature
-from freecad.vdo.core import vdo_hardware_hub as HH
-from freecad.vdo.ui.vdo_universal_inspector import (
-    VDOUniversalInspectorWidget,
-    PAGE_CHASIS,
-    PAGE_VANO,
-    PAGE_PIEZA,
-    PAGE_CIERRE,
-)
 from freecad.vdo.ui.vdo_selection_bridge import VDOSelectionBridge
+from freecad.vdo.ui.vdo_universal_inspector import (
+    PAGE_CHASIS,
+    PAGE_CIERRE,
+    PAGE_PIEZA,
+    PAGE_VANO,
+    VDOUniversalInspectorWidget,
+)
 
 
 def _get_qapp():

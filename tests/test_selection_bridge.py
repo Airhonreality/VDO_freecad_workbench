@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Suite de pruebas del puente de selección nativa VDO.
 
 Crea un documento FreeCAD de prueba con una instancia de cada tipo de
@@ -40,9 +39,9 @@ class SelectionBridgeTests(unittest.TestCase):
         cls.Part = Part
 
         # Importar los proxies FeaturePython de cada módulo VDO.
+        from freecad.vdo.core.vdo_cajon_core import CajonFeature
         from freecad.vdo.core.vdo_coco_core import CocoFeature
         from freecad.vdo.core.vdo_panel_core import PanelFeature
-        from freecad.vdo.core.vdo_cajon_core import CajonFeature
         from freecad.vdo.core.vdo_puerta_core import PuertaFeature
         from freecad.vdo.core.vdo_zocalo_core import ZocaloFeature
 

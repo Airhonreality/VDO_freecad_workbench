@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_inspector_dock.py
 # Dock lateral permanente del Inspector Universal — Sistema VDO (FreeCAD).
@@ -8,6 +7,7 @@
 # =====================================================================
 
 import os
+
 import FreeCAD as App
 
 try:
@@ -16,13 +16,12 @@ except ImportError:  # pragma: no cover
     Gui = None
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-
 from freecad.vdo.ui.vdo_universal_inspector import (
-    VDOUniversalInspectorWidget,
     PAGE_CHASIS,
-    PAGE_VANO,
-    PAGE_PIEZA,
     PAGE_CIERRE,
+    PAGE_PIEZA,
+    PAGE_VANO,
+    VDOUniversalInspectorWidget,
 )
 
 
@@ -77,11 +76,11 @@ def obtener_o_crear_dock_inspector(mw=None):
 
 
 __all__ = [
-    "VDOInspectorDockWidget",
-    "obtener_o_crear_dock_inspector",
-    "VDOUniversalInspectorWidget",
     "PAGE_CHASIS",
-    "PAGE_VANO",
-    "PAGE_PIEZA",
     "PAGE_CIERRE",
+    "PAGE_PIEZA",
+    "PAGE_VANO",
+    "VDOInspectorDockWidget",
+    "VDOUniversalInspectorWidget",
+    "obtener_o_crear_dock_inspector",
 ]

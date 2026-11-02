@@ -1,16 +1,13 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_coco_preview2d.py
 # Vista frontal 2D del COCO: matriz de vanos, paneles y reengroses.
 # Sin dependencias de FreeCAD 3D; sólo Qt.
 # =====================================================================
 
-from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-
+from freecad.vdo.app.vdo_api import CALLE_ENTRE_FRENTES_DEFAULT
 from freecad.vdo.app.vdo_api import vdo_frames as VDO_FR
 from freecad.vdo.app.vdo_api import vdo_reengrose as VDO_RE
-from freecad.vdo.app.vdo_api import CALLE_ENTRE_FRENTES_DEFAULT
-
+from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
 COLOR_FONDO = QtGui.QColor("#f7f7f5")
 COLOR_INTERIOR = QtGui.QColor("#ffffff")

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # tests/test_facade_harmony.py
 # Suite de validación cruzada del Contrato Universal de Fachadas.
@@ -16,21 +15,34 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
+from freecad.vdo.core import vdo_cajon_despiece as D_CAJON
+from freecad.vdo.core import vdo_puerta_despiece as D_PUERTA
 from freecad.vdo.core.vdo_facade_contract import (
-    APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN,
-    MONTAJE_PARCHE, MONTAJE_SEMIPARCHE, MONTAJE_EMBEBIDA,
-    HOLGURA_PERIMETRAL_DEFAULT, GOLA_DESCUENTO_ALTURA_DEFAULT,
-    SOLAPE_PARCHE_NOMINAL, BISEL_45_ANGULO_DEFAULT,
-    OPERACION_CANTO_ESTANDAR, OPERACION_CANTO_GOLA, OPERACION_CANTO_45,
-    calcular_fachada_base, aplicar_sistema_apertura,
-    necesita_descuento_gola, necesita_bisel_45, necesita_expulsor_magnetico,
-    necesita_cantos_45,
-    cantos_por_sistema_apertura,
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+    BISEL_45_ANGULO_DEFAULT,
+    GOLA_DESCUENTO_ALTURA_DEFAULT,
+    HOLGURA_PERIMETRAL_DEFAULT,
+    MONTAJE_EMBEBIDA,
+    MONTAJE_PARCHE,
+    MONTAJE_SEMIPARCHE,
+    OPERACION_CANTO_45,
+    OPERACION_CANTO_ESTANDAR,
+    OPERACION_CANTO_GOLA,
     SISTEMAS_APERTURA_VALIDOS,
+    SOLAPE_PARCHE_NOMINAL,
+    aplicar_sistema_apertura,
+    calcular_fachada_base,
+    cantos_por_sistema_apertura,
+    necesita_bisel_45,
+    necesita_cantos_45,
+    necesita_descuento_gola,
+    necesita_expulsor_magnetico,
 )
 
-from freecad.vdo.core import vdo_puerta_despiece as D_PUERTA
-from freecad.vdo.core import vdo_cajon_despiece as D_CAJON
+
 class TestContratoFachadas(unittest.TestCase):
     """Pruebas del contrato central de fachadas."""
 
@@ -194,7 +206,7 @@ class TestImportacionYEnums(unittest.TestCase):
 
     def test_contrato_importable(self):
         """vdo_facade_contract se importa sin errores."""
-        from freecad.vdo.core import vdo_facade_contract  # noqa: F401
+        from freecad.vdo.core import vdo_facade_contract
 
     def test_puerta_consume_contrato(self):
         """vdo_puerta_despiece reexporta los enums del contrato."""

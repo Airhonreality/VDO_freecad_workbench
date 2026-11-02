@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Golden masters de los módulos de dominio VDO (M-19).
 
 Genera y verifica capturas de salida de funciones de dominio para detectar

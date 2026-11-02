@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Capa de compatibilidad Qt para todo el paquete VDO.
 
 FreeCAD 1.1 trae PySide6 (verificado: PySide6 6.11.1 presente, PySide2 ausente).
@@ -14,17 +13,17 @@ except ImportError:
     try:
         from PySide2 import QtCore, QtGui, QtWidgets
     except ImportError:
-        from PySide import QtCore, QtGui, QtWidgets  # noqa: F401
+        from PySide import QtCore, QtGui, QtWidgets
 
 try:
-    from PySide6 import QtSvg  # noqa: F401
+    from PySide6 import QtSvg
 except ImportError:
     try:
-        from PySide2 import QtSvg  # noqa: F401
+        from PySide2 import QtSvg
     except ImportError:
         try:
-            from PySide import QtSvg  # noqa: F401
+            from PySide import QtSvg
         except ImportError:
             QtSvg = None
 
-__all__ = ["QtCore", "QtGui", "QtWidgets", "QtSvg"]
+__all__ = ["QtCore", "QtGui", "QtSvg", "QtWidgets"]

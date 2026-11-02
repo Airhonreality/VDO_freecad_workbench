@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Compuerta headless de la Fase 2 (PLAN_CONVERSION_WORKBENCH_VDO.md, sección 6).
 
 Importar todos los módulos de freecad/vdo/core/ no debe cargar FreeCADGui ni PySide.

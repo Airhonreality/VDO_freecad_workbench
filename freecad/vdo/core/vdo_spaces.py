@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_spaces.py
 # Motor de resolución de espacios libres para COCO VDO
@@ -12,8 +11,6 @@
 # =====================================================================
 
 import json
-import math
-
 
 # --- Constantes de tipos de espacio ---
 ESPACIO_FIJO = "fijo"

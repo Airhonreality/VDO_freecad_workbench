@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Comandos de FreeCAD del workbench VDO.
 
 Cada comando es una clase con GetResources / IsActive / Activated (patrón Command de FreeCAD).
@@ -185,8 +184,12 @@ class CmdEditarVDO(_ComandoBase):
         if not _gui_activa():
             return _error_sin_gui(self.MENU)
         import FreeCADGui as Gui
+
         from freecad.vdo.core.vdo_view_base import diagnostico_viewprovider
-        from freecad.vdo.ui.vdo_view_providers import abrir_panel_objeto, enfocar_inspector_universal
+        from freecad.vdo.ui.vdo_view_providers import (
+            abrir_panel_objeto,
+            enfocar_inspector_universal,
+        )
         seleccion = Gui.Selection.getSelection()
         if not seleccion:
             App.Console.PrintWarning("[VDO] Selecciona un módulo VDO en el árbol o en la vista 3D.\n")
@@ -262,6 +265,7 @@ class CmdHerrajes(_ComandoBase):
         if not _gui_activa():
             return _error_sin_gui(self.MENU)
         import FreeCADGui as Gui
+
         from freecad.vdo.ui.vdo_hardware_manager import VDOHardwareManagerDialog
         dlg = VDOHardwareManagerDialog(Gui.getMainWindow())
         dlg.exec()

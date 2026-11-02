@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_guardian.py
 # Guardián de Dependencias VDO — PARTE PURA (core/).
@@ -9,8 +8,6 @@
 # =====================================================================
 
 from __future__ import annotations
-
-from freecad.vdo.core import vdo_manifest as VM
 
 HOJA_GLOBAL = "Params_Melamina"
 HOJA_LOCAL = "Params"
@@ -114,7 +111,7 @@ def _asegurar_parametros(hoja, fila_inicio, fila_valor, fila_descripcion,
             hoja.set(f"A{fila}", f"'{nombre}")
             hoja.set(f"{fila_valor}{fila}", str(info["valor"]))
             hoja.setAlias(f"{fila_valor}{fila}", nombre)
-        if "descripcion" in info and info["descripcion"]:
+        if info.get("descripcion"):
             hoja.set(f"{fila_descripcion}{fila}", f"'{info['descripcion']}")
 
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # tests/test_despiece_snapshots.py
 # Tests de snapshot del motor de despiece (F5, paso 1).
@@ -20,10 +19,17 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-from freecad.vdo.core.vdo_cajon_despiece import (
-    calcular_despiece, CORREDERA_OCULTA, CORREDERA_TELESCOPICA, CAJA_METALICA,
-    APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN)
 from freecad.vdo.core import vdo_puerta_despiece as D
+from freecad.vdo.core.vdo_cajon_despiece import (
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+    CAJA_METALICA,
+    CORREDERA_OCULTA,
+    CORREDERA_TELESCOPICA,
+    calcular_despiece,
+)
 
 FIXTURES = os.path.join(_RAIZ, "tests", "fixtures")
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """CLI del optimizador de corte 2D (herramienta de desarrollo, fuera del paquete).
 
 Uso: python3 tools/vdo_optimizador_cli.py --csv lista.csv [--board 2440x1830] [--out plan.svg]
@@ -13,9 +12,14 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from freecad.vdo.core.vdo_optimizer_core import (  # noqa: E402
-    KERF_DEFAULT, MARGIN_DEFAULT, expand_pieces, optimize_by_group,
-    read_cutting_csv, resumen_global)
+from freecad.vdo.core.vdo_optimizer_core import (
+    KERF_DEFAULT,
+    MARGIN_DEFAULT,
+    expand_pieces,
+    optimize_by_group,
+    read_cutting_csv,
+    resumen_global,
+)
 
 
 # ----------------------------------------------------------------------

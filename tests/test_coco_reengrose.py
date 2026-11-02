@@ -3,16 +3,15 @@ import json
 import os
 import unittest
 
-
 import FreeCAD as App
 from PySide import QtWidgets
 
 app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
 
 from freecad.vdo.core import vdo_coco_core as C
+from freecad.vdo.core.vdo_layout import Layout
 from freecad.vdo.ui import vdo_export_cutting_list as E
 from freecad.vdo.ui.vdo_coco_unified_task import CocoUnifiedTaskPanel
-from freecad.vdo.core.vdo_layout import Layout
 
 
 def max_common(shape):

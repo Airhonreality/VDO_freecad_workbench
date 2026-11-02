@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Malla del plano de trabajo 0 (suelo) en la vista 3D.
 
 FreeCAD dibuja esa malla con el Snapper de Draft (Gui.Snapper). Dos hechos del código de
@@ -39,7 +38,7 @@ def mostrar_plano_cero(reintentos=_REINTENTOS):
     if not getattr(App, "GuiUp", False):
         return False
     try:
-        import DraftTools  # noqa: F401  crea Gui.Snapper (ver punto 1 del docstring)
+        import DraftTools
         import WorkingPlane
 
         if not _vista_3d_disponible():

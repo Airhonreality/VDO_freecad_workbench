@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_task_base.py
 # Utilidades comunes para Task Panels VDO.
@@ -8,6 +7,7 @@
 # =====================================================================
 
 import FreeCAD as App
+
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 
 

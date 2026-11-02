@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_coco_unified_task.py
 # Task Panel UNIFICADO para COCO: edita TODO (básico + espacios + pose).
@@ -6,32 +5,37 @@
 # =====================================================================
 
 import json
-from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
-from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
-from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 import FreeCAD as App
 import FreeCADGui as Gui
 
 from freecad.vdo.app.vdo_api import (
-    SpaceNode, ESPACIO_FIJO, ESPACIO_RESTANTE, ESPACIO_IGUALES,
-    serializar_espacios, deserializar_espacios,
-    calcular_espacio_libre
-)
-from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
-from freecad.vdo.ui.vdo_widgets_coco import DivisionesEditor
-from freecad.vdo.app.vdo_api import (
-    ANCLAJES, ANCLAJE_DEFAULT, ANCLAJE_LABELS,
-    add_common_props, aplicar_rotacion
-)
-from freecad.vdo.app.vdo_api import make_puerta
-from freecad.vdo.app.vdo_api import make_cajon
-from freecad.vdo.app.vdo_api import (
-    APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN,
+    ANCLAJE_DEFAULT,
+    ANCLAJE_LABELS,
+    ANCLAJES,
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
     CALLE_ENTRE_FRENTES_DEFAULT,
+    ESPACIO_FIJO,
+    ESPACIO_IGUALES,
+    ESPACIO_RESTANTE,
+    SpaceNode,
+    add_common_props,
+    aplicar_rotacion,
+    calcular_espacio_libre,
+    deserializar_espacios,
+    make_cajon,
+    make_puerta,
+    serializar_espacios,
 )
 from freecad.vdo.app.vdo_api import vdo_frames as VDO_FR
-
+from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
+from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
+from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
+from freecad.vdo.ui.vdo_widgets_coco import DivisionesEditor
 
 COL_TIPO = 0
 COL_VALOR = 1

@@ -1,14 +1,14 @@
 import os
 import unittest
 
-
 import FreeCAD as App
 import Part
-
-from freecad.vdo.core import vdo_reengrose as R
-from freecad.vdo.core import vdo_panel_core as P
-from freecad.vdo.ui import vdo_export_cutting_list as E
 from PySide import QtWidgets
+
+from freecad.vdo.core import vdo_panel_core as P
+from freecad.vdo.core import vdo_reengrose as R
+from freecad.vdo.ui import vdo_export_cutting_list as E
+
 app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
 from freecad.vdo.ui.vdo_panel_task import PanelTaskPanel
 

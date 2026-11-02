@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_module_specs.py
 # Registro de módulos VDO y sus paneles de configuración.
@@ -6,7 +5,6 @@
 # =====================================================================
 
 import importlib
-
 
 MODULE_SPECS = {
     "coco_4c": {
