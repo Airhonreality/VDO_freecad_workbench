@@ -3,14 +3,26 @@ import unittest
 
 import FreeCAD as App
 import Part
-from PySide import QtWidgets
+
+try:
+    from PySide import QtWidgets
+except BaseException:
+    QtWidgets = None
 
 from freecad.vdo.core import vdo_panel_core as P
 from freecad.vdo.core import vdo_reengrose as R
 from freecad.vdo.ui import vdo_export_cutting_list as E
 
-app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
-from freecad.vdo.ui.vdo_panel_task import PanelTaskPanel
+try:
+    from freecad.vdo.ui.vdo_panel_task import PanelTaskPanel
+except Exception:
+    PanelTaskPanel = None
+
+from tests.soporte.requisitos import requiere_gui
+
+_HAS_GUI = (QtWidgets is not None
+            and getattr(App, "GuiUp", False)
+            and (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")))
 
 
 def _sin_solapes(shape):
@@ -22,7 +34,9 @@ def _sin_solapes(shape):
     return True
 
 
+@unittest.skipUnless(_HAS_GUI, "requiere sesion grafica")
 class ReengroseL1Tests(unittest.TestCase):
+    __test__ = _HAS_GUI
     def setUp(self):
         self.doc = App.newDocument("TestReengroseL1")
 
@@ -30,7 +44,7 @@ class ReengroseL1Tests(unittest.TestCase):
         App.closeDocument(self.doc.Name)
 
     def crear(self, nombre, **reengrose):
-        obj = P.crear_pieza({
+        obj = P.crear_pieza(self.doc, {
             "nombre": nombre,
             "orientacion": "vertical",
             "largo": 600,

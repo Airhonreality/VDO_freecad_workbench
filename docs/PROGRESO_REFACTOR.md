@@ -215,3 +215,48 @@ son medidas con `tools/auditoria/verificar.py`, no estimaciones.
 - [x] `docs/metricas/base.json` existe y está versionado.
 - [ ] `PROGRESO_REFACTOR.md` no contiene ninguna cifra que `verificar.py` contradiga (hecho en F0; se revalida en cada cierre de fase).
 - [ ] F0.5 (gate FreeCAD): bloqueado hasta instalación nativa con pacman.
+
+---
+
+## Fase F19.0 — Medidor honesto
+
+- Rama / commit: `refactor/vdo-10` (HEAD `7e389be`, tag `vdo10-final`)
+- Estado: completado
+- Objetivo: que el runner y el verificador digan la verdad antes de arreglar nada. Los fallos visibles suben; eso es correcto.
+
+Pasos hechos:
+1. `tools/run_tests.py`: eliminada la reclasificación de ERROR/FAIL a SKIP (líneas 91–140 previas). El resumen usa solo `unittest` (`testsRun`, `failures`, `errors`, `skipped`, `no_ejecutado`).
+2. Creado `tests/soporte/requisitos.py` con decoradores `requiere_freecad`, `requiere_gui`, `requiere_qt` (detección de entorno en tiempo de ejecución, `SkipTest` con motivo exacto).
+3. Eliminado `tests/soporte/omisiones.txt`.
+4. `tools/auditoria/verificar.py`:
+   - R5: recorre solo `tree.body` (nivel módulo), excluye constantes en mayúsculas y `__all__`. Ahora aplica a `core/`, `app/`, `cad/`.
+   - R9: recorre solo `tree.body` (funciones y clases de nivel módulo); la búsqueda de referencias incluye `tests/`, `InitGui.py` e `Init.py`.
+   - R11: eliminada referencia muerta a `omisiones.txt`.
+5. Creado `tests/test_verificar.py` (7 tests en verde): variable local no cuenta en R5; método no cuenta en R9; `except … pass` cuenta en R7.
+
+Métricas medidas (salida real pegada):
+
+- Nivel 1 (modo puro): `VDO_TEST_DIR=tests VDO_TEST_OUT=/tmp/f19_n1.txt python3 tools/run_tests.py`
+  - `RESUMEN ejecutados=140 fallos=1 errores=11 skip=7 no_ejecutado=8`
+  - Total fallos visibles: 1 fallo + 11 errores = 12; omitidos: 7 skip + 8 no_ejecutado = 15. Total = 27 (≥ 26, correcto).
+- Nivel 2 (FreeCAD nativo): `VDO_TEST_DIR=tests VDO_TEST_OUT=/tmp/f19_n2.txt freecadcmd tools/run_tests.py`
+  - Código de salida: 139 (segfault al salir, H16 ya existente).
+  - Muchos tests fallan con "No hay documento activo" (H1: `crear_pieza` devuelve None).
+- Verificador: `python3 -I tools/auditoria/verificar.py --json` → `resultado: FALLA`, 11 métricas fallando (R3, R4, R5, R8 x2, R9 x2, R10 x5, R14).
+- `tests/test_verificar.py`: 7 OK.
+
+Línea base registrada en `docs/metricas/f19_base.json`.
+
+Decisiones nuevas tomadas: ninguna (todas las decisiones de usuario ya aprobadas en §7 del plan).
+Desviaciones del plan: ninguna.
+Pendiente para revisión humana: aprobar goldens regenerados de F19.1 diff por diff (pendiente de ejecutar F19.1).
+
+---
+
+## Criterios de salida F19.0
+
+- [x] `freecadcmd tools/run_tests.py`: el resumen muestra ERROR y FAIL reales (1 fallo, 11 errores en nivel 1; segfault en nivel 2).
+- [x] `python3 -I tools/auditoria/verificar.py`: R5 = 1 (solo `app/registro.py:12:_logger`, pendiente de F19.5), R9 = 2 clones + 137 defs no usadas (pendiente de F19.7).
+- [x] `tests/test_verificar.py` en verde (7 tests).
+- [x] Línea base en `docs/metricas/f19_base.json`.
+

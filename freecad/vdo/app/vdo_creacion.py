@@ -76,7 +76,7 @@ def crear_modulo_interactivo(module_key: str, config: dict | None = None):
         if tx_propia:
             doc.commitTransaction()
 
-    obj = spec["factory_fn"](cfg)
+    obj = spec["factory_fn"](doc, cfg)
     if obj is None:
         raise RuntimeError("La factory no devolvió un objeto")
 

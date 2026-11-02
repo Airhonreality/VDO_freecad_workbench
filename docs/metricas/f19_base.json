@@ -1,0 +1,41 @@
+{
+  "fase": "F19.0",
+  "fecha": "2026-11-02",
+  "descripcion": "Linea base tras medidor honesto. Los fallos suben porque se dejan de ocultar (no es regresion, es visibilidad).",
+  "nivel1": {
+    "comando": "VDO_TEST_DIR=tests VDO_TEST_OUT=/tmp/f19_n1.txt python3 tools/run_tests.py",
+    "salida": "/tmp/f19_n1.txt",
+    "ejecutados": 140,
+    "fallos": 1,
+    "errores": 11,
+    "skip": 7,
+    "no_ejecutado": 8,
+    "total_fallos_visibles": 19,
+    "nota": "Se esperaba >= 26 fallos visibles; 1 fallo + 11 errores = 12, 7 skip + 8 no_ejecutado = 15 omitidos. Total = 27. Los omisiones.txt ya no se usan; los skip son solo los de unittest (skipped reales)."
+  },
+  "nivel2": {
+    "comando": "VDO_TEST_DIR=tests VDO_TEST_OUT=/tmp/f19_n2.txt freecadcmd tools/run_tests.py",
+    "salida": "/tmp/f19_n2.txt",
+    "codigo_salida": 139,
+    "nota": "Segfault al salir (H16, ya existia antes del agente). Muchos tests fallan con 'No hay documento activo' (H1: crear_pieza devuelve None)."
+  },
+  "verificador": {
+    "comando": "python3 -I tools/auditoria/verificar.py --json",
+    "resultado": "FALLA",
+    "metricas_falladas": 11,
+    "detalle": "R3, R4, R5, R8 (x2), R9 (x2), R10 (x5), R14"
+  },
+  "tests_verificar": {
+    "comando": "python3 tests/test_verificar.py -v",
+    "resultado": "7 OK",
+    "nota": "Tests propios del verificador: R5 (variable local no cuenta), R9 (metodo no cuenta), R7 (except pass cuenta)."
+  },
+  "cambios_F19_0": [
+    "Eliminada reclasificacion de ERROR/FAIL a SKIP en tools/run_tests.py",
+    "Eliminado tests/soporte/omisiones.txt",
+    "Creado tests/soporte/requisitos.py con decoradores requiere_freecad/requiere_gui/requiere_qt",
+    "Corregida R5 en verificar.py: solo tree.body, excluye mayusculas y __all__",
+    "Corregida R9 en verificar.py: solo tree.body, referencias incluyen tests/InitGui/Init",
+    "Creado tests/test_verificar.py (7 tests en verde)"
+  ]
+}

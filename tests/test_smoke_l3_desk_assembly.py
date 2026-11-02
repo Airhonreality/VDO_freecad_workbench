@@ -252,7 +252,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
                     "sistema_apertura": VCD.APERTURA_TIRADOR,
                     "material_ref": "melamina_standar",
                 }
-                obj = VCJ.make_cajon(cfg)
+                obj = VCJ.make_cajon(self.doc, cfg)
                 if obj is None:
                     hw_ok = False
                     hw_motivo = f"make_cajon devolvió None (cajon {i+1})"
@@ -346,7 +346,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
     def test_03_chain3_reengrose_boleo_cubierta(self):
         cadena = "3. Reengrose y boleo de cubierta de trabajo"
         try:
-            obj = VP.crear_pieza({
+            obj = VP.crear_pieza(self.doc, {
                 "nombre": "Cubierta_A",
                 "orientacion": "horizontal",
                 "largo": 1500.0, "ancho": 700.0, "espesor": ESP,
@@ -394,7 +394,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
         cadena = "4. Pose y duplicación en L"
         try:
             # Arturito A (panel vertical en origen)
-            artA = VP.crear_pieza({
+            artA = VP.crear_pieza(self.doc, {
                 "nombre": "Arturito_A",
                 "orientacion": "vertical",
                 "largo": 700.0, "ancho": 550.0, "espesor": ESP,
@@ -408,7 +408,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
             mat = App.Matrix()
             mat.rotateZ(90.0)
             mat.move(1400.0, 500.0, 0.0)
-            artB = VP.crear_pieza({
+            artB = VP.crear_pieza(self.doc, {
                 "nombre": "Arturito_B",
                 "orientacion": "vertical",
                 "largo": 700.0, "ancho": 550.0, "espesor": ESP,
@@ -426,13 +426,13 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
                    f"Placement.Base=({artB.Placement.Base.x:.1f},{artB.Placement.Base.y:.1f},{artB.Placement.Base.z:.1f})")
 
             # Cubiertas de trabajo sobre cada Arturito
-            covA = VP.crear_pieza({
+            covA = VP.crear_pieza(self.doc, {
                 "nombre": "Cubierta_A", "orientacion": "horizontal",
                 "largo": 1500.0, "ancho": 700.0, "espesor": ESP,
                 "usar_params": False,
             })
             covA.Placement = stable_placement((0.0, 0.0, 700.0))
-            covB = VP.crear_pieza({
+            covB = VP.crear_pieza(self.doc, {
                 "nombre": "Cubierta_B", "orientacion": "horizontal",
                 "largo": 1500.0, "ancho": 700.0, "espesor": ESP,
                 "usar_params": False,

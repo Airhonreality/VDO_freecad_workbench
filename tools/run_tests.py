@@ -16,28 +16,6 @@ import sys
 import unittest
 
 
-def _leer_omisiones(raiz):
-    """Lee tests/soporte/omisiones.txt y devuelve un conjunto de ids a omitir.
-
-    Formato de cada línea: <nombre_archivo>|<motivo>|<nivel>
-    Se hace match por sufijo del id del test (ej. test_foo.py::Clase::metodo
-    coincide con test_foo.py).
-    """
-    omisiones = set()
-    path = os.path.join(raiz, "tests", "soporte", "omisiones.txt")
-    if not os.path.isfile(path):
-        return omisiones
-    with open(path, encoding="utf-8") as f:
-        for linea in f:
-            linea = linea.strip()
-            if not linea or linea.startswith("#"):
-                continue
-            partes = linea.split("|")
-            if partes:
-                omisiones.add(partes[0].strip())
-    return omisiones
-
-
 def _ids(suite):
     for t in suite:
         if isinstance(t, unittest.TestSuite):
@@ -78,65 +56,25 @@ def main():
     descubiertos = unittest.defaultTestLoader.discover(directorio, pattern="test_*.py", top_level_dir=directorio)
     # unittest vacía la suite al ejecutarla: los ids se recogen antes
     todos = [t.id() for t in _ids(descubiertos)]
-    omisiones = _leer_omisiones(raiz)
     resultado = _Registro()
     descubiertos.run(resultado)
 
-    # Cada entrada de failures/errors se escribe tal cual (sin colapsar ids repetidos,
-    # p. ej. _ErrorHolder de setUpClass). Así el número de líneas coincide con el resumen.
+    # Cada entrada de failures/errors se escribe tal cual. Sin reclasificación a SKIP.
     def _ultima(tb):
         lineas = [l for l in tb.strip().splitlines() if l.strip()]
         return lineas[-1] if lineas else ""
+
     filas = [("FALLO", t.id(), _ultima(tb)) for t, tb in resultado.failures]
-    # Reclasificar como SKIP los errores de tests listados en omisiones.txt
-    # (fallan por falta de FreeCAD/Qt, no por defecto de código).
-    errores_reclasificados = []
-    errores_reales = []
-    for t, tb in resultado.errors:
-        tid = t.id()
-        # _FailedTest tiene id "unittest.loader._FailedTest.<modulo>";
-        # los tests normales tienen "modulo.Clase.metodo".
-        # Los errores de setUpClass tienen id "setUpClass (module.Class)".
-        nombre_modulo = None
-        if tid.startswith("setUpClass ") or tid.startswith("setUpModule "):
-            # Formato: "setUpClass (module.Class)" o "setUpModule (module)"
-            interno = tid.split("(", 1)[1].rstrip(")")
-            nombre_modulo = interno.split(".")[0]
-        elif len(tid.split(".")) >= 3 and tid.split(".")[0] == "unittest" and tid.split(".")[1] == "loader":
-            nombre_modulo = tid.split(".")[-1]
-        else:
-            nombre_modulo = tid.split(".")[0]
-        nombre_archivo = os.path.basename(nombre_modulo + ".py")
-        if nombre_archivo in omisiones:
-            errores_reclasificados.append((tid, _ultima(tb), nombre_archivo))
-        else:
-            errores_reales.append((t, tb))
-    filas = [("FALLO", t.id(), _ultima(tb)) for t, tb in resultado.failures]
-    filas += [("ERROR", t.id(), _ultima(tb)) for t, tb in errores_reales]
-    filas += [("SKIP", tid, "omitado (requiere entorno: " + na + ")")
-              for tid, _, na in errores_reclasificados]
-    malos = {t.id() for t, _ in resultado.failures + errores_reales}
-    omitidos = {t.id() for t, _ in resultado.skipped}
-    omitidos |= {tid for tid, _, _ in errores_reclasificados}
-    # Los NO_EJECUTADO que estén en omisiones.txt también son skips (su
-    # setUpClass/setUpModule saltó por falta de entorno).
-    no_ejecutados_reclasificados = []
+    filas += [("ERROR", t.id(), _ultima(tb)) for t, tb in resultado.errors]
+    filas += [("SKIP", t.id(), "") for t, _ in resultado.skipped]
+
+    ejecutados_o_omitidos = {t.id() for t, _ in resultado.failures + resultado.errors + resultado.skipped}
     for tid in todos:
-        if tid in malos:
-            continue
-        if tid in omitidos:
-            filas.append(("SKIP", tid, ""))
-        elif tid in resultado.iniciados:
-            filas.append(("OK", tid, ""))
-        else:
-            nombre_archivo = os.path.basename(tid.split(".")[0] + ".py")
-            if nombre_archivo in omisiones:
-                no_ejecutados_reclasificados.append(tid)
-                filas.append(("SKIP", tid, "omitado (requiere entorno: " + nombre_archivo + ")"))
+        if tid not in ejecutados_o_omitidos:
+            if tid in resultado.iniciados:
+                filas.append(("OK", tid, ""))
             else:
-                # setUpClass/setUpModule falló o saltó: el test no llegó a ejecutarse
                 filas.append(("NO_EJECUTADO", tid, ""))
-    omitidos |= set(no_ejecutados_reclasificados)
 
     filas.sort(key=lambda f: f[1])
     n_ok = sum(1 for f in filas if f[0] == "OK")

@@ -19,7 +19,6 @@
 
 from freecad.vdo.cad.geometria import forma_ref
 from freecad.vdo.core import vdo_defaults as VDO_D
-from freecad.vdo.core import vdo_guardian
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.core.vdo_helpers import _get_app, _get_part
@@ -242,10 +241,12 @@ class PanelFeature:
         return None
 
 
-def crear_pieza(configuracion):
+def crear_pieza(doc, configuracion):
     """Función principal del motor de paneles (agnóstica de semántica).
 
     Args:
+        doc: Documento de FreeCAD activo (proporcionado por app/cad, no
+             buscado desde core).
         configuracion (dict): {
             "nombre": str,
             "etiqueta": str,      # tag libre, NO dirige geometría
@@ -262,8 +263,7 @@ def crear_pieza(configuracion):
     """
     orientacion = _validar_orientacion(configuracion)
 
-    doc = vdo_guardian.vdo_guard()
-    if not doc:
+    if doc is None:
         _get_app().Console.PrintMessage("❌ [VDO Error] No hay documento activo.")
         return None
 

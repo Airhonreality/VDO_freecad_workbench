@@ -1,0 +1,39 @@
+{
+  "crear_pieza": {
+    "nombre": "Panel_Golden",
+    "etiqueta": "Panel_Golden",
+    "VDO_Orientacion": "horizontal",
+    "VDO_Etiqueta": "Panel Golden",
+    "VDO_Material_Ref": "melamina_standar",
+    "Largo": 600.0,
+    "Ancho": 400.0,
+    "Espesor": 18.0,
+    "Volumen": 4320000.0
+  },
+  "make_coco": {
+    "nombre": "COCO_Golden",
+    "Alto": 700.0,
+    "Ancho": 600.0,
+    "FondoModulo": 580.0,
+    "Espesor": 18.0,
+    "TieneFondo": true,
+    "Volumen": 28639296.0
+  },
+  "make_zocalo": {
+    "nombre": "Zocalo_Golden",
+    "Ancho": 600.0,
+    "Fondo": 580.0,
+    "AltoZocalo": 100.0,
+    "EspesorTablero": 18.0,
+    "Volumen": 3866400.0
+  },
+  "make_cajon": {
+    "nombre": "Cajon_Golden",
+    "AnchoLibre": 564.0,
+    "ProfLibre": 560.0,
+    "AnchoModulo": 600.0,
+    "AltoFrente": 225.0,
+    "TipoCorredera": "oculta",
+    "Volumen": 7417634.707993
+  }
+}

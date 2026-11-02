@@ -18,7 +18,6 @@
 import json
 
 from freecad.vdo.core import vdo_defaults as VDO_D
-from freecad.vdo.core import vdo_guardian
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core.vdo_cajon_despiece import (
     APERTURA_45_GRADOS,
@@ -132,7 +131,7 @@ def _aplicar_bisel_45_fachada(solido, pos, ancho, alto, bisel_dist=5.0):
     p2 = _get_app().Vector(0, -bisel_dist, alto)
     p3 = _get_app().Vector(0, 0, alto - bisel_dist)
 
-    wire = _get_part().makePolygon([p1, p2, p3], closed=True)
+    wire = _get_part().makePolygon([p1, p2, p3], True)
     cara = _get_part().Face(wire)
     herramienta = cara.extrude(_get_app().Vector(ancho, 0, 0))
     herramienta.translate(_get_app().Vector(pos["x"], pos["y"], pos["z"]))
@@ -436,12 +435,11 @@ class CajonFeature:
         return None
 
 
-def make_cajon(configuracion):
+def make_cajon(doc, configuracion):
     """
     Crea un cajón con corredera (FeaturePython, Trinidad v2).
     """
-    doc = vdo_guardian.vdo_guard()
-    if not doc:
+    if doc is None:
         _get_app().Console.PrintError("[VDO] No hay documento activo.\n")
         return None
 

@@ -4,14 +4,29 @@ import os
 import unittest
 
 import FreeCAD as App
-from PySide import QtWidgets
 
-app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
+try:
+    from PySide import QtWidgets
+except BaseException:
+    QtWidgets = None
+
+app = None
 
 from freecad.vdo.core import vdo_coco_core as C
 from freecad.vdo.core.vdo_layout import Layout
-from freecad.vdo.ui import vdo_export_cutting_list as E
-from freecad.vdo.ui.vdo_coco_unified_task import CocoUnifiedTaskPanel
+
+try:
+    from freecad.vdo.ui import vdo_export_cutting_list as E
+    from freecad.vdo.ui.vdo_coco_unified_task import CocoUnifiedTaskPanel
+except Exception:
+    E = None
+    CocoUnifiedTaskPanel = None
+
+from tests.soporte.requisitos import requiere_gui
+
+_HAS_GUI = (QtWidgets is not None
+            and getattr(App, "GuiUp", False)
+            and (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")))
 
 
 def max_common(shape):
@@ -31,7 +46,9 @@ def layout_2x2():
     return layout
 
 
+@unittest.skipUnless(_HAS_GUI, "requiere sesion grafica")
 class CocoReengroseTests(unittest.TestCase):
+    __test__ = _HAS_GUI
     def setUp(self):
         self.doc = App.newDocument("TestCocoReengrose")
 
@@ -48,7 +65,7 @@ class CocoReengroseTests(unittest.TestCase):
             "modo_fabricacion": modo,
             "politica_repisa": politica,
         }
-        obj = C.make_coco({
+        obj = C.make_coco(self.doc, {
             "nombre": nombre,
             "alto": 720,
             "ancho": 600,
@@ -118,7 +135,7 @@ class CocoReengroseTests(unittest.TestCase):
             pacha[0][13], "Encolar + canto de bloque unificado")
 
     def test_carcasa_lateral_sin_solapes(self):
-        obj = C.make_coco({
+        obj = C.make_coco(self.doc, {
             "nombre": "C_Lat",
             "divisiones": layout_2x2().dumps(),
             "reengroses": {
@@ -135,7 +152,7 @@ class CocoReengroseTests(unittest.TestCase):
         self.assertAlmostEqual(max_common(obj.Shape), 0.0)
 
     def test_carcasa_base_sin_solapes(self):
-        obj = C.make_coco({
+        obj = C.make_coco(self.doc, {
             "nombre": "C_Base",
             "divisiones": layout_2x2().dumps(),
             "reengroses": {
@@ -152,7 +169,7 @@ class CocoReengroseTests(unittest.TestCase):
         self.assertAlmostEqual(max_common(obj.Shape), 0.0)
 
     def test_ui_contextual(self):
-        obj = C.make_coco({
+        obj = C.make_coco(self.doc, {
             "nombre": "C_UI",
             "alto": 720,
             "ancho": 600,
@@ -185,7 +202,7 @@ class CocoReengroseTests(unittest.TestCase):
         self.assertAlmostEqual(max_common(obj.Shape), 0.0)
 
     def test_coco_estandar_regresion(self):
-        obj = C.make_coco({
+        obj = C.make_coco(self.doc, {
             "nombre": "C_Estandar",
             "alto": 720,
             "ancho": 600,

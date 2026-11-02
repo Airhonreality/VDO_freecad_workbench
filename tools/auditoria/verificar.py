@@ -179,25 +179,31 @@ def _m4_orquestacion():
 # ---------------------------------------------------------------------------
 def _m5_estado_inmutable():
     asignaciones_mutables = []
-    for p in sorted(CORE.rglob("*.py")):
-        if "__pycache__" in p.parts:
+    for base in (CORE, APP, CAD):
+        if not base.exists():
             continue
-        src = p.read_text(encoding="utf-8")
-        try:
-            t = ast.parse(src)
-        except SyntaxError:
-            continue
-        for nodo in ast.walk(t):
-            if isinstance(nodo, ast.Assign):
-                for target in nodo.targets:
-                    if isinstance(target, ast.Name):
-                        idn = target.id
-                        # constantes = mayúsculas con guión bajo
-                        if not (idn.isupper() or (idn.isidentifier() and idn == idn.upper())):
+        for p in sorted(base.rglob("*.py")):
+            if "__pycache__" in p.parts:
+                continue
+            src = p.read_text(encoding="utf-8")
+            try:
+                t = ast.parse(src)
+            except SyntaxError:
+                continue
+            # Solo asignaciones a nivel de módulo (tree.body), no dentro de funciones/clases.
+            for nodo in t.body:
+                if isinstance(nodo, ast.Assign):
+                    for target in nodo.targets:
+                        if isinstance(target, ast.Name):
+                            idn = target.id
+                            # constantes en mayúsculas y __all__ no cuentan como estado mutable
+                            if idn == "__all__" or idn.isupper():
+                                continue
                             asignaciones_mutables.append(f"{p.relative_to(ROOT)}:{target.lineno}:{idn}")
-            elif isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name):
-                idn = nodo.target.id
-                if not idn.isupper():
+                elif isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name):
+                    idn = nodo.target.id
+                    if idn == "__all__" or idn.isupper():
+                        continue
                     asignaciones_mutables.append(f"{p.relative_to(ROOT)}:{nodo.target.lineno}:{idn}")
     cumple = len(asignaciones_mutables) == 0
     _registrar("R5_estado_inmutable", len(asignaciones_mutables), 0, cumple,
@@ -339,7 +345,8 @@ def _m9_duplicacion():
 
 
 def _contar_defs_no_usadas() -> int:
-    """Cuenta definiciones de nivel módulo que no son importadas por ningún otro .py."""
+    """Cuenta definiciones de nivel módulo (solo tree.body) que no son importadas
+    por ningún otro .py, incluyendo tests, InitGui e Init."""
     definiciones: dict[str, list[str]] = {}  # nombre -> [archivo]
     for p in sorted(FREECAD.rglob("*.py")):
         if "__pycache__" in p.parts or p.name == "__init__.py":
@@ -349,27 +356,37 @@ def _contar_defs_no_usadas() -> int:
             t = ast.parse(src)
         except SyntaxError:
             continue
-        for nodo in ast.walk(t):
-            if isinstance(nodo, ast.FunctionDef) or isinstance(nodo, ast.ClassDef):
+        # Solo definiciones a nivel de módulo (tree.body).
+        for nodo in t.body:
+            if isinstance(nodo, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
                 definiciones.setdefault(nodo.name, []).append(str(p.relative_to(ROOT)))
 
+    # Lugares donde se buscan referencias: paquete, tests, InitGui, Init.
+    lugares = [FREECAD, TESTS]
+    for nombre in ("InitGui.py", "Init.py"):
+        p = ROOT / nombre
+        if p.exists():
+            lugares.append(p)
+
     usados: set[str] = set()
-    for p in sorted(FREECAD.rglob("*.py")):
-        if "__pycache__" in p.parts:
-            continue
-        src = p.read_text(encoding="utf-8")
-        try:
-            t = ast.parse(src)
-        except SyntaxError:
-            continue
-        for nodo in ast.walk(t):
-            if isinstance(nodo, ast.ImportFrom):
-                if nodo.module:
+    for base in lugares:
+        paths = [base] if base.is_file() else sorted(base.rglob("*.py"))
+        for p in paths:
+            if "__pycache__" in p.parts:
+                continue
+            src = p.read_text(encoding="utf-8")
+            try:
+                t = ast.parse(src)
+            except SyntaxError:
+                continue
+            for nodo in ast.walk(t):
+                if isinstance(nodo, ast.ImportFrom):
+                    if nodo.module:
+                        for alias in nodo.names:
+                            usados.add(alias.name)
+                elif isinstance(nodo, ast.Import):
                     for alias in nodo.names:
-                        usados.add(alias.name)
-            elif isinstance(nodo, ast.Import):
-                for alias in nodo.names:
-                    usados.add(alias.name.split(".")[0])
+                        usados.add(alias.name.split(".")[0])
     no_usadas = [n for n in definiciones if n not in usados
                  and not n.startswith("_")]
     return len(no_usadas)
@@ -443,8 +460,6 @@ def _m11_pruebas():
     if golden_dir.exists():
         n_golden = len(list(golden_dir.glob("*.json")))
 
-    omisiones_ok = True
-    omisiones_path = TESTS / "soporte" / "omisiones.txt"
     # suite nivel 1 (se ejecuta por separado; aquí solo verificamos estructura)
     suite_l1_ok = TESTS.exists()
     _registrar("R11_golden_masters", n_golden, ">=1", n_golden > 0,

@@ -15,21 +15,43 @@ try:
 except ImportError:
     Gui = None
 
-from PySide import QtCore, QtWidgets
+try:
+    from PySide import QtCore, QtWidgets
+except BaseException:
+    QtCore = None
+    QtWidgets = None
 
-from freecad.vdo.core.vdo_coco_core import make_coco
-from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
-from freecad.vdo.ui.vdo_coco_unified_task import CocoUnifiedTaskPanel
-from freecad.vdo.ui.vdo_inspector_dock import obtener_o_crear_dock_inspector
-from freecad.vdo.ui.vdo_universal_inspector import VDOUniversalInspectorWidget
-from freecad.vdo.ui.vdo_view_providers import (
-    ViewProviderCoco,
-    abrir_panel_objeto,
-    enfocar_inspector_universal,
-)
+try:
+    from freecad.vdo.core.vdo_coco_core import make_coco
+    from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
+    from freecad.vdo.ui.vdo_coco_unified_task import CocoUnifiedTaskPanel
+    from freecad.vdo.ui.vdo_inspector_dock import obtener_o_crear_dock_inspector
+    from freecad.vdo.ui.vdo_universal_inspector import VDOUniversalInspectorWidget
+    from freecad.vdo.ui.vdo_view_providers import (
+        ViewProviderCoco,
+        abrir_panel_objeto,
+        enfocar_inspector_universal,
+    )
+except BaseException:
+    make_coco = None
+    VDOChassisControllerWidget = None
+    CocoUnifiedTaskPanel = None
+    obtener_o_crear_dock_inspector = None
+    VDOUniversalInspectorWidget = None
+    ViewProviderCoco = None
+    abrir_panel_objeto = None
+    enfocar_inspector_universal = None
+
+from tests.soporte.requisitos import requiere_gui
+
+_HAS_GUI = (QtWidgets is not None
+            and getattr(App, "GuiUp", False)
+            and (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")))
 
 
+@unittest.skipUnless(_HAS_GUI, "requiere sesion grafica")
 class TestGuiWiring(unittest.TestCase):
+    __test__ = _HAS_GUI
     @classmethod
     def setUpClass(cls):
         # Asegurar QApplication
@@ -41,19 +63,19 @@ class TestGuiWiring(unittest.TestCase):
         self.doc_name = "DocWiringVDO"
         try:
             App.closeDocument(self.doc_name)
-        except Exception:
+        except BaseException:
             pass
         self.doc = App.newDocument(self.doc_name)
 
     def tearDown(self):
         try:
             App.closeDocument(self.doc_name)
-        except Exception:
+        except BaseException:
             pass
 
     def test_extirpacion_combos_planos_en_coco_task(self):
         """Verifica que CocoUnifiedTaskPanel no tenga combos viejos y use VDOChassisControllerWidget."""
-        coco = make_coco({"nombre": "CocoTestWiring", "alto": 720, "ancho": 600, "fondo": 500})
+        coco = make_coco(self.doc, {"nombre": "CocoTestWiring", "alto": 720, "ancho": 600, "fondo": 500})
         self.doc.recompute()
 
         panel = CocoUnifiedTaskPanel(obj=coco, auto_transaction=False)
@@ -112,7 +134,7 @@ class TestGuiWiring(unittest.TestCase):
 
     def test_enfocar_inspector_universal(self):
         """Verifica que enfocar_inspector_universal sincronice el objeto sin lanzar excepciones."""
-        coco = make_coco({"nombre": "CocoFocusTest"})
+        coco = make_coco(self.doc, {"nombre": "CocoFocusTest"})
         self.doc.recompute()
         # Debe ejecutarse sin error
         resultado = enfocar_inspector_universal(coco)
@@ -120,7 +142,7 @@ class TestGuiWiring(unittest.TestCase):
 
     def test_viewprovider_coco_redireccion(self):
         """Verifica que ViewProviderCoco implemente setEdit y doubleClicked con integración de inspector."""
-        coco = make_coco({"nombre": "CocoVPTest"})
+        coco = make_coco(self.doc, {"nombre": "CocoVPTest"})
         self.doc.recompute()
         vp = getattr(coco, "ViewObject", None)
         if vp is not None:
@@ -135,7 +157,7 @@ class TestGuiWiring(unittest.TestCase):
         try:
             for doc in list(App.listDocuments().keys()):
                 App.closeDocument(doc)
-        except Exception:
+        except BaseException:
             pass
 
 

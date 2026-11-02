@@ -10,7 +10,6 @@ from freecad.vdo.cad.geometria import forma_ref
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_finish as VDO_FINISH
 from freecad.vdo.core import vdo_frames as VDO_FR
-from freecad.vdo.core import vdo_guardian
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.core.vdo_helpers import _get_app, _get_part
@@ -575,18 +574,19 @@ class CocoFeature:
         return None
 
 
-def make_coco(configuracion):
+def make_coco(doc, configuracion):
     """
     Crea un COCO FeaturePython con propiedades configurables.
 
     Args:
+        doc: Documento de FreeCAD activo (proporcionado por app/cad, no
+             buscado desde core).
         configuracion (dict): Parámetros del cofre.
 
     Returns:
         _get_app().DocumentObject: El objeto FeaturePython creado.
     """
-    doc = vdo_guardian.vdo_guard()
-    if not doc:
+    if doc is None:
         _get_app().Console.PrintError("[VDO] No hay documento activo.\n")
         return None
 

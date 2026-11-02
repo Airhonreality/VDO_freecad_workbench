@@ -3,15 +3,29 @@ import os
 import unittest
 
 import FreeCAD as App
-from PySide import QtWidgets
 
-app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
+try:
+    from PySide import QtWidgets
+except BaseException:
+    QtWidgets = None
+
+app = None
 
 from freecad.vdo.core import vdo_coco_core as C
 from freecad.vdo.core import vdo_coco_spaces as S
 from freecad.vdo.core import vdo_reengrose as R
 from freecad.vdo.core.vdo_layout import Layout
-from freecad.vdo.ui.vdo_coco_unified_task import CocoUnifiedTaskPanel
+
+try:
+    from freecad.vdo.ui.vdo_coco_unified_task import CocoUnifiedTaskPanel
+except BaseException:
+    CocoUnifiedTaskPanel = None
+
+from tests.soporte.requisitos import requiere_gui
+
+_HAS_GUI = (QtWidgets is not None
+            and getattr(App, "GuiUp", False)
+            and (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")))
 
 
 def max_common(shape):
@@ -43,7 +57,9 @@ def mod(**cambios):
     return base
 
 
+@unittest.skipUnless(_HAS_GUI, "requiere sesion grafica")
 class CocoReengroseAvanzadoTests(unittest.TestCase):
+    __test__ = _HAS_GUI
     def setUp(self):
         self.doc = App.newDocument("TestCocoAvanzado")
 
@@ -51,7 +67,7 @@ class CocoReengroseAvanzadoTests(unittest.TestCase):
         App.closeDocument(self.doc.Name)
 
     def _coco(self, reengroses, nombre="C"):
-        obj = C.make_coco({
+        obj = C.make_coco(self.doc, {
             "nombre": nombre,
             "alto": 720,
             "ancho": 600,

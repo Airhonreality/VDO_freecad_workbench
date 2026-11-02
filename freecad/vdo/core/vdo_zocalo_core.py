@@ -10,7 +10,6 @@
 import json
 
 from freecad.vdo.core import vdo_defaults as VDO_D
-from freecad.vdo.core import vdo_guardian
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.core.vdo_helpers import _get_app, _get_part
@@ -354,10 +353,12 @@ class ZocaloFeature:
         return None
 
 
-def make_zocalo(configuracion):
+def make_zocalo(doc, configuracion):
     """Crea un zócalo paramétrico (FeaturePython).
 
     Args:
+        doc: Documento de FreeCAD activo (proporcionado por app/cad, no
+             buscado desde core).
         configuracion (dict): claves ancho, fondo, alto_zocalo,
             espesor_tablero, distancia_frente, distancia_costados,
             distancia_trasera, tiene_trasera, amarres_intermedios,
@@ -366,8 +367,7 @@ def make_zocalo(configuracion):
     Returns:
         _get_app().DocumentObject: el objeto creado o None.
     """
-    doc = vdo_guardian.vdo_guard()
-    if not doc:
+    if doc is None:
         _get_app().Console.PrintError("[VDO] No hay documento activo.\n")
         return None
 

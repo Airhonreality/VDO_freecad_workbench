@@ -70,7 +70,7 @@ class ZocaloGeometryTests(unittest.TestCase):
     def test_make_zocalo_sin_solapes(self):
         doc = App.newDocument("TestZocalo")
         try:
-            obj = Z.make_zocalo({
+            obj = Z.make_zocalo(doc, {
                 "nombre": "ZocaloTest",
                 "ancho": 600,
                 "fondo": 580,

@@ -12,6 +12,7 @@
 
 from freecad.vdo.cad.geometria import forma_ref
 from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.core.vdo_helpers import _get_app, _get_part
 
 
 def _clave_pieza(pieza):
