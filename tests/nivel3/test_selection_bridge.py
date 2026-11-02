@@ -8,6 +8,7 @@ más un Part::Box nativo, y valida:
   3. Seleccionar/deseleccionar repetidamente no produce bloqueos.
 """
 
+import contextlib
 import importlib.util
 import os
 import sys
@@ -89,10 +90,8 @@ class SelectionBridgeTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        try:
+        with contextlib.suppress(Exception):
             cls.App.closeDocument(cls.doc.Name)
-        except Exception:
-            pass
 
     def setUp(self):
         self.eventos = []
@@ -166,7 +165,7 @@ class SelectionBridgeTests(unittest.TestCase):
         for obj, esperado in secuencias:
             self._seleccionar(obj)
         self.assertEqual(len(self.eventos), len(secuencias))
-        for (obj, tipo), (_obj, esperado) in zip(self.eventos, secuencias):
+        for (obj, tipo), (_obj, esperado) in zip(self.eventos, secuencias, strict=False):
             self.assertIs(obj, _obj)
             self.assertEqual(tipo, esperado)
 

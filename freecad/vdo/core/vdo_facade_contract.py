@@ -176,35 +176,35 @@ def cantos_por_sistema_apertura(sistema_apertura: str,
 
 
 __all__ = [
+    "APERTURA_45_GRADOS",
+    "APERTURA_GOLA",
+    "APERTURA_PUSH_OPEN",
     # Sistemas de apertura
     "APERTURA_TIRADOR",
-    "APERTURA_GOLA",
-    "APERTURA_45_GRADOS",
-    "APERTURA_PUSH_OPEN",
-    "SISTEMAS_APERTURA_VALIDOS",
-    # Montajes
-    "MONTAJE_PARCHE",
-    "MONTAJE_SEMIPARCHE",
-    "MONTAJE_EMBEBIDA",
-    # Constantes de taller
-    "HOLGURA_PERIMETRAL_DEFAULT",
-    "CALLE_ENTRE_FRENTES_DEFAULT",
-    "GOLA_DESCUENTO_ALTURA_DEFAULT",
     "BISEL_45_ANGULO_DEFAULT",
-    "SOLAPE_PARCHE_NOMINAL",
-    # Operaciones de canto
-    "OPERACION_CANTO_ESTANDAR",
-    "OPERACION_CANTO_GOLA",
-    "OPERACION_CANTO_45",
-    # Funciones
-    "calcular_fachada_base",
-    "aplicar_sistema_apertura",
-    "necesita_descuento_gola",
-    "necesita_bisel_45",
-    "necesita_cantos_45",
-    "necesita_expulsor_magnetico",
-    "cantos_por_sistema_apertura",
+    "CALLE_ENTRE_FRENTES_DEFAULT",
     # Utilidades
     "CANTOS",
     "CANTO_ESTADOS",
+    "GOLA_DESCUENTO_ALTURA_DEFAULT",
+    # Constantes de taller
+    "HOLGURA_PERIMETRAL_DEFAULT",
+    "MONTAJE_EMBEBIDA",
+    # Montajes
+    "MONTAJE_PARCHE",
+    "MONTAJE_SEMIPARCHE",
+    "OPERACION_CANTO_45",
+    # Operaciones de canto
+    "OPERACION_CANTO_ESTANDAR",
+    "OPERACION_CANTO_GOLA",
+    "SISTEMAS_APERTURA_VALIDOS",
+    "SOLAPE_PARCHE_NOMINAL",
+    "aplicar_sistema_apertura",
+    # Funciones
+    "calcular_fachada_base",
+    "cantos_por_sistema_apertura",
+    "necesita_bisel_45",
+    "necesita_cantos_45",
+    "necesita_descuento_gola",
+    "necesita_expulsor_magnetico",
 ]

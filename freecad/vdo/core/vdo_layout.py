@@ -328,8 +328,7 @@ class Layout:
     def _celdas_arbol(self, cell):
         yield cell
         for child in getattr(cell, "children", []):
-            for item in self._celdas_arbol(child):
-                yield item
+            yield from self._celdas_arbol(child)
 
     def column_has_subtree(self, index):
         if not (0 <= index < len(self.columns)):
@@ -398,8 +397,7 @@ class Layout:
 
     def iter_all(self):
         for cell in self.cells.values():
-            for item in self._celdas_arbol(cell):
-                yield item
+            yield from self._celdas_arbol(cell)
 
     def find_label(self, label):
         for cell in self.iter_all():
@@ -539,8 +537,7 @@ class ResolvedCell:
     def walk(self):
         yield self
         for child in self.children:
-            for item in child.walk():
-                yield item
+            yield from child.walk()
 
     def __repr__(self):
         return (f"ResolvedCell({self.label}, x={self.x:.1f}, z={self.z:.1f}, "
@@ -588,8 +585,7 @@ class ResolvedLayout:
 
     def walk_cells(self):
         for cell in self.cells:
-            for item in cell.walk():
-                yield item
+            yield from cell.walk()
 
     def total_panels(self):
         return len(self.pieces)

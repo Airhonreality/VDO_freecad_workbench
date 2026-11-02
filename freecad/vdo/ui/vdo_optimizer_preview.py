@@ -64,7 +64,7 @@ def render_svg(sheets, unplaced, path,
         f"{_FONT} fill='#222'>VDO · Plan de corte</text>")
 
     y = _PAD + 6
-    for s, (bw, bh) in zip(sheets, sheet_geom):
+    for s, (bw, bh) in zip(sheets, sheet_geom, strict=False):
         parts.append(
             f"<text x='{_PAD}' y='{y + 18}' font-size='15' font-weight='bold' "
             f"{_FONT} fill='#0a5'>Tablero {s['index']} — "

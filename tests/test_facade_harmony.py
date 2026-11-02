@@ -191,12 +191,12 @@ class TestInglete45(unittest.TestCase):
 
     def test_altura_conservada(self):
         """Al aplicar inglete_45, la altura nominal se conserva."""
-        h_aj, op = aplicar_sistema_apertura(700.0, APERTURA_45_GRADOS)
+        h_aj, _op = aplicar_sistema_apertura(700.0, APERTURA_45_GRADOS)
         self.assertAlmostEqual(h_aj, 700.0, places=6)
 
     def test_operacion_canto_bisel_45(self):
         """La operación de canto devuelve BISEL_45."""
-        h_aj, op = aplicar_sistema_apertura(700.0, APERTURA_45_GRADOS)
+        _h_aj, op = aplicar_sistema_apertura(700.0, APERTURA_45_GRADOS)
         self.assertEqual(op, OPERACION_CANTO_45)
         self.assertEqual(op, "BISEL_45")
 

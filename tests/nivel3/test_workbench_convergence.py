@@ -40,6 +40,8 @@ except ImportError:
     except ImportError:
         from PySide import QtWidgets
 
+import contextlib
+
 from freecad.vdo.core import vdo_hardware_hub as HH
 from freecad.vdo.core.vdo_cajon_core import CajonFeature
 from freecad.vdo.core.vdo_coco_core import CocoFeature
@@ -121,10 +123,8 @@ class TestWorkbenchConvergence(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        try:
+        with contextlib.suppress(Exception):
             App.closeDocument(cls.doc.Name)
-        except Exception:
-            pass
 
     def setUp(self):
         self.inspector = VDOUniversalInspectorWidget()

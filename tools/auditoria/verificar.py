@@ -11,6 +11,7 @@ freecadcmd disponible; no fallan la ejecución en modo puro.
 from __future__ import annotations
 
 import ast
+import contextlib
 import json
 import re
 import subprocess
@@ -314,7 +315,6 @@ def _m8_complejidad():
                 "--select", "C901", "--config", "max-complexity=12", str(FREECAD)],
                timeout=120)
     ruff_ok = res.returncode == 0
-    cumple = cumple_ast and ruff_ok
     _registrar("R8_funciones_le100", len(largas), 0, cumple_ast,
                "funciones > 100 líneas: " + str(largas) if largas else "ninguna")
     _registrar("R8_ruff_c901_le12", 0 if ruff_ok else 1, 0, ruff_ok,
@@ -332,13 +332,10 @@ def _m9_duplicacion():
     n_clones = 0
     for l in salida.splitlines():
         if l.startswith("grupos de funciones"):
-            try:
+            with contextlib.suppress(Exception):
                 n_clones = int(l.split(":")[1].strip())
-            except Exception:
-                pass
     # defs no usadas (implementación simple: definiciones sin importador externo)
     n_no_usadas = _contar_defs_no_usadas()
-    cumple = n_clones == 0 and n_no_usadas == 0
     _registrar("R9_clones", n_clones, 0, n_clones == 0, f"{n_clones} grupos de clones")
     _registrar("R9_defs_no_usadas", n_no_usadas, 0, n_no_usadas == 0,
                f"{n_no_usadas} definiciones no usadas")
@@ -423,7 +420,7 @@ def _m10_consistencia():
         p = ROOT / nombre
         if p.exists():
             n_syspath += _grep_count(r"sys\.path", p)
-    n_syspath_total = _grep_count(r"sys\.path", FREECAD) + _grep_count(r"sys\.path", TESTS)
+    _grep_count(r"sys\.path", FREECAD) + _grep_count(r"sys\.path", TESTS)
     # sys.path en Init.py/InitGui.py está permitido
 
     # cero colores hex fuera de ui/tema.py
@@ -436,11 +433,10 @@ def _m10_consistencia():
             continue
         src = p.read_text(encoding="utf-8")
         import re
-        for m in re.finditer(r"#[0-9a-fA-F]{6}", src):
+        for _m in re.finditer(r"#[0-9a-fA-F]{6}", src):
             # aceptar dentro de comentarios o docstrings es complejo; contamos todos
             n_hex += 1
 
-    cumple = (n_ruff == 0 and mypy_ok and n_print == 0 and n_hex == 0)
     _registrar("R10_ruff_check_cero", n_ruff, 0, n_ruff == 0,
                f"ruff check devolvió {n_ruff}")
     _registrar("R10_mypy_strict_cero", mypy_errores, 0, mypy_ok,

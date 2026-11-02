@@ -279,7 +279,7 @@ class TestBooleanLogicMocked(unittest.TestCase):
 
         pos = {"x": 0, "y": 0, "z": 0, "largo_x": 16, "largo_y": 550,
                "largo_z": 120}
-        resultado = _corte_notch_lateral(
+        _corte_notch_lateral(
             self.mock_solid, pos, 35.0, 12.0, 550)
 
         # Verificar que se llamó a cut con una herramienta
@@ -298,7 +298,7 @@ class TestBooleanLogicMocked(unittest.TestCase):
 
         pos = {"x": 16, "y": 0, "z": 11.5, "largo_x": 519, "largo_y": 16,
                "largo_z": 96.5}
-        resultado = _corte_pin_trasero(
+        _corte_pin_trasero(
             self.mock_solid, pos, 6.0, 10.0, 11.5, 6.0,
             96.5, 519, 16)
 
@@ -316,7 +316,7 @@ class TestBooleanLogicMocked(unittest.TestCase):
 
         pos = {"x": 0, "y": 0, "z": 0, "largo_x": 16, "largo_y": 550,
                "largo_z": 120}
-        resultado = _corte_ranura_piso(
+        _corte_ranura_piso(
             self.mock_solid, pos, 4.0, 10.0, 5.5, 550)
 
         self.mock_solid.cut.assert_called()
@@ -329,7 +329,7 @@ class TestBooleanLogicMocked(unittest.TestCase):
 
         pos = {"x": 0, "y": -18, "z": 0, "largo_x": 636, "largo_y": 18,
                "largo_z": 221}
-        resultado = _aplicar_bisel_45_fachada(
+        _aplicar_bisel_45_fachada(
             self.mock_solid, pos, 636.0, 221.0, bisel_dist=5.0)
 
         self.mock_solid.cut.assert_called()

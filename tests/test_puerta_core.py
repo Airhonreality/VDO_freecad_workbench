@@ -99,7 +99,7 @@ class DespieceBasculanteTests(unittest.TestCase):
         self.assertGreaterEqual(comercial, F - 1e-9)
 
     def test_descripcion_piston(self):
-        texto, comercial, F = D.descripcion_piston(600, 800)
+        texto, comercial, _F = D.descripcion_piston(600, 800)
         self.assertIn("N", texto)
         self.assertIn("unidades", texto)
         self.assertEqual(comercial, D.piston_recomendado(600, 800)[0])

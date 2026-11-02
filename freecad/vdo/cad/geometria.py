@@ -31,7 +31,7 @@ def forma_ref(ref: dict) -> object | None:
             largo = float(ref.get(dim, ref.get("espesor", 0.0)))
             if largo > 1e-9:
                 try:
-                    wire = Part.makePolygon(puntos + [puntos[0]])
+                    wire = Part.makePolygon([*puntos, puntos[0]])
                     cara = Part.Face(wire)
                     vector = {"x": 0.0, "y": 0.0, "z": 0.0}
                     vector[eje] = largo

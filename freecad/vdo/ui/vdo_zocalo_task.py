@@ -231,7 +231,7 @@ class ZocaloTaskPanel(VDOTransactionMixin):
             self.spin_alto.setValue(float(obj.AltoZocalo))
         if hasattr(obj, "EspesorTablero"):
             self.spin_espesor.setValue(
-                int(round(float(obj.EspesorTablero))))
+                round(float(obj.EspesorTablero)))
         if hasattr(obj, "DistanciaFrente"):
             self.spin_frente.setValue(float(obj.DistanciaFrente))
         if hasattr(obj, "DistanciaCostados"):

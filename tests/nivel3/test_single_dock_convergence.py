@@ -29,6 +29,8 @@ except ImportError:
     except ImportError:
         from PySide import QtCore, QtWidgets
 
+import contextlib
+
 from freecad.vdo.core.vdo_coco_core import CocoFeature
 from freecad.vdo.core.vdo_panel_core import PanelFeature
 from freecad.vdo.ui.vdo_inspector_dock import (
@@ -72,10 +74,8 @@ class TestSingleDockConvergence(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        try:
+        with contextlib.suppress(Exception):
             App.closeDocument(cls.doc.Name)
-        except Exception:
-            pass
 
     def setUp(self):
         self.inspector = VDOUniversalInspectorWidget()

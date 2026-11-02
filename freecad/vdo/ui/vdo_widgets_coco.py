@@ -604,8 +604,8 @@ class DivisionesEditor(QtWidgets.QWidget):
         self._items_by_key = {}
         # Mapeo label de celda -> (col, row) para el preview 2D
         self._label_to_colrow = {}
-        for j, row in enumerate(self._resolved.rows):
-            for i, col in enumerate(self._resolved.columns):
+        for j, _row in enumerate(self._resolved.rows):
+            for i, _col in enumerate(self._resolved.columns):
                 cell = self.layout.get_cell(i, j)
                 if cell is not None:
                     resuelto = self._resolved_map.get(cell.label)
@@ -676,7 +676,7 @@ class DivisionesEditor(QtWidgets.QWidget):
             root.addChild(row_item)
             self._items_by_key[("row", j)] = row_item
 
-            for i, col in enumerate(self._resolved.columns):
+            for i, _col in enumerate(self._resolved.columns):
                 cell = self.layout.get_cell(i, j)
                 resuelto = self._resolved_map.get(cell.label) if cell else None
                 if resuelto is None:
@@ -694,7 +694,7 @@ class DivisionesEditor(QtWidgets.QWidget):
                     tipo = contenido.get("tipo", "vacio")
                     if tipo == "puerta":
                         cfg = contenido.get("config", {})
-                        nombre = cfg.get("nombre", f"Puerta_{cell.label}")
+                        cfg.get("nombre", f"Puerta_{cell.label}")
                         montaje = cfg.get("tipo_montaje", "Parche")
                         apertura = cfg.get("sistema_apertura", "tirador")
                         child = QtWidgets.QTreeWidgetItem([
@@ -955,10 +955,7 @@ class DivisionesEditor(QtWidgets.QWidget):
                           col_index=None, row_index=None,
                           parent_axis=None):
         cell = resuelto.cell
-        if cell.axis and cell.children:
-            division = f"{len(cell.children)} {cell.axis}"
-        else:
-            division = "vacío"
+        division = f"{len(cell.children)} {cell.axis}" if cell.axis and cell.children else "vacío"
         item = QtWidgets.QTreeWidgetItem([
             cell.label,
             f"{resuelto.w:.1f}",

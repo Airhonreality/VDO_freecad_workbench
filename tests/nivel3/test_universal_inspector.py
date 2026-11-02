@@ -15,6 +15,7 @@ False. Las pruebas verifican el comportamiento funcional
 (addSelection / clearSelection / conmutación de páginas) que sí opera.
 """
 
+import contextlib
 import importlib.util
 import os
 import sys
@@ -85,24 +86,18 @@ class UniversalInspectorTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        try:
+        with contextlib.suppress(Exception):
             cls.App.closeDocument(cls.doc.Name)
-        except Exception:
-            pass
 
     def setUp(self):
         self.inspector = self.VDOUniversalInspectorWidget()
 
     def tearDown(self):
-        try:
+        with contextlib.suppress(Exception):
             self.inspector.cerrar_inspector()
-        except Exception:
-            pass
         self.inspector = None
-        try:
+        with contextlib.suppress(Exception):
             self.qapp.processEvents()
-        except Exception:
-            pass
 
     # ------------------------------------------------------------------
     # 1. Instanciación

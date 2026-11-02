@@ -66,9 +66,8 @@ def crear_modulo_interactivo(module_key: str, config: dict | None = None):
     def cancelar():
         if tx_propia:
             doc.abortTransaction()
-        if obj is not None:
-            if doc.getObject(obj.Name) is not None:
-                doc.removeObject(obj.Name)
+        if obj is not None and doc.getObject(obj.Name) is not None:
+            doc.removeObject(obj.Name)
         doc.recompute()
 
     def confirmar():
@@ -91,7 +90,7 @@ def crear_modulo_interactivo(module_key: str, config: dict | None = None):
 
     obj.ViewObject.Visibility = False
 
-    panel_cls = resolver_panel(spec)
+    resolver_panel(spec)
     estado = {"finalizado": False}
 
     def on_accept():
@@ -108,6 +107,6 @@ def crear_modulo_interactivo(module_key: str, config: dict | None = None):
         estado["finalizado"] = True
         cancelar()
 
-    panel_cls = resolver_panel(spec)
+    resolver_panel(spec)
     # La vista/señal del panel se conecta desde app/composicion (F6).
     return obj

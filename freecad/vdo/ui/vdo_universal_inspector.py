@@ -1209,7 +1209,7 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
 
         # Calcular lista de piezas físicas
         cav_w = (ancho - 2.0 * espesor) if ancho > 2.0 * espesor else ancho
-        cav_h = (alto - 2.0 * espesor) if alto > 2.0 * espesor else alto
+        (alto - 2.0 * espesor) if alto > 2.0 * espesor else alto
 
         piezas = [
             {
@@ -1435,7 +1435,7 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
                     try:
                         obj.Espesor = e
                     except TypeError:
-                        obj.Espesor = int(round(e))
+                        obj.Espesor = round(e)
                 doc = getattr(obj, "Document", None)
                 if doc is not None:
                     doc.recompute()

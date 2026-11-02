@@ -42,6 +42,8 @@ except BaseException:
     abrir_panel_objeto = None
     enfocar_inspector_universal = None
 
+import contextlib
+
 from tests.soporte.requisitos import requiere_gui
 
 _HAS_GUI = (QtWidgets is not None
@@ -61,17 +63,13 @@ class TestGuiWiring(unittest.TestCase):
 
     def setUp(self):
         self.doc_name = "DocWiringVDO"
-        try:
+        with contextlib.suppress(BaseException):
             App.closeDocument(self.doc_name)
-        except BaseException:
-            pass
         self.doc = App.newDocument(self.doc_name)
 
     def tearDown(self):
-        try:
+        with contextlib.suppress(BaseException):
             App.closeDocument(self.doc_name)
-        except BaseException:
-            pass
 
     def test_extirpacion_combos_planos_en_coco_task(self):
         """Verifica que CocoUnifiedTaskPanel no tenga combos viejos y use VDOChassisControllerWidget."""

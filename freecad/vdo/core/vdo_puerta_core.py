@@ -133,7 +133,7 @@ class PuertaFeature:
 
         # Fuerza de pistón (basculante)
         if sistema == "Basculante Horizontal":
-            texto, comercial, F = descripcion_piston(W, H)
+            texto, _comercial, _F = descripcion_piston(W, H)
             fp.FuerzaPistonRecomendada = texto
         else:
             fp.FuerzaPistonRecomendada = ""

@@ -225,7 +225,7 @@ class NestingDialog(QtWidgets.QDialog):
             App.Console.PrintMessage(f"\n🔄 Ejecutando nesting ({algo})...")
             App.Console.PrintMessage(f"   Tablero: {width}×{height} mm, Espaciado: {spacing} mm")
 
-            sheets, unplaced, steps, elapsed = nest(
+            sheets, unplaced, _steps, elapsed = nest(
                 parts=shapes,
                 width=width,
                 height=height,
@@ -252,7 +252,7 @@ class NestingDialog(QtWidgets.QDialog):
             App.Console.PrintMessage("\n📐 Dibujando layouts...")
             layout_group = doc.addObject("App::DocumentObjectGroup", "NestingLayout")
 
-            for sheet_idx, sheet in enumerate(sheets):
+            for _sheet_idx, sheet in enumerate(sheets):
                 sheet.parent_group_name = layout_group.Name
                 sheet.draw(doc, {
                     'show_bounds': True,

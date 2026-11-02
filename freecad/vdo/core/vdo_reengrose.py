@@ -1443,7 +1443,7 @@ def vector_anclaje_y(panel_real):
     El frente funcional VDO es Y-. El resultado nunca usa coordenadas
     absolutas del mueble: nace del BoundingBox real del panel huesped.
     """
-    x, y, z, w, h, d = _aabb(panel_real)
+    x, y, z, _w, h, _d = _aabb(panel_real)
     return {
         "frente": y,
         "fondo": y + h,
@@ -1459,7 +1459,7 @@ def frente_panel(panel_real):
 def anclar_refuerzo_a_panel(refuerzo, panel_real, alineacion="frente"):
     """Ancla una tira de ancho Y a la cara real del panel padre."""
     datos = _aabb_dict(refuerzo)
-    px, py, pz, pw, ph, pd = _aabb(panel_real)
+    _px, py, _pz, _pw, ph, _pd = _aabb(panel_real)
     alineacion = str(alineacion or "frente").strip().lower()
     alto_tira = min(datos["h"], ph)
     if alineacion == "fondo":
@@ -1746,8 +1746,8 @@ def generar_mocheo_repisa(repisa, reengrose_vertical, politica=None):
 
     mod = _validar_enum(
         politica or "retroceder", "politica_repisa", POLITICAS_REPISA)
-    rx, ry, rz, rw, rh, rd = _aabb(repisa)
-    gx, gy, gz, gw, gh, gd = _aabb(reengrose_vertical)
+    rx, ry, _rz, rw, rh, _rd = _aabb(repisa)
+    gx, gy, _gz, gw, gh, _gd = _aabb(reengrose_vertical)
 
     x0 = max(rx, gx)
     x1 = min(rx + rw, gx + gw)

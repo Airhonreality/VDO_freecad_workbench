@@ -315,8 +315,8 @@ def optimize(pieces, board_w, board_h,
     # Multi-estrategia: probar combinaciones de heurística × orden y
     # quedarse con la que use menos tableros (y coloque más área).
     best = None
-    for hname, score_func in _HEURISTICS.items():
-        for sname, skey in _SORTERS.items():
+    for _hname, score_func in _HEURISTICS.items():
+        for _sname, skey in _SORTERS.items():
             ordered = sorted(inflated, key=skey, reverse=True)
             boards, pending, frees = _pack_all(usable_w, usable_h, ordered,
                                                allow_rotation, score_func)

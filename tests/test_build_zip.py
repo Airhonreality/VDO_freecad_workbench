@@ -37,7 +37,6 @@ class TestBuildZip(unittest.TestCase):
         con_permitidos = {
             "package.xml", "Init.py", "InitGui.py", "LICENSE", "README.md",
         }
-        con_permitidos_prefijo = ("freecad/", "Resources/")
 
         with zipfile.ZipFile(zip_path, "r") as z:
             nombres = z.namelist()
@@ -46,7 +45,7 @@ class TestBuildZip(unittest.TestCase):
 
             # Verificar que no haya archivos de tests/, tools/, docs/
             for nombre in nombres_rel:
-                rel = nombre.split("/", 1)[-1] if "/" in nombre else nombre
+                nombre.split("/", 1)[-1] if "/" in nombre else nombre
                 self.assertFalse(
                     nombre.startswith("VDO/tests/") or
                     nombre.startswith("VDO/tools/") or

@@ -75,9 +75,7 @@ def _tiene_escritura_freecad(src: str) -> bool:
         return True
     if re.search(r"\bApp\.\w+", src):
         return True
-    if re.search(r"\bPart\.\w+", src):
-        return True
-    return False
+    return bool(re.search(r"\bPart\.\w+", src))
 
 
 class CapasTests(unittest.TestCase):

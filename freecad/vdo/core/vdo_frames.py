@@ -90,10 +90,7 @@ def interpretar_lados(valor, por_defecto=None):
         texto = valor.strip()
         if not texto:
             return list(por_defecto or [])
-        if texto.startswith("["):
-            datos = json.loads(texto)
-        else:
-            datos = texto.split(",")
+        datos = json.loads(texto) if texto.startswith("[") else texto.split(",")
     elif isinstance(valor, (list, tuple, set)):
         datos = list(valor)
     else:

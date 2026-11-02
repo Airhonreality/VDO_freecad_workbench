@@ -58,7 +58,7 @@ def estilo_boton(acento=ACEINTO, texto=TEXTO_CLARO, borde=BORDE_ACTIVO):
 
 
 def get_svg_icon(name: str, size: int = 22,
-                 icons_map: dict = None, cache: dict = None) -> QtGui.QIcon:
+                 icons_map: dict | None = None, cache: dict | None = None) -> QtGui.QIcon:
     """Renderiza un string SVG (Lucide) directamente a un QIcon.
 
     Se pasa `icons_map` y `cache` desde el módulo llamador para que cada

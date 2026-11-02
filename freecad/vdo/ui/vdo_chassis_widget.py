@@ -530,7 +530,7 @@ class VDOChassisControllerWidget(QtWidgets.QWidget):
             ("inferior_izq", 2, 0, "Inf-Izq"),
             ("inferior_der", 2, 2, "Inf-Der"),
         ]
-        for clave, fila, col, tag in esquinas_spec:
+        for clave, fila, col, _tag in esquinas_spec:
             btn = QtWidgets.QPushButton()
             btn.setProperty("class", "btn-esquina")
             btn.setFixedSize(28, 28)

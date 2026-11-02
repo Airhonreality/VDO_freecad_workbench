@@ -287,10 +287,10 @@ class PuertaTaskPanel(VDOTransactionMixin):
 
         # Botones
         botones = QtWidgets.QDialogButtonBox()
-        btn_ok = botones.addButton(
+        botones.addButton(
             "Aplicar" if self.auto_transaction else "Crear y colocar",
             QtWidgets.QDialogButtonBox.AcceptRole)
-        btn_cancelar = botones.addButton(
+        botones.addButton(
             "Cancelar", QtWidgets.QDialogButtonBox.RejectRole)
         botones.accepted.connect(self._on_ok)
         botones.rejected.connect(self._on_cancel)
@@ -445,7 +445,7 @@ class PuertaTaskPanel(VDOTransactionMixin):
         try:
             W = self.spin_ancho.value()
             H = self.spin_alto.value()
-            texto, comercial, F = descripcion_piston(W, H)
+            _texto, comercial, F = descripcion_piston(W, H)
             self.lbl_piston.setText(
                 f"💡 Recomendación: Pistón a Gas de {comercial}N  "
                 f"(fuerza teórica: {F:.0f} N)")

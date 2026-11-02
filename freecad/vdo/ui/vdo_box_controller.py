@@ -991,7 +991,7 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
 
         tipos_esq = set(self._esquinas.values())
         if len(tipos_esq) == 1:
-            texto_esq = ENCUENTRO_LABELS[list(tipos_esq)[0]]
+            texto_esq = ENCUENTRO_LABELS[next(iter(tipos_esq))]
         else:
             texto_esq = "Esquinas mixtas"
 

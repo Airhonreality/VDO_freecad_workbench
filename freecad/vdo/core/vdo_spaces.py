@@ -139,7 +139,7 @@ def resolver_espacios_eje(nodes, espacio_total, espesor):
         espacio_para_iguales = max(0, espacio_para_iguales)
 
     if iguales and espacio_para_iguales > 0:
-        n_iguales = len(iguales)
+        len(iguales)
         n_div_iguales = sum(int(n.value) for n in iguales)
         # Cada grupo de N iguales aporta N-1 separadores internos.
         separadores_iguales = sum(max(0, int(n.value) - 1) for n in iguales)
@@ -229,7 +229,7 @@ def _resolver_subespacios(children, espacio_libre, espesor):
     espacio_disponible = espacio_libre
 
     fijos = [c for c in children if c.space_type == ESPACIO_FIJO]
-    restantes = [c for c in children if c.space_type == ESPACIO_RESTANTE]
+    [c for c in children if c.space_type == ESPACIO_RESTANTE]
     iguales = [c for c in children if c.space_type == ESPACIO_IGUALES]
 
     espacio_consumido = sum(c.value for c in fijos)

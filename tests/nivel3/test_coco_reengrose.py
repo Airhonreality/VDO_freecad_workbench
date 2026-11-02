@@ -119,7 +119,7 @@ class CocoReengroseTests(unittest.TestCase):
         self.assertIn("cantos_bloque", sub[0])
 
     def test_export_csv_grupo(self):
-        obj = self._coco("C_Export", modo="pacha")
+        self._coco("C_Export", modo="pacha")
         piezas = E.extraer_piezas_del_documento("todo")
         path = "/tmp/vdo_coco_reengrose.csv"
         self.assertTrue(E.generar_csv_opencutlist(piezas, path))

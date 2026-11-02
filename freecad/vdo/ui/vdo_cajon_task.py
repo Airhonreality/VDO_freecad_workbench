@@ -347,10 +347,10 @@ class CajonTaskPanel(VDOTransactionMixin):
 
         # --- Botones ---
         botones = QtWidgets.QDialogButtonBox()
-        btn_ok = botones.addButton(
+        botones.addButton(
             "Crear y colocar" if not self.auto_transaction else "Aplicar",
             QtWidgets.QDialogButtonBox.AcceptRole)
-        btn_cancelar = botones.addButton(
+        botones.addButton(
             "Cancelar", QtWidgets.QDialogButtonBox.RejectRole)
         botones.accepted.connect(self._on_ok)
         botones.rejected.connect(self._on_cancel)
@@ -415,11 +415,11 @@ class CajonTaskPanel(VDOTransactionMixin):
         if hasattr(obj, "AltoCaja"):
             self.spin_alto_caja.setValue(float(obj.AltoCaja))
         if hasattr(obj, "GrosorCaja"):
-            self.spin_g_caja.setValue(int(round(float(obj.GrosorCaja))))
+            self.spin_g_caja.setValue(round(float(obj.GrosorCaja)))
         if hasattr(obj, "GrosorFondo"):
-            self.spin_g_fondo.setValue(int(round(float(obj.GrosorFondo))))
+            self.spin_g_fondo.setValue(round(float(obj.GrosorFondo)))
         if hasattr(obj, "GrosorFachada"):
-            self.spin_g_fachada.setValue(int(round(float(obj.GrosorFachada))))
+            self.spin_g_fachada.setValue(round(float(obj.GrosorFachada)))
         if hasattr(obj, "MarcaCorredera"):
             idx = self.combo_marca.findText(obj.MarcaCorredera)
             if idx >= 0:

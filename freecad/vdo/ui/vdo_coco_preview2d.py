@@ -74,9 +74,9 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
         self._selected_entity = None
         for label_item, item in self._cell_items.items():
             self._aplicar_estilo(item, label_item == label)
-        for clave, item in self._panel_items.items():
+        for _clave, item in self._panel_items.items():
             self._aplicar_estilo_panel(item, False)
-        for clave, items in self._strip_items.items():
+        for _clave, items in self._strip_items.items():
             for item in items:
                 self._aplicar_estilo_tira(item, False)
         self.viewport().update()

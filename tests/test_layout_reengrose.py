@@ -30,7 +30,7 @@ class LayoutReengroseTests(unittest.TestCase):
         self.assertAlmostEqual(res.columns[0].clear_size, 255.0)
         self.assertAlmostEqual(res.columns[1].clear_size, 273.0)
         self.assertAlmostEqual(res.columns[0].extra_der, 18.0)
-        vertical = [p for p in res.pieces if p.axis == "X"][0]
+        vertical = next(p for p in res.pieces if p.axis == "X")
         self.assertAlmostEqual(vertical.x, 273.0)
 
     def test_division_derecha_reduce_vano(self):

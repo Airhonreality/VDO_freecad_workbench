@@ -758,7 +758,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
         except ValueError:
             return
         if row_obj.node.space_type == ESPACIO_IGUALES:
-            valor = max(1.0, float(int(round(valor))))
+            valor = max(1.0, float(round(valor)))
             table.blockSignals(True)
             item.setText(str(int(valor)))
             table.blockSignals(False)
@@ -774,7 +774,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
     def _on_child_cell_changed(self, row, col, axis):
         if self._building:
             return
-        path = list(self._selected_paths[axis]) + [row]
+        path = [*list(self._selected_paths[axis]), row]
         self._aplicar_valor(
             self._get_hijo_widgets(axis)[3], row, col, axis, path)
 
@@ -881,7 +881,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
         for i, child in enumerate(row.children_rows):
             table_hijos.insertRow(i)
             self._pintar_fila(
-                table_hijos, i, child, axis, list(path) + [i])
+                table_hijos, i, child, axis, [*list(path), i])
         table_hijos.blockSignals(False)
 
     def _agregar_hijo(self, axis):

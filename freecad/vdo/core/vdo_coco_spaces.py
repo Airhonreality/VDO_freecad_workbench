@@ -311,7 +311,7 @@ def _prisma_inglete(inglete):
         _punto_inglete(plan, cv, ch, e0 - margen)
         for cv, ch in triangulo
     ]
-    wire = _get_part().makePolygon(puntos + [puntos[0]])
+    wire = _get_part().makePolygon([*puntos, puntos[0]])
     cara = _get_part().Face(wire)
     vector = {"x": 0.0, "y": 0.0, "z": 0.0}
     vector[plan["extrusion"]] = (e1 - e0) + margen * 2.0

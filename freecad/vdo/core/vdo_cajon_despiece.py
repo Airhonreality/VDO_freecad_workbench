@@ -264,7 +264,7 @@ def calcular_despiece(config):
     # --- Entradas obligatorias ---
     li = float(config["ancho_libre"])
     prof_int = float(config["prof_libre"])
-    ancho_modulo = float(config["ancho_modulo"])
+    float(config["ancho_modulo"])
     alto_frente = float(config["alto_frente"])
     marca_id = config.get("marca", "blum_tandem")
 
@@ -323,10 +323,7 @@ def calcular_despiece(config):
 
     # --- 1. Guía (LG) ---
     lg_manual = float(config.get("longitud_guia") or 0)
-    if lg_manual > 0:
-        lg = lg_manual
-    else:
-        lg = seleccionar_guia(prof_int, marca["longitudes_comerciales"])
+    lg = lg_manual if lg_manual > 0 else seleccionar_guia(prof_int, marca["longitudes_comerciales"])
 
     # --- 2. Ancho exterior de la caja ---
     ancho_ext = li - delta
