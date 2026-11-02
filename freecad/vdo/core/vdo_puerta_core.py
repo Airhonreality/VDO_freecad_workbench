@@ -262,9 +262,8 @@ class PuertaFeature:
 # ---------------------------------------------------------------------
 
 
-def make_puerta(configuracion):
-    """Crea un PuertaFeature en el documento activo."""
-    doc = _get_app().ActiveDocument
+def make_puerta(doc, configuracion):
+    """Crea un PuertaFeature en el documento recibido."""
     if doc is None:
         _get_app().Console.PrintError("[VDO Puerta] No hay documento activo.\n")
         return None

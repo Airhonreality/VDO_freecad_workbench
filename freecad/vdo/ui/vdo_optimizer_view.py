@@ -6,7 +6,7 @@
 # Solo dibuja los datos que produce el core. Sin FreeCAD, sin I/O.
 # =====================================================================
 
-from freecad.vdo.app.vdo_api import vdo_optimizer_core as core
+from freecad.vdo.core import vdo_optimizer_core as core
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
 _PAD = 14

@@ -5,17 +5,15 @@
 
 import FreeCAD as App
 
-from freecad.vdo.app.vdo_api import (
-    ANCLAJE_DEFAULT,
-    ANCLAJE_LABELS,
-    ANCLAJES,
-    CANTOS_VALIDOS,
-    add_common_props,
-    add_reengrose_props,
-    aplicar_rotacion,
+from freecad.vdo.cad.propiedades import aplicar_rotacion
+from freecad.vdo.core import vdo_defaults as VDO_D
+from freecad.vdo.core import vdo_module_props
+from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.core.vdo_module_props import (
+    ANCLAJE_DEFAULT, ANCLAJE_LABELS, ANCLAJES,
 )
-from freecad.vdo.app.vdo_api import vdo_defaults as VDO_D
-from freecad.vdo.app.vdo_api import vdo_reengrose as VDO_RE
+from freecad.vdo.core.vdo_panel_core import CANTOS_VALIDOS, add_reengrose_props
+from freecad.vdo.core.vdo_module_props import add_common_props
 from freecad.vdo.qt_compat import QtGui, QtWidgets
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox, VDO_ExpressionInput
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo

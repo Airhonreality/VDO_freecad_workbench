@@ -1,6 +1,6 @@
 """Editor Qt del modificador universal de bordes de reengrose."""
 
-from freecad.vdo.app.vdo_api import vdo_reengrose as VDO_RE
+from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 

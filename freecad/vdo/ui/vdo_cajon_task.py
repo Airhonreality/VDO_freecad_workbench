@@ -6,43 +6,31 @@
 import FreeCAD as App
 import FreeCADGui as Gui
 
-from freecad.vdo.app.vdo_api import (
-    _FAMILIAS as _HW_FAMILIAS,  # para verificar disponibilidad
+from freecad.vdo.cad.propiedades import aplicar_rotacion
+from freecad.vdo.core import vdo_hardware_hub
+from freecad.vdo.core import vdo_module_props
+from freecad.vdo.core.vdo_cajon_despiece import (
+    CAJA_METALICA, CORREDERA_OCULTA, CORREDERA_TELESCOPICA,
+    listar_marcas, necesita_bisel_45, necesita_descuento_gola,
 )
-from freecad.vdo.app.vdo_api import (
-    ANCLAJE_DEFAULT,
-    ANCLAJE_LABELS,
-    ANCLAJES,
-    APERTURA_45_GRADOS,
-    APERTURA_GOLA,
-    APERTURA_PUSH_OPEN,
-    APERTURA_TIRADOR,
-    CAJA_METALICA,
-    CORREDERA_OCULTA,
-    CORREDERA_TELESCOPICA,
-    MONTAJE_EMBEBIDA,
-    MONTAJE_PARCHE,
-    MONTAJE_SEMIPARCHE,
-    OPERACION_CANTO_45,
-    OPERACION_CANTO_ESTANDAR,
-    OPERACION_CANTO_GOLA,
-    add_common_props,
-    aplicar_rotacion,
+from freecad.vdo.core.vdo_facade_contract import (
+    APERTURA_45_GRADOS, APERTURA_GOLA, APERTURA_PUSH_OPEN, APERTURA_TIRADOR,
+    OPERACION_CANTO_45, OPERACION_CANTO_ESTANDAR, OPERACION_CANTO_GOLA,
+    MONTAJE_EMBEBIDA, MONTAJE_PARCHE, MONTAJE_SEMIPARCHE,
     cantos_por_sistema_apertura,
-    get_family,
-    listar_marcas,
-    resolve_drawer_slide,
+    necesita_cantos_45, necesita_expulsor_magnetico,
 )
-from freecad.vdo.app.vdo_api import (
+from freecad.vdo.core.vdo_hardware_hub import (
+    _FAMILIAS as _HW_FAMILIAS,
+    get_family, resolve_drawer_slide,
+)
+from freecad.vdo.core.vdo_module_props import (
+    ANCLAJE_DEFAULT, ANCLAJE_LABELS, ANCLAJES, add_common_props,
+)
+from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_45_GRADOS as FA_45,
-)
-from freecad.vdo.app.vdo_api import (
     APERTURA_GOLA as FA_GOLA,
-)
-from freecad.vdo.app.vdo_api import (
     APERTURA_PUSH_OPEN as FA_PUSH,
-)
-from freecad.vdo.app.vdo_api import (
     APERTURA_TIRADOR as FA_TIRADOR,
 )
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
@@ -457,7 +445,7 @@ class CajonTaskPanel(VDOTransactionMixin):
     def _actualizar_header(self):
         """Actualiza el PanelHeaderWidget con las cotas calculadas."""
         try:
-            from freecad.vdo.app.vdo_api import calcular_despiece
+            from freecad.vdo.core.vdo_cajon_despiece import calcular_despiece
             config = {
                 "ancho_libre": self.spin_li.value(),
                 "prof_libre": self.spin_prof.value(),

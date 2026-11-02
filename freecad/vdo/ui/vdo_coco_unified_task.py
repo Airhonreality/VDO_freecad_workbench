@@ -9,28 +9,22 @@ import json
 import FreeCAD as App
 import FreeCADGui as Gui
 
-from freecad.vdo.app.vdo_api import (
-    ANCLAJE_DEFAULT,
-    ANCLAJE_LABELS,
-    ANCLAJES,
-    APERTURA_45_GRADOS,
-    APERTURA_GOLA,
-    APERTURA_PUSH_OPEN,
-    APERTURA_TIRADOR,
+from freecad.vdo.cad.propiedades import aplicar_rotacion
+from freecad.vdo.core import vdo_frames as VDO_FR
+from freecad.vdo.core import vdo_module_props
+from freecad.vdo.core.vdo_cajon_core import make_cajon
+from freecad.vdo.core.vdo_facade_contract import (
+    APERTURA_45_GRADOS, APERTURA_GOLA, APERTURA_PUSH_OPEN, APERTURA_TIRADOR,
     CALLE_ENTRE_FRENTES_DEFAULT,
-    ESPACIO_FIJO,
-    ESPACIO_IGUALES,
-    ESPACIO_RESTANTE,
-    SpaceNode,
-    add_common_props,
-    aplicar_rotacion,
-    calcular_espacio_libre,
-    deserializar_espacios,
-    make_cajon,
-    make_puerta,
-    serializar_espacios,
 )
-from freecad.vdo.app.vdo_api import vdo_frames as VDO_FR
+from freecad.vdo.core.vdo_module_props import (
+    ANCLAJE_DEFAULT, ANCLAJE_LABELS, ANCLAJES, add_common_props,
+)
+from freecad.vdo.core.vdo_puerta_core import make_puerta
+from freecad.vdo.core.vdo_spaces import (
+    ESPACIO_FIJO, ESPACIO_IGUALES, ESPACIO_RESTANTE, SpaceNode,
+    calcular_espacio_libre, deserializar_espacios, serializar_espacios,
+)
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
@@ -1109,7 +1103,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
 
         if existente is None:
             existente = doc.addObject("Part::FeaturePython", nombre)
-            from freecad.vdo.app.vdo_api import PuertaFeature
+            from freecad.vdo.core.vdo_puerta_core import PuertaFeature
             PuertaFeature(existente)
             if App.GuiUp:
                 from freecad.vdo.ui.vdo_view_providers import ViewProviderPuerta
@@ -1154,7 +1148,9 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
         if h_frente <= 0:
             h_frente = max(10.0, h / max(cantidad, 1))
 
-        from freecad.vdo.app.vdo_api import CORREDERA_OCULTA, CORREDERA_TELESCOPICA
+        from freecad.vdo.core.vdo_cajon_despiece import (
+            CORREDERA_OCULTA, CORREDERA_TELESCOPICA,
+        )
         tipo_corredera = CORREDERA_OCULTA if corredera == "Oculta" else CORREDERA_TELESCOPICA
 
         apertura_map = {
@@ -1176,7 +1172,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
 
             if existente is None:
                 existente = doc.addObject("Part::FeaturePython", nombre)
-                from freecad.vdo.app.vdo_api import CajonFeature
+                from freecad.vdo.core.vdo_cajon_core import CajonFeature
                 CajonFeature(existente)
                 if App.GuiUp:
                     from freecad.vdo.ui.vdo_view_providers import ViewProviderCajon

@@ -12,7 +12,7 @@
 
 import FreeCAD as App
 
-from freecad.vdo.app.vdo_api import ANCLAJE_DEFAULT, ancla_local, leer_rotacion, rotacion_z
+from freecad.vdo.core.vdo_module_props import ANCLAJE_DEFAULT, ancla_local, leer_rotacion, rotacion_z
 
 try:
     import FreeCADGui as Gui
