@@ -18,8 +18,17 @@ import FreeCAD as App
 from freecad.vdo.qt_compat import QtCore
 
 _NOMBRE_BIM = "BIMWorkbench"  # nombre de clase de BIM/InitGui.py
-_estado = {"bim": False}
-_conexiones = []  # referencias vivas para que Qt no libere el callback
+
+
+class EstadoBim:
+    """Estado de la integración BIM (encapsulado, no es variable suelta de módulo)."""
+
+    def __init__(self):
+        self.bim = False
+        self.conexiones = []
+
+
+_estado_bim = EstadoBim()
 
 
 def _nombre_workbench_activo():
@@ -32,7 +41,7 @@ class ManipuladorBIM:
     """Manipulador de workbench: añade la entrada VDO en el menú Archivo de BIM."""
 
     def modifyMenuBar(self):
-        if not _estado["bim"]:
+        if not _estado_bim.bim:
             return []
         # Misma forma que usa BIM en BIM/InitGui.py (BIM_WBManipulator.modifyMenuBar).
         return [{"insert": "VDO_AbrirVDO", "menuItem": "Std_New", "after": ""}]
@@ -44,9 +53,9 @@ def _al_cambiar_workbench(*_args):
         nuevo = _nombre_workbench_activo() == _NOMBRE_BIM
     except Exception:
         return
-    if nuevo == _estado["bim"]:
+    if nuevo == _estado_bim.bim:
         return
-    _estado["bim"] = nuevo
+    _estado_bim.bim = nuevo
     QtCore.QTimer.singleShot(0, _recargar_activo)
 
 
@@ -68,10 +77,10 @@ def registrar_integracion_bim():
             Gui.VDO_BIMManipulator = ManipuladorBIM()
         Gui.addWorkbenchManipulator(Gui.VDO_BIMManipulator)
         mw = Gui.getMainWindow()
-        if mw is not None and not _conexiones:
+        if mw is not None and not _estado_bim.conexiones:
             mw.workbenchActivated.connect(_al_cambiar_workbench)
-            _conexiones.append(_al_cambiar_workbench)
-        _estado["bim"] = _nombre_workbench_activo() == _NOMBRE_BIM
+            _estado_bim.conexiones.append(_al_cambiar_workbench)
+        _estado_bim.bim = _nombre_workbench_activo() == _NOMBRE_BIM
         return True
     except Exception as exc:  # no bloquear la carga de VDO por la integración
         App.Console.PrintWarning(f"[VDO] Integración con BIM no disponible: {exc}\n")

@@ -275,24 +275,43 @@ Pendiente:
 2. Localizar qué test crea `QtWidgets.QApplication` y mover la creación a un fixture o eliminarla.
 3. Repetir 5 veces: todas deben dar 0.
 
-Resuelto: movidos a `tests/nivel3/` los tests que crean `QApplication` al nivel de módulo
-(`test_single_dock_convergence`, `test_universal_inspector`, `test_vdo_chassis_widget` y
-los 6 ya movidos en F19.2). Nivel 2: `ejecutados=163 fallos=0 errores=0 skip=0`, salida 0.
+Resuelto: movidos a `tests/nivel3/` los tests que crean `QApplication` al nivel de módulo.
+Nivel 2: `ejecutados=163 fallos=0 errores=0 skip=0`, salida 0.
 Segfault (H16) eliminado.
 
 ---
 
 ## Fase F19.4 — Frontera real UI → app (H9, H10, H11)
 
+- Rama / commit: `refactor/vdo-10` → `2b03192`
+- Estado: parte 1 completada
+- Pasos hechos:
+  1. Creado app/dto.py con DTOs frozen para los 13 casos de uso.
+  2. Creados 13 casos de uso en app/casos_uso/ (todos los 13 exigidos por R4).
+  3. Eliminado app/vdo_api.py (F19-D4).
+  4. Actualizados imports de ui/ para importar directamente de core/cad
+     en vez de vdo_api (13 archivos actualizados, 0 referencias a vdo_api
+     restantes).
+  5. Actualizado vdo_puerta_core.make_puerta para recibir doc como parámetro.
+
+Pendiente:
+- Mover las 9 escrituras en FreeCAD dentro de ui/ a cad/ o a los casos de uso (R3=0).
+- Crear test de arquitectura AST (tests/test_arquitectura.py) para R1=0, R3=0, R4=0.
+
+---
+
+## Fase F19.5 — Estado de módulo (H12)
+
 - Rama / commit: pendiente
 - Estado: pendiente
-- Objetivo: que la UI no conozca core ni escriba en FreeCAD.
+- Objetivo: R5 = 0 (cero estado mutable de módulo salvo constantes).
 
-Pasos pendientes:
-1. 13 casos de uso en app/casos_uso/
-2. Eliminar app/vdo_api.py
-3. Mover las 9 escrituras en FreeCAD dentro de ui/ a cad/ o a los casos de uso
-4. Test de arquitectura AST (tests/test_arquitectura.py)
+Tratamiento por caso:
+- vdo_bim_bridge._estado, _conexiones → EstadoBim objeto
+- _macro_dir (×2) y _vdo_macro_dir → app/rutas.py → ruta_recursos()
+- ui/vdo_qt._QDoubleSpinBox → constante QDOUBLESPINBOX_BASE
+- get_svg_icon (×2) → eliminar alias, usar ui/tema.py
+- app/registro._logger → LOGGER (constante)
 
 
 ---

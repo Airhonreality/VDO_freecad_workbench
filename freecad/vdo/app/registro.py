@@ -9,12 +9,12 @@ from __future__ import annotations
 import logging
 import sys
 
-_logger = logging.getLogger("vdo")
-_logger.setLevel(logging.INFO)
-if not _logger.handlers:
+LOGGER = logging.getLogger("vdo")
+LOGGER.setLevel(logging.INFO)
+if not LOGGER.handlers:
     _h = logging.StreamHandler(sys.stdout)
     _h.setFormatter(logging.Formatter("[VDO] %(levelname)s %(message)s"))
-    _logger.addHandler(_h)
+    LOGGER.addHandler(_h)
 
 
 def _console():
@@ -29,18 +29,18 @@ def info(msg: str):
     c = _console()
     if c is not None:
         c.PrintMessage(f"{msg}\n")
-    _logger.info(msg)
+    LOGGER.info(msg)
 
 
 def warning(msg: str):
     c = _console()
     if c is not None:
         c.PrintWarning(f"{msg}\n")
-    _logger.warning(msg)
+    LOGGER.warning(msg)
 
 
 def error(msg: str):
     c = _console()
     if c is not None:
         c.PrintError(f"{msg}\n")
-    _logger.error(msg)
+    LOGGER.error(msg)

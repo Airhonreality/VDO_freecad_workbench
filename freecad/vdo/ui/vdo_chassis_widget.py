@@ -100,8 +100,9 @@ _ICON_CACHE = {}
 
 from freecad.vdo.ui.tema import get_svg_icon as _svg_icon
 
-get_svg_icon = lambda name, size=22: _svg_icon(
-    name, size, icons_map=LUCIDE_ICONS, cache=_ICON_CACHE)
+
+def obtener_svg_icon(name, size=22):
+    return _svg_icon(name, size, icons_map=LUCIDE_ICONS, cache=_ICON_CACHE)
 
 
 # ----------------------------------------------------------------------
@@ -501,7 +502,7 @@ class VDOChassisControllerWidget(QtWidgets.QWidget):
         ]
         for nombre, icono_id, tip in arquetipos:
             b = QtWidgets.QPushButton(nombre)
-            b.setIcon(get_svg_icon(icono_id, 14))
+            b.setIcon(obtener_svg_icon(icono_id, 14))
             b.setToolTip(tip)
             b.setProperty("class", "arquetipo-chip")
             b.setFixedHeight(22)
@@ -599,7 +600,7 @@ class VDOChassisControllerWidget(QtWidgets.QWidget):
         self.combo_fondo = QtWidgets.QComboBox()
         self.combo_fondo.setProperty("class", "combo-fondo")
         for val, label, icono_id, tip in TIPOS_FONDO:
-            self.combo_fondo.addItem(get_svg_icon(icono_id, 16), label, val)
+            self.combo_fondo.addItem(obtener_svg_icon(icono_id, 16), label, val)
         self.combo_fondo.currentIndexChanged.connect(self._on_fondo_changed)
         layout_fondo.addWidget(self.combo_fondo, 1)
 
@@ -626,7 +627,7 @@ class VDOChassisControllerWidget(QtWidgets.QWidget):
         ]
         for key, label, icono_id, tip in estrategias_spec:
             btn = QtWidgets.QPushButton(label)
-            btn.setIcon(get_svg_icon(icono_id, 16))
+            btn.setIcon(obtener_svg_icon(icono_id, 16))
             btn.setCheckable(True)
             btn.setToolTip(tip)
             btn.setProperty("class", "estrategia-btn")
@@ -1012,7 +1013,7 @@ class VDOChassisControllerWidget(QtWidgets.QWidget):
     def _actualizar_botones_esquinas(self):
         for e, btn in self.btn_esquina.items():
             tipo = self._encuentros.get(e, "tapa_domina")
-            btn.setIcon(get_svg_icon(tipo, 22))
+            btn.setIcon(obtener_svg_icon(tipo, 22))
             btn.setToolTip(f"<b>{ENCUENTRO_LABELS.get(tipo, tipo)}</b><br>{ENCUENTRO_TOOLTIPS.get(tipo, '')}")
 
     def _actualizar_combo_fondo(self):

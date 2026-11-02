@@ -50,8 +50,9 @@ _ICON_CACHE = {}
 
 from freecad.vdo.ui.tema import get_svg_icon as _svg_icon
 
-get_svg_icon = lambda name, size=22: _svg_icon(
-    name, size, icons_map=LUCIDE_ICONS, cache=_ICON_CACHE)
+
+def obtener_svg_icon(name, size=22):
+    return _svg_icon(name, size, icons_map=LUCIDE_ICONS, cache=_ICON_CACHE)
 
 
 # ----------------------------------------------------------------------
@@ -564,7 +565,7 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
         self.btn_centro.setCursor(QtCore.Qt.PointingHandCursor)
         self.btn_centro.setIconSize(QtCore.QSize(18, 18))
         self.btn_centro.setText(" Uniforme")
-        self.btn_centro.setIcon(get_svg_icon("link"))
+        self.btn_centro.setIcon(obtener_svg_icon("link"))
         self.btn_centro.setToolTip(
             "Candado Figma:\n"
             "🔗 Uniforme: Todos los bordes comparten Ancho y Offset.\n"
@@ -836,7 +837,7 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
         self._cargando = True
         if uniforme:
             self.btn_centro.setText(" Uniforme")
-            self.btn_centro.setIcon(get_svg_icon("link"))
+            self.btn_centro.setIcon(obtener_svg_icon("link"))
             ancho_u = self.spin_ancho.value()
             dist_u = self.spin_offset.value()
             for b in BORDES:
@@ -846,7 +847,7 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
                 self.spin_offset_borde[b].setValue(dist_u)
         else:
             self.btn_centro.setText(" Individual")
-            self.btn_centro.setIcon(get_svg_icon("unlink"))
+            self.btn_centro.setIcon(obtener_svg_icon("unlink"))
             m = self._margen_seleccionado
             self.spin_ancho.setValue(self._valores_bordes[m]["ancho"])
             self.spin_offset.setValue(self._valores_bordes[m]["offset"])
@@ -945,7 +946,7 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
         for e in ESQUINAS:
             tipo = self._esquinas[e]
             btn = self.btn_esquina[e]
-            btn.setIcon(get_svg_icon(tipo, 20))
+            btn.setIcon(obtener_svg_icon(tipo, 20))
             btn.setToolTip(f"Esquina {e}:\n{ENCUENTRO_TOOLTIPS.get(tipo, tipo)}")
 
     def _actualizar_estado_habilitacion(self):
@@ -1090,10 +1091,10 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
             self.btn_centro.setChecked(es_uniforme)
             if es_uniforme:
                 self.btn_centro.setText(" Uniforme")
-                self.btn_centro.setIcon(get_svg_icon("link"))
+                self.btn_centro.setIcon(obtener_svg_icon("link"))
             else:
                 self.btn_centro.setText(" Individual")
-                self.btn_centro.setIcon(get_svg_icon("unlink"))
+                self.btn_centro.setIcon(obtener_svg_icon("unlink"))
 
             primero = activos[0] if activos else "frente"
             ancho_ref = self._valores_bordes[primero]["ancho"]

@@ -6,10 +6,10 @@
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
-_QDoubleSpinBox = getattr(QtWidgets, "QDoubleSpinBox", getattr(QtGui, "QDoubleSpinBox", None))
+QDOUBLESPINBOX_BASE = getattr(QtWidgets, "QDoubleSpinBox", getattr(QtGui, "QDoubleSpinBox", None))
 
 
-class VDO_DoubleSpinBox(_QDoubleSpinBox):
+class VDO_DoubleSpinBox(QDOUBLESPINBOX_BASE):
     """QDoubleSpinBox que acepta punto/coma y cualquier nº de decimales."""
 
     def __init__(self, parent=None):

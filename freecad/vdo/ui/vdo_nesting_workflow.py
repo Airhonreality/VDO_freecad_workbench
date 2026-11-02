@@ -8,7 +8,6 @@ import sys
 from pathlib import Path
 
 # Bootstrap
-_vdo_macro_dir = os.path.dirname(os.path.abspath(__file__))
 
 import FreeCAD as App
 import FreeCADGui

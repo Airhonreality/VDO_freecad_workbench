@@ -18,7 +18,6 @@ except ImportError:
     raise ImportError("Este módulo requiere FreeCAD con GUI") from None
 
 # Importar loader
-_macro_dir = Path(__file__).parent
 from freecad.vdo.core import vdo_manifest
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 
