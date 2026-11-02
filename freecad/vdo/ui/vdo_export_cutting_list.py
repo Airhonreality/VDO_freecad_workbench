@@ -20,8 +20,8 @@ except ImportError:
 
 # Importar loader
 _macro_dir = Path(__file__).parent
-from freecad.vdo.core import vdo_manifest
-from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.app.vdo_api import vdo_manifest
+from freecad.vdo.app.vdo_api import vdo_reengrose as VDO_RE
 
 
 def _datos_panel(obj):

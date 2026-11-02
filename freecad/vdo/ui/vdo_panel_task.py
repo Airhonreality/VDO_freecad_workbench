@@ -9,15 +9,15 @@ from freecad.vdo.qt_compat import QtGui, QtWidgets
 
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox, VDO_ExpressionInput
 
-from freecad.vdo.core import vdo_defaults as VDO_D
+from freecad.vdo.app.vdo_api import vdo_defaults as VDO_D
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
-from freecad.vdo.core.vdo_module_props import (
+from freecad.vdo.app.vdo_api import (
     ANCLAJES, ANCLAJE_DEFAULT, ANCLAJE_LABELS,
     add_common_props, aplicar_rotacion
 )
-from freecad.vdo.core.vdo_panel_core import (
+from freecad.vdo.app.vdo_api import (
     CANTOS_VALIDOS, add_reengrose_props)
-from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.app.vdo_api import vdo_reengrose as VDO_RE
 
 
 class PanelTaskPanel(VDOTransactionMixin):

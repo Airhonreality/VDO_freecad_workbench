@@ -25,7 +25,7 @@ from freecad.vdo.qt_compat import QtCore, QtWidgets
 
 _macro_dir = Path(__file__).parent
 from freecad.vdo.ui import vdo_export_cutting_list
-from freecad.vdo.core import vdo_manifest
+from freecad.vdo.app.vdo_api import vdo_manifest
 
 
 class CuttingListPreviewPanel:

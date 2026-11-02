@@ -13,24 +13,24 @@ from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 import FreeCAD as App
 import FreeCADGui as Gui
 
-from freecad.vdo.core.vdo_spaces import (
+from freecad.vdo.app.vdo_api import (
     SpaceNode, ESPACIO_FIJO, ESPACIO_RESTANTE, ESPACIO_IGUALES,
     serializar_espacios, deserializar_espacios,
     calcular_espacio_libre
 )
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
 from freecad.vdo.ui.vdo_widgets_coco import DivisionesEditor
-from freecad.vdo.core.vdo_module_props import (
+from freecad.vdo.app.vdo_api import (
     ANCLAJES, ANCLAJE_DEFAULT, ANCLAJE_LABELS,
     add_common_props, aplicar_rotacion
 )
-from freecad.vdo.core.vdo_puerta_core import make_puerta
-from freecad.vdo.core.vdo_cajon_core import make_cajon
-from freecad.vdo.core.vdo_facade_contract import (
+from freecad.vdo.app.vdo_api import make_puerta
+from freecad.vdo.app.vdo_api import make_cajon
+from freecad.vdo.app.vdo_api import (
     APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN,
     CALLE_ENTRE_FRENTES_DEFAULT,
 )
-from freecad.vdo.core import vdo_frames as VDO_FR
+from freecad.vdo.app.vdo_api import vdo_frames as VDO_FR
 
 
 COL_TIPO = 0
@@ -1100,7 +1100,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
 
         if existente is None:
             existente = doc.addObject("Part::FeaturePython", nombre)
-            from freecad.vdo.core.vdo_puerta_core import PuertaFeature
+            from freecad.vdo.app.vdo_api import PuertaFeature
             PuertaFeature(existente)
             if App.GuiUp:
                 from freecad.vdo.ui.vdo_view_providers import ViewProviderPuerta
@@ -1145,7 +1145,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
         if h_frente <= 0:
             h_frente = max(10.0, h / max(cantidad, 1))
 
-        from freecad.vdo.core.vdo_cajon_despiece import CORREDERA_OCULTA, CORREDERA_TELESCOPICA
+        from freecad.vdo.app.vdo_api import CORREDERA_OCULTA, CORREDERA_TELESCOPICA
         tipo_corredera = CORREDERA_OCULTA if corredera == "Oculta" else CORREDERA_TELESCOPICA
 
         apertura_map = {
@@ -1167,7 +1167,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
 
             if existente is None:
                 existente = doc.addObject("Part::FeaturePython", nombre)
-                from freecad.vdo.core.vdo_cajon_core import CajonFeature
+                from freecad.vdo.app.vdo_api import CajonFeature
                 CajonFeature(existente)
                 if App.GuiUp:
                     from freecad.vdo.ui.vdo_view_providers import ViewProviderCajon

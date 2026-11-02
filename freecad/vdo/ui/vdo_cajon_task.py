@@ -10,12 +10,12 @@ from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 
-from freecad.vdo.core.vdo_cajon_despiece import (
+from freecad.vdo.app.vdo_api import (
     listar_marcas,
     CORREDERA_TELESCOPICA, CORREDERA_OCULTA, CAJA_METALICA,
     APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN,
 )
-from freecad.vdo.core.vdo_facade_contract import (
+from freecad.vdo.app.vdo_api import (
     APERTURA_TIRADOR as FA_TIRADOR,
     APERTURA_GOLA as FA_GOLA,
     APERTURA_45_GRADOS as FA_45,
@@ -24,12 +24,12 @@ from freecad.vdo.core.vdo_facade_contract import (
     MONTAJE_PARCHE, MONTAJE_SEMIPARCHE, MONTAJE_EMBEBIDA,
     cantos_por_sistema_apertura,
 )
-from freecad.vdo.core.vdo_hardware_hub import (
+from freecad.vdo.app.vdo_api import (
     resolve_drawer_slide, get_family,
     _FAMILIAS as _HW_FAMILIAS,  # para verificar disponibilidad
 )
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
-from freecad.vdo.core.vdo_module_props import (
+from freecad.vdo.app.vdo_api import (
     ANCLAJES, ANCLAJE_DEFAULT, ANCLAJE_LABELS,
     add_common_props, aplicar_rotacion,
 )
@@ -442,7 +442,7 @@ class CajonTaskPanel(VDOTransactionMixin):
     def _actualizar_header(self):
         """Actualiza el PanelHeaderWidget con las cotas calculadas."""
         try:
-            from freecad.vdo.core.vdo_cajon_despiece import calcular_despiece
+            from freecad.vdo.app.vdo_api import calcular_despiece
             config = {
                 "ancho_libre": self.spin_li.value(),
                 "prof_libre": self.spin_prof.value(),

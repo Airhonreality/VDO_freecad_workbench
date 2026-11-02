@@ -22,7 +22,7 @@ import sys
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets, QtSvg
 
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
-from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.app.vdo_api import vdo_reengrose as VDO_RE
 
 
 # ----------------------------------------------------------------------

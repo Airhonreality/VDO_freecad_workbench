@@ -9,7 +9,7 @@
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
-from freecad.vdo.core import vdo_optimizer_core as core
+from freecad.vdo.app.vdo_api import vdo_optimizer_core as core
 
 _PAD = 14
 _GROUP_H = 26

@@ -12,7 +12,7 @@ import os
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
-from freecad.vdo.core import vdo_hardware_hub as H
+from freecad.vdo.app.vdo_api import vdo_hardware_hub as H
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _CATALOGO_PATH = os.path.join(_HERE, "vdo_hardware_catalog.json")

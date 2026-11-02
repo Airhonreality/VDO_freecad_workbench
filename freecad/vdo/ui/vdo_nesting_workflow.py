@@ -23,7 +23,7 @@ except ImportError:
     FreeCAD.Console.PrintError("             Instala desde: Tools → Addon Manager\n")
     raise ImportError("Nesting Workbench no instalado") from None
 
-from freecad.vdo.core import vdo_nesting_presets as presets_mgr
+from freecad.vdo.app.vdo_api import vdo_nesting_presets as presets_mgr
 
 
 class NestingDialog(QtWidgets.QDialog):

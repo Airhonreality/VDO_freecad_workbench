@@ -11,11 +11,11 @@ from freecad.vdo.ui.vdo_form_builder import FormBuilder
 
 from freecad.vdo.ui.vdo_widgets_coco import PanelHeaderWidget
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
-from freecad.vdo.core.vdo_module_props import (
+from freecad.vdo.app.vdo_api import (
     ANCLAJES, ANCLAJE_DEFAULT, ANCLAJE_LABELS,
     add_common_props, aplicar_rotacion
 )
-from freecad.vdo.core.vdo_zocalo_core import calcular_geometria_zocalo, ZocaloError
+from freecad.vdo.app.vdo_api import calcular_geometria_zocalo, ZocaloError
 
 
 CANTOS_FRENTE = {

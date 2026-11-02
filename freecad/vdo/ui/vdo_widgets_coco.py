@@ -10,18 +10,18 @@ import json
 import FreeCAD as App
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
-from freecad.vdo.core import vdo_reengrose as VDO_RE
-from freecad.vdo.core import vdo_finish as VDO_FIN
-from freecad.vdo.core import vdo_frames as VDO_FR
+from freecad.vdo.app.vdo_api import vdo_reengrose as VDO_RE
+from freecad.vdo.app.vdo_api import vdo_finish as VDO_FIN
+from freecad.vdo.app.vdo_api import vdo_frames as VDO_FR
 
-from freecad.vdo.core import vdo_defaults as VDO_D
-from freecad.vdo.core.vdo_layout import (
+from freecad.vdo.app.vdo_api import vdo_defaults as VDO_D
+from freecad.vdo.app.vdo_api import (
     Layout, LayoutError, AXIS_X, AXIS_Y, cavidad_interior, resolve_layout,
 )
 from freecad.vdo.ui.vdo_coco_preview2d import CocoPreview2D
-from freecad.vdo.core.vdo_puerta_core import make_puerta
-from freecad.vdo.core.vdo_cajon_core import make_cajon
-from freecad.vdo.core.vdo_facade_contract import (
+from freecad.vdo.app.vdo_api import make_puerta
+from freecad.vdo.app.vdo_api import make_cajon
+from freecad.vdo.app.vdo_api import (
     APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN,
 )
 

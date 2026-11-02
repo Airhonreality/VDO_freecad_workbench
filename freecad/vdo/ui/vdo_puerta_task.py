@@ -11,10 +11,10 @@ import FreeCAD as App
 
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
-from freecad.vdo.core.vdo_module_props import add_common_props, ANCLAJES, ANCLAJE_LABELS
+from freecad.vdo.app.vdo_api import add_common_props, ANCLAJES, ANCLAJE_LABELS
 
-from freecad.vdo.core import vdo_hardware_hub as H
-from freecad.vdo.core.vdo_puerta_despiece import (
+from freecad.vdo.app.vdo_api import vdo_hardware_hub as H
+from freecad.vdo.app.vdo_api import (
     bisagras_para_puerta,
     descripcion_piston,
     calcular_corrediza,

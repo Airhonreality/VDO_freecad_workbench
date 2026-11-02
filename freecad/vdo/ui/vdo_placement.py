@@ -13,7 +13,7 @@
 
 import FreeCAD as App
 
-from freecad.vdo.core.vdo_module_props import (
+from freecad.vdo.app.vdo_api import (
     ANCLAJE_DEFAULT, ancla_local, leer_rotacion, rotacion_z
 )
 

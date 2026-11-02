@@ -48,13 +48,13 @@ except ImportError:  # pragma: no cover
     CocoPreview2D = None
 
 try:
-    from freecad.vdo.core.vdo_layout import Layout, resolve_layout, cavidad_interior
+    from freecad.vdo.app.vdo_api import Layout, resolve_layout, cavidad_interior
 except ImportError:  # pragma: no cover
     Layout = None
     resolve_layout = None
     cavidad_interior = None
 
-from freecad.vdo.core import vdo_hardware_hub as HH
+from freecad.vdo.app.vdo_api import vdo_hardware_hub as HH
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 
 

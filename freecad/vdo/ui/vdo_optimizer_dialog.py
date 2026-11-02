@@ -16,7 +16,7 @@ import os
 import FreeCAD as App
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.core import vdo_optimizer_core as core
+from freecad.vdo.app.vdo_api import vdo_optimizer_core as core
 from freecad.vdo.ui import vdo_optimizer_view as view
 
 

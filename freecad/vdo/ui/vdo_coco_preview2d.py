@@ -7,9 +7,9 @@
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
-from freecad.vdo.core import vdo_frames as VDO_FR
-from freecad.vdo.core import vdo_reengrose as VDO_RE
-from freecad.vdo.core.vdo_facade_contract import CALLE_ENTRE_FRENTES_DEFAULT
+from freecad.vdo.app.vdo_api import vdo_frames as VDO_FR
+from freecad.vdo.app.vdo_api import vdo_reengrose as VDO_RE
+from freecad.vdo.app.vdo_api import CALLE_ENTRE_FRENTES_DEFAULT
 
 
 COLOR_FONDO = QtGui.QColor("#f7f7f5")
