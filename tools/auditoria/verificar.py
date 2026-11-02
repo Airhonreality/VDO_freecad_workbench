@@ -14,6 +14,7 @@ import ast
 import contextlib
 import json
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -178,6 +179,26 @@ def _m4_orquestacion():
 # ---------------------------------------------------------------------------
 # R5 — Inyección y estado: cero estado mutable de módulo (salvo constantes)
 # ---------------------------------------------------------------------------
+def _es_constante_o_all(nombre: str) -> bool:
+    """Constantes en mayúsculas y __all__ no cuentan como estado mutable (R5)."""
+    return nombre == "__all__" or nombre.isupper()
+
+
+def _asignaciones_mutables_modulo(src: str) -> list[tuple[int, str]]:
+    """R5: (línea, nombre) de asignaciones de nivel módulo (tree.body) que no son
+    constantes en mayúsculas ni __all__. Las variables locales no cuentan."""
+    salida: list[tuple[int, str]] = []
+    for nodo in ast.parse(src).body:
+        if isinstance(nodo, ast.Assign):
+            for target in nodo.targets:
+                if isinstance(target, ast.Name) and not _es_constante_o_all(target.id):
+                    salida.append((target.lineno, target.id))
+        elif isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name):
+            if not _es_constante_o_all(nodo.target.id):
+                salida.append((nodo.target.lineno, nodo.target.id))
+    return salida
+
+
 def _m5_estado_inmutable():
     asignaciones_mutables = []
     for base in (CORE, APP, CAD):
@@ -186,26 +207,11 @@ def _m5_estado_inmutable():
         for p in sorted(base.rglob("*.py")):
             if "__pycache__" in p.parts:
                 continue
-            src = p.read_text(encoding="utf-8")
             try:
-                t = ast.parse(src)
+                hallazgos = _asignaciones_mutables_modulo(p.read_text(encoding="utf-8"))
             except SyntaxError:
                 continue
-            # Solo asignaciones a nivel de módulo (tree.body), no dentro de funciones/clases.
-            for nodo in t.body:
-                if isinstance(nodo, ast.Assign):
-                    for target in nodo.targets:
-                        if isinstance(target, ast.Name):
-                            idn = target.id
-                            # constantes en mayúsculas y __all__ no cuentan como estado mutable
-                            if idn == "__all__" or idn.isupper():
-                                continue
-                            asignaciones_mutables.append(f"{p.relative_to(ROOT)}:{target.lineno}:{idn}")
-                elif isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name):
-                    idn = nodo.target.id
-                    if idn == "__all__" or idn.isupper():
-                        continue
-                    asignaciones_mutables.append(f"{p.relative_to(ROOT)}:{nodo.target.lineno}:{idn}")
+            asignaciones_mutables += [f"{p.relative_to(ROOT)}:{ln}:{n}" for ln, n in hallazgos]
     cumple = len(asignaciones_mutables) == 0
     _registrar("R5_estado_inmutable", len(asignaciones_mutables), 0, cumple,
                "asignaciones mutables: " + ", ".join(asignaciones_mutables) if asignaciones_mutables else "ninguna")
@@ -241,6 +247,28 @@ def _m6_paneles_delgados():
 # ---------------------------------------------------------------------------
 # R7 — Errores: cero except … pass; cero except Exception en core/cad/app
 # ---------------------------------------------------------------------------
+def _except_pass_en(src: str) -> int:
+    """R7: número de manejadores de excepción cuyo cuerpo es solo `pass`."""
+    n = 0
+    for nodo in ast.walk(ast.parse(src)):
+        if isinstance(nodo, ast.Try):
+            for handler in nodo.handlers:
+                if len(handler.body) == 1 and isinstance(handler.body[0], ast.Pass):
+                    n += 1
+    return n
+
+
+def _except_exception_en(src: str) -> int:
+    """R7: número de manejadores `except Exception` (cualquier cuerpo)."""
+    n = 0
+    for nodo in ast.walk(ast.parse(src)):
+        if isinstance(nodo, ast.Try):
+            for handler in nodo.handlers:
+                if isinstance(handler.type, ast.Name) and handler.type.id == "Exception":
+                    n += 1
+    return n
+
+
 def _m7_errores():
     except_pass = 0
     except_exception_core_cad_app = 0
@@ -252,37 +280,21 @@ def _m7_errores():
         for p in paths:
             if "__pycache__" in p.parts:
                 continue
-            src = p.read_text(encoding="utf-8")
             try:
-                t = ast.parse(src)
+                except_pass += _except_pass_en(p.read_text(encoding="utf-8"))
             except SyntaxError:
                 continue
-            for nodo in ast.walk(t):
-                if isinstance(nodo, ast.Try):
-                    for handler in nodo.handlers:
-                        cuerpo = handler.body
-                        if (len(cuerpo) == 1
-                                and isinstance(cuerpo[0], ast.Pass)):
-                            except_pass += 1
     # except Exception: cero solo en core/cad/app
     for base in (CORE, CAD, APP):
         if not base.exists():
             continue
-        paths = sorted(base.rglob("*.py"))
-        for p in paths:
+        for p in sorted(base.rglob("*.py")):
             if "__pycache__" in p.parts:
                 continue
-            src = p.read_text(encoding="utf-8")
             try:
-                t = ast.parse(src)
+                except_exception_core_cad_app += _except_exception_en(p.read_text(encoding="utf-8"))
             except SyntaxError:
                 continue
-            for nodo in ast.walk(t):
-                if isinstance(nodo, ast.Try):
-                    for handler in nodo.handlers:
-                        tipo = handler.type
-                        if tipo is not None and isinstance(tipo, ast.Name) and tipo.id == "Exception":
-                            except_exception_core_cad_app += 1
     _registrar("R7_except_pass", except_pass, 0, except_pass == 0,
                f"{except_pass} except … pass")
     _registrar("R7_except_exception_core_cad_app", except_exception_core_cad_app, 0,
@@ -341,51 +353,63 @@ def _m9_duplicacion():
                f"{n_no_usadas} definiciones no usadas")
 
 
+def _definiciones_modulo(src: str) -> list[tuple[str, int]]:
+    """R9: (nombre, línea) de funciones y clases de nivel módulo (tree.body).
+    Los métodos de clase no cuentan."""
+    return [(n.name, n.lineno) for n in ast.parse(src).body
+            if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))]
+
+
+def _referencias(src: str) -> set[str]:
+    """R9: nombres que el código referencia. Cuenta cualquier forma de uso:
+    importación (from x import y), nombre (y), atributo (mod.y) y cadena que sea
+    identificador ("y", p. ej. tablas de despacho). Conservador: prefiere no
+    marcar como muerto un nombre que podría usarse."""
+    refs: set[str] = set()
+    for nodo in ast.walk(ast.parse(src)):
+        if isinstance(nodo, ast.ImportFrom):
+            refs.update(a.name for a in nodo.names)
+        elif isinstance(nodo, ast.Import):
+            refs.update(a.name.split(".")[0] for a in nodo.names)
+        elif isinstance(nodo, ast.Attribute):
+            refs.add(nodo.attr)
+        elif isinstance(nodo, ast.Name):
+            refs.add(nodo.id)
+        elif isinstance(nodo, ast.Constant) and isinstance(nodo.value, str) and nodo.value.isidentifier():
+            refs.add(nodo.value)
+    return refs
+
+
+def _defs_no_usadas(definiciones: dict[str, str], fuentes_referencia: list[str]) -> list[str]:
+    """R9: "archivo:nombre" de cada definición de nivel módulo que no aparece
+    como referencia en ninguna fuente de referencia (incluido su propio archivo)."""
+    usados: set[str] = set()
+    for src in fuentes_referencia:
+        usados |= _referencias(src)
+    no_usadas: list[str] = []
+    for ruta, src in definiciones.items():
+        for nombre, _linea in _definiciones_modulo(src):
+            if nombre not in usados:
+                no_usadas.append(f"{ruta}:{nombre}")
+    return no_usadas
+
+
 def _contar_defs_no_usadas() -> int:
-    """Cuenta definiciones de nivel módulo (solo tree.body) que no son importadas
-    por ningún otro .py, incluyendo tests, InitGui e Init."""
-    definiciones: dict[str, list[str]] = {}  # nombre -> [archivo]
+    """Cuenta definiciones de nivel módulo sin referencias en paquete, tests,
+    tools, InitGui e Init. Ver docs/metricas/README.md (definición exacta)."""
+    definiciones: dict[str, str] = {}
     for p in sorted(FREECAD.rglob("*.py")):
         if "__pycache__" in p.parts or p.name == "__init__.py":
             continue
-        src = p.read_text(encoding="utf-8")
-        try:
-            t = ast.parse(src)
-        except SyntaxError:
-            continue
-        # Solo definiciones a nivel de módulo (tree.body).
-        for nodo in t.body:
-            if isinstance(nodo, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-                definiciones.setdefault(nodo.name, []).append(str(p.relative_to(ROOT)))
-
-    # Lugares donde se buscan referencias: paquete, tests, InitGui, Init.
-    lugares = [FREECAD, TESTS]
+        definiciones[str(p.relative_to(ROOT))] = p.read_text(encoding="utf-8")
+    fuentes = [p.read_text(encoding="utf-8") for p in sorted(FREECAD.rglob("*.py"))
+               + sorted(TESTS.rglob("*.py")) + sorted(TOOLS.rglob("*.py"))
+               if "__pycache__" not in p.parts]
     for nombre in ("InitGui.py", "Init.py"):
         p = ROOT / nombre
         if p.exists():
-            lugares.append(p)
-
-    usados: set[str] = set()
-    for base in lugares:
-        paths = [base] if base.is_file() else sorted(base.rglob("*.py"))
-        for p in paths:
-            if "__pycache__" in p.parts:
-                continue
-            src = p.read_text(encoding="utf-8")
-            try:
-                t = ast.parse(src)
-            except SyntaxError:
-                continue
-            for nodo in ast.walk(t):
-                if isinstance(nodo, ast.ImportFrom):
-                    if nodo.module:
-                        for alias in nodo.names:
-                            usados.add(alias.name)
-                elif isinstance(nodo, ast.Import):
-                    for alias in nodo.names:
-                        usados.add(alias.name.split(".")[0])
-    no_usadas = [n for n in definiciones if n not in usados
-                 and not n.startswith("_")]
+            fuentes.append(p.read_text(encoding="utf-8"))
+    no_usadas = _defs_no_usadas(definiciones, fuentes)
     return len(no_usadas)
 
 
@@ -485,21 +509,21 @@ def _m12_documentacion():
 def _m14_freecad():
     freecadcmd = None
     for nombre in ("freecadcmd", "freecad-cli"):
-        try:
-            res = _run(["command", "-v", nombre], shell=True, timeout=10)
-            if res.returncode == 0 and res.stdout.strip():
-                freecadcmd = res.stdout.strip()
-                break
-        except Exception:
-            pass
+        ruta = shutil.which(nombre)
+        if ruta:
+            freecadcmd = ruta
+            break
     if freecadcmd is None:
         _registrar("R14_freecad_real", "pendiente", "instalado", False,
                    "freecadcmd no disponible — F17 bloqueada")
         return
     res = _run([freecadcmd, "--version"], timeout=10)
-    version = res.stdout.strip() if res.returncode == 0 else "desconocida"
-    _registrar("R14_freecad_real", version, "1.x", version.startswith("1"),
-               f"binario: {freecadcmd}, versión: {version}")
+    salida = res.stdout.strip() if res.returncode == 0 else ""
+    # La salida real es "FreeCAD 1.1.4 Revision: ...": se extrae el número, no el prefijo.
+    m = re.search(r"\b(\d+)\.(\d+)(?:\.(\d+))?", salida)
+    version = m.group(0) if m else "desconocida"
+    _registrar("R14_freecad_real", version, "1.x", bool(m) and m.group(1) == "1",
+               f"binario: {freecadcmd}, salida: {salida or 'vacía'}")
 
 
 # ---------------------------------------------------------------------------
