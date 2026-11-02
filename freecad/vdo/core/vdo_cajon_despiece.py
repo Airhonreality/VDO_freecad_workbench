@@ -8,7 +8,6 @@
 #   LI       = ancho libre interior del mueble (pared a pared)
 #   ProfInt  = profundidad libre interior del mueble
 #   LG       = largo nominal de la guía (auto: max(comerciales ≤ ProfInt))
-import FreeCAD as App
 #   Delta    = reducción por herraje (ej. Blum Tandem 16mm → 49 mm)
 #   Gcaja    = grosor de laterales/trasera/frente interior (15-16 mm)
 #   Gfondo   = grosor del piso (6-12 mm)

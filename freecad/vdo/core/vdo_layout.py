@@ -31,6 +31,20 @@ import math
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 
 
+
+
+def _get_app():
+    """Importa FreeCAD de forma perezosa."""
+    import FreeCAD as App
+    return App
+
+
+def _get_part():
+    """Importa Part de forma perezosa."""
+    import Part
+    return Part
+
+
 VERSION = 2
 AXIS_X = "X"
 AXIS_Y = "Y"

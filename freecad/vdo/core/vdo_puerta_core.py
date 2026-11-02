@@ -5,8 +5,17 @@
 # y chaflanes para el submódulo de Puertas y Cierres (L2).
 # =====================================================================
 
-import FreeCAD as App
-import Part
+def _get_app():
+    """Importa FreeCAD de forma perezosa."""
+    import FreeCAD as App
+    return App
+
+
+def _get_part():
+    """Importa Part de forma perezosa."""
+    import Part
+    return Part
+
 
 from freecad.vdo.core.vdo_facade_contract import (
     MONTAJE_PARCHE, MONTAJE_SEMIPARCHE, MONTAJE_EMBEBIDA,
@@ -57,9 +66,9 @@ def _cilindro_cazoleta(cup_x, cup_z, espesor, radio=None, profundidad=None):
     """Cilindro ciego de cazoleta taladrado desde la cara trasera (Y=espesor)."""
     radio = radio or CAZALETA_DIAMETRO / 2.0
     profundidad = profundidad or CAZALETA_PROFUNDIDAD
-    base = App.Vector(cup_x, espesor - profundidad, cup_z)
-    direccion = App.Vector(0.0, 1.0, 0.0)
-    return Part.makeCylinder(radio, profundidad, base, direccion)
+    base = _get_app().Vector(cup_x, espesor - profundidad, cup_z)
+    direccion = _get_app().Vector(0.0, 1.0, 0.0)
+    return _get_part().makeCylinder(radio, profundidad, base, direccion)
 
 
 # ---------------------------------------------------------------------
@@ -111,7 +120,7 @@ class PuertaFeature:
         obj.addProperty("App::PropertyLink", "ParentCOCO", "VDO",
                         "Módulo COCO padre")
         obj.addProperty("App::PropertyPlacement", "LocalPlacement", "VDO",
-                        "Pose relativa al vano del COCO").LocalPlacement = App.Placement()
+                        "Pose relativa al vano del COCO").LocalPlacement = _get_app().Placement()
 
         obj.Proxy = self
 
@@ -133,7 +142,7 @@ class PuertaFeature:
             pz = float(fp.PosZ)
 
             if W <= 0 or H <= 0 or t <= 0:
-                fp.Shape = Part.Shape()
+                fp.Shape = _get_part().Shape()
                 return
 
             # Fuerza de pistón (basculante)
@@ -163,7 +172,7 @@ class PuertaFeature:
                 # Ajuste de altura por sistema de apertura (gola)
                 H_efectiva, _descuento = ajuste_altura_apertura(apertura, h_fach)
 
-                shape = Part.makeBox(w_fach, t, H_efectiva)
+                shape = _get_part().makeBox(w_fach, t, H_efectiva)
 
                 # Chaflán 45° en el canto de agarre (borde superior delantero)
                 if necesita_cantos_45(apertura):
@@ -202,12 +211,12 @@ class PuertaFeature:
 
                 solidos = [s for s in ([shape] if shape is not None else [])
                            if not s.isNull() and s.Volume > 1e-9]
-                fp.Shape = Part.makeCompound(solidos) if solidos else Part.Shape()
+                fp.Shape = _get_part().makeCompound(solidos) if solidos else _get_part().Shape()
                 # LocalPlacement: geometría ya está en origen local (0,0,0).
                 # La posición relativa al vano del COCO se guarda aquí y
                 # se combina con ParentCOCO al final de execute().
-                fp.LocalPlacement = App.Placement(
-                    App.Vector(px, py, pz), App.Rotation())
+                fp.LocalPlacement = _get_app().Placement(
+                    _get_app().Vector(px, py, pz), _get_app().Rotation())
 
             # -------------------- Corrediza --------------------
             elif sistema == "Corrediza":
@@ -228,12 +237,12 @@ class PuertaFeature:
 
                 hojas = []
                 for i in range(n_hojas):
-                    hoja = Part.makeBox(w_hoja, t, h_hoja)
+                    hoja = _get_part().makeBox(w_hoja, t, h_hoja)
                     # Desfasar en X con traslape y en Y con el paso del riel
                     x_i = i * (w_hoja - traslape)
                     y_i = i * paso_y
-                    hoja.Placement = App.Placement(
-                        App.Vector(x_i, y_i, 0), App.Rotation())
+                    hoja.Placement = _get_app().Placement(
+                        _get_app().Vector(x_i, y_i, 0), _get_app().Rotation())
                     hojas.append(hoja.transformShape(hoja.Placement.toMatrix()))
 
                 # Chaflán 45° si aplica (solo en la hoja delantera)
@@ -249,18 +258,18 @@ class PuertaFeature:
                 for a in range(len(hojas)):
                     for b in range(a + 1, len(hojas)):
                         if hojas[a].common(hojas[b]).Volume > 1e-6:
-                            App.Console.PrintWarning(
+                            _get_app().Console.PrintWarning(
                                 f"[VDO Puerta] Hojas {a+1} y {b+1} se "
                                 f"intersectan (common > 0).\n")
 
                 solidos = [h for h in hojas if not h.isNull() and h.Volume > 1e-9]
-                fp.Shape = Part.makeCompound(solidos) if solidos else Part.Shape()
-                fp.LocalPlacement = App.Placement(
-                    App.Vector(px, py, pz), App.Rotation())
+                fp.Shape = _get_part().makeCompound(solidos) if solidos else _get_part().Shape()
+                fp.LocalPlacement = _get_app().Placement(
+                    _get_app().Vector(px, py, pz), _get_app().Rotation())
                 fp.FuerzaPistonRecomendada = ""
 
             else:
-                fp.Shape = Part.Shape()
+                fp.Shape = _get_part().Shape()
 
             # --- Vínculo rígido padre-hijo ---
             # No escribir fp.Placement aquí: solo CocoFeature.execute() es
@@ -268,10 +277,10 @@ class PuertaFeature:
             # LocalPlacement almacena la pose relativa al vano del COCO.
 
         except Exception as e:
-            App.Console.PrintError(f"[VDO Puerta] Error en execute(): {e}\n")
+            _get_app().Console.PrintError(f"[VDO Puerta] Error en execute(): {e}\n")
             import traceback
-            App.Console.PrintError(traceback.format_exc())
-            fp.Shape = Part.Shape()
+            _get_app().Console.PrintError(traceback.format_exc())
+            fp.Shape = _get_part().Shape()
 
 
 # ---------------------------------------------------------------------
@@ -281,16 +290,16 @@ class PuertaFeature:
 
 def make_puerta(configuracion):
     """Crea un PuertaFeature en el documento activo."""
-    doc = App.ActiveDocument
+    doc = _get_app().ActiveDocument
     if doc is None:
-        App.Console.PrintError("[VDO Puerta] No hay documento activo.\n")
+        _get_app().Console.PrintError("[VDO Puerta] No hay documento activo.\n")
         return None
 
     nombre = configuracion.get("nombre", "Puerta")
     obj = doc.addObject("Part::FeaturePython", nombre)
     PuertaFeature(obj)
 
-    if App.GuiUp:
+    if _get_app().GuiUp:
         adjuntar_vista("puerta", obj.ViewObject)
 
     obj.TipoSistema = configuracion.get("tipo_sistema", "Batiente Vertical")
@@ -320,7 +329,7 @@ def make_puerta(configuracion):
         obj.ParentCOCO = parent_coco
 
     doc.recompute()
-    App.Console.PrintMessage(
+    _get_app().Console.PrintMessage(
         f"[VDO Puerta] '{nombre}' creado con FeaturePython.\n")
     return obj
 

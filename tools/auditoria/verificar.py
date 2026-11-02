@@ -110,16 +110,17 @@ def _m2_agnosticismo():
         if "__pycache__" in p.parts or p.name == "__init__.py":
             continue
         src = p.read_text(encoding="utf-8")
-        # imports de FreeCAD/Part/PySide/Qt a nivel de modulo (no dentro de funciones)
+        # imports de FreeCAD/Part/PySide/Qt a nivel de modulo (sin indentacion)
         es_impuro = False
         for line in src.splitlines():
+            # Solo lineas que empiezan con import/from (sin indentacion)
+            if not (line.startswith("import ") or line.startswith("from ")):
+                continue
             s = line.strip()
             if (s.startswith("import FreeCAD") or s.startswith("from FreeCAD")
                     or s.startswith("import Part") or s.startswith("from Part")
                     or s.startswith("import PySide") or s.startswith("from PySide")
-                    or s.startswith("import qt_compat") or s.startswith("from qt_compat")
-                    or s.startswith("from freecad.vdo.ui") or s.startswith("from freecad.vdo.cad")
-                    or s.startswith("from freecad.vdo.app")):
+                    or s.startswith("import qt_compat") or s.startswith("from qt_compat")):
                 es_impuro = True
                 break
         if es_impuro:

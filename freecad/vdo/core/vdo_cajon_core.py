@@ -19,8 +19,17 @@
 import json
 import sys
 
-import FreeCAD as App
-import Part
+
+def _get_app():
+    """Importa FreeCAD de forma perezosa."""
+    import FreeCAD as App
+    return App
+
+
+def _get_part():
+    """Importa Part de forma perezosa."""
+    import Part
+    return Part
 
 
 from freecad.vdo.core import vdo_guardian
@@ -43,14 +52,14 @@ from freecad.vdo.core.vdo_hardware_hub import resolve_drawer_slide
 
 def _box(pos):
     """Crea un sólido Box desde un dict de posición/dimensiones."""
-    return Part.makeBox(
+    return _get_part().makeBox(
         pos["largo_x"], pos["largo_y"], pos["largo_z"],
-        App.Vector(pos["x"], pos["y"], pos["z"]))
+        _get_app().Vector(pos["x"], pos["y"], pos["z"]))
 
 
 def _cilindro(radio, alto, base, direccion):
     """Crea un cilindro para operaciones booleanas."""
-    return Part.makeCylinder(radio, alto, base, direccion)
+    return _get_part().makeCylinder(radio, alto, base, direccion)
 
 
 def _aplicar_corte(solido, herramienta):
@@ -71,11 +80,11 @@ def _corte_notch_lateral(solido, pos, notch_ancho, notch_alto, lg):
     Cajeado trasero en lateral: sustrae prisma de notch_ancho (profundidad Y)
     x notch_alto (altura Z) en el talón inferior-trasero.
     """
-    caja_notch = Part.makeBox(
+    caja_notch = _get_part().makeBox(
         pos["largo_x"],           # X: todo el grosor del lateral
         notch_ancho,              # Y: 35 mm desde el borde trasero
         notch_alto,               # Z: 12 mm desde el borde inferior
-        App.Vector(
+        _get_app().Vector(
             pos["x"],
             pos["y"] + lg - notch_ancho,  # Y: desde lg-ancho hasta lg
             pos["z"],
@@ -95,8 +104,8 @@ def _corte_pin_trasero(solido, pos, diam, profundidad, z_piso, g_fondo,
     cy = pos["y"] + pos["largo_y"]       # cara posterior (Y max)
     cz = pos["z"] + alto_contra / 2.0    # centro en Z
     pin = _cilindro(diam / 2.0, profundidad,
-                    App.Vector(cx, cy, cz),
-                    App.Vector(0, -1, 0))
+                    _get_app().Vector(cx, cy, cz),
+                    _get_app().Vector(0, -1, 0))
     return _aplicar_corte(solido, pin)
 
 
@@ -106,11 +115,11 @@ def _corte_ranura_piso(solido, pos, prof_ranura, z_piso, grosor_piso, lg):
     Sustrae prisma de prof_ranura (profundidad X) x grosor_piso (altura Z)
     en la cara interna del lateral, a la altura del piso.
     """
-    caja_ranura = Part.makeBox(
+    caja_ranura = _get_part().makeBox(
         prof_ranura,              # X: profundidad de la ranura desde cara interna
         lg,                       # Y: todo el largo del lateral
         grosor_piso,              # Z: grosor del piso
-        App.Vector(
+        _get_app().Vector(
             pos["x"] + pos["largo_x"] - prof_ranura,  # X: cara interna
             pos["y"],
             z_piso,               # Z: altura del piso
@@ -128,14 +137,14 @@ def _aplicar_bisel_45_fachada(solido, pos, ancho, alto, bisel_dist=5.0):
     #   p1: esquina superior-frente  (y=0, z=alto)
     #   p2: retrasado en cima        (y=-bisel_dist, z=alto)
     #   p3: abajo en cara frontal    (y=0, z=alto-bisel_dist)
-    p1 = App.Vector(0, 0, alto)
-    p2 = App.Vector(0, -bisel_dist, alto)
-    p3 = App.Vector(0, 0, alto - bisel_dist)
+    p1 = _get_app().Vector(0, 0, alto)
+    p2 = _get_app().Vector(0, -bisel_dist, alto)
+    p3 = _get_app().Vector(0, 0, alto - bisel_dist)
 
-    wire = Part.makePolygon([p1, p2, p3], closed=True)
-    cara = Part.Face(wire)
-    herramienta = cara.extrude(App.Vector(ancho, 0, 0))
-    herramienta.translate(App.Vector(pos["x"], pos["y"], pos["z"]))
+    wire = _get_part().makePolygon([p1, p2, p3], closed=True)
+    cara = _get_part().Face(wire)
+    herramienta = cara.extrude(_get_app().Vector(ancho, 0, 0))
+    herramienta.translate(_get_app().Vector(pos["x"], pos["y"], pos["z"]))
 
     return _aplicar_corte(solido, herramienta)
 
@@ -237,7 +246,7 @@ class CajonFeature:
         obj.addProperty("App::PropertyLink", "ParentCOCO", "VDO",
                         "Módulo COCO padre")
         obj.addProperty("App::PropertyPlacement", "LocalPlacement", "VDO",
-                        "Pose relativa al vano del COCO").LocalPlacement = App.Placement()
+                        "Pose relativa al vano del COCO").LocalPlacement = _get_app().Placement()
 
         obj.Proxy = self
 
@@ -280,8 +289,8 @@ class CajonFeature:
         try:
             d = calcular_despiece(self._config(fp))
         except (ValueError, KeyError, TypeError) as e:
-            App.Console.PrintError(f"[VDO] Despiece inválido: {e}\n")
-            fp.Shape = Part.Shape()
+            _get_app().Console.PrintError(f"[VDO] Despiece inválido: {e}\n")
+            fp.Shape = _get_part().Shape()
             return
 
         tipo_corredera = d.get("tipo_corredera", CORREDERA_OCULTA)
@@ -409,9 +418,9 @@ class CajonFeature:
             f"Tipo corredera: {tipo_corredera}"
         )
         for aviso in d["avisos"]:
-            App.Console.PrintWarning(f"[VDO] ⚠️ {aviso}\n")
+            _get_app().Console.PrintWarning(f"[VDO] ⚠️ {aviso}\n")
 
-        fp.Shape = Part.makeCompound(solids)
+        fp.Shape = _get_part().makeCompound(solids)
 
         # --- Vínculo rígido padre-hijo ---
         # No escribir fp.Placement aquí: solo CocoFeature.execute() es
@@ -425,8 +434,8 @@ class CajonFeature:
             or v != v  # NaN check
             for v in (base.x, base.y, base.z)
         ):
-            fp.LocalPlacement = App.Placement(
-                App.Vector(0.0, 0.0, 0.0), App.Rotation())
+            fp.LocalPlacement = _get_app().Placement(
+                _get_app().Vector(0.0, 0.0, 0.0), _get_app().Rotation())
 
     # -----------------------------------------------------------------
     def dumps(self):
@@ -442,14 +451,14 @@ def make_cajon(configuracion):
     """
     doc = vdo_guardian.vdo_guard()
     if not doc:
-        App.Console.PrintError("[VDO] No hay documento activo.\n")
+        _get_app().Console.PrintError("[VDO] No hay documento activo.\n")
         return None
 
     nombre = configuracion.get("nombre", "Cajon_Oculta")
     obj = doc.addObject("Part::FeaturePython", nombre)
     CajonFeature(obj)
 
-    if App.GuiUp:
+    if _get_app().GuiUp:
         adjuntar_vista("cajon", obj.ViewObject)
 
     obj.AnchoLibre = configuracion.get("ancho_libre", 564.0)
@@ -485,7 +494,7 @@ def make_cajon(configuracion):
         obj.ParentCOCO = parent_coco
 
     doc.recompute()
-    App.Console.PrintMessage(
+    _get_app().Console.PrintMessage(
         f"[VDO] Cajón '{nombre}' creado "
         f"(tipo={obj.TipoCorredera}, marca={obj.MarcaCorredera}, "
         f"LI={float(obj.AnchoLibre):.0f}, ProfLibre={float(obj.ProfLibre):.0f}).\n")

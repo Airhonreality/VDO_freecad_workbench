@@ -16,8 +16,6 @@
 
 import sys
 
-import FreeCAD as App
-import Part
 
 # Bootstrap
 
@@ -27,6 +25,20 @@ from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.cad.geometria import forma_ref
+
+
+
+def _get_app():
+    """Importa FreeCAD de forma perezosa."""
+    import FreeCAD as App
+    return App
+
+
+def _get_part():
+    """Importa Part de forma perezosa."""
+    import Part
+    return Part
+
 
 CANTOS_VALIDOS = ("RIG", "FX", "SMRG")
 
@@ -221,10 +233,10 @@ class PanelFeature:
             ancho = float(fp.Ancho)
             espesor = float(fp.Espesor)
             if largo <= 0 or ancho <= 0 or espesor <= 0:
-                fp.Shape = Part.Shape()
+                fp.Shape = _get_part().Shape()
                 return
 
-            base = Part.makeBox(largo, ancho, espesor)
+            base = _get_part().makeBox(largo, ancho, espesor)
             try:
                 mod = VDO_RE.desde_objeto(fp)
                 if hasattr(fp, "VDO_Reengrose_JSON"):
@@ -241,13 +253,13 @@ class PanelFeature:
                     forma = forma_ref(pieza)
                     if forma is not None:
                         shapes.append(forma)
-                fp.Shape = Part.makeCompound(shapes)
+                fp.Shape = _get_part().makeCompound(shapes)
             except VDO_RE.ReengroseError as exc:
-                App.Console.PrintWarning(
+                _get_app().Console.PrintWarning(
                     f"[VDO] Reengrose ignorado en '{fp.Label}': {exc}\n")
                 fp.Shape = base
         except Exception as exc:
-            App.Console.PrintError(
+            _get_app().Console.PrintError(
                 f"[VDO] Error generando panel: {exc}\n")
 
     def dumps(self):
@@ -273,13 +285,13 @@ def crear_pieza(configuracion):
         }
 
     Returns:
-        App.DocumentObject: El panel FeaturePython creado.
+        _get_app().DocumentObject: El panel FeaturePython creado.
     """
     orientacion = _validar_orientacion(configuracion)
 
     doc = vdo_guardian.vdo_guard()
     if not doc:
-        App.Console.PrintMessage("❌ [VDO Error] No hay documento activo.")
+        _get_app().Console.PrintMessage("❌ [VDO Error] No hay documento activo.")
         return None
 
     nombre = configuracion.get("nombre", "Panel")
@@ -301,14 +313,14 @@ def crear_pieza(configuracion):
         panel = None
 
     if panel:
-        App.Console.PrintMessage(f"⚠️ '{nombre}' ya existe. Actualizando...")
+        _get_app().Console.PrintMessage(f"⚠️ '{nombre}' ya existe. Actualizando...")
         add_reengrose_props(panel)
     else:
         panel = doc.addObject("Part::FeaturePython", nombre)
         PanelFeature(panel)
         es_nuevo = True
 
-    if App.GuiUp:
+    if _get_app().GuiUp:
         adjuntar_vista("panel", panel.ViewObject)
 
     panel.VDO_Orientacion = orientacion
@@ -348,11 +360,11 @@ def crear_pieza(configuracion):
         "anclaje", VDO_MOD.ANCLAJE_DEFAULT)
 
     if rotacion:
-        panel.Placement = App.Placement(
+        panel.Placement = _get_app().Placement(
             panel.Placement.Base, VDO_MOD.rotacion_z(rotacion))
     elif es_nuevo:
-        panel.Placement = App.Placement()
+        panel.Placement = _get_app().Placement()
 
     doc.recompute()
-    App.Console.PrintMessage(f"✅ Panel '{nombre}' configurado: orientacion='{orientacion}'")
+    _get_app().Console.PrintMessage(f"✅ Panel '{nombre}' configurado: orientacion='{orientacion}'")
     return panel

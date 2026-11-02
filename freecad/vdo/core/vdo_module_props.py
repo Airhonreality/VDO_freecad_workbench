@@ -3,10 +3,12 @@
 # vdo_module_props.py
 # Constantes y lecturas puras de propiedades de colocación VDO.
 #
-# Las funciones que escriben en objetos FreeCAD (add_common_props,
-# rotacion_z, aplicar_rotacion) se movieron a cad/propiedades.py (F4.1).
-# Este modulo es puro: no importa FreeCAD ni Qt.
+# add_common_props escribe atributos en objetos FreeCAD recibidos como
+# parametro (no importa FreeCAD a nivel de modulo). Este modulo es puro:
+# no importa FreeCAD ni Qt a nivel de modulo.
 # =====================================================================
+
+from freecad.vdo.core import vdo_frames as VDO_FR
 
 ANCLAJES = [
     "inferior_izquierda_frente",
@@ -43,3 +45,37 @@ def leer_rotacion(obj):
         return float(getattr(obj, "VDO_RotacionZ", 0.0))
     except (TypeError, ValueError):
         return 0.0
+
+
+def add_common_props(obj):
+    """Añade las propiedades de colocación si no existen (idempotente).
+
+    Funcion pura: recibe un objeto de FreeCAD y escribe atributos en el.
+    No importa FreeCAD a nivel de modulo (las cadenas "App::Property*"
+    son solo identificadores de tipo de FreeCAD).
+    """
+    if not hasattr(obj, "VDO_RotacionZ"):
+        obj.addProperty(
+            "App::PropertyAngle", "VDO_RotacionZ", "Colocación",
+            "Rotación del módulo alrededor del eje Z (pose, no geometría)"
+        ).VDO_RotacionZ = 0.0
+
+    if not hasattr(obj, "VDO_Anclaje"):
+        prop = obj.addProperty(
+            "App::PropertyEnumeration", "VDO_Anclaje", "Colocación",
+            "Esquina del módulo que se alinea con el punto de colocación"
+        )
+        prop.VDO_Anclaje = ANCLAJES
+        obj.VDO_Anclaje = ANCLAJE_DEFAULT
+
+    if not hasattr(obj, "VDO_Lados_Vistos"):
+        obj.addProperty(
+            "App::PropertyString", "VDO_Lados_Vistos", "Exposición",
+            "Lados del módulo visibles desde el espacio (JSON)"
+        ).VDO_Lados_Vistos = VDO_FR.serializar_lados([VDO_FR.FRENTE])
+
+    if not hasattr(obj, "VDO_Lados_Apoyados"):
+        obj.addProperty(
+            "App::PropertyString", "VDO_Lados_Apoyados", "Exposición",
+            "Lados del módulo apoyados contra muro/piso (JSON)"
+        ).VDO_Lados_Apoyados = VDO_FR.serializar_lados([VDO_FR.FONDO])

@@ -11,8 +11,6 @@
 import json
 import sys
 
-import FreeCAD as App
-import Part
 
 
 from freecad.vdo.core import vdo_guardian
@@ -21,6 +19,20 @@ from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.core.vdo_layout import Layout, Track, AXIS_X, resolve_layout
+
+
+
+
+def _get_app():
+    """Importa FreeCAD de forma perezosa."""
+    import FreeCAD as App
+    return App
+
+
+def _get_part():
+    """Importa Part de forma perezosa."""
+    import Part
+    return Part
 
 
 class ZocaloError(ValueError):
@@ -325,8 +337,8 @@ class ZocaloFeature:
         try:
             geo = calcular_geometria_zocalo(**self._config(fp))
         except ValueError as exc:
-            App.Console.PrintError(f"[VDO] Zócalo inválido: {exc}\n")
-            fp.Shape = Part.Shape()
+            _get_app().Console.PrintError(f"[VDO] Zócalo inválido: {exc}\n")
+            fp.Shape = _get_part().Shape()
             fp.VDO_Paneles_JSON = "[]"
             fp.VDO_ResumenDespiece = f"Zócalo inválido: {exc}"
             return
@@ -334,15 +346,15 @@ class ZocaloFeature:
         alto = float(fp.AltoZocalo)
         solidos = []
         for tira in geo["tiras"]:
-            solidos.append(Part.makeBox(
+            solidos.append(_get_part().makeBox(
                 tira["w"], tira["h"], alto,
-                App.Vector(tira["x"], tira["y"], 0.0)))
+                _get_app().Vector(tira["x"], tira["y"], 0.0)))
         for amarre in geo["amarres"]:
-            solidos.append(Part.makeBox(
+            solidos.append(_get_part().makeBox(
                 amarre["w"], amarre["h"], alto,
-                App.Vector(amarre["x"], amarre["y"], 0.0)))
+                _get_app().Vector(amarre["x"], amarre["y"], 0.0)))
 
-        fp.Shape = Part.makeCompound(solidos)
+        fp.Shape = _get_part().makeCompound(solidos)
 
         piezas = []
         for pieza in geo["piezas"]:
@@ -370,18 +382,18 @@ def make_zocalo(configuracion):
             material_ref, rotacion/anclaje/nombre.
 
     Returns:
-        App.DocumentObject: el objeto creado o None.
+        _get_app().DocumentObject: el objeto creado o None.
     """
     doc = vdo_guardian.vdo_guard()
     if not doc:
-        App.Console.PrintError("[VDO] No hay documento activo.\n")
+        _get_app().Console.PrintError("[VDO] No hay documento activo.\n")
         return None
 
     nombre = configuracion.get("nombre", "Zocalo")
     obj = doc.addObject("Part::FeaturePython", nombre)
     ZocaloFeature(obj)
 
-    if App.GuiUp:
+    if _get_app().GuiUp:
         adjuntar_vista("zocalo", obj.ViewObject)
 
     obj.Ancho = configuracion.get("ancho", 600.0)
@@ -402,11 +414,11 @@ def make_zocalo(configuracion):
     obj.VDO_Anclaje = configuracion.get(
         "anclaje", VDO_MOD.ANCLAJE_DEFAULT)
     if rotacion:
-        obj.Placement = App.Placement(
+        obj.Placement = _get_app().Placement(
             obj.Placement.Base, VDO_MOD.rotacion_z(rotacion))
 
     doc.recompute()
-    App.Console.PrintMessage(
+    _get_app().Console.PrintMessage(
         f"[VDO] Zócalo '{nombre}' creado "
         f"({float(obj.Ancho):.0f} × {float(obj.Fondo):.0f} × "
         f"{float(obj.AltoZocalo):.0f} mm).\n")

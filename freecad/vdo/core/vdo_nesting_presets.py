@@ -1,46 +1,55 @@
 # -*- coding: utf-8 -*-
 # =====================================================================
 # vdo_nesting_presets.py
-# Gestor de presets de tableros para nesting
-# Guardar/cargar configuraciones predefinidas en preferencias de FreeCAD
+# Gestor de presets de tableros para nesting.
+# Nota: FreeCAD se importa de forma perezosa dentro de las funciones que
+# lo necesitan (no a nivel de modulo), para que este modulo pueda
+# importarse sin FreeCAD (R2).
 # =====================================================================
 
-import FreeCAD as App
 import json
+
+# Presets estándar del taller (2440×1830 es estándar EN)
+DEFAULT_PRESETS = {
+    "Estándar EN": {"width": 2440, "height": 1830, "spacing": 15, "thickness": 3},
+    "Medio Horizontal": {"width": 1220, "height": 2440, "spacing": 15, "thickness": 3},
+    "Pequeño": {"width": 1200, "height": 900, "spacing": 12, "thickness": 3},
+    "Cuadrado": {"width": 1000, "height": 1000, "spacing": 15, "thickness": 3},
+    "Larguero": {"width": 3000, "height": 600, "spacing": 15, "thickness": 3},
+}
+
+PREFS_PATH = "User parameter:BaseApp/Preferences/NestingWorkbench/VDO"
+
+
+def _get_app():
+    """Importa FreeCAD de forma perezosa (solo cuando se necesita)."""
+    import FreeCAD as App
+    return App
+
 
 class NestingPresetManager:
     """Gestiona presets de tableros para nesting."""
 
-    PREFS_PATH = "User parameter:BaseApp/Preferences/NestingWorkbench/VDO"
-
-    # Presets estándar del taller (2440×1830 es estándar EN)
-    DEFAULT_PRESETS = {
-        "Estándar EN": {"width": 2440, "height": 1830, "spacing": 15, "thickness": 3},
-        "Medio Horizontal": {"width": 1220, "height": 2440, "spacing": 15, "thickness": 3},
-        "Pequeño": {"width": 1200, "height": 900, "spacing": 12, "thickness": 3},
-        "Cuadrado": {"width": 1000, "height": 1000, "spacing": 15, "thickness": 3},
-        "Larguero": {"width": 3000, "height": 600, "spacing": 15, "thickness": 3},
-    }
+    PREFS_PATH = PREFS_PATH
 
     @staticmethod
     def get_prefs():
         """Obtiene el objeto de preferencias."""
-        return FreeCAD.ParamGet(NestingPresetManager.PREFS_PATH)
+        return _get_app().ParamGet(NestingPresetManager.PREFS_PATH)
 
     @staticmethod
     def initialize_defaults():
         """Inicializa presets por defecto si no existen."""
         prefs = NestingPresetManager.get_prefs()
 
-        # Verificar si ya hay presets
         if prefs.GetString("Presets", "") == "":
-            # Guardar presets por defecto
             presets_data = {
-                "list": list(NestingPresetManager.DEFAULT_PRESETS.keys()),
-                "presets": NestingPresetManager.DEFAULT_PRESETS
+                "list": list(DEFAULT_PRESETS.keys()),
+                "presets": DEFAULT_PRESETS
             }
             prefs.SetString("Presets", json.dumps(presets_data))
-            App.Console.PrintMessage("[VDO Nesting] Presets inicializados con valores por defecto")
+            _get_app().Console.PrintMessage(
+                "[VDO Nesting] Presets inicializados con valores por defecto")
 
     @staticmethod
     def get_all_presets():
@@ -50,9 +59,9 @@ class NestingPresetManager:
 
         try:
             data = json.loads(presets_json)
-            return data.get("presets", NestingPresetManager.DEFAULT_PRESETS)
+            return data.get("presets", DEFAULT_PRESETS)
         except Exception as exc:
-            FreeCAD.Console.PrintWarning(
+            _get_app().Console.PrintWarning(
                 f"[VDO] No se pudieron leer presets: {exc}\n")
             return NestingPresetManager.DEFAULT_PRESETS
 
@@ -71,7 +80,7 @@ class NestingPresetManager:
         try:
             data = json.loads(presets_json)
         except Exception as exc:
-            FreeCAD.Console.PrintWarning(
+            _get_app().Console.PrintWarning(
                 f"[VDO] No se pudieron leer presets: {exc}\n")
             data = {"list": [], "presets": {}}
 
@@ -80,7 +89,6 @@ class NestingPresetManager:
         if "presets" not in data:
             data["presets"] = {}
 
-        # Agregar preset
         data["presets"][name] = {
             "width": width,
             "height": height,
@@ -88,12 +96,12 @@ class NestingPresetManager:
             "thickness": thickness
         }
 
-        # Actualizar lista si no existe
         if name not in data["list"]:
             data["list"].append(name)
 
         prefs.SetString("Presets", json.dumps(data))
-        App.Console.PrintMessage(f"[VDO Nesting] Preset '{name}' guardado")
+        _get_app().Console.PrintMessage(
+            f"[VDO Nesting] Preset '{name}' guardado")
 
     @staticmethod
     def delete_preset(name):
@@ -104,7 +112,7 @@ class NestingPresetManager:
         try:
             data = json.loads(presets_json)
         except Exception as exc:
-            FreeCAD.Console.PrintWarning(
+            _get_app().Console.PrintWarning(
                 f"[VDO] No se pudieron leer presets: {exc}\n")
             return False
 
@@ -115,7 +123,8 @@ class NestingPresetManager:
             data["list"].remove(name)
 
         prefs.SetString("Presets", json.dumps(data))
-        App.Console.PrintMessage(f"[VDO Nesting] Preset '{name}' eliminado")
+        _get_app().Console.PrintMessage(
+            f"[VDO Nesting] Preset '{name}' eliminado")
         return True
 
     @staticmethod
@@ -130,7 +139,8 @@ class NestingPresetManager:
         presets = NestingPresetManager.get_all_presets()
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(presets, f, indent=2, ensure_ascii=False)
-        App.Console.PrintMessage(f"[VDO Nesting] Presets exportados a: {filepath}")
+        _get_app().Console.PrintMessage(
+            f"[VDO Nesting] Presets exportados a: {filepath}")
 
     @staticmethod
     def import_presets_from_json(filepath):
@@ -147,17 +157,18 @@ class NestingPresetManager:
             if "list" not in existing_data:
                 existing_data["list"] = []
 
-            # Merged presets
             for name, config in new_presets.items():
                 existing_data["presets"][name] = config
                 if name not in existing_data["list"]:
                     existing_data["list"].append(name)
 
             prefs.SetString("Presets", json.dumps(existing_data))
-            App.Console.PrintMessage(f"[VDO Nesting] Presets importados desde: {filepath}")
+            _get_app().Console.PrintMessage(
+                f"[VDO Nesting] Presets importados desde: {filepath}")
             return True
         except Exception as e:
-            App.Console.PrintMessage(f"[VDO Nesting] Error importando presets: {e}")
+            _get_app().Console.PrintMessage(
+                f"[VDO Nesting] Error importando presets: {e}")
             return False
 
 

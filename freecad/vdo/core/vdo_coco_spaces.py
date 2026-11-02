@@ -10,11 +10,23 @@
 # (vdo_layout.Layout + VDO_Divisiones).
 # =====================================================================
 
-import FreeCAD as App
-import Part
 
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.cad.geometria import forma_ref
+
+
+
+
+def _get_app():
+    """Importa FreeCAD de forma perezosa."""
+    import FreeCAD as App
+    return App
+
+
+def _get_part():
+    """Importa Part de forma perezosa."""
+    import Part
+    return Part
 
 
 def _clave_pieza(pieza):
@@ -280,9 +292,9 @@ def _shape_caja(caja):
     if (caja["w"] <= 1e-9 or caja["h"] <= 1e-9
             or caja["d"] <= 1e-9):
         return None
-    return Part.makeBox(
+    return _get_part().makeBox(
         caja["w"], caja["h"], caja["d"],
-        App.Vector(caja["x"], caja["y"], caja["z"]))
+        _get_app().Vector(caja["x"], caja["y"], caja["z"]))
 
 
 def _punto_inglete(plan, coord_v, coord_h, coord_e):
@@ -290,7 +302,7 @@ def _punto_inglete(plan, coord_v, coord_h, coord_e):
     coords[plan["eje_vertical"]] = float(coord_v)
     coords[plan["eje_horizontal"]] = float(coord_h)
     coords[plan["extrusion"]] = float(coord_e)
-    return App.Vector(coords["x"], coords["y"], coords["z"])
+    return _get_app().Vector(coords["x"], coords["y"], coords["z"])
 
 
 def _prisma_inglete(inglete):
@@ -314,11 +326,11 @@ def _prisma_inglete(inglete):
         for cv, ch in triangulo
     ]
     try:
-        wire = Part.makePolygon(puntos + [puntos[0]])
-        cara = Part.Face(wire)
+        wire = _get_part().makePolygon(puntos + [puntos[0]])
+        cara = _get_part().Face(wire)
         vector = {"x": 0.0, "y": 0.0, "z": 0.0}
         vector[plan["extrusion"]] = (e1 - e0) + margen * 2.0
-        return cara.extrude(App.Vector(
+        return cara.extrude(_get_app().Vector(
             vector["x"], vector["y"], vector["z"]))
     except Exception:
         return None
@@ -354,7 +366,7 @@ def _shape_tira(tira):
         return None
     if len(piezas) == 1:
         return piezas[0]
-    return Part.makeCompound(piezas)
+    return _get_part().makeCompound(piezas)
 
 
 def generar_divisiones_matriz(divisiones_json, ancho_cavidad, alto_cavidad,
@@ -507,9 +519,9 @@ def generar_divisiones_matriz(divisiones_json, ancho_cavidad, alto_cavidad,
                 if (corte["w"] <= 1e-9 or corte["h"] <= 1e-9
                         or corte["d"] <= 1e-9):
                     continue
-                pieza_corte = Part.makeBox(
+                pieza_corte = _get_part().makeBox(
                     corte["w"], corte["h"], corte["d"],
-                    App.Vector(corte["x"], corte["y"], corte["z"]))
+                    _get_app().Vector(corte["x"], corte["y"], corte["z"]))
                 core_shape = core_shape.cut(pieza_corte)
             shapes.append(core_shape)
         for tira in entry["tiras"]:

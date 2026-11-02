@@ -5,8 +5,6 @@
 # FeaturePython con ViewProvider para Task Panel visual
 # =====================================================================
 
-import FreeCAD as App
-import Part
 import sys
 import json
 
@@ -19,6 +17,20 @@ from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core import vdo_finish as VDO_FINISH
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.cad.geometria import forma_ref
+
+
+
+
+def _get_app():
+    """Importa FreeCAD de forma perezosa."""
+    import FreeCAD as App
+    return App
+
+
+def _get_part():
+    """Importa Part de forma perezosa."""
+    import Part
+    return Part
 
 
 def _cargar_reengroses(obj):
@@ -64,7 +76,7 @@ def _cortar_shape(forma, recorte):
             s for s in resultado.Solids if not s.isNull() and s.Volume > 1e-9)
     if not solidos:
         return None
-    return Part.makeCompound(solidos)
+    return _get_part().makeCompound(solidos)
 
 
 def _expandir_reengrose(pieza):
@@ -86,7 +98,7 @@ def _expandir_reengrose(pieza):
             orientacion=pieza.get("orientacion", "vertical"),
             cantos_bloque=cantos_bloque)
     except VDO_RE.ReengroseError as exc:
-        App.Console.PrintWarning(
+        _get_app().Console.PrintWarning(
             f"[VDO] Reengrose inválido en '{pieza.get('nombre')}': {exc}\n")
         return [pieza]
     for sub in subpiezas:
@@ -152,7 +164,6 @@ class CocoFeature:
 
     def execute(self, fp):
         """Reconstruir la geometría del cofre."""
-        import Part
 
         try:
             alto = float(fp.Alto)
@@ -199,20 +210,20 @@ class CocoFeature:
             techo_pos_z = alto - espesor
 
             # Panel lateral izquierdo
-            lat_izq = Part.makeBox(espesor, fondo, lat_height,
-                                   App.Vector(0, 0, lat_pos_z))
+            lat_izq = _get_part().makeBox(espesor, fondo, lat_height,
+                                   _get_app().Vector(0, 0, lat_pos_z))
 
             # Panel lateral derecho
-            lat_der = Part.makeBox(espesor, fondo, lat_height,
-                                   App.Vector(ancho - espesor, 0, lat_pos_z))
+            lat_der = _get_part().makeBox(espesor, fondo, lat_height,
+                                   _get_app().Vector(ancho - espesor, 0, lat_pos_z))
 
             # Panel base
-            panel_base = Part.makeBox(base_length, fondo, espesor,
-                                      App.Vector(base_pos_x, 0, base_pos_z))
+            panel_base = _get_part().makeBox(base_length, fondo, espesor,
+                                      _get_app().Vector(base_pos_x, 0, base_pos_z))
 
             # Panel techo
-            panel_techo = Part.makeBox(techo_length, fondo, espesor,
-                                       App.Vector(techo_pos_x, 0, techo_pos_z))
+            panel_techo = _get_part().makeBox(techo_length, fondo, espesor,
+                                       _get_app().Vector(techo_pos_x, 0, techo_pos_z))
 
             # --- Fondo en Y+ (nunca en el frente) ---
             fondo_box = None
@@ -234,18 +245,18 @@ class CocoFeature:
 
                     g_y = f_y
                     if prof > 0 and alto_cavidad > 0 and ancho_cavidad > 0:
-                        lat_izq = lat_izq.cut(Part.makeBox(
+                        lat_izq = lat_izq.cut(_get_part().makeBox(
                             prof, calibre_fondo, alto_cavidad + (prof * 2),
-                            App.Vector(espesor - prof, g_y, espesor - prof)))
-                        lat_der = lat_der.cut(Part.makeBox(
+                            _get_app().Vector(espesor - prof, g_y, espesor - prof)))
+                        lat_der = lat_der.cut(_get_part().makeBox(
                             prof, calibre_fondo, alto_cavidad + (prof * 2),
-                            App.Vector(ancho - espesor, g_y, espesor - prof)))
-                        panel_base = panel_base.cut(Part.makeBox(
+                            _get_app().Vector(ancho - espesor, g_y, espesor - prof)))
+                        panel_base = panel_base.cut(_get_part().makeBox(
                             ancho_cavidad + (prof * 2), calibre_fondo, prof,
-                            App.Vector(espesor - prof, g_y, espesor - prof)))
-                        panel_techo = panel_techo.cut(Part.makeBox(
+                            _get_app().Vector(espesor - prof, g_y, espesor - prof)))
+                        panel_techo = panel_techo.cut(_get_part().makeBox(
                             ancho_cavidad + (prof * 2), calibre_fondo, prof,
-                            App.Vector(espesor - prof, g_y, alto - espesor)))
+                            _get_app().Vector(espesor - prof, g_y, alto - espesor)))
                 else:
                     f_len = ancho_cavidad
                     f_alt = alto_cavidad
@@ -254,8 +265,8 @@ class CocoFeature:
                     f_y = fondo - calibre_fondo - dist_borde
                     f_y = max(espesor, min(f_y, max(0.0, fondo - calibre_fondo)))
 
-                fondo_box = Part.makeBox(f_len, calibre_fondo, f_alt,
-                                         App.Vector(f_x, f_y, f_z))
+                fondo_box = _get_part().makeBox(f_len, calibre_fondo, f_alt,
+                                         _get_app().Vector(f_x, f_y, f_z))
 
             boxes.extend([lat_izq, lat_der, panel_base, panel_techo])
             if fondo_box is not None:
@@ -288,7 +299,7 @@ class CocoFeature:
                 try:
                     geo = VDO_RE.calcular_geometria_caja(caja, mod, ejes)
                 except VDO_RE.ReengroseError as exc:
-                    App.Console.PrintWarning(
+                    _get_app().Console.PrintWarning(
                         f"[VDO] Reengrose {clave} ignorado: {exc}\n")
                     return
                 for i, ref in enumerate(geo["refuerzos"]):
@@ -428,7 +439,7 @@ class CocoFeature:
                 tira["shape"] = nuevo
                 idx = mapa_divs.get(id(viejo))
                 if idx is not None:
-                    divs[idx] = nuevo if nuevo is not None else Part.Shape()
+                    divs[idx] = nuevo if nuevo is not None else _get_part().Shape()
                     boxes[indice_divs + idx] = divs[idx]
 
             strip_shape_ids = {
@@ -439,7 +450,7 @@ class CocoFeature:
                 tira = entry["tira"]
                 forma = _shape_tira(tira)
                 if forma is None:
-                    boxes[entry["indice"]] = Part.Shape()
+                    boxes[entry["indice"]] = _get_part().Shape()
                     continue
                 for clave, nucleo in shell_cores.items():
                     if clave == entry["clave"]:
@@ -460,7 +471,7 @@ class CocoFeature:
                             if forma is None:
                                 break
                 boxes[entry["indice"]] = (
-                    forma if forma is not None else Part.Shape())
+                    forma if forma is not None else _get_part().Shape())
                 tira["shape"] = forma
 
             # === GUARDAR DATOS DE LOS PANELES PARA EXPORTACIÓN ===
@@ -562,7 +573,7 @@ class CocoFeature:
                         if solido.Volume > 1e-9)
                 elif forma.Volume > 1e-9:
                     solidos.append(forma)
-            fp.Shape = Part.makeCompound(solidos)
+            fp.Shape = _get_part().makeCompound(solidos)
 
             # --- Propagación de Placement a insertos (hijos) ---
             # Cuando el COCO se mueve o rota (su Placement cambia),
@@ -577,7 +588,7 @@ class CocoFeature:
                     pass
 
         except Exception as e:
-            App.Console.PrintError(f"[VDO] Error en execute(): {e}\n")
+            _get_app().Console.PrintError(f"[VDO] Error en execute(): {e}\n")
 
     def dumps(self):
         return None
@@ -594,11 +605,11 @@ def make_coco(configuracion):
         configuracion (dict): Parámetros del cofre.
 
     Returns:
-        App.DocumentObject: El objeto FeaturePython creado.
+        _get_app().DocumentObject: El objeto FeaturePython creado.
     """
     doc = vdo_guardian.vdo_guard()
     if not doc:
-        App.Console.PrintError("[VDO] No hay documento activo.\n")
+        _get_app().Console.PrintError("[VDO] No hay documento activo.\n")
         return None
 
     nombre = configuracion.get("nombre", "COCO_4C")
@@ -606,7 +617,7 @@ def make_coco(configuracion):
     obj = doc.addObject("Part::FeaturePython", nombre)
     CocoFeature(obj)
 
-    if App.GuiUp:
+    if _get_app().GuiUp:
         adjuntar_vista("coco", obj.ViewObject)
 
     # Aplicar configuración (valores por defecto desde vdo_manifest.json)
@@ -634,10 +645,10 @@ def make_coco(configuracion):
         configuracion.get("lados_vistos", [VDO_FR.FRENTE]),
         configuracion.get("lados_apoyados", [VDO_FR.FONDO]))
     if rotacion:
-        obj.Placement = App.Placement(
+        obj.Placement = _get_app().Placement(
             obj.Placement.Base, VDO_MOD.rotacion_z(rotacion))
 
     doc.recompute()
-    App.Console.PrintMessage(
+    _get_app().Console.PrintMessage(
         f"[VDO] COCO '{nombre}' creado con FeaturePython.\n")
     return obj
