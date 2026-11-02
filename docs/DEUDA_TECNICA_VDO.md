@@ -7,6 +7,49 @@
 
 ---
 
+## 🏗️ Refactorización VDO (fases F1–F8, `docs/PLAN_REFACTOR_VDO.md`)
+
+La refactorización ejecutó las fases F1–F8 del plan de refactorización.
+Ítems resueltos por ella:
+
+- **Código muerto y documentación (F1):** borrados `vdo_coco_task.py`,
+  `vdo_coco_spaces_task.py`, `vdo_detect_config.py` (sin importadores);
+  `ui/vdo_coco_divisions_task.py` → `ui/vdo_widgets_coco.py`; documentos
+  históricos movidos a `docs/archivo/`.
+- **Fuente única de datos (F2):** `core/vdo_manifest.py` absorbe a
+  `vdo_loader.py`; se eliminó `jsonschema` y el esquema; `vdo_defaults.py`
+  usa el manifiesto único; `necesita_expulsor_magnetico` y
+  `APERTURA_PUSH_OPEN` consolidados en `core/vdo_facade_contract.py`.
+- **Capa Qt y tema (F3):** `ui/vdo_theme.py` con tokens; acento `#007acc`;
+  `get_svg_icon` unificado; solo `qt_compat.py` importa PySide.
+- **Base de paneles (F4):** `ui/vdo_task_base.py` (`VDOTransactionMixin`) es
+  la base única; se eliminaron copias de `reject`/`clicked`/
+  `getStandardButtons`/`helpRequested` de los 5 paneles.
+- **Snapshots de despiece (F5 paso 1):** `tests/fixtures/` y
+  `tests/test_despiece_snapshots.py` fijan la salida actual de cajón y
+  puerta (paridad de comportamiento).
+- **Formularios declarativos (F6):** `ui/vdo_form_builder.py` y migración
+  del zócalo al builder (paridad de campos/valores/rangos).
+- **Complejidad (F7 paso 1):** `vdo_reengrose_solids.py` fusionado en
+  `vdo_reengrose.py`.
+- **Calidad de código (F8):** `print(` eliminado de `freecad/`
+  (usa `App.Console`); `except:` desnudo eliminado; `sys.path` eliminado de
+  `tests/`.
+
+Ítems **fuera de alcance** de esta refactorización (se mantienen como deuda):
+- **D-23:** fusión de inspector, optimizador, lista de corte y herrajes (sin
+  evidencia de solapamiento de responsabilidad).
+- **D-24 resto:** fusión completa de `vdo_box_controller` /
+  `vdo_chassis_widget` (solo `get_svg_icon` unificado).
+- **D-19:** `Init.py`/`InitGui.py` no reescritos (requisito de plataforma).
+- **D-20:** descomposición de funciones > 150 líneas pendiente de
+  snapshots dedicados por función (para preservar paridad de comportamiento).
+- **D-14 paso 2:** motor compartido de despiece cajón/puerta pendiente de
+  evidencia de solapamiento (los módulos son dominios distintos).
+
+---
+
+
 ## ✅ DT-1 — Posición de los divisores verticales — **RESUELTO 2026-10-20**
 
 - **Archivo:** `vdo_coco_spaces.py` → `_generar_shapes_recursivo()`, `_crear_division_vertical_en()`

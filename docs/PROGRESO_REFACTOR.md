@@ -108,6 +108,39 @@ Registro fase a fase conforme a `docs/PLAN_REFACTOR_VDO.md` (§5).
 
 ---
 
+## Fase F9 — Cierre y documentación
+- Rama / commit: `refactor/f9-cierre-documentacion` (planificado)
+- Estado: completada
+- Pasos hechos:
+  1. Recalculada la tabla de métricas de §3 (antes / después) y registrada a continuación.
+  2. Creado `docs/ARQUITECTURA.md`: capas (core / ui / commands / qt_compat), reglas (D-02 a D-19), cómo añadir un módulo, cómo correr tests. Marca como reemplazo de los documentos archivados en `docs/archivo/`.
+  3. Actualizado `docs/DEUDA_TECNICA_VDO.md` marcando lo resuelto por F1–F8 y lo que queda fuera (D-23, D-24 resto, D-19, D-20, D-14 paso 2).
+  4. Resumen de la reducción de líneas real (`git diff --stat` contra `refactor/estabilizar-migracion`): 75 archivos, +2798 / -1423 (neto +1375, incluye fixtures JSON y tests nuevos de F5/F8; los .py de código fuente netos se redujeron ~575 líneas al borrar ~1120 de código muerto y añadir ~545 de tema/builder/tests).
+- Métricas §3 antes → después:
+  | Métrica | Antes | Después |
+  |---|---|---|
+  | Archivos Python en `freecad/` | 65 | 62 |
+  | Líneas Python (`freecad/`, `tests/`, `tools/`) | 28.681 | 28.106 |
+  | Tests (modo puro) ejecutados / OK / fallos / errores / skip | 103 / 91 / 0 / 11 / 3 | 120 / 108 / 0 / 11 / 3 |
+  | Módulos sin importadores | 3 | 0 |
+  | `except ... pass` | ~69 | 0 |
+  | `except Exception` en `freecad/` | 135 | (no recontado) |
+  | `except:` desnudo | 6 | 0 |
+  | `print(` en `freecad/` | 119 | 0 |
+  | `sys.path` en `tests/` | muchos | 0 |
+  | Archivos con colores hex literales | 17 | 17 (SVG embebidos como excepción justificada) |
+  | Funciones > 120 líneas | 21 | 3 > 150 (F7 paso 2 diferido) |
+  | Grupos de clones | 7 | 2 |
+  | `def necesita_expulsor_magnetico` | 3 | 1 |
+  | `def get_svg_icon` | 2 | 1 |
+  | Archivos que cargan `vdo_manifest.json` (código) | varios | solo `vdo_manifest.py` |
+- Tests (modo puro): 120 ejecutados, 108 OK, 0 fallos, 11 errores esperables (PySide/FreeCAD), 3 skip. OK >= 91 y no bajo.
+- Tests (FreeCAD): pendiente de verificación (`freecadcmd` no disponible en este entorno).
+- Decisiones nuevas tomadas (no previstas en §2): ninguna.
+- Desviaciones de este plan y motivo: F5 paso 2 (motor compartido despiece) y F7 paso 2 (descomponer funciones >150) diferidos por riesgo a paridad de comportamiento y falta de lógica compartida segura; `print()` y `except ... pass` reducidos a cero/mínimo pero la conversión total de estilos hex a tokens se deja parcial (SVG embebidos como excepción).
+- Pendiente para revisión humana: verificación visual en FreeCAD GUI (tema `#007acc`, formularios migrados) y pruebas con `freecadcmd` cuando haya display.
+
+---
 ## Fase F7 — Complejidad
 - Rama / commit: `refactor/f7-complejidad`
 - Estado: completada (paso 1); paso 2 diferido con justification
