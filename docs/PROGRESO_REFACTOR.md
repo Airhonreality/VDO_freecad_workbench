@@ -89,3 +89,21 @@ Registro fase a fase conforme a `docs/PLAN_REFACTOR_VDO.md` (§5).
 - Pendiente para revisión humana: ninguna.
 
 ---
+
+## Fase F5 — Motor de despiece cajón/puerta
+- Rama / commit: `refactor/f5-despiece-base`
+- Estado: completada (paso 1); paso 2 diferido con justification
+- Pasos hechos:
+  1. Tests de snapshot creados en `tests/test_despiece_snapshots.py` con fixtures en `tests/fixtures/` (13 tests): capturan la salida actual (BOM + dimensiones de piezas) de `calcular_despiece` del cajón (8 configuraciones: 3 tipologías de corredera × sistemas de apertura) y de las funciones de puerta (batiente parche/semiparche/embebida, corrediza 2 hojas, bisagras). Los tests pasan con el código actual = línea base fijada antes de cualquier cambio (D-14, paso 1).
+  2. Paso 2 (`core/vdo_despiece_base.py` con cajón/puerta como subclases): NO ejecutado. `vdo_cajon_despiece.py` (despiece de caja de cajón) y `vdo_puerta_despiece.py` (fórmulas de puerta, bisagras, corrediza) son dominios estructuralmente distintos sin lógica de cálculo compartida (sin solapamiento de responsabilidad, D-23). Extraer una base común forzada arriesgaría romper la paridad de comportamiento (§0.4) y los snapshots fijados. Se deja la fusión para una fase futura con evidencia de solapamiento.
+- Métricas antes → después (de §3):
+  - `diff` entre `vdo_cajon_despiece.py` y `vdo_puerta_despiece.py`: sin cambio (no se extrajo base común por la justification anterior).
+  - Líneas Python (`freecad/`, `tests/`, `tools/`): 27.816 → 27.934 (alta por tests + fixtures de snapshot).
+  - Archivos Python en `freecad/`: 62 (sin cambio).
+- Tests (modo puro): 106 ejecutados, 93 OK + 13 snapshots = OK, 0 fallos, 11 errores esperables, 3 skip. (Los 13 snapshots son nuevos y pasan.)
+- Tests (FreeCAD): pendiente de verificación.
+- Decisiones nuevas tomadas (no previstas en §2): diferir `vdo_despiece_base.py` por falta de lógica compartida segura entre cajón y puerta.
+- Desviaciones de este plan y motivo: D-14 paso 2 (motor compartido) no ejecutado: no hay solapamiento de responsabilidad seguro entre los dos módulos de despiece; forzarlo violaría paridad de comportamiento.
+- Pendiente para revisión humana: validar que los 13 snapshots también pasen con FreeCAD real cuando esté disponible.
+
+---
