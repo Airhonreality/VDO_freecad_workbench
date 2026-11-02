@@ -358,3 +358,145 @@ Pendiente para revisión humana: aprobar goldens regenerados de F19.1 diff por d
 - [x] `tests/test_verificar.py` en verde (7 tests).
 - [x] Línea base en `docs/metricas/f19_base.json`.
 
+Corrección posterior (F19.2-bis, ver abajo): la cifra "R9 = 137 defs no usadas" de esta sección se midió con la regla antigua de R9, que ignoraba usos por atributo, usos en el mismo archivo y referencias por cadena. Con la regla corregida, la base era 19 candidatos. Esta sección no se reescribe; la corrección queda aquí.
+
+---
+
+## Fase F19.2-bis — Corregir lo que encontró el auditor (A–F)
+
+Commits (rama `refactor/vdo-10`, sin push, sin merge):
+- `c7c02e9` A/B: tests de reengrose de vuelta a `tests/`, gates de entorno reales.
+- `d5ad9a9` correcciones de nombres indefinidos y restos de refactor encontrados al restaurar tests.
+- `8a0f7c0` E: `cad/geometria.py::forma_ref` sin `except Exception`.
+- `07a62aa` C/D: R14 con `shutil.which`; R9 con regla de referencias correcta; tests del verificador sobre funciones reales.
+- `2f8b7e6` D: borrado de 17 definiciones muertas.
+- `8ede619` F: segfault al salir (ADR-005).
+
+### A. Tests de reengrose a nivel 2
+
+Los nueve archivos de `tests/nivel3/` vuelven a `tests/` con `git mv`. `tests/nivel3/` queda sin archivos versionados.
+
+Los gates de clase basados en `QtWidgets is not None` ocultaban la geometría pura del nivel 2 (41 omisiones "requiere sesion grafica" que no tenían motivo real). Se quitan. Solo cinco métodos que crean widgets llevan `@requiere_qt` y llaman a `qapplication()`. Sin app, un `QWidget` aborta el intérprete (no es excepción capturable).
+
+Se quitan tres bloques `SystemExit`/`TextTestRunner` al final de `test_reengrose_l1.py`, `test_coco_reengrose.py` y `test_coco_reengrose_avanzado.py`: duplicaban la ejecución y devolvían código 1 al importar.
+
+### B. Gates de entorno (`tests/soporte/requisitos.py`)
+
+- `requiere_freecad`: detecta el binario real con `Version()` y `getHomePath()`. El mock de `freecad_falso` no los define, así que ya no pasa.
+- `requiere_gui`: `GuiUp` + `FreeCADGui` importable + `DISPLAY`/`WAYLAND_DISPLAY`. En `freecadcmd` `GuiUp` es 0.
+- `requiere_qt`: PySide6, PySide2 o PySide importable.
+- Funcionan sobre funciones y clases. El runner imprime el motivo de cada SKIP.
+- Se eliminó una segunda definición de `requiere_freecad`/`requiere_qt` en `freecad_falso.py`.
+- Un gate invertido en `test_cajon_core` omitía los tests de mock cuando FreeCAD real estaba presente. Se quitó: no es una omisión por entorno ausente.
+
+### Defectos reales encontrados (no estaban en la lista H1–H26)
+
+Al restaurar los tests salieron fallos ocultos. Cada uno tiene su corrección en el código:
+
+| Archivo | Defecto | Origen |
+|---|---|---|
+| `core/vdo_coco_core.py` | `execute()` lanzaba `NameError` (`e`) en cada recálculo: línea huérfana tras quitar el `try` en F9 | F9 |
+| `core/vdo_puerta_core.py` | `_get_app`/`_get_part` sin importar (NameError en `make_puerta`) | F4/F5 |
+| `core/vdo_cajon_core.py` | bisel 45° de fachada usaba `fachada` indefinido | original |
+| `core/vdo_cajon_despiece.py` | self-test usaba `App` sin importar | F4 |
+| `core/vdo_module_props.py` | `ancla_local` con `App` solo en una rama (UnboundLocalError) | F4 |
+| `ui/vdo_widgets_coco.py` | `@staticmethod` sobre `resumen(self)` (TypeError al abrir el panel COCO) | commit `83023ca` |
+| `ui/vdo_box_controller.py`, `ui/vdo_chassis_widget.py` | `import FreeCAD` dentro del docstring: `App` indefinido | original |
+| `ui/vdo_nesting_workflow.py` | `FreeCAD.*` sin importar | original |
+| `tests/soporte/freecad_falso.py` | `isValid.return_value` sobre métodos; faltaba `translate()` | original |
+
+Medido: nombres indefinidos (F821) con ruff: 44 antes de la corrección, 0 después (`ruff check --select F821,F811,F823 freecad tests tools` → All checks passed).
+
+### C. R14 (`tools/auditoria/verificar.py`)
+
+`_m14_freecad` usaba `command -v` con `shell=True` (devolvía vacío). Ahora `shutil.which`. La comprobación de versión comparaba `startswith("1")` sobre `FreeCAD 1.1.4 Revision: ...` y fallaba; ahora extrae el número con regex.
+
+### D. R9 (regla y decisiones)
+
+Regla anterior: nombre sin aparecer en un `from x import y`. Regla nueva: nombre que aparece como import, nombre, atributo o cadena identificador en paquete, tests, tools, `InitGui.py` o `Init.py`; incluye privadas. Medido: 19 candidatos.
+
+Decisión por candidato:
+
+| Candidato | Decisión | Motivo |
+|---|---|---|
+| `_boundbox_local` (cad/propiedades) | borrada | sin referencias |
+| `_prioridad_obstaculo` (core/vdo_coco_spaces) | borrada | sin referencias |
+| `cargar_manifest`, `listar_orientaciones` (core/vdo_defaults) | borradas | sin referencias |
+| `get_process`, `validar_compatibilidad`, `listar_materiales`, `listar_herrajes` (core/vdo_manifest) | borradas | sin referencias (solo aparecían en `PLAN_REFACTOR_VDO.md`) |
+| `listar_modulos` (core/vdo_module_specs) | borrada | sin referencias |
+| `_aristas_en_plano` (core/vdo_puerta_core) | borrada | sin referencias |
+| `frente_panel`, `anclar_refuerzos_a_panel` (core/vdo_reengrose) | borradas | sin referencias |
+| `anclar_refuerzo_a_panel` (core/vdo_reengrose) | borrada | muerta en segundo orden: solo la llamaba `anclar_refuerzos_a_panel` |
+| `crear_config_por_defecto` (core/vdo_spaces) | borrada | sin referencias |
+| `abrir_editor_unificado` (ui/vdo_coco_unified_task) | borrada | sin referencias |
+| `extraer_pieza`, `agrupar_piezas_por_material` (ui/vdo_export_cutting_list) | borradas | sin referencias en código |
+| `lanzar_gestor_herrajes` (ui/vdo_hardware_manager) | borrada | sin referencias; el módulo sí se usa (`commands.py`) |
+| `ruta_recursos` (app/rutas) | **pendiente** | API prevista por el plan de F19.5/F19.9 (sustituir `_macro_dir` y SVG embebidos). Se conecta o se borra en F19.5 |
+| `iniciar_colocacion` (ui/vdo_placement) | **pendiente de decisión del usuario** | el módulo no tiene ningún importador: la función "Colocar" de `CONTEXTO_TECNICO_VDO.md` no está conectada a ningún comando. ¿Se conecta al workbench o se elimina el módulo? |
+
+Docs que citan funciones borradas: `docs/DEUDA_TECNICA_VDO.md:146` cita `extraer_pieza()`. Se corrige en F19.12.
+
+Tests del verificador: `tests/test_verificar.py` probaba copias de las reglas ("Imita R5 corregida"), así que no detectaba errores del verificador (F19-D12). Ahora importa las funciones reales de `verificar.py` (`_asignaciones_mutables_modulo`, `_except_pass_en`, `_except_exception_en`, `_definiciones_modulo`, `_referencias`, `_defs_no_usadas`) y prueba el caso de uso por atributo.
+
+### E. `cad/geometria.py::forma_ref`
+
+Sin `except Exception`. La extrusión va en `_extruir_poligono()` con comprobación explícita (`isNull()` y `Volume > 1e-9`) y captura solo `Part.OCCError`, registrándolo con `PrintWarning`. El `try` exterior captura `(TypeError, ValueError, Part.OCCError)`.
+
+Equivalencia con `git show b78de04:freecad/vdo/core/vdo_reengrose.py` (función `forma_ref`): se ejecutaron ambas versiones en FreeCAD 1.1.4 sobre 12 entradas (cuadrado en x y z, largo 0, no planar, colineal, dos puntos, eje inválido, caja sola, caja cero, número no válido, polígono no numérico, vacío). Resultado: IGUALES en las 12. FreeCAD no lanza para polígonos degenerados (dan volumen 0), y lanza `Part.OCCError` para el no planar, que el original convertía en caja.
+
+### F. Segfault al salir (H16)
+
+Causa verificada: widgets Qt vivos al cerrar el intérprete. Medido: `test_coco_reengrose_avanzado` aislado sale con 139; con limpieza previa, 0 en 3 de 3. Se implementa en `tests/soporte/qt.py`: `qapplication()` es el único punto que crea `QApplication`, y `atexit` cierra y libera los widgets de nivel superior. Cinco tests creaban su propia app; ahora usan la misma. Decisión en `docs/adr/ADR-005-aislamiento-procesos.md`.
+
+### Gate de salida de F19.2-bis (salida real)
+
+```
+$ VDO_TEST_DIR=tests VDO_TEST_OUT=/tmp/f19b_gate/n2.txt freecadcmd tools/run_tests.py; echo exit=$?
+exit=0
+RESUMEN ejecutados=251 fallos=0 errores=0 skip=26 no_ejecutado=0
+ERROR/FAIL: 0 líneas
+Reengrose ejecutados a nivel 2: 44 (test_coco_reengrose 8, test_coco_reengrose_avanzado 14, test_layout_reengrose 6, test_reengrose_l1 6, test_smoke_l3_desk_assembly 1, test_vdo_reengrose 9)
+SKIP (26): "requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)" — motivo de entorno detectado en runtime (GuiUp=0 en freecadcmd)
+
+$ VDO_TEST_DIR=tests VDO_TEST_OUT=/tmp/f19b_gate/n1.txt python3 tools/run_tests.py; echo exit=$?
+exit=0
+RESUMEN ejecutados=253 fallos=0 errores=0 skip=98 no_ejecutado=0
+SKIP (98): 62 "requiere FreeCAD real (import falló o solo hay un mock)"; 26 "requiere FreeCAD con GUI (...)"; 10 "requiere FreeCAD real (freecadcmd)" (subproceso)
+
+$ python3 -I tools/auditoria/verificar.py   # salida real, exit=1
+[FALLA] R1_capas: valor=18 umbral=0 (violaciones: freecad/vdo/ui/vdo_box_controller.py, freecad/vdo/ui/vdo_cajon_task.py, freecad/vdo/ui/vdo_coco_preview2d.py, freecad/vdo/ui/vdo_coco_unified_task.py, freecad/vdo/ui/vdo_cutting_list_preview.py, freecad/vdo/ui/vdo_export_cutting_list.py, freecad/vdo/ui/vdo_hardware_manager.py, freecad/vdo/ui/vdo_nesting_workflow.py, freecad/vdo/ui/vdo_optimizer_dialog.py, freecad/vdo/ui/vdo_optimizer_view.py, freecad/vdo/ui/vdo_panel_task.py, freecad/vdo/ui/vdo_placement.py, freecad/vdo/ui/vdo_puerta_task.py, freecad/vdo/ui/vdo_reengrose_ui.py, freecad/vdo/ui/vdo_universal_inspector.py, freecad/vdo/ui/vdo_view_providers.py, freecad/vdo/ui/vdo_widgets_coco.py, freecad/vdo/ui/vdo_zocalo_task.py)
+[FALLA] R3_dominio_como_datos: valor=33 umbral=0 (escrituras fuera de cad/: freecad/vdo/app/casos_uso/colocar_modulo.py, freecad/vdo/app/casos_uso/editar_modulo.py, freecad/vdo/app/registro.py, freecad/vdo/app/vdo_creacion.py, freecad/vdo/commands.py, freecad/vdo/core/vdo_cajon_core.py, freecad/vdo/core/vdo_cajon_despiece.py, freecad/vdo/core/vdo_coco_core.py, freecad/vdo/core/vdo_module_props.py, freecad/vdo/core/vdo_panel_core.py, freecad/vdo/core/vdo_puerta_core.py, freecad/vdo/core/vdo_reengrose.py, freecad/vdo/core/vdo_zocalo_core.py, freecad/vdo/ui/vdo_bim_bridge.py, freecad/vdo/ui/vdo_cajon_task.py, freecad/vdo/ui/vdo_coco_unified_task.py, freecad/vdo/ui/vdo_cutting_list_menu.py, freecad/vdo/ui/vdo_cutting_list_preview.py, freecad/vdo/ui/vdo_drag_handles.py, freecad/vdo/ui/vdo_export_cutting_list.py, freecad/vdo/ui/vdo_inspector_dock.py, freecad/vdo/ui/vdo_nesting_workflow.py, freecad/vdo/ui/vdo_optimizer_dialog.py, freecad/vdo/ui/vdo_panel_task.py, freecad/vdo/ui/vdo_placement.py, freecad/vdo/ui/vdo_plano_cero.py, freecad/vdo/ui/vdo_puerta_task.py, freecad/vdo/ui/vdo_selection_bridge.py, freecad/vdo/ui/vdo_task_base.py, freecad/vdo/ui/vdo_universal_inspector.py, freecad/vdo/ui/vdo_view_providers.py, freecad/vdo/ui/vdo_widgets_coco.py, freecad/vdo/ui/vdo_zocalo_task.py)
+[OK] R5_estado_inmutable: valor=0 umbral=0 (ninguna)
+[OK] R7_except_pass: valor=0 umbral=0 (0 except … pass)
+[OK] R7_except_exception_core_cad_app: valor=0 umbral=0 (0 except Exception en core/cad/app)
+[FALLA] R8_funciones_le100: valor=25 umbral=0 (funciones > 100 líneas: [('freecad/vdo/core/vdo_cajon_core.py', 'execute', 152), ('freecad/vdo/core/vdo_cajon_despiece.py', 'calcular_despiece', 323), ('freecad/vdo/core/vdo_coco_core.py', 'execute', 420), ('freecad/vdo/core/vdo_coco_spaces.py', 'generar_divisiones_matriz', 195), ('freecad/vdo/core/vdo_panel_core.py', 'crear_pieza', 101), ('freecad/vdo/core/vdo_puerta_core.py', 'execute', 138), ('freecad/vdo/core/vdo_reengrose.py', 'normalizar_modificador', 102), ('freecad/vdo/core/vdo_reengrose.py', 'generar_tiras_perimetrales', 220), ('freecad/vdo/core/vdo_spaces.py', 'resolver_espacios_eje', 122), ('freecad/vdo/core/vdo_zocalo_core.py', 'calcular_geometria_zocalo', 189), ('freecad/vdo/ui/vdo_box_controller.py', 'paintEvent', 105), ('freecad/vdo/ui/vdo_box_controller.py', '_construir_ui', 232), ('freecad/vdo/ui/vdo_cajon_task.py', '_crear_widget', 209), ('freecad/vdo/ui/vdo_chassis_widget.py', 'paintEvent', 210), ('freecad/vdo/ui/vdo_chassis_widget.py', '_init_ui', 238), ('freecad/vdo/ui/vdo_chassis_widget.py', '_aplicar_estilos', 112), ('freecad/vdo/ui/vdo_coco_unified_task.py', '_crear_widget', 172), ('freecad/vdo/ui/vdo_panel_task.py', '_crear_widget', 126), ('freecad/vdo/ui/vdo_puerta_task.py', '_crear_widget', 169), ('freecad/vdo/ui/vdo_reengrose_ui.py', '_construir', 139), ('freecad/vdo/ui/vdo_universal_inspector.py', '__init__', 207), ('freecad/vdo/ui/vdo_universal_inspector.py', '_actualizar_vista_completa', 110), ('freecad/vdo/ui/vdo_widgets_coco.py', '_crear_widget', 247), ('freecad/vdo/ui/vdo_widgets_coco.py', '_actualizar_inspector', 222), ('freecad/vdo/ui/vdo_zocalo_task.py', '_crear_widget', 123)])
+[FALLA] R8_ruff_c901_le12: valor=1 umbral=0 (ruff C901: incidencias)
+[OK] R9_clones: valor=0 umbral=0 (0 grupos de clones)
+[FALLA] R9_defs_no_usadas: valor=2 umbral=0 (2 definiciones no usadas)
+[FALLA] R10_ruff_check_cero: valor=1 umbral=0 (ruff check devolvió 1)
+[FALLA] R10_mypy_strict_cero: valor=1092 umbral=0 (mypy strict: 1092 errores)
+[OK] R10_cero_print: valor=0 umbral=0 (0 print() en freecad/)
+[FALLA] R10_cero_hex_fuera_tema: valor=417 umbral=0 (417 literales hex fuera de ui/tema.py)
+[OK] R14_freecad_real: valor=1.1.4 umbral=1.x (binario: /usr/bin/freecadcmd, salida: FreeCAD 1.1.4 Revision: 45040 (Git))
+MÉTRICAS FALLADAS (8): R1_capas, R3_dominio_como_datos, R8_funciones_le100, R8_ruff_c901_le12, R9_defs_no_usadas, R10_ruff_check_cero, R10_mypy_strict_cero, R10_cero_hex_fuera_tema
+
+$ for i in 1 2 3 4 5; do freecadcmd tools/run_tests.py >/dev/null 2>&1; echo $?; done
+0
+0
+0
+0
+0
+```
+
+Cumplimiento del gate:
+- Nivel 2: código 0, 0 ERROR, 0 FAIL, 44 reengrose ejecutados. **Cumple.**
+- Nivel 1: 0 ERROR, 0 FAIL; los SKIP son solo por entorno detectado, con motivo. **Cumple.**
+- Verificador: R14 detecta FreeCAD. R7 en `cad/` = 0. **Cumple.** El verificador en conjunto sale con código 1 por R1, R3, R8, R9 y R10, que pertenecen a F19.4, F19.6, F19.7–F19.8 y F19.8–F19.9. Esas fases no se han iniciado.
+- Segfault: 5 de 5 ejecuciones con código 0. **Cumple.**
+
+Pendiente de decisión del usuario: (1) `iniciar_colocacion` — conectar o eliminar `ui/vdo_placement.py`. (2) `ruta_recursos` queda hasta F19.5, salvo que se decida borrarla antes.
+
+Desviaciones del plan: ninguna en alcance. Se encontraron defectos fuera de H1–H26 (tabla arriba) y se corrigieron en el mismo flujo porque los tests no podían pasar sin ellos.
+
+Tests del verificador: `python3 -m unittest tests.test_verificar` → 14 tests OK (antes 7 sobre copias de las reglas).
+
