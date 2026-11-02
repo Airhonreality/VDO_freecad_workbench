@@ -371,7 +371,7 @@ class CajonFeature:
         if necesita_bisel_45(sistema_apertura):
             fachada_solid = _aplicar_bisel_45_fachada(
                 fachada_solid, fachada_pos,
-                fachada["ancho"], fachada["alto"],
+                d["fachada"]["ancho"], d["fachada"]["alto"],
                 bisel_dist=BISEL_45_ANGULO_DEFAULT / 9.0  # ~5 mm bisel
             )
 

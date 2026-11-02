@@ -1,5 +1,4 @@
 """
-import FreeCAD as App
 vdo_chassis_widget.py
 
 Widget de Corte Transversal Interactivo 2D para la Envolvente / Chasis Paramétrico (Capa 1).
@@ -14,7 +13,10 @@ Axioma:
 Compatible con PySide, PySide2 y PySide6 mediante vdo_qt.py.
 """
 
+import logging
 import sys
+
+_LOG = logging.getLogger(__name__)
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtSvg, QtWidgets
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
@@ -1139,7 +1141,7 @@ if __name__ == "__main__":
 
     def on_change(cfg):
         activas = [c for c, d in cfg["caras"].items() if d.get("activa")]
-        App.Console.PrintMessage(f"[VDO Chassis Event] Caras activas: {activas} | Encuentros: {cfg['encuentros']} | Base: {cfg['base']['estrategia']}")
+        _LOG.debug(f"[VDO Chassis Event] Caras activas: {activas} | Encuentros: {cfg['encuentros']} | Base: {cfg['base']['estrategia']}")
 
     widget.sigChassisChanged.connect(on_change)
 

@@ -573,7 +573,6 @@ class DivisionesEditor(QtWidgets.QWidget):
             f"{i},{j}": v for (i, j), v in self._contenido_por_celda.items()
         }
         return json.dumps(serializable, ensure_ascii=False)
-    @staticmethod
     def resumen(self):
         if self._resolved is None:
             return "Sin dimensiones."

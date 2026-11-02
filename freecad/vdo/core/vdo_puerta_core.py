@@ -16,6 +16,7 @@ from freecad.vdo.core.vdo_facade_contract import (
     SOLAPE_PARCHE_NOMINAL,
     calcular_fachada_base,
 )
+from freecad.vdo.core.vdo_helpers import _get_app, _get_part
 from freecad.vdo.core.vdo_module_props import add_common_props
 from freecad.vdo.core.vdo_puerta_despiece import (
     CAZALETA_DIAMETRO,

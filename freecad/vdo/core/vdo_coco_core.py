@@ -556,7 +556,6 @@ class CocoFeature:
                 hijo.Placement = fp.Placement.multiply(
                     hijo.LocalPlacement)
 
-            _get_app().Console.PrintError(f"[VDO] Error en execute(): {e}\n")
 
     def dumps(self):
         return None

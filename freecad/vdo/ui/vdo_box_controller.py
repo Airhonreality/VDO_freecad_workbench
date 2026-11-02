@@ -1,5 +1,4 @@
 """
-import FreeCAD as App
 vdo_box_controller.py
 
 Controlador espacial 2D de tablero al estilo Figma Box Model / CSS DevTools.
@@ -16,9 +15,12 @@ Arquitectura Gestáltica de Doble Anillo (Opción A):
 Totalmente agnóstico de FreeCAD: compatible con PySide, PySide2 y PySide6.
 """
 
+import logging
 import sys
 
 from freecad.vdo.core import vdo_reengrose as VDO_RE
+_LOG = logging.getLogger(__name__)
+
 from freecad.vdo.qt_compat import QtCore, QtGui, QtSvg, QtWidgets
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 
@@ -1219,7 +1221,7 @@ if __name__ == "__main__":
 
     def on_change(cfg):
         activos = [b for b, d in cfg["bordes"].items() if d["activo"]]
-        App.Console.PrintMessage(f"[VDO Box Event] Activos={activos} Esquinas={cfg['esquinas']} Uniforme={cfg['uniforme']}")
+        _LOG.debug(f"[VDO Box Event] Activos={activos} Esquinas={cfg['esquinas']} Uniforme={cfg['uniforme']}")
 
     widget.sigConfigChanged.connect(on_change)
 

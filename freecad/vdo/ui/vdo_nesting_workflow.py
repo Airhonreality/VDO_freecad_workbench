@@ -17,8 +17,8 @@ try:
     from freecad.nestingworkbench.Tools.Nesting.nesting_logic import nest
     from freecad.nestingworkbench.Tools.Nesting.shape_preparer import ShapePreparer
 except ImportError:
-    FreeCAD.Console.PrintError("[VDO Nesting] ERROR: Nesting Workbench no instalado\n")
-    FreeCAD.Console.PrintError("             Instala desde: Tools → Addon Manager\n")
+    App.Console.PrintError("[VDO Nesting] ERROR: Nesting Workbench no instalado\n")
+    App.Console.PrintError("             Instala desde: Tools → Addon Manager\n")
     raise ImportError("Nesting Workbench no instalado") from None
 
 from freecad.vdo.core import vdo_nesting_presets as presets_mgr
@@ -148,7 +148,7 @@ class NestingDialog(QtWidgets.QDialog):
 
     def execute_nesting(self):
         """Ejecuta el nesting."""
-        doc = FreeCAD.ActiveDocument
+        doc = App.ActiveDocument
         if not doc:
             QtWidgets.QMessageBox.critical(self, "Error", "No hay documento activo")
             return
@@ -181,7 +181,7 @@ class NestingDialog(QtWidgets.QDialog):
 
     def execute_nesting_async(self):
         """Ejecuta nesting en background."""
-        doc = FreeCAD.ActiveDocument
+        doc = App.ActiveDocument
 
         App.Console.PrintMessage("=" * 70)
         App.Console.PrintMessage(f"🔲 NESTING - Modo: {self.mode.upper()}")
@@ -211,7 +211,7 @@ class NestingDialog(QtWidgets.QDialog):
                     App.Console.PrintMessage(f"  ❌ {obj.Label}: {e}")
 
             if not shapes:
-                FreeCAD.Console.PrintError("No se pudieron preparar piezas\n")
+                App.Console.PrintError("No se pudieron preparar piezas\n")
                 return
 
             # Parámetros
@@ -276,7 +276,7 @@ class NestingDialog(QtWidgets.QDialog):
             )
 
         except Exception as e:
-            FreeCAD.Console.PrintError(f"Error: {e}\n")
+            App.Console.PrintError(f"Error: {e}\n")
             import traceback
             traceback.print_exc()
 

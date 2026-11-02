@@ -565,6 +565,8 @@ def calcular_despiece(config):
 # SELF-TEST (desde la raíz del repo: python3 -m freecad.vdo.core.vdo_cajon_despiece)
 # =====================================================================
 if __name__ == "__main__":
+    from freecad.vdo.core.vdo_helpers import _get_app
+    App = _get_app()
     App.Console.PrintMessage("=" * 64)
     App.Console.PrintMessage("[VDO] Self-test vdo_cajon_despiece.py")
     App.Console.PrintMessage("=" * 64)

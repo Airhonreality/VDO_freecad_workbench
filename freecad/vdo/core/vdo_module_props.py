@@ -69,9 +69,9 @@ def ancla_local(obj, anclaje=None):
     superior = str(anclaje).startswith("superior_")
     centro_inferior = str(anclaje) == "centro_inferior"
 
+    from freecad.vdo.core.vdo_helpers import _get_app
+    App = _get_app()
     if centro_inferior:
-        from freecad.vdo.cad.propiedades import _get_app
-        App = _get_app()
         return App.Vector((xmin + xmax) / 2.0, (ymin + ymax) / 2.0, zmin)
     return App.Vector(
         xmin if izquierda else (xmax if derecha else (xmin + xmax) / 2.0),
