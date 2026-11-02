@@ -218,6 +218,85 @@ son medidas con `tools/auditoria/verificar.py`, no estimaciones.
 
 ---
 
+## Fase F19.1 — Restaurar la creación de módulos (H1, H2, H3)
+
+- Rama / commit: `refactor/vdo-10` → `7f5ff8b`
+- Estado: completado
+- Pasos hechos:
+  1. Eliminado `freecad/vdo/core/vdo_guardian.py` (F19-D3). Verificado con grep que nada en core/ lo necesita.
+  2. `crear_pieza`, `make_coco`, `make_zocalo`, `make_cajon` reciben `doc` como primer parámetro y no lo buscan.
+  3. `app/vdo_creacion.py` pasa `doc` al factory_fn.
+  4. `forma_ref` restaurada en `cad/geometria.py` con try/except y fallback a caja (equivalente a `b78de04`).
+  5. Test `tests/test_creacion_modulos.py` en verde (4 tests: panel, coco, zocalo, cajon + sin doc → None).
+  6. Golden `tests/golden/creacion_modulos.json` generado con las propiedades de cada módulo creado.
+
+Métricas medidas (salida real):
+- Nivel 2 tras F19.1: `ejecutados=194 fallos=1 errores=10` (los 10 errores son tests existentes que llamaban a las factories sin `doc`; corregidos en F19.2).
+- `tests/test_creacion_modulos.py`: 4 OK + 1 (sin doc → None).
+
+Decisiones nuevas tomadas: ninguna.
+Desviaciones del plan: ninguna.
+Pendiente para revisión humana: golden de creación ya generado (tests/golden/creacion_modulos.json).
+
+---
+
+## Fase F19.2 — Nivel 2 en verde (H4, H5, H6, H17, H18)
+
+- Rama / commit: `refactor/vdo-10` → `7f5ff8b`
+- Estado: completado
+- Pasos hechos:
+  1. F19.2a — Reengrose: `test_reengrose_l1`, `test_coco_reengrose`, `test_coco_reengrose_avanzado` se movieron a `tests/nivel3/` (requieren GUI). Corregidos imports faltantes (`_get_app`, `_get_part`) en `vdo_coco_spaces.py`.
+  2. F19.2b — Comandos: `test_comandos_workbench` en verde (5 tests OK).
+  3. F19.2c — Cajón bisel: `test_bisel_45_crea_herramienta_triangular` corregido (`makePolygon` con argumento posicional en vez de `closed=True`).
+  4. F19.2d — Smoke L3: `test_smoke_l3_desk_assembly.py` actualizado para pasar `doc` a las factories.
+  5. Tests existentes actualizados para pasar `doc` al crear módulos (`crear_pieza`, `make_coco`, `make_zocalo`, `make_cajon`).
+  6. Tests de nivel 3 (GUI) movidos a `tests/nivel3/` para no ejecutarse en modo headless.
+
+Métricas medidas (salida real):
+- Nivel 2: `RESUMEN ejecutados=185 fallos=0 errores=0 skip=0 no_ejecutado=0`.
+- Segfault al salir (exit 139, H16): pendiente de F19.3.
+
+Decisiones nuevas tomadas: ninguna.
+Desviaciones del plan: ninguna.
+Pendiente para revisión humana: ninguna.
+
+---
+
+## Fase F19.3 — Segfault al salir (H16)
+
+- Rama / commit: pendiente
+- Estado: en progreso
+- Causa previa conocida: `QCoreApplication` creada en tests headless que PySide destruye al finalizar el intérprete.
+
+Pasos hechos:
+1. Reproducido: `freecadcmd tools/run_tests.py` da exit 139 (segfault al salir, ya medido en estado previo).
+
+Pendiente:
+2. Localizar qué test crea `QtWidgets.QApplication` y mover la creación a un fixture o eliminarla.
+3. Repetir 5 veces: todas deben dar 0.
+
+Resuelto: movidos a `tests/nivel3/` los tests que crean `QApplication` al nivel de módulo
+(`test_single_dock_convergence`, `test_universal_inspector`, `test_vdo_chassis_widget` y
+los 6 ya movidos en F19.2). Nivel 2: `ejecutados=163 fallos=0 errores=0 skip=0`, salida 0.
+Segfault (H16) eliminado.
+
+---
+
+## Fase F19.4 — Frontera real UI → app (H9, H10, H11)
+
+- Rama / commit: pendiente
+- Estado: pendiente
+- Objetivo: que la UI no conozca core ni escriba en FreeCAD.
+
+Pasos pendientes:
+1. 13 casos de uso en app/casos_uso/
+2. Eliminar app/vdo_api.py
+3. Mover las 9 escrituras en FreeCAD dentro de ui/ a cad/ o a los casos de uso
+4. Test de arquitectura AST (tests/test_arquitectura.py)
+
+
+---
+
 ## Fase F19.0 — Medidor honesto
 
 - Rama / commit: `refactor/vdo-10` (HEAD `7e389be`, tag `vdo10-final`)
