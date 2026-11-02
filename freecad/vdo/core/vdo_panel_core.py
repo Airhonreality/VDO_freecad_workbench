@@ -20,7 +20,6 @@ import sys
 # Bootstrap
 
 from freecad.vdo.core import vdo_guardian
-from freecad.vdo.core.vdo_ui_registry import adjuntar_vista
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
@@ -321,7 +320,8 @@ def crear_pieza(configuracion):
         es_nuevo = True
 
     if _get_app().GuiUp:
-        adjuntar_vista("panel", panel.ViewObject)
+        # La vista se adjunta desde app/ (F5/F6), no desde core.
+        pass
 
     panel.VDO_Orientacion = orientacion
     panel.VDO_Etiqueta = etiqueta

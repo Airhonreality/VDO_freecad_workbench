@@ -33,7 +33,6 @@ def _get_part():
 
 
 from freecad.vdo.core import vdo_guardian
-from freecad.vdo.core.vdo_ui_registry import adjuntar_vista
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core.vdo_cajon_despiece import (
@@ -459,7 +458,8 @@ def make_cajon(configuracion):
     CajonFeature(obj)
 
     if _get_app().GuiUp:
-        adjuntar_vista("cajon", obj.ViewObject)
+        # La vista se adjunta desde app/ (F5/F6), no desde core.
+        pass
 
     obj.AnchoLibre = configuracion.get("ancho_libre", 564.0)
     obj.ProfLibre = configuracion.get("prof_libre", 560.0)

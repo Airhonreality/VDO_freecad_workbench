@@ -14,7 +14,6 @@ import sys
 
 
 from freecad.vdo.core import vdo_guardian
-from freecad.vdo.core.vdo_ui_registry import adjuntar_vista
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
@@ -394,7 +393,8 @@ def make_zocalo(configuracion):
     ZocaloFeature(obj)
 
     if _get_app().GuiUp:
-        adjuntar_vista("zocalo", obj.ViewObject)
+        # La vista se adjunta desde app/ (F5/F6), no desde core.
+        pass
 
     obj.Ancho = configuracion.get("ancho", 600.0)
     obj.Fondo = configuracion.get("fondo", 580.0)

@@ -36,7 +36,6 @@ from freecad.vdo.core.vdo_puerta_despiece import (
 )
 
 from freecad.vdo.core.vdo_module_props import add_common_props
-from freecad.vdo.core.vdo_ui_registry import adjuntar_vista
 
 
 # ---------------------------------------------------------------------
@@ -300,7 +299,8 @@ def make_puerta(configuracion):
     PuertaFeature(obj)
 
     if _get_app().GuiUp:
-        adjuntar_vista("puerta", obj.ViewObject)
+        # La vista se adjunta desde app/ (F5/F6), no desde core.
+        pass
 
     obj.TipoSistema = configuracion.get("tipo_sistema", "Batiente Vertical")
     obj.TipoMontaje = configuracion.get("tipo_montaje", "Parche")

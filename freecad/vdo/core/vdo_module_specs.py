@@ -7,8 +7,6 @@
 
 import importlib
 
-from freecad.vdo.core.vdo_ui_registry import obtener
-
 
 MODULE_SPECS = {
     "coco_4c": {
@@ -181,8 +179,8 @@ def _resolver(referencia):
 
 
 def resolver_panel(spec):
-    """Devuelve la clase del panel desde el registro de UI (None sin GUI). D24."""
-    return obtener(spec["panel_ref"])
+    """Devuelve la referencia del panel (string) para que app/ resuelva la vista. D24."""
+    return spec.get("panel_ref")
 
 
 def get_spec(module_key):

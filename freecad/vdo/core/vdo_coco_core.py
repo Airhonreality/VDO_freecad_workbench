@@ -10,7 +10,6 @@ import json
 
 
 from freecad.vdo.core import vdo_guardian
-from freecad.vdo.core.vdo_ui_registry import adjuntar_vista
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_frames as VDO_FR
@@ -618,7 +617,8 @@ def make_coco(configuracion):
     CocoFeature(obj)
 
     if _get_app().GuiUp:
-        adjuntar_vista("coco", obj.ViewObject)
+        # La vista se adjunta desde app/ (F5/F6), no desde core.
+        pass
 
     # Aplicar configuración (valores por defecto desde vdo_manifest.json)
     obj.Alto = configuracion.get("alto", VDO_D.ALTO_DEFAULT)

@@ -41,9 +41,9 @@ class CapasTests(unittest.TestCase):
                         hallazgos.append(f"{os.path.relpath(ruta, RAIZ)}:{linea} importa {modulo}")
         self.assertEqual(hallazgos, [], "El motor depende de la interfaz:\n" + "\n".join(hallazgos))
 
-    def test_registro_de_ui_existe_en_core(self):
-        # El motor pide piezas de UI por clave; el registro debe existir en core.
-        self.assertTrue(os.path.isfile(os.path.join(CORE, "vdo_ui_registry.py")))
+    def test_registro_de_ui_no_esta_en_core(self):
+        # F5 elimino vdo_ui_registry de core; las vistas se adjuntan desde app/.
+        self.assertFalse(os.path.isfile(os.path.join(CORE, "vdo_ui_registry.py")))
 
 
 if __name__ == "__main__":

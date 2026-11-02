@@ -128,14 +128,9 @@ def crear_modulo_interactivo(module_key: str, config: dict | None = None):
             if estado["finalizado"]:
                 return
             estado["finalizado"] = True
-            from freecad.vdo.core.vdo_ui_registry import obtener
-            iniciar_colocacion = obtener("colocacion.iniciar")
-            if iniciar_colocacion is not None:
-                iniciar_colocacion(
-                    obj,
-                    on_done=confirmar,
-                    on_cancel=cancelar,
-                )
+            # La colocacion se maneja desde app/composicion (F6).
+            if confirmar is not None:
+                confirmar()
 
         def on_cancel():
             if estado["finalizado"]:
@@ -143,19 +138,8 @@ def crear_modulo_interactivo(module_key: str, config: dict | None = None):
             estado["finalizado"] = True
             cancelar()
 
-        panel = panel_cls(
-            obj,
-            on_accept=on_accept,
-            on_cancel=on_cancel,
-            auto_transaction=False,
-        )
-        from freecad.vdo.core.vdo_ui_registry import obtener
-        cerrar_activo = obtener("dialogo.cerrar_activo")
-        if cerrar_activo is not None:
-            cerrar_activo()
-        mostrar = obtener("dialogo.mostrar")
-        if mostrar is not None:
-            mostrar(panel)
+        panel_cls = resolver_panel(spec)
+        # La vista/señal del panel se conecta desde app/composicion (F6).
         return obj
 
     except Exception as exc:
