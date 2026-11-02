@@ -8,7 +8,6 @@ import sys
 from pathlib import Path
 
 # Bootstrap
-
 import FreeCAD as App
 import FreeCADGui
 

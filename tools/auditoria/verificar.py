@@ -137,12 +137,12 @@ def _m3_dominio_como_datos():
                 r"\.recompute\b", r"App\.\w+", r"Part\.\w+"]
     escritos_fuera_cad = []
     raiz = FREECAD / "vdo"
-    dirs_permitidos = {str(CAD)} if CAD.exists() else set()
+    cad_prefix = str(CAD) + "/" if CAD.exists() else ""
     for p in sorted(raiz.rglob("*.py")):
         if "__pycache__" in p.parts:
             continue
         rel = str(p.relative_to(ROOT))
-        if any(rel.startswith(d.replace(str(ROOT), "") + "/") for d in dirs_permitidos):
+        if cad_prefix and str(p).startswith(cad_prefix):
             continue
         src = p.read_text(encoding="utf-8")
         for pat in patrones:

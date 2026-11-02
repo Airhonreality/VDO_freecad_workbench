@@ -20,9 +20,8 @@ try:
 except ImportError:
     raise ImportError("Este módulo requiere FreeCAD con GUI") from None
 
-from freecad.vdo.qt_compat import QtCore, QtWidgets
-
 from freecad.vdo.core import vdo_manifest
+from freecad.vdo.qt_compat import QtCore, QtWidgets
 from freecad.vdo.ui import vdo_export_cutting_list
 
 

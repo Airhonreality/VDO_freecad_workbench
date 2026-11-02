@@ -15,15 +15,6 @@ from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.core.vdo_helpers import _get_app, _get_part
 
 
-def _cargar_reengroses(obj):
-    texto = getattr(obj, "VDO_Reengrose_JSON", "") or "{}"
-    try:
-        datos = json.loads(texto) if isinstance(texto, str) else dict(texto)
-    except (TypeError, ValueError):
-        return {}
-    return datos if isinstance(datos, dict) else {}
-
-
 def _modificador_mapa(mapa, clave):
     datos = (mapa or {}).get(clave)
     if not datos:
@@ -254,7 +245,7 @@ class CocoFeature:
             boxes.append(fondo_box)
 
         # --- Reengroses de carcasa ---
-        reengroses = _cargar_reengroses(fp)
+        reengroses = VDO_RE.leer_reengroses(fp)
         obstaculos = []
         shell_tiras = []
         shell_info = {}

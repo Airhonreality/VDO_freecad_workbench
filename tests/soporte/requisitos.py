@@ -25,7 +25,7 @@ def requiere_freecad(fn=None, *, motivo: str | None = None):
 
     def _comprueba():
         try:
-            import FreeCAD  # noqa: F401
+            import FreeCAD
             return True
         except ImportError:
             return False
@@ -41,7 +41,7 @@ def requiere_gui(fn=None, *, motivo: str | None = None):
 
     def _comprueba():
         try:
-            import FreeCADGui  # noqa: F401
+            import FreeCADGui
         except ImportError:
             return False
         if not sys.stdout.isatty() and not (
@@ -63,7 +63,7 @@ def requiere_qt(fn=None, *, motivo: str | None = None):
 
     def _comprueba():
         try:
-            import PySide6  # noqa: F401
+            import PySide6
             return True
         except ImportError:
             return False

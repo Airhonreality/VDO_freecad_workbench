@@ -1858,3 +1858,16 @@ if __name__ == "__main__":
 # Este módulo es puro: solo números y tuplas.
 # ----------------------------------------------------------------------
 
+
+def leer_reengroses(obj) -> dict:
+    """Lee el JSON de reengroses almacenado en un objeto (unificado F19.7).
+
+    Reemplaza las copias _cargar_reengroses (core) y _leer_reengroses (ui).
+    """
+    texto = getattr(obj, "VDO_Reengrose_JSON", "") or "{}"
+    try:
+        datos = json.loads(texto) if isinstance(texto, str) else dict(texto)
+    except (TypeError, ValueError):
+        return {}
+    return datos if isinstance(datos, dict) else {}
+

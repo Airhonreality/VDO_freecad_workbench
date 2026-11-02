@@ -14,10 +14,18 @@ from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.core.vdo_cajon_core import make_cajon
 from freecad.vdo.core.vdo_facade_contract import (
-    APERTURA_45_GRADOS, APERTURA_GOLA, APERTURA_PUSH_OPEN, APERTURA_TIRADOR,
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
 )
 from freecad.vdo.core.vdo_layout import (
-    AXIS_X, AXIS_Y, Layout, LayoutError, cavidad_interior, resolve_layout,
+    AXIS_X,
+    AXIS_Y,
+    Layout,
+    LayoutError,
+    cavidad_interior,
+    resolve_layout,
 )
 from freecad.vdo.core.vdo_puerta_core import make_puerta
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
@@ -533,7 +541,7 @@ class DivisionesEditor(QtWidgets.QWidget):
         texto = getattr(obj, "VDO_Divisiones", "") or ""
         self._legacy_warnings = []
         self.layout = Layout.loads(texto)
-        self.reengroses = self._leer_reengroses(obj)
+        self.reengroses = VDO_RE.leer_reengroses(obj)
         self._obj = obj
         self._fondo = float(getattr(obj, "FondoModulo", self._fondo))
         self._tapa = str(getattr(obj, "Tapa", self._tapa))
@@ -566,13 +574,6 @@ class DivisionesEditor(QtWidgets.QWidget):
         }
         return json.dumps(serializable, ensure_ascii=False)
     @staticmethod
-    def _leer_reengroses(obj):
-        texto = getattr(obj, "VDO_Reengrose_JSON", "") or "{}"
-        try:
-            datos = json.loads(texto) if isinstance(texto, str) else dict(texto)
-        except (TypeError, ValueError):
-            return {}
-        return datos if isinstance(datos, dict) else {}
     def resumen(self):
         if self._resolved is None:
             return "Sin dimensiones."
@@ -1487,25 +1488,6 @@ class DivisionesEditor(QtWidgets.QWidget):
             self._building = False
             return
         self.layout.set_split(cell, axis, self.spin_n.value())
-        self._rebuild_y_avisar()
-    def _on_n_changed(self, valor):
-        if self._building or not self._selected_data:
-            return
-        data = self._selected_data
-        cell = data.get("cell")
-        if cell is None or not cell.axis:
-            return
-        if (valor < len(cell.children)
-                and any(c.axis or c.children
-                        for c in cell.children[valor:])
-                and not self._confirmar(
-                    "Reducir N eliminará subdivisiones internas.\n"
-                    "¿Continuar?")):
-            self._building = True
-            self.spin_n.setValue(len(cell.children))
-            self._building = False
-            return
-        self.layout.set_split(cell, cell.axis, valor)
         self._rebuild_y_avisar()
 
     def _on_contenido_changed(self, index):

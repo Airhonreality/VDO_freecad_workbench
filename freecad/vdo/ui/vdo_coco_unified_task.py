@@ -14,16 +14,27 @@ from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core import vdo_module_props
 from freecad.vdo.core.vdo_cajon_core import make_cajon
 from freecad.vdo.core.vdo_facade_contract import (
-    APERTURA_45_GRADOS, APERTURA_GOLA, APERTURA_PUSH_OPEN, APERTURA_TIRADOR,
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
     CALLE_ENTRE_FRENTES_DEFAULT,
 )
 from freecad.vdo.core.vdo_module_props import (
-    ANCLAJE_DEFAULT, ANCLAJE_LABELS, ANCLAJES, add_common_props,
+    ANCLAJE_DEFAULT,
+    ANCLAJE_LABELS,
+    ANCLAJES,
+    add_common_props,
 )
 from freecad.vdo.core.vdo_puerta_core import make_puerta
 from freecad.vdo.core.vdo_spaces import (
-    ESPACIO_FIJO, ESPACIO_IGUALES, ESPACIO_RESTANTE, SpaceNode,
-    calcular_espacio_libre, deserializar_espacios, serializar_espacios,
+    ESPACIO_FIJO,
+    ESPACIO_IGUALES,
+    ESPACIO_RESTANTE,
+    SpaceNode,
+    calcular_espacio_libre,
+    deserializar_espacios,
+    serializar_espacios,
 )
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
@@ -1149,7 +1160,8 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
             h_frente = max(10.0, h / max(cantidad, 1))
 
         from freecad.vdo.core.vdo_cajon_despiece import (
-            CORREDERA_OCULTA, CORREDERA_TELESCOPICA,
+            CORREDERA_OCULTA,
+            CORREDERA_TELESCOPICA,
         )
         tipo_corredera = CORREDERA_OCULTA if corredera == "Oculta" else CORREDERA_TELESCOPICA
 

@@ -8,7 +8,10 @@ import FreeCAD as App
 from freecad.vdo.cad.propiedades import aplicar_rotacion
 from freecad.vdo.core import vdo_module_props
 from freecad.vdo.core.vdo_module_props import (
-    ANCLAJE_DEFAULT, ANCLAJE_LABELS, ANCLAJES, add_common_props,
+    ANCLAJE_DEFAULT,
+    ANCLAJE_LABELS,
+    ANCLAJES,
+    add_common_props,
 )
 from freecad.vdo.core.vdo_zocalo_core import ZocaloError, calcular_geometria_zocalo
 from freecad.vdo.qt_compat import QtGui, QtWidgets

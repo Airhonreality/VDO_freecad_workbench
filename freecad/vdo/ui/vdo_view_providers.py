@@ -8,8 +8,8 @@ import os
 
 import FreeCAD as App
 
-from freecad.vdo.core.vdo_view_base import _es_cajon, _es_coco, _es_panel, _es_zocalo
 from freecad.vdo.core.vdo_paths import ruta_icono
+from freecad.vdo.core.vdo_view_base import _es_cajon, _es_coco, _es_panel, _es_zocalo
 
 
 def _gui():

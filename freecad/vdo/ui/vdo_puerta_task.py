@@ -8,16 +8,27 @@ import FreeCAD as App
 
 from freecad.vdo.core import vdo_hardware_hub as H
 from freecad.vdo.core.vdo_facade_contract import (
-    APERTURA_45_GRADOS, APERTURA_GOLA, APERTURA_PUSH_OPEN, APERTURA_TIRADOR,
-    OPERACION_CANTO_45, OPERACION_CANTO_ESTANDAR, OPERACION_CANTO_GOLA,
-    SISTEMAS_APERTURA, cantos_por_sistema_apertura,
-    necesita_cantos_45, necesita_expulsor_magnetico,
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+    OPERACION_CANTO_45,
+    OPERACION_CANTO_ESTANDAR,
+    OPERACION_CANTO_GOLA,
+    SISTEMAS_APERTURA,
+    cantos_por_sistema_apertura,
+    necesita_cantos_45,
+    necesita_expulsor_magnetico,
 )
 from freecad.vdo.core.vdo_module_props import (
-    ANCLAJE_LABELS, ANCLAJES, add_common_props,
+    ANCLAJE_LABELS,
+    ANCLAJES,
+    add_common_props,
 )
 from freecad.vdo.core.vdo_puerta_despiece import (
-    ajuste_altura_apertura, bisagras_para_puerta, calcular_corrediza,
+    ajuste_altura_apertura,
+    bisagras_para_puerta,
+    calcular_corrediza,
     descripcion_piston,
 )
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets

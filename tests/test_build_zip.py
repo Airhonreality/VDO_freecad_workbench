@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test para tools/build_zip.py: construye el zip en directorio temporal
 y verifica que contiene solo los archivos permitidos (nivel 1)."""
 

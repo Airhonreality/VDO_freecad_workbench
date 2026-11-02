@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test de humo para tools/vdo_optimizador_cli.py (nivel 1)."""
 
 import os

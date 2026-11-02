@@ -8,7 +8,6 @@ entrada y devuelven un DTO de salida.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
 
 
 @dataclass(frozen=True)
@@ -218,17 +217,30 @@ class RecargarCatalogoResultado:
 
 
 __all__ = [
-    "PanelDTO", "PanelResultado",
-    "CocoDTO", "CocoResultado",
-    "ZocaloDTO", "ZocaloResultado",
-    "CajonDTO", "CajonResultado",
-    "PuertaDTO", "PuertaResultado",
-    "HojaDTO", "HojaResultado",
-    "EditarModuloDTO", "EditarModuloResultado",
-    "ColocarModuloDTO", "ColocarModuloResultado",
-    "ExportarListaCorteDTO", "ExportarListaCorteResultado",
-    "OptimizarCorteDTO", "OptimizarCorteResultado",
-    "NestingDTO", "NestingResultado",
-    "ConsultarHerrajesDTO", "ConsultarHerrajesResultado",
-    "RecargarCatalogoDTO", "RecargarCatalogoResultado",
+    "CajonDTO",
+    "CajonResultado",
+    "CocoDTO",
+    "CocoResultado",
+    "ColocarModuloDTO",
+    "ColocarModuloResultado",
+    "ConsultarHerrajesDTO",
+    "ConsultarHerrajesResultado",
+    "EditarModuloDTO",
+    "EditarModuloResultado",
+    "ExportarListaCorteDTO",
+    "ExportarListaCorteResultado",
+    "HojaDTO",
+    "HojaResultado",
+    "NestingDTO",
+    "NestingResultado",
+    "OptimizarCorteDTO",
+    "OptimizarCorteResultado",
+    "PanelDTO",
+    "PanelResultado",
+    "PuertaDTO",
+    "PuertaResultado",
+    "RecargarCatalogoDTO",
+    "RecargarCatalogoResultado",
+    "ZocaloDTO",
+    "ZocaloResultado",
 ]

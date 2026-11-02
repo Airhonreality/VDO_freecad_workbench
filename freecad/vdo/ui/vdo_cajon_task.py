@@ -7,31 +7,54 @@ import FreeCAD as App
 import FreeCADGui as Gui
 
 from freecad.vdo.cad.propiedades import aplicar_rotacion
-from freecad.vdo.core import vdo_hardware_hub
-from freecad.vdo.core import vdo_module_props
+from freecad.vdo.core import vdo_hardware_hub, vdo_module_props
 from freecad.vdo.core.vdo_cajon_despiece import (
-    CAJA_METALICA, CORREDERA_OCULTA, CORREDERA_TELESCOPICA,
-    listar_marcas, necesita_bisel_45, necesita_descuento_gola,
+    CAJA_METALICA,
+    CORREDERA_OCULTA,
+    CORREDERA_TELESCOPICA,
+    listar_marcas,
+    necesita_bisel_45,
+    necesita_descuento_gola,
 )
 from freecad.vdo.core.vdo_facade_contract import (
-    APERTURA_45_GRADOS, APERTURA_GOLA, APERTURA_PUSH_OPEN, APERTURA_TIRADOR,
-    OPERACION_CANTO_45, OPERACION_CANTO_ESTANDAR, OPERACION_CANTO_GOLA,
-    MONTAJE_EMBEBIDA, MONTAJE_PARCHE, MONTAJE_SEMIPARCHE,
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+    MONTAJE_EMBEBIDA,
+    MONTAJE_PARCHE,
+    MONTAJE_SEMIPARCHE,
+    OPERACION_CANTO_45,
+    OPERACION_CANTO_ESTANDAR,
+    OPERACION_CANTO_GOLA,
     cantos_por_sistema_apertura,
-    necesita_cantos_45, necesita_expulsor_magnetico,
-)
-from freecad.vdo.core.vdo_hardware_hub import (
-    _FAMILIAS as _HW_FAMILIAS,
-    get_family, resolve_drawer_slide,
-)
-from freecad.vdo.core.vdo_module_props import (
-    ANCLAJE_DEFAULT, ANCLAJE_LABELS, ANCLAJES, add_common_props,
+    necesita_cantos_45,
+    necesita_expulsor_magnetico,
 )
 from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_45_GRADOS as FA_45,
+)
+from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_GOLA as FA_GOLA,
+)
+from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_PUSH_OPEN as FA_PUSH,
+)
+from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_TIRADOR as FA_TIRADOR,
+)
+from freecad.vdo.core.vdo_hardware_hub import (
+    _FAMILIAS as _HW_FAMILIAS,
+)
+from freecad.vdo.core.vdo_hardware_hub import (
+    get_family,
+    resolve_drawer_slide,
+)
+from freecad.vdo.core.vdo_module_props import (
+    ANCLAJE_DEFAULT,
+    ANCLAJE_LABELS,
+    ANCLAJES,
+    add_common_props,
 )
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
