@@ -1,0 +1,21 @@
+# Lista blanca de omisiones de la suite VDO (F1, paso 3).
+# Formato: <nombre_archivo>|<motivo>|<nivel>
+#   nivel 1 = modo puro (Python), 2 = FreeCAD sin GUI, 3 = FreeCAD con GUI
+# Un skip fuera de esta lista = fallo (verificar.py lo comprueba).
+
+test_smoke_l3_desk_assembly.py|requiere FreeCAD real (App, Part, documentos)|2
+test_selection_bridge.py|requiere FreeCAD real (documento, FeaturePython)|2
+test_universal_inspector.py|requiere FreeCAD real + PySide (GUI, observer)|3
+test_headless_core.py|requiere FreeCAD real (proceso hijo)|2
+test_vdo_chassis_widget.py|requiere PySide (QWidget, paintEvent)|3
+test_vdo_agnosticism.py|requiere PySide (import Qt en algunos tests)|3
+test_comandos_workbench.py|requiere FreeCAD (App, comandos de workbench)|2
+test_gui_wiring.py|requiere PySide (cableado de UI)|3
+test_single_dock_convergence.py|requiere PySide (dock, inspector)|3
+test_workbench_convergence.py|requiere FreeCAD + PySide (workbench)|3
+test_reengrose_l1.py|requiere FreeCAD (Part.Shape en golden de geometría)|2
+test_layout_reengrose.py|requiere FreeCAD (Part, geometría de reengrose)|2
+test_coco_reengrose.py|requiere PySide (import Qt en la UI de coco)|3
+test_coco_reengrose_avanzado.py|requiere PySide (import Qt en la UI de coco)|3
+test_puerta_core.py|requiere FreeCAD (FeaturePython de puerta)|2
+test_vdo_zocalo.py|requiere FreeCAD (documento, App.closeDocument)|2

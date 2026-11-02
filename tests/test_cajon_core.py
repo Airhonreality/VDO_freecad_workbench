@@ -25,75 +25,12 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-# ---------------------------------------------------------------------
-# Mock de FreeCAD y Part para pruebas de booleanos headless
-# ---------------------------------------------------------------------
-class _MockVector:
-    def __init__(self, x=0, y=0, z=0):
-        self.x = x; self.y = y; self.z = z
+from tests.soporte.freecad_falso import instalado, requiere_freecad
 
-class _MockPart:
-    class Face:
-        def __init__(self, wire):
-            self.wire = wire
-        def extrude(self, vector):
-            m = MagicMock()
-            m.Volume = 100.0
-            m.isValid.return_value = True
-            m.cut.return_value = m
-            return m
-    @staticmethod
-    def makeBox(x, y, z, base):
-        m = MagicMock()
-        m.Volume = float(x) * float(y) * float(z)
-        m.isValid.return_value = True
-        m.cut.return_value = m
-        return m
-    @staticmethod
-    def makeCylinder(radius, height, base, direction):
-        m = MagicMock()
-        m.Volume = 3.14159 * float(radius) ** 2 * float(height)
-        m.isValid.return_value = True
-        m.cut.return_value = m
-        return m
-    @staticmethod
-    def makePolygon(points, closed=False):
-        m = MagicMock()
-        m.isValid.return_value = True
-        return m
-    @staticmethod
-    def makeCompound(solids):
-        m = MagicMock()
-        m.Volume = sum(getattr(s, 'Volume', 0) for s in solids)
-        m.isValid.return_value = True
-        return m
-
-class _MockApp:
-    class Console:
-        @staticmethod
-        def PrintError(msg): pass
-        @staticmethod
-        def PrintWarning(msg): pass
-    @staticmethod
-    def getUserMacroDir(create=False):
-        return "/tmp/freecad_macro"
-    GuiUp = False
-
-def _freecad_real_disponible():
-    try:
-        import FreeCAD
-        return hasattr(FreeCAD, "newDocument")
-    except ImportError:
-        return False
-
-
-# Solo en modo puro: con FreeCAD real no se sustituye sys.modules (contaminaría el proceso,
-# ver docs/PLAN_CONVERSION_WORKBENCH_VDO.md, D19).
-if not _freecad_real_disponible():
-    sys.modules["FreeCAD"] = _MockApp()
-    sys.modules["FreeCAD"].App = _MockApp()
-    sys.modules["FreeCAD"].Vector = _MockVector
-    sys.modules["Part"] = _MockPart()
+# Instalar mocks de FreeCAD/Part antes de importar core (que los necesita a nivel
+# de módulo). Se restauran al terminar el proceso.
+_instalado_ctx = instalado()
+_instalado_ctx.__enter__()
 
 from freecad.vdo.core.vdo_cajon_despiece import (
     calcular_despiece, listar_marcas, obtener_marca,
@@ -108,6 +45,8 @@ from freecad.vdo.core.vdo_cajon_core import (
     CORREDERA_TELESCOPICA as CC_TEL, CORREDERA_OCULTA as CC_OCU,
     CAJA_METALICA as CC_MET,
 )
+
+from tests.soporte.freecad_falso import instalado, requiere_freecad
 
 
 # ---------------------------------------------------------------------
@@ -301,7 +240,7 @@ class TestHardwareHubIntegracion(unittest.TestCase):
 # Tests de lógica de booleanos (mock de Part)
 # ---------------------------------------------------------------------
 
-@unittest.skipIf(_freecad_real_disponible(), "usa el mock de Part; con FreeCAD real no aplica")
+@requiere_freecad("usa el mock de Part; con FreeCAD real no aplica")
 class TestBooleanLogicMocked(unittest.TestCase):
     """Validación de la lógica de coordenadas para operaciones booleanas.
 

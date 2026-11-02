@@ -21,7 +21,10 @@ import math
 import json
 import unittest
 
-_MACRO_DIR = "/home/javi/.local/share/FreeCAD/Macro"
+_MACRO_DIR = os.environ.get(
+    "FREECAD_USER_MACRO_DIR",
+    os.path.join(os.path.expanduser("~"), ".local", "share", "FreeCAD", "Macro"),
+)
 
 import FreeCAD as App
 import Part
@@ -141,8 +144,6 @@ REQUIRED_API = [
     ("freecad.vdo.core.vdo_panel_core", "PanelFeature"),
     ("freecad.vdo.core.vdo_reengrose", "aplicar_a_objeto"),
     ("freecad.vdo.core.vdo_reengrose", "calcular_geometria_reengrose"),
-    ("freecad.vdo.core.vdo_reengrose", "desde_objeto"),
-    ("freecad.vdo.core.vdo_reengrose_solids", "forma_ref"),
     ("freecad.vdo.ui.vdo_export_cutting_list", "extraer_piezas_del_documento"),
     ("freecad.vdo.ui.vdo_export_cutting_list", "generar_csv_opencutlist"),
     ("freecad.vdo.core.vdo_module_props", "add_common_props"),

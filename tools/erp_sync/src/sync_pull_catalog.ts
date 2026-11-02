@@ -5,10 +5,14 @@ import { CatalogIngestionSchema, type CatalogIngestion } from './schemas';
 const CATALOG_OUT = path.resolve(__dirname, '../../vdo_hardware_catalog.json');
 
 async function fetchCatalogFromNeon(): Promise<unknown> {
-  // Integración con Neon/MCP: reemplazar por llamada real al cliente Neon.
-  // Devuelve el payload crudo del catálogo de hardware.
-  const resp = await fetch('https://neon.example.com/v1/catalog/hardware', {
-    headers: { Accept: 'application/json' },
+  // Integración con Neon/MCP: la URL viene de VDO_ERP_URL (sin valor por defecto).
+  const url = process.env.VDO_ERP_URL;
+  if (!url) {
+    throw new Error(
+      "VDO_ERP_URL no definida: establece la variable de entorno con la URL del catálogo ERP.");
+  }
+  const resp = await fetch(url, {
+    headers: { Accept: "application/json" },
   });
   if (!resp.ok) throw new Error(`Neon fetch failed: ${resp.status}`);
   return resp.json();
