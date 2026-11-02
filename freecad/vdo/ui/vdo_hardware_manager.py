@@ -221,7 +221,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
             background-color: #3a3a3a; border: 1px solid #555555;
         }
         QCheckBox::indicator:checked {
-            background-color: #007acc; border: 1px solid #0098ff;
+            background-color: #007acc; border: 1px solid #007acc;
         }
         QPushButton {
             background-color: #3a3a3a; color: #e0e0e0;

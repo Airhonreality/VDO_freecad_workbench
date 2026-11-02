@@ -117,7 +117,7 @@ class _BreadcrumbBar(QtWidgets.QWidget):
         self.lbl_inicio.setObjectName("lblBreadcrumbRoot")
         self.lbl_inicio.setCursor(QtCore.Qt.PointingHandCursor)
         self.lbl_inicio.setStyleSheet(
-            "QLabel#lblBreadcrumbRoot { color: #0098ff; font-weight: bold; font-size: 11px; }")
+            "QLabel#lblBreadcrumbRoot { color: #007acc; font-weight: bold; font-size: 11px; }")
         self.lbl_inicio.mousePressEvent = lambda _e: self.sigNivelClickeado.emit("mueble")
         self.layout.addWidget(self.lbl_inicio)
 
@@ -307,7 +307,7 @@ class _PaginaBase(QtWidgets.QWidget):
         self.lbl_titulo = QtWidgets.QLabel(titulo)
         self.lbl_titulo.setObjectName("lblPaginaTitulo")
         self.lbl_titulo.setStyleSheet(
-            "QLabel#lblPaginaTitulo { color: #0098ff; font-size: 11px; "
+            "QLabel#lblPaginaTitulo { color: #007acc; font-size: 11px; "
             "font-weight: bold; padding-bottom: 2px; }")
         self._layout.addWidget(self.lbl_titulo)
 
@@ -496,7 +496,7 @@ class PaginaVano(_PaginaBase):
                 }
                 QPushButton:checked {
                     background-color: #007acc;
-                    border-color: #0098ff;
+                    border-color: #007acc;
                     color: #ffffff;
                     font-weight: bold;
                 }
@@ -758,7 +758,7 @@ class PaginaPieza(_PaginaBase):
             "QGroupBox#grpPanelHeader { color: #e0e0e0; font-weight: bold; "
             "border: 1px solid #444444; border-radius: 4px; margin-top: 6px; }"
             "QGroupBox#grpPanelHeader::title { subcontrol-origin: margin; "
-            "left: 8px; padding: 0 4px; color: #0098ff; }")
+            "left: 8px; padding: 0 4px; color: #007acc; }")
         h_layout = QtWidgets.QGridLayout(self.header)
         h_layout.setContentsMargins(8, 14, 8, 8)
         h_layout.setHorizontalSpacing(8)

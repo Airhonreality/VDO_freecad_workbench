@@ -355,7 +355,7 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
         QPushButton:checked, QToolButton:checked {
             background-color: #007acc;
             color: #ffffff;
-            border: 1px solid #0098ff;
+            border: 1px solid #007acc;
         }
         QPushButton:disabled, QToolButton:disabled {
             background-color: #222222;

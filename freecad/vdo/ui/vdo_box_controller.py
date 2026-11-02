@@ -35,7 +35,7 @@ LUCIDE_ICONS = {
     "unlink": """<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18.84 12.25 1.72-1.71a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="m5.16 11.75-1.72 1.71a5 5 0 0 0 7.07 7.07l1.71-1.71"/><line x1="2" y1="2" x2="22" y2="22"/></svg>""",
 
     # Lucide: corner-up-right / Miter 45°
-    "inglete_45": """<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0098ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="20" y2="4"/><circle cx="4" cy="20" r="1.5" fill="#0098ff"/><circle cx="20" cy="4" r="1.5" fill="#0098ff"/></svg>""",
+    "inglete_45": """<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#007acc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="20" y2="4"/><circle cx="4" cy="20" r="1.5" fill="#007acc"/><circle cx="20" cy="4" r="1.5" fill="#007acc"/></svg>""",
 
     # Icono Tope Vertical (Barra vertical continua, horizontal corta)
     "vertical_domina": """<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2"><rect x="4" y="3" width="5" height="18" fill="#555555" stroke="#777777"/><rect x="9" y="8" width="11" height="8" fill="#222222" stroke="#555555"/></svg>""",
@@ -50,25 +50,10 @@ LUCIDE_ICONS = {
 _ICON_CACHE = {}
 
 
-def get_svg_icon(name: str, size: int = 22) -> QtGui.QIcon:
-    """Renderiza un string SVG de Lucide directamente a un QIcon."""
-    key = (name, size)
-    if key in _ICON_CACHE:
-        return _ICON_CACHE[key]
-    svg_str = LUCIDE_ICONS.get(name, "")
-    if not svg_str:
-        return QtGui.QIcon()
-    svg_bytes = QtCore.QByteArray(svg_str.encode("utf-8"))
-    renderer = QtSvg.QSvgRenderer(svg_bytes)
-    pixmap = QtGui.QPixmap(size, size)
-    pixmap.fill(QtCore.Qt.transparent)
-    painter = QtGui.QPainter(pixmap)
-    painter.setRenderHint(QtGui.QPainter.Antialiasing)
-    renderer.render(painter)
-    painter.end()
-    icon = QtGui.QIcon(pixmap)
-    _ICON_CACHE[key] = icon
-    return icon
+from freecad.vdo.ui.vdo_theme import get_svg_icon as _svg_icon
+
+get_svg_icon = lambda name, size=22: _svg_icon(
+    name, size, icons_map=LUCIDE_ICONS, cache=_ICON_CACHE)
 
 
 # ----------------------------------------------------------------------
@@ -142,7 +127,7 @@ QPushButton.borde-btn:hover {
 }
 QPushButton.borde-btn:checked {
     background-color: #0d4a75;
-    border: 1px solid #0098ff;
+    border: 1px solid #007acc;
     color: #ffffff;
 }
 QPushButton.borde-btn[selected="true"] {
@@ -157,7 +142,7 @@ QPushButton.esquina-btn {
 }
 QPushButton.esquina-btn:hover {
     background-color: #303030;
-    border-color: #0098ff;
+    border-color: #007acc;
 }
 QPushButton.esquina-btn:pressed {
     background-color: #161616;
@@ -198,7 +183,7 @@ QPushButton.all-btn:hover {
 }
 QPushButton.all-btn:checked {
     background-color: #007acc;
-    border-color: #0098ff;
+    border-color: #007acc;
     color: #ffffff;
 }
 
@@ -212,12 +197,12 @@ QPushButton.chip-btn {
 }
 QPushButton.chip-btn:hover {
     background-color: #333333;
-    border-color: #0098ff;
+    border-color: #007acc;
     color: #ffffff;
 }
 QPushButton.chip-btn:checked {
     background-color: #005a9e;
-    border-color: #0098ff;
+    border-color: #007acc;
     color: #ffffff;
     font-weight: bold;
 }
@@ -314,7 +299,7 @@ class _VDOConcentricCenterCanvas(QtWidgets.QWidget):
         p.drawRect(QtCore.QRectF(x0, y0, bw, bh))
 
         # Resaltado del margen seleccionado en Calibre 1.5px Cyan
-        pen_sel = QtGui.QPen(QtGui.QColor("#0098ff"), 1.8, QtCore.Qt.SolidLine)
+        pen_sel = QtGui.QPen(QtGui.QColor("#007acc"), 1.8, QtCore.Qt.SolidLine)
         p.setPen(pen_sel)
         if self.margen_sel == "fondo":
             p.drawLine(QtCore.QPointF(x0, y0), QtCore.QPointF(x0 + bw, y0))
@@ -383,7 +368,7 @@ class _VDOConcentricCenterCanvas(QtWidgets.QWidget):
 
         # 4. Encuentros de esquina (Miters)
         # Inglete 45°: Línea diagonal en esquinas activas
-        pen_miter = QtGui.QPen(QtGui.QColor("#0098ff"), 1.2, QtCore.Qt.SolidLine)
+        pen_miter = QtGui.QPen(QtGui.QColor("#007acc"), 1.2, QtCore.Qt.SolidLine)
         p.setPen(pen_miter)
         if self.esquinas.get("fondo_izquierda") == "inglete_45" and (self.activos["fondo"] or self.activos["izquierda"]):
             p.drawLine(QtCore.QPointF(x0, y0), QtCore.QPointF(x0 + gap_oeste, y0 + gap_norte))
@@ -599,7 +584,7 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
         # 3. Selector Gestáltico de Margen
         bar_margenes = QtWidgets.QHBoxLayout()
         self.lbl_margen_tag = QtWidgets.QLabel("Margen:")
-        self.lbl_margen_tag.setStyleSheet("font-weight: bold; color: #0098ff;")
+        self.lbl_margen_tag.setStyleSheet("font-weight: bold; color: #007acc;")
         bar_margenes.addWidget(self.lbl_margen_tag)
 
         self.btn_margenes = {}

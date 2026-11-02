@@ -27,12 +27,12 @@ from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 LUCIDE_ICONS = {
     # Encuentros de esquina
     "tapa_domina": """<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2">
-        <rect x="2" y="3" width="20" height="5" fill="#007acc" stroke="#0098ff" rx="1"/>
+        <rect x="2" y="3" width="20" height="5" fill="#007acc" stroke="#007acc" rx="1"/>
         <rect x="2" y="8" width="6" height="13" fill="#333333" stroke="#666666" rx="1"/>
     </svg>""",
 
     "lateral_domina": """<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2">
-        <rect x="2" y="3" width="6" height="18" fill="#007acc" stroke="#0098ff" rx="1"/>
+        <rect x="2" y="3" width="6" height="18" fill="#007acc" stroke="#007acc" rx="1"/>
         <rect x="8" y="3" width="14" height="6" fill="#333333" stroke="#666666" rx="1"/>
     </svg>""",
 
@@ -46,7 +46,7 @@ LUCIDE_ICONS = {
     # Estrategias de anclaje
     "zocalo": """<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2" y="4" width="20" height="10" rx="1" fill="#2b2b2b" stroke="#555555"/>
-        <rect x="5" y="14" width="14" height="6" fill="#007acc" stroke="#0098ff"/>
+        <rect x="5" y="14" width="14" height="6" fill="#007acc" stroke="#007acc"/>
         <line x1="2" y1="20" x2="22" y2="20" stroke="#888888" stroke-dasharray="2 2"/>
     </svg>""",
 
@@ -60,9 +60,9 @@ LUCIDE_ICONS = {
     "patas": """<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2" y="3" width="20" height="11" rx="1" fill="#2b2b2b" stroke="#555555"/>
         <rect x="5" y="14" width="3" height="6" fill="#007acc"/>
-        <ellipse cx="6.5" cy="20" rx="3" ry="1" fill="#0098ff"/>
+        <ellipse cx="6.5" cy="20" rx="3" ry="1" fill="#007acc"/>
         <rect x="16" y="14" width="3" height="6" fill="#007acc"/>
-        <ellipse cx="17.5" cy="20" rx="3" ry="1" fill="#0098ff"/>
+        <ellipse cx="17.5" cy="20" rx="3" ry="1" fill="#007acc"/>
         <line x1="2" y1="21" x2="22" y2="21" stroke="#888888" stroke-dasharray="2 2"/>
     </svg>""",
 
@@ -100,25 +100,10 @@ LUCIDE_ICONS = {
 _ICON_CACHE = {}
 
 
-def get_svg_icon(name: str, size: int = 22) -> QtGui.QIcon:
-    """Renderiza un string SVG a QIcon de manera autónoma."""
-    key = (name, size)
-    if key in _ICON_CACHE:
-        return _ICON_CACHE[key]
-    svg_str = LUCIDE_ICONS.get(name, "")
-    if not svg_str:
-        return QtGui.QIcon()
-    svg_bytes = QtCore.QByteArray(svg_str.encode("utf-8"))
-    renderer = QtSvg.QSvgRenderer(svg_bytes)
-    pixmap = QtGui.QPixmap(size, size)
-    pixmap.fill(QtCore.Qt.transparent)
-    painter = QtGui.QPainter(pixmap)
-    painter.setRenderHint(QtGui.QPainter.Antialiasing)
-    renderer.render(painter)
-    painter.end()
-    icon = QtGui.QIcon(pixmap)
-    _ICON_CACHE[key] = icon
-    return icon
+from freecad.vdo.ui.vdo_theme import get_svg_icon as _svg_icon
+
+get_svg_icon = lambda name, size=22: _svg_icon(
+    name, size, icons_map=LUCIDE_ICONS, cache=_ICON_CACHE)
 
 
 # ----------------------------------------------------------------------
@@ -297,10 +282,10 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
             pata_x2 = x0 + w - 16 - pata_w
             # Pata izquierda
             p.fillRect(QtCore.QRectF(pata_x1, y0 + h, pata_w, pata_h), QtGui.QColor("#007acc"))
-            p.fillRect(QtCore.QRectF(pata_x1 - 4, y_piso - 3, pata_w + 8, 3), QtGui.QColor("#0098ff"))
+            p.fillRect(QtCore.QRectF(pata_x1 - 4, y_piso - 3, pata_w + 8, 3), QtGui.QColor("#007acc"))
             # Pata derecha
             p.fillRect(QtCore.QRectF(pata_x2, y0 + h, pata_w, pata_h), QtGui.QColor("#007acc"))
-            p.fillRect(QtCore.QRectF(pata_x2 - 4, y_piso - 3, pata_w + 8, 3), QtGui.QColor("#0098ff"))
+            p.fillRect(QtCore.QRectF(pata_x2 - 4, y_piso - 3, pata_w + 8, 3), QtGui.QColor("#007acc"))
 
         elif estrategia_base == "suspendido":
             # Módulo flotando; soportes laterales en pared
@@ -786,7 +771,7 @@ class VDOChassisControllerWidget(QtWidgets.QWidget):
             }
             .btn-esquina:hover {
                 background-color: #333333;
-                border-color: #0098ff;
+                border-color: #007acc;
             }
             .btn-esquina:pressed {
                 background-color: #007acc;
@@ -809,7 +794,7 @@ class VDOChassisControllerWidget(QtWidgets.QWidget):
             }
             .estrategia-btn:checked {
                 background-color: #007acc;
-                border-color: #0098ff;
+                border-color: #007acc;
                 color: #ffffff;
                 font-weight: bold;
             }

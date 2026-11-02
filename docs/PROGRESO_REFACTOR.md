@@ -48,5 +48,24 @@ Registro fase a fase conforme a `docs/PLAN_REFACTOR_VDO.md` (§5).
 
 ---
 
+## Fase F3 — Capa Qt, tema y duplicados de estilo
+- Rama / commit: `refactor/f3-qt-tema`
+- Estado: completada (parcial en sustitución total de colores; ver desviaciones)
+- Pasos hechos:
+  1. Creada `ui/vdo_theme.py` con tokens de tema (FONDO, FONDO2, FONDO3, TEXTO, TEXTO_SUAVE, TEXTO_CLARO, TEXTO_SUAVE2, BORDE, BORDE_SUAVE, BORDE_ACTIVO, BORDE_CLARO, ACEINTO, ACEINTO_HOVER, ERROR, EXITO, AVISO) y estilos ensamblados a partir de tokens (D-10). El acento se unifica en `#007acc`.
+  2. Acento unificado: `#0098ff` → `#007acc` en los 5 archivos UI que lo usaban como color (26 usos consolidados en `#007acc`).
+  3. `get_svg_icon` unificado en una sola definición en `vdo_theme.py` (D-24); se eliminaron las dos copias de `vdo_box_controller.py` y `vdo_chassis_widget.py`, que ahora llaman a la implementación única pasándole su propio `LUCIDE_ICONS`/`_ICON_CACHE`.
+  4. Añadido test `test_qt_compat_solo_punto_entrada_pyside` en `tests/test_vdo_agnosticism.py`: falla si aparece `import`/`from PySide*` fuera de `qt_compat.py` en `freecad/` (D-11).
+  5. Los módulos `ui/` ya importaban Qt vía `qt_compat`; no había import directo de PySide en código de `freecad/` fuera de `qt_compat.py`.
+- Métricas antes → después (de §3):
+  - `def get_svg_icon`: 2 → 1.
+  - Archivos Python en `freecad/`: 61 → 62 (añadido `vdo_theme.py`).
+  - Líneas Python (`freecad/`, `tests/`, `tools/`): 27.783 → 27.868 (alta por el nuevo módulo de tema; la reducción neta se reporta en F9).
+- Tests (modo puro): 93 OK / 0 fallos / 11 errores (PySide/FreeCAD ausente, esperables) / 3 skip. (OK sube de 92 a 93 con el nuevo test de D-11.)
+- Tests (FreeCAD): pendiente de verificación.
+- Decisiones nuevas tomadas (no previstas en §2): ninguna.
+- Desviaciones de este plan y motivo:
+  - D-10 pide sustituir los colores hex de los 17 archivos por referencias a tokens. Se creó `vdo_theme.py` y se unificó el acento, pero la sustitución completa de cada `setStyleSheet` y de los strings SVG embebidos por tokens se deja parcial: los strings SVG de iconos se mantienen como excepción justificada (recursos de icono, no tokens de tema) y algunos colores de estilo menores conservan su literal hex pendiente de migración en F7/F8.
+- Pendiente para revisión humana: verificar visual el acento `#007acc` en FreeCAD con GUI (pendiente de disponibilidad de `freecadcmd` con GUI).
 
 ---

@@ -104,6 +104,24 @@ class VDOAgnosticismTests(unittest.TestCase):
                     patron.search(fuente),
                     f"{modulo.__name__} importa {nombre}; dejo de ser puro.")
 
+    def test_qt_compat_solo_punto_entrada_pyside(self):
+        """Solo freecad/vdo/qt_compat.py puede importar PySide* directamente."""
+        freecad_dir = os.path.join(_RAIZ, "freecad")
+        patron = re.compile(
+            r"^\s*(?:import|from)\s+(?:PySide|PySide2|PySide6)\b",
+            re.MULTILINE)
+        for root, _dirs, archivos in os.walk(freecad_dir):
+            for nombre in archivos:
+                if not nombre.endswith(".py") or nombre == "qt_compat.py":
+                    continue
+                ruta = os.path.join(root, nombre)
+                with open(ruta, encoding="utf-8") as manejador:
+                    fuente = manejador.read()
+                self.assertIsNone(
+                    patron.search(fuente),
+                    f"{ruta} importa PySide directamente; solo qt_compat.py "
+                    "debe hacerlo.")
+
     def test_01_contrato_espacial_del_vano(self):
         layout = Layout(
             columns=[Track("x1"), Track("x2")],
