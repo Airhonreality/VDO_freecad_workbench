@@ -1,39 +1,375 @@
 {
-  "crear_pieza": {
-    "nombre": "Panel_Golden",
-    "etiqueta": "Panel_Golden",
-    "VDO_Orientacion": "horizontal",
-    "VDO_Etiqueta": "Panel Golden",
-    "VDO_Material_Ref": "melamina_standar",
-    "Largo": 600.0,
-    "Ancho": 400.0,
-    "Espesor": 18.0,
-    "Volumen": 4320000.0
-  },
-  "make_coco": {
-    "nombre": "COCO_Golden",
-    "Alto": 700.0,
-    "Ancho": 600.0,
-    "FondoModulo": 580.0,
-    "Espesor": 18.0,
-    "TieneFondo": true,
-    "Volumen": 28639296.0
-  },
-  "make_zocalo": {
-    "nombre": "Zocalo_Golden",
-    "Ancho": 600.0,
-    "Fondo": 580.0,
-    "AltoZocalo": 100.0,
-    "EspesorTablero": 18.0,
-    "Volumen": 3866400.0
-  },
-  "make_cajon": {
-    "nombre": "Cajon_Golden",
-    "AnchoLibre": 564.0,
-    "ProfLibre": 560.0,
-    "AnchoModulo": 600.0,
-    "AltoFrente": 225.0,
-    "TipoCorredera": "oculta",
-    "Volumen": 7417634.707993
-  }
+  "crear_pieza": [
+    {
+      "entrada": {
+        "nombre": "P1",
+        "etiqueta": "P1",
+        "orientacion": "horizontal",
+        "largo": 600.0,
+        "ancho": 400.0,
+        "espesor": 18.0,
+        "usar_params": false
+      },
+      "salida": {
+        "label": "P1",
+        "volumen": 4320000.0,
+        "caja": [
+          600.0,
+          400.0,
+          18.0
+        ],
+        "n_solidos": 1,
+        "props": {
+          "VDO_Orientacion": "horizontal",
+          "VDO_Etiqueta": "P1",
+          "VDO_Material_Ref": "melamina_standar",
+          "Largo": "600.0 mm",
+          "Ancho": "400.0 mm",
+          "Espesor": "18.0 mm"
+        }
+      }
+    },
+    {
+      "entrada": {
+        "nombre": "P2",
+        "etiqueta": "P2",
+        "orientacion": "vertical",
+        "largo": 800.0,
+        "ancho": 300.0,
+        "espesor": 16.0,
+        "usar_params": false
+      },
+      "salida": {
+        "label": "P2",
+        "volumen": 3840000.0,
+        "caja": [
+          800.0,
+          300.0,
+          16.0
+        ],
+        "n_solidos": 1,
+        "props": {
+          "VDO_Orientacion": "vertical",
+          "VDO_Etiqueta": "P2",
+          "VDO_Material_Ref": "melamina_standar",
+          "Largo": "800.0 mm",
+          "Ancho": "300.0 mm",
+          "Espesor": "16.0 mm"
+        }
+      }
+    },
+    {
+      "entrada": {
+        "nombre": "P3",
+        "etiqueta": "P3",
+        "orientacion": "horizontal",
+        "largo": 1000.0,
+        "ancho": 500.0,
+        "espesor": 18.0,
+        "usar_params": false
+      },
+      "salida": {
+        "label": "P3",
+        "volumen": 9000000.0,
+        "caja": [
+          1000.0,
+          500.0,
+          18.0
+        ],
+        "n_solidos": 1,
+        "props": {
+          "VDO_Orientacion": "horizontal",
+          "VDO_Etiqueta": "P3",
+          "VDO_Material_Ref": "melamina_standar",
+          "Largo": "1000.0 mm",
+          "Ancho": "500.0 mm",
+          "Espesor": "18.0 mm"
+        }
+      }
+    }
+  ],
+  "make_coco": [
+    {
+      "entrada": {
+        "nombre": "C1",
+        "alto": 700.0,
+        "ancho": 600.0,
+        "fondo_modulo": 580.0
+      },
+      "salida": {
+        "label": "C1",
+        "volumen": 28639296.0,
+        "caja": [
+          600.0,
+          580.0,
+          700.0
+        ],
+        "n_solidos": 5,
+        "props": {
+          "VDO_Material_Ref": "melamina_standar",
+          "Ancho": "600.0 mm",
+          "Espesor": 18,
+          "Alto": "700.0 mm"
+        }
+      }
+    },
+    {
+      "entrada": {
+        "nombre": "C2",
+        "alto": 720.0,
+        "ancho": 450.0,
+        "fondo_modulo": 560.0
+      },
+      "salida": {
+        "label": "C2",
+        "volumen": 24560496.0,
+        "caja": [
+          450.0,
+          560.0,
+          720.0
+        ],
+        "n_solidos": 5,
+        "props": {
+          "VDO_Material_Ref": "melamina_standar",
+          "Ancho": "450.0 mm",
+          "Espesor": 18,
+          "Alto": "720.0 mm"
+        }
+      }
+    },
+    {
+      "entrada": {
+        "nombre": "C3",
+        "alto": 2100.0,
+        "ancho": 900.0,
+        "fondo_modulo": 580.0
+      },
+      "salida": {
+        "label": "C3",
+        "volumen": 72588096.0,
+        "caja": [
+          900.0,
+          580.0,
+          2100.0
+        ],
+        "n_solidos": 5,
+        "props": {
+          "VDO_Material_Ref": "melamina_standar",
+          "Ancho": "900.0 mm",
+          "Espesor": 18,
+          "Alto": "2100.0 mm"
+        }
+      }
+    }
+  ],
+  "make_zocalo": [
+    {
+      "entrada": {
+        "nombre": "Z1",
+        "ancho": 600.0,
+        "fondo": 580.0,
+        "alto_zocalo": 100.0
+      },
+      "salida": {
+        "label": "Z1",
+        "volumen": 3866400.0,
+        "caja": [
+          600.0,
+          510.0,
+          100.0
+        ],
+        "n_solidos": 4,
+        "props": {
+          "VDO_Material_Ref": "melamina_standar",
+          "Ancho": "600.0 mm",
+          "Fondo": "580.0 mm"
+        }
+      }
+    },
+    {
+      "entrada": {
+        "nombre": "Z2",
+        "ancho": 900.0,
+        "fondo": 560.0,
+        "alto_zocalo": 80.0
+      },
+      "salida": {
+        "label": "Z2",
+        "volumen": 3899520.0,
+        "caja": [
+          900.0,
+          490.0,
+          80.0
+        ],
+        "n_solidos": 4,
+        "props": {
+          "VDO_Material_Ref": "melamina_standar",
+          "Ancho": "900.0 mm",
+          "Fondo": "560.0 mm"
+        }
+      }
+    },
+    {
+      "entrada": {
+        "nombre": "Z3",
+        "ancho": 450.0,
+        "fondo": 580.0,
+        "alto_zocalo": 100.0
+      },
+      "salida": {
+        "label": "Z3",
+        "volumen": 3326400.0,
+        "caja": [
+          450.0,
+          510.0,
+          100.0
+        ],
+        "n_solidos": 4,
+        "props": {
+          "VDO_Material_Ref": "melamina_standar",
+          "Ancho": "450.0 mm",
+          "Fondo": "580.0 mm"
+        }
+      }
+    }
+  ],
+  "make_cajon": [
+    {
+      "entrada": {
+        "nombre": "K1",
+        "ancho_libre": 564.0,
+        "prof_libre": 560.0,
+        "ancho_modulo": 600.0
+      },
+      "salida": {
+        "label": "K1",
+        "volumen": 7417634.708,
+        "caja": [
+          545.0,
+          568.0,
+          221.0
+        ],
+        "n_solidos": 6,
+        "props": {
+          "VDO_Material_Ref": "melamina_standar"
+        }
+      }
+    },
+    {
+      "entrada": {
+        "nombre": "K2",
+        "ancho_libre": 864.0,
+        "prof_libre": 520.0,
+        "ancho_modulo": 900.0
+      },
+      "salida": {
+        "label": "K2",
+        "volumen": 10094534.708,
+        "caja": [
+          845.0,
+          518.0,
+          221.0
+        ],
+        "n_solidos": 6,
+        "props": {
+          "VDO_Material_Ref": "melamina_standar"
+        }
+      }
+    },
+    {
+      "entrada": {
+        "nombre": "K3",
+        "ancho_libre": 414.0,
+        "prof_libre": 560.0,
+        "ancho_modulo": 450.0
+      },
+      "salida": {
+        "label": "K3",
+        "volumen": 5862734.708,
+        "caja": [
+          395.0,
+          568.0,
+          221.0
+        ],
+        "n_solidos": 6,
+        "props": {
+          "VDO_Material_Ref": "melamina_standar"
+        }
+      }
+    }
+  ],
+  "make_puerta": [
+    {
+      "entrada": {
+        "nombre": "D1",
+        "ancho": 614,
+        "alto": 814,
+        "espesor": 18,
+        "tipo_montaje": "Parche"
+      },
+      "salida": {
+        "label": "D1",
+        "volumen": 8974199.407,
+        "caja": [
+          614.0,
+          18.0,
+          814.0
+        ],
+        "n_solidos": 1,
+        "props": {
+          "Ancho": "614.0 mm",
+          "Espesor": 18,
+          "Alto": "814.0 mm"
+        }
+      }
+    },
+    {
+      "entrada": {
+        "nombre": "D2",
+        "ancho": 514,
+        "alto": 1214,
+        "espesor": 18,
+        "tipo_montaje": "Embebida"
+      },
+      "salida": {
+        "label": "D2",
+        "volumen": 11198735.11,
+        "caja": [
+          514.0,
+          18.0,
+          1214.0
+        ],
+        "n_solidos": 1,
+        "props": {
+          "Ancho": "514.0 mm",
+          "Espesor": 18,
+          "Alto": "1214.0 mm"
+        }
+      }
+    },
+    {
+      "entrada": {
+        "nombre": "D3",
+        "ancho": 714,
+        "alto": 2014,
+        "espesor": 18,
+        "tipo_montaje": "Semiparche"
+      },
+      "salida": {
+        "label": "D3",
+        "volumen": 25839670.813,
+        "caja": [
+          714.0,
+          18.0,
+          2014.0
+        ],
+        "n_solidos": 1,
+        "props": {
+          "Ancho": "714.0 mm",
+          "Espesor": 18,
+          "Alto": "2014.0 mm"
+        }
+      }
+    }
+  ]
 }

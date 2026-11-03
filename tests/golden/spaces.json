@@ -1,0 +1,43 @@
+{
+  "calcular_espacio_libre": [
+    {
+      "entrada": {
+        "espacios_json": "",
+        "espacio_total": 600.0,
+        "espesor": 18.0
+      },
+      "salida": {
+        "total_libre": 600.0,
+        "ultimo_vano": 600.0,
+        "n_espacios": 0,
+        "texto": "Sin divisiones. Espacio libre: 600.0mm"
+      }
+    },
+    {
+      "entrada": {
+        "espacios_json": "",
+        "espacio_total": 1000.0,
+        "espesor": 16.0
+      },
+      "salida": {
+        "total_libre": 1000.0,
+        "ultimo_vano": 1000.0,
+        "n_espacios": 0,
+        "texto": "Sin divisiones. Espacio libre: 1000.0mm"
+      }
+    },
+    {
+      "entrada": {
+        "espacios_json": "",
+        "espacio_total": 300.0,
+        "espesor": 18.0
+      },
+      "salida": {
+        "total_libre": 300.0,
+        "ultimo_vano": 300.0,
+        "n_espacios": 0,
+        "texto": "Sin divisiones. Espacio libre: 300.0mm"
+      }
+    }
+  ]
+}

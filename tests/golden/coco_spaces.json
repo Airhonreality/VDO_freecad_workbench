@@ -2,27 +2,1877 @@
   "generar_divisiones_matriz": [
     {
       "entrada": {
-        "ancho": 600.0,
-        "alto": 700.0,
-        "n_divisiones": 3
+        "divisiones_json": "{\"version\":2,\"columns\":[{\"id\":\"x1\",\"fixed\":null},{\"id\":\"x2\",\"fixed\":null},{\"id\":\"x3\",\"fixed\":null}],\"rows\":[{\"id\":\"y1\",\"fixed\":null},{\"id\":\"y2\",\"fixed\":null},{\"id\":\"y3\",\"fixed\":null}],\"cells\":{\"x1|y1\":{\"px\":\"1\",\"py\":\"1\",\"fixed\":null},\"x2|y1\":{\"px\":\"2\",\"py\":\"1\",\"fixed\":null},\"x3|y1\":{\"px\":\"3\",\"py\":\"1\",\"fixed\":null},\"x1|y2\":{\"px\":\"1\",\"py\":\"2\",\"fixed\":null},\"x2|y2\":{\"px\":\"2\",\"py\":\"2\",\"fixed\":null},\"x3|y2\":{\"px\":\"3\",\"py\":\"2\",\"fixed\":null},\"x1|y3\":{\"px\":\"1\",\"py\":\"3\",\"fixed\":null},\"x2|y3\":{\"px\":\"2\",\"py\":\"3\",\"fixed\":null},\"x3|y3\":{\"px\":\"3\",\"py\":\"3\",\"fixed\":null}}}",
+        "ancho_cavidad": 600.0,
+        "alto_cavidad": 700.0,
+        "fondo": 580.0,
+        "espesor": 18.0
       },
-      "error": "generar_divisiones_matriz() missing 5 required positional arguments: 'divisiones_json', 'ancho_cavidad', 'alto_cavidad', 'fondo', and 'espesor'"
+      "salida": [
+        [
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          }
+        ],
+        "Matriz 3 × 3\nInterior: 600.0 × 700.0 mm\nPaneles internos: 8",
+        [
+          {
+            "nombre": "Division_X_col_002",
+            "tipo": "panel",
+            "rol": "division_x",
+            "largo": 580.0,
+            "ancho": 700.0,
+            "espesor": 18.0,
+            "orientacion": "vertical",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Division_X_col_002",
+              "x": 188.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 18.0,
+              "h": 580.0,
+              "d": 700.0,
+              "clave": "division_x:x2"
+            }
+          },
+          {
+            "nombre": "Division_X_col_003",
+            "tipo": "panel",
+            "rol": "division_x",
+            "largo": 580.0,
+            "ancho": 700.0,
+            "espesor": 18.0,
+            "orientacion": "vertical",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Division_X_col_003",
+              "x": 394.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 18.0,
+              "h": 580.0,
+              "d": 700.0,
+              "clave": "division_x:x3"
+            }
+          },
+          {
+            "nombre": "Repisa_Y_row_002_col_001",
+            "tipo": "panel",
+            "rol": "division_y",
+            "largo": 188.0,
+            "ancho": 580.0,
+            "espesor": 18.0,
+            "orientacion": "horizontal",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Repisa_Y_row_002_col_001",
+              "x": 0.0,
+              "y": 0.0,
+              "z": 221.333333,
+              "w": 188.0,
+              "h": 580.0,
+              "d": 18.0,
+              "clave": "division_y:y2_x1"
+            }
+          },
+          {
+            "nombre": "Repisa_Y_row_002_col_002",
+            "tipo": "panel",
+            "rol": "division_y",
+            "largo": 188.0,
+            "ancho": 580.0,
+            "espesor": 18.0,
+            "orientacion": "horizontal",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Repisa_Y_row_002_col_002",
+              "x": 206.0,
+              "y": 0.0,
+              "z": 221.333333,
+              "w": 188.0,
+              "h": 580.0,
+              "d": 18.0,
+              "clave": "division_y:y2_x2"
+            }
+          },
+          {
+            "nombre": "Repisa_Y_row_002_col_003",
+            "tipo": "panel",
+            "rol": "division_y",
+            "largo": 188.0,
+            "ancho": 580.0,
+            "espesor": 18.0,
+            "orientacion": "horizontal",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Repisa_Y_row_002_col_003",
+              "x": 412.0,
+              "y": 0.0,
+              "z": 221.333333,
+              "w": 188.0,
+              "h": 580.0,
+              "d": 18.0,
+              "clave": "division_y:y2_x3"
+            }
+          },
+          {
+            "nombre": "Repisa_Y_row_003_col_001",
+            "tipo": "panel",
+            "rol": "division_y",
+            "largo": 188.0,
+            "ancho": 580.0,
+            "espesor": 18.0,
+            "orientacion": "horizontal",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Repisa_Y_row_003_col_001",
+              "x": 0.0,
+              "y": 0.0,
+              "z": 460.666667,
+              "w": 188.0,
+              "h": 580.0,
+              "d": 18.0,
+              "clave": "division_y:y3_x1"
+            }
+          },
+          {
+            "nombre": "Repisa_Y_row_003_col_002",
+            "tipo": "panel",
+            "rol": "division_y",
+            "largo": 188.0,
+            "ancho": 580.0,
+            "espesor": 18.0,
+            "orientacion": "horizontal",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Repisa_Y_row_003_col_002",
+              "x": 206.0,
+              "y": 0.0,
+              "z": 460.666667,
+              "w": 188.0,
+              "h": 580.0,
+              "d": 18.0,
+              "clave": "division_y:y3_x2"
+            }
+          },
+          {
+            "nombre": "Repisa_Y_row_003_col_003",
+            "tipo": "panel",
+            "rol": "division_y",
+            "largo": 188.0,
+            "ancho": 580.0,
+            "espesor": 18.0,
+            "orientacion": "horizontal",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Repisa_Y_row_003_col_003",
+              "x": 412.0,
+              "y": 0.0,
+              "z": 460.666667,
+              "w": 188.0,
+              "h": 580.0,
+              "d": 18.0,
+              "clave": "division_y:y3_x3"
+            }
+          }
+        ],
+        {
+          "ResolvedLayout": {
+            "inner_w": 600.0,
+            "inner_h": 700.0,
+            "thickness": 18.0,
+            "columns": [
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "x1",
+                      "fixed": null
+                    }
+                  },
+                  "id": "x1",
+                  "fixed": null,
+                  "start": 0.0,
+                  "size": 188.0,
+                  "clear_start": 0.0,
+                  "clear_size": 188.0,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              },
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "x2",
+                      "fixed": null
+                    }
+                  },
+                  "id": "x2",
+                  "fixed": null,
+                  "start": 206.0,
+                  "size": 188.0,
+                  "clear_start": 206.0,
+                  "clear_size": 188.0,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              },
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "x3",
+                      "fixed": null
+                    }
+                  },
+                  "id": "x3",
+                  "fixed": null,
+                  "start": 412.0,
+                  "size": 188.0,
+                  "clear_start": 412.0,
+                  "clear_size": 188.0,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              }
+            ],
+            "rows": [
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "y1",
+                      "fixed": null
+                    }
+                  },
+                  "id": "y1",
+                  "fixed": null,
+                  "start": 0.0,
+                  "size": 221.333333,
+                  "clear_start": 0.0,
+                  "clear_size": 221.333333,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              },
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "y2",
+                      "fixed": null
+                    }
+                  },
+                  "id": "y2",
+                  "fixed": null,
+                  "start": 239.333333,
+                  "size": 221.333333,
+                  "clear_start": 239.333333,
+                  "clear_size": 221.333333,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              },
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "y3",
+                      "fixed": null
+                    }
+                  },
+                  "id": "y3",
+                  "fixed": null,
+                  "start": 478.666667,
+                  "size": 221.333333,
+                  "clear_start": 478.666667,
+                  "clear_size": 221.333333,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              }
+            ],
+            "cells": [
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "1",
+                      "py": "1",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 0.0,
+                  "z": 0.0,
+                  "w": 188.0,
+                  "h": 221.333333,
+                  "nominal_x": 0.0,
+                  "nominal_z": 0.0,
+                  "nominal_w": 188.0,
+                  "nominal_h": 221.333333,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "2",
+                      "py": "1",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 206.0,
+                  "z": 0.0,
+                  "w": 188.0,
+                  "h": 221.333333,
+                  "nominal_x": 206.0,
+                  "nominal_z": 0.0,
+                  "nominal_w": 188.0,
+                  "nominal_h": 221.333333,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "3",
+                      "py": "1",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 412.0,
+                  "z": 0.0,
+                  "w": 188.0,
+                  "h": 221.333333,
+                  "nominal_x": 412.0,
+                  "nominal_z": 0.0,
+                  "nominal_w": 188.0,
+                  "nominal_h": 221.333333,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "1",
+                      "py": "2",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 0.0,
+                  "z": 239.333333,
+                  "w": 188.0,
+                  "h": 221.333333,
+                  "nominal_x": 0.0,
+                  "nominal_z": 239.333333,
+                  "nominal_w": 188.0,
+                  "nominal_h": 221.333333,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "2",
+                      "py": "2",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 206.0,
+                  "z": 239.333333,
+                  "w": 188.0,
+                  "h": 221.333333,
+                  "nominal_x": 206.0,
+                  "nominal_z": 239.333333,
+                  "nominal_w": 188.0,
+                  "nominal_h": 221.333333,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "3",
+                      "py": "2",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 412.0,
+                  "z": 239.333333,
+                  "w": 188.0,
+                  "h": 221.333333,
+                  "nominal_x": 412.0,
+                  "nominal_z": 239.333333,
+                  "nominal_w": 188.0,
+                  "nominal_h": 221.333333,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "1",
+                      "py": "3",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 0.0,
+                  "z": 478.666667,
+                  "w": 188.0,
+                  "h": 221.333333,
+                  "nominal_x": 0.0,
+                  "nominal_z": 478.666667,
+                  "nominal_w": 188.0,
+                  "nominal_h": 221.333333,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "2",
+                      "py": "3",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 206.0,
+                  "z": 478.666667,
+                  "w": 188.0,
+                  "h": 221.333333,
+                  "nominal_x": 206.0,
+                  "nominal_z": 478.666667,
+                  "nominal_w": 188.0,
+                  "nominal_h": 221.333333,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "3",
+                      "py": "3",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 412.0,
+                  "z": 478.666667,
+                  "w": 188.0,
+                  "h": 221.333333,
+                  "nominal_x": 412.0,
+                  "nominal_z": 478.666667,
+                  "nominal_w": 188.0,
+                  "nominal_h": 221.333333,
+                  "level": 0,
+                  "children": []
+                }
+              }
+            ],
+            "pieces": [
+              {
+                "PanelPiece": {
+                  "axis": "X",
+                  "role": "root",
+                  "path": "x2",
+                  "x": 188.0,
+                  "z": 0.0,
+                  "w": 18.0,
+                  "h": 700.0,
+                  "thickness": 18.0,
+                  "nombre": "Division_X_col_002"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "X",
+                  "role": "root",
+                  "path": "x3",
+                  "x": 394.0,
+                  "z": 0.0,
+                  "w": 18.0,
+                  "h": 700.0,
+                  "thickness": 18.0,
+                  "nombre": "Division_X_col_003"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "Y",
+                  "role": "root",
+                  "path": "y2_x1",
+                  "x": 0.0,
+                  "z": 221.333333,
+                  "w": 188.0,
+                  "h": 18.0,
+                  "thickness": 18.0,
+                  "nombre": "Repisa_Y_row_002_col_001"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "Y",
+                  "role": "root",
+                  "path": "y2_x2",
+                  "x": 206.0,
+                  "z": 221.333333,
+                  "w": 188.0,
+                  "h": 18.0,
+                  "thickness": 18.0,
+                  "nombre": "Repisa_Y_row_002_col_002"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "Y",
+                  "role": "root",
+                  "path": "y2_x3",
+                  "x": 412.0,
+                  "z": 221.333333,
+                  "w": 188.0,
+                  "h": 18.0,
+                  "thickness": 18.0,
+                  "nombre": "Repisa_Y_row_002_col_003"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "Y",
+                  "role": "root",
+                  "path": "y3_x1",
+                  "x": 0.0,
+                  "z": 460.666667,
+                  "w": 188.0,
+                  "h": 18.0,
+                  "thickness": 18.0,
+                  "nombre": "Repisa_Y_row_003_col_001"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "Y",
+                  "role": "root",
+                  "path": "y3_x2",
+                  "x": 206.0,
+                  "z": 460.666667,
+                  "w": 188.0,
+                  "h": 18.0,
+                  "thickness": 18.0,
+                  "nombre": "Repisa_Y_row_003_col_002"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "Y",
+                  "role": "root",
+                  "path": "y3_x3",
+                  "x": 412.0,
+                  "z": 460.666667,
+                  "w": 188.0,
+                  "h": 18.0,
+                  "thickness": 18.0,
+                  "nombre": "Repisa_Y_row_003_col_003"
+                }
+              }
+            ],
+            "warnings": [],
+            "overflow": false,
+            "tiras": []
+          }
+        }
+      ]
     },
     {
       "entrada": {
-        "ancho": 1000.0,
-        "alto": 2000.0,
-        "n_divisiones": 4
+        "divisiones_json": "{\"version\":2,\"columns\":[{\"id\":\"x1\",\"fixed\":null},{\"id\":\"x2\",\"fixed\":null},{\"id\":\"x3\",\"fixed\":null},{\"id\":\"x4\",\"fixed\":null}],\"rows\":[{\"id\":\"y1\",\"fixed\":null},{\"id\":\"y2\",\"fixed\":null}],\"cells\":{\"x1|y1\":{\"px\":\"1\",\"py\":\"1\",\"fixed\":null},\"x2|y1\":{\"px\":\"2\",\"py\":\"1\",\"fixed\":null},\"x3|y1\":{\"px\":\"3\",\"py\":\"1\",\"fixed\":null},\"x4|y1\":{\"px\":\"4\",\"py\":\"1\",\"fixed\":null},\"x1|y2\":{\"px\":\"1\",\"py\":\"2\",\"fixed\":null},\"x2|y2\":{\"px\":\"2\",\"py\":\"2\",\"fixed\":null},\"x3|y2\":{\"px\":\"3\",\"py\":\"2\",\"fixed\":null},\"x4|y2\":{\"px\":\"4\",\"py\":\"2\",\"fixed\":null}}}",
+        "ancho_cavidad": 1000.0,
+        "alto_cavidad": 2000.0,
+        "fondo": 560.0,
+        "espesor": 18.0
       },
-      "error": "generar_divisiones_matriz() missing 5 required positional arguments: 'divisiones_json', 'ancho_cavidad', 'alto_cavidad', 'fondo', and 'espesor'"
+      "salida": [
+        [
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          }
+        ],
+        "Matriz 4 × 2\nInterior: 1000.0 × 2000.0 mm\nPaneles internos: 7",
+        [
+          {
+            "nombre": "Division_X_col_002",
+            "tipo": "panel",
+            "rol": "division_x",
+            "largo": 560.0,
+            "ancho": 2000.0,
+            "espesor": 18.0,
+            "orientacion": "vertical",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Division_X_col_002",
+              "x": 236.5,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 18.0,
+              "h": 560.0,
+              "d": 2000.0,
+              "clave": "division_x:x2"
+            }
+          },
+          {
+            "nombre": "Division_X_col_003",
+            "tipo": "panel",
+            "rol": "division_x",
+            "largo": 560.0,
+            "ancho": 2000.0,
+            "espesor": 18.0,
+            "orientacion": "vertical",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Division_X_col_003",
+              "x": 491.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 18.0,
+              "h": 560.0,
+              "d": 2000.0,
+              "clave": "division_x:x3"
+            }
+          },
+          {
+            "nombre": "Division_X_col_004",
+            "tipo": "panel",
+            "rol": "division_x",
+            "largo": 560.0,
+            "ancho": 2000.0,
+            "espesor": 18.0,
+            "orientacion": "vertical",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Division_X_col_004",
+              "x": 745.5,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 18.0,
+              "h": 560.0,
+              "d": 2000.0,
+              "clave": "division_x:x4"
+            }
+          },
+          {
+            "nombre": "Repisa_Y_row_002_col_001",
+            "tipo": "panel",
+            "rol": "division_y",
+            "largo": 236.5,
+            "ancho": 560.0,
+            "espesor": 18.0,
+            "orientacion": "horizontal",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Repisa_Y_row_002_col_001",
+              "x": 0.0,
+              "y": 0.0,
+              "z": 991.0,
+              "w": 236.5,
+              "h": 560.0,
+              "d": 18.0,
+              "clave": "division_y:y2_x1"
+            }
+          },
+          {
+            "nombre": "Repisa_Y_row_002_col_002",
+            "tipo": "panel",
+            "rol": "division_y",
+            "largo": 236.5,
+            "ancho": 560.0,
+            "espesor": 18.0,
+            "orientacion": "horizontal",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Repisa_Y_row_002_col_002",
+              "x": 254.5,
+              "y": 0.0,
+              "z": 991.0,
+              "w": 236.5,
+              "h": 560.0,
+              "d": 18.0,
+              "clave": "division_y:y2_x2"
+            }
+          },
+          {
+            "nombre": "Repisa_Y_row_002_col_003",
+            "tipo": "panel",
+            "rol": "division_y",
+            "largo": 236.5,
+            "ancho": 560.0,
+            "espesor": 18.0,
+            "orientacion": "horizontal",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Repisa_Y_row_002_col_003",
+              "x": 509.0,
+              "y": 0.0,
+              "z": 991.0,
+              "w": 236.5,
+              "h": 560.0,
+              "d": 18.0,
+              "clave": "division_y:y2_x3"
+            }
+          },
+          {
+            "nombre": "Repisa_Y_row_002_col_004",
+            "tipo": "panel",
+            "rol": "division_y",
+            "largo": 236.5,
+            "ancho": 560.0,
+            "espesor": 18.0,
+            "orientacion": "horizontal",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Repisa_Y_row_002_col_004",
+              "x": 763.5,
+              "y": 0.0,
+              "z": 991.0,
+              "w": 236.5,
+              "h": 560.0,
+              "d": 18.0,
+              "clave": "division_y:y2_x4"
+            }
+          }
+        ],
+        {
+          "ResolvedLayout": {
+            "inner_w": 1000.0,
+            "inner_h": 2000.0,
+            "thickness": 18.0,
+            "columns": [
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "x1",
+                      "fixed": null
+                    }
+                  },
+                  "id": "x1",
+                  "fixed": null,
+                  "start": 0.0,
+                  "size": 236.5,
+                  "clear_start": 0.0,
+                  "clear_size": 236.5,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              },
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "x2",
+                      "fixed": null
+                    }
+                  },
+                  "id": "x2",
+                  "fixed": null,
+                  "start": 254.5,
+                  "size": 236.5,
+                  "clear_start": 254.5,
+                  "clear_size": 236.5,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              },
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "x3",
+                      "fixed": null
+                    }
+                  },
+                  "id": "x3",
+                  "fixed": null,
+                  "start": 509.0,
+                  "size": 236.5,
+                  "clear_start": 509.0,
+                  "clear_size": 236.5,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              },
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "x4",
+                      "fixed": null
+                    }
+                  },
+                  "id": "x4",
+                  "fixed": null,
+                  "start": 763.5,
+                  "size": 236.5,
+                  "clear_start": 763.5,
+                  "clear_size": 236.5,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              }
+            ],
+            "rows": [
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "y1",
+                      "fixed": null
+                    }
+                  },
+                  "id": "y1",
+                  "fixed": null,
+                  "start": 0.0,
+                  "size": 991.0,
+                  "clear_start": 0.0,
+                  "clear_size": 991.0,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              },
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "y2",
+                      "fixed": null
+                    }
+                  },
+                  "id": "y2",
+                  "fixed": null,
+                  "start": 1009.0,
+                  "size": 991.0,
+                  "clear_start": 1009.0,
+                  "clear_size": 991.0,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              }
+            ],
+            "cells": [
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "1",
+                      "py": "1",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 0.0,
+                  "z": 0.0,
+                  "w": 236.5,
+                  "h": 991.0,
+                  "nominal_x": 0.0,
+                  "nominal_z": 0.0,
+                  "nominal_w": 236.5,
+                  "nominal_h": 991.0,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "2",
+                      "py": "1",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 254.5,
+                  "z": 0.0,
+                  "w": 236.5,
+                  "h": 991.0,
+                  "nominal_x": 254.5,
+                  "nominal_z": 0.0,
+                  "nominal_w": 236.5,
+                  "nominal_h": 991.0,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "3",
+                      "py": "1",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 509.0,
+                  "z": 0.0,
+                  "w": 236.5,
+                  "h": 991.0,
+                  "nominal_x": 509.0,
+                  "nominal_z": 0.0,
+                  "nominal_w": 236.5,
+                  "nominal_h": 991.0,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "4",
+                      "py": "1",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 763.5,
+                  "z": 0.0,
+                  "w": 236.5,
+                  "h": 991.0,
+                  "nominal_x": 763.5,
+                  "nominal_z": 0.0,
+                  "nominal_w": 236.5,
+                  "nominal_h": 991.0,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "1",
+                      "py": "2",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 0.0,
+                  "z": 1009.0,
+                  "w": 236.5,
+                  "h": 991.0,
+                  "nominal_x": 0.0,
+                  "nominal_z": 1009.0,
+                  "nominal_w": 236.5,
+                  "nominal_h": 991.0,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "2",
+                      "py": "2",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 254.5,
+                  "z": 1009.0,
+                  "w": 236.5,
+                  "h": 991.0,
+                  "nominal_x": 254.5,
+                  "nominal_z": 1009.0,
+                  "nominal_w": 236.5,
+                  "nominal_h": 991.0,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "3",
+                      "py": "2",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 509.0,
+                  "z": 1009.0,
+                  "w": 236.5,
+                  "h": 991.0,
+                  "nominal_x": 509.0,
+                  "nominal_z": 1009.0,
+                  "nominal_w": 236.5,
+                  "nominal_h": 991.0,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "4",
+                      "py": "2",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 763.5,
+                  "z": 1009.0,
+                  "w": 236.5,
+                  "h": 991.0,
+                  "nominal_x": 763.5,
+                  "nominal_z": 1009.0,
+                  "nominal_w": 236.5,
+                  "nominal_h": 991.0,
+                  "level": 0,
+                  "children": []
+                }
+              }
+            ],
+            "pieces": [
+              {
+                "PanelPiece": {
+                  "axis": "X",
+                  "role": "root",
+                  "path": "x2",
+                  "x": 236.5,
+                  "z": 0.0,
+                  "w": 18.0,
+                  "h": 2000.0,
+                  "thickness": 18.0,
+                  "nombre": "Division_X_col_002"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "X",
+                  "role": "root",
+                  "path": "x3",
+                  "x": 491.0,
+                  "z": 0.0,
+                  "w": 18.0,
+                  "h": 2000.0,
+                  "thickness": 18.0,
+                  "nombre": "Division_X_col_003"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "X",
+                  "role": "root",
+                  "path": "x4",
+                  "x": 745.5,
+                  "z": 0.0,
+                  "w": 18.0,
+                  "h": 2000.0,
+                  "thickness": 18.0,
+                  "nombre": "Division_X_col_004"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "Y",
+                  "role": "root",
+                  "path": "y2_x1",
+                  "x": 0.0,
+                  "z": 991.0,
+                  "w": 236.5,
+                  "h": 18.0,
+                  "thickness": 18.0,
+                  "nombre": "Repisa_Y_row_002_col_001"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "Y",
+                  "role": "root",
+                  "path": "y2_x2",
+                  "x": 254.5,
+                  "z": 991.0,
+                  "w": 236.5,
+                  "h": 18.0,
+                  "thickness": 18.0,
+                  "nombre": "Repisa_Y_row_002_col_002"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "Y",
+                  "role": "root",
+                  "path": "y2_x3",
+                  "x": 509.0,
+                  "z": 991.0,
+                  "w": 236.5,
+                  "h": 18.0,
+                  "thickness": 18.0,
+                  "nombre": "Repisa_Y_row_002_col_003"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "Y",
+                  "role": "root",
+                  "path": "y2_x4",
+                  "x": 763.5,
+                  "z": 991.0,
+                  "w": 236.5,
+                  "h": 18.0,
+                  "thickness": 18.0,
+                  "nombre": "Repisa_Y_row_002_col_004"
+                }
+              }
+            ],
+            "warnings": [],
+            "overflow": false,
+            "tiras": []
+          }
+        }
+      ]
     },
     {
       "entrada": {
-        "ancho": 400.0,
-        "alto": 500.0,
-        "n_divisiones": 2
+        "divisiones_json": "{\"version\":2,\"columns\":[{\"id\":\"x1\",\"fixed\":null},{\"id\":\"x2\",\"fixed\":null}],\"rows\":[{\"id\":\"y1\",\"fixed\":null},{\"id\":\"y2\",\"fixed\":null},{\"id\":\"y3\",\"fixed\":null}],\"cells\":{\"x1|y1\":{\"px\":\"1\",\"py\":\"1\",\"fixed\":null},\"x2|y1\":{\"px\":\"2\",\"py\":\"1\",\"fixed\":null},\"x1|y2\":{\"px\":\"1\",\"py\":\"2\",\"fixed\":null},\"x2|y2\":{\"px\":\"2\",\"py\":\"2\",\"fixed\":null},\"x1|y3\":{\"px\":\"1\",\"py\":\"3\",\"fixed\":null},\"x2|y3\":{\"px\":\"2\",\"py\":\"3\",\"fixed\":null}}}",
+        "ancho_cavidad": 400.0,
+        "alto_cavidad": 500.0,
+        "fondo": 580.0,
+        "espesor": 16.0
       },
-      "error": "generar_divisiones_matriz() missing 5 required positional arguments: 'divisiones_json', 'ancho_cavidad', 'alto_cavidad', 'fondo', and 'espesor'"
+      "salida": [
+        [
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          },
+          {
+            "Solid": {
+              "getMomentOfInertia": "method_descriptor",
+              "getRadiusOfGyration": "method_descriptor",
+              "offsetFaces": "method_descriptor",
+              "Mass": "getset_descriptor",
+              "CenterOfMass": "getset_descriptor",
+              "MatrixOfInertia": "getset_descriptor",
+              "StaticMoments": "getset_descriptor",
+              "PrincipalProperties": "getset_descriptor",
+              "OuterShell": "getset_descriptor"
+            }
+          }
+        ],
+        "Matriz 2 × 3\nInterior: 400.0 × 500.0 mm\nPaneles internos: 5",
+        [
+          {
+            "nombre": "Division_X_col_002",
+            "tipo": "panel",
+            "rol": "division_x",
+            "largo": 580.0,
+            "ancho": 500.0,
+            "espesor": 16.0,
+            "orientacion": "vertical",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Division_X_col_002",
+              "x": 192.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 16.0,
+              "h": 580.0,
+              "d": 500.0,
+              "clave": "division_x:x2"
+            }
+          },
+          {
+            "nombre": "Repisa_Y_row_002_col_001",
+            "tipo": "panel",
+            "rol": "division_y",
+            "largo": 192.0,
+            "ancho": 580.0,
+            "espesor": 16.0,
+            "orientacion": "horizontal",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Repisa_Y_row_002_col_001",
+              "x": 0.0,
+              "y": 0.0,
+              "z": 156.0,
+              "w": 192.0,
+              "h": 580.0,
+              "d": 16.0,
+              "clave": "division_y:y2_x1"
+            }
+          },
+          {
+            "nombre": "Repisa_Y_row_002_col_002",
+            "tipo": "panel",
+            "rol": "division_y",
+            "largo": 192.0,
+            "ancho": 580.0,
+            "espesor": 16.0,
+            "orientacion": "horizontal",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Repisa_Y_row_002_col_002",
+              "x": 208.0,
+              "y": 0.0,
+              "z": 156.0,
+              "w": 192.0,
+              "h": 580.0,
+              "d": 16.0,
+              "clave": "division_y:y2_x2"
+            }
+          },
+          {
+            "nombre": "Repisa_Y_row_003_col_001",
+            "tipo": "panel",
+            "rol": "division_y",
+            "largo": 192.0,
+            "ancho": 580.0,
+            "espesor": 16.0,
+            "orientacion": "horizontal",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Repisa_Y_row_003_col_001",
+              "x": 0.0,
+              "y": 0.0,
+              "z": 328.0,
+              "w": 192.0,
+              "h": 580.0,
+              "d": 16.0,
+              "clave": "division_y:y3_x1"
+            }
+          },
+          {
+            "nombre": "Repisa_Y_row_003_col_002",
+            "tipo": "panel",
+            "rol": "division_y",
+            "largo": 192.0,
+            "ancho": 580.0,
+            "espesor": 16.0,
+            "orientacion": "horizontal",
+            "cantidad": 1,
+            "caja_geometrica": {
+              "nombre": "Repisa_Y_row_003_col_002",
+              "x": 208.0,
+              "y": 0.0,
+              "z": 328.0,
+              "w": 192.0,
+              "h": 580.0,
+              "d": 16.0,
+              "clave": "division_y:y3_x2"
+            }
+          }
+        ],
+        {
+          "ResolvedLayout": {
+            "inner_w": 400.0,
+            "inner_h": 500.0,
+            "thickness": 16.0,
+            "columns": [
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "x1",
+                      "fixed": null
+                    }
+                  },
+                  "id": "x1",
+                  "fixed": null,
+                  "start": 0.0,
+                  "size": 192.0,
+                  "clear_start": 0.0,
+                  "clear_size": 192.0,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              },
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "x2",
+                      "fixed": null
+                    }
+                  },
+                  "id": "x2",
+                  "fixed": null,
+                  "start": 208.0,
+                  "size": 192.0,
+                  "clear_start": 208.0,
+                  "clear_size": 192.0,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              }
+            ],
+            "rows": [
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "y1",
+                      "fixed": null
+                    }
+                  },
+                  "id": "y1",
+                  "fixed": null,
+                  "start": 0.0,
+                  "size": 156.0,
+                  "clear_start": 0.0,
+                  "clear_size": 156.0,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              },
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "y2",
+                      "fixed": null
+                    }
+                  },
+                  "id": "y2",
+                  "fixed": null,
+                  "start": 172.0,
+                  "size": 156.0,
+                  "clear_start": 172.0,
+                  "clear_size": 156.0,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              },
+              {
+                "ResolvedTrack": {
+                  "track": {
+                    "Track": {
+                      "id": "y3",
+                      "fixed": null
+                    }
+                  },
+                  "id": "y3",
+                  "fixed": null,
+                  "start": 344.0,
+                  "size": 156.0,
+                  "clear_start": 344.0,
+                  "clear_size": 156.0,
+                  "extra_izq": 0.0,
+                  "extra_der": 0.0,
+                  "overflow": 0.0
+                }
+              }
+            ],
+            "cells": [
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "1",
+                      "py": "1",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 0.0,
+                  "z": 0.0,
+                  "w": 192.0,
+                  "h": 156.0,
+                  "nominal_x": 0.0,
+                  "nominal_z": 0.0,
+                  "nominal_w": 192.0,
+                  "nominal_h": 156.0,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "2",
+                      "py": "1",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 208.0,
+                  "z": 0.0,
+                  "w": 192.0,
+                  "h": 156.0,
+                  "nominal_x": 208.0,
+                  "nominal_z": 0.0,
+                  "nominal_w": 192.0,
+                  "nominal_h": 156.0,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "1",
+                      "py": "2",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 0.0,
+                  "z": 172.0,
+                  "w": 192.0,
+                  "h": 156.0,
+                  "nominal_x": 0.0,
+                  "nominal_z": 172.0,
+                  "nominal_w": 192.0,
+                  "nominal_h": 156.0,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "2",
+                      "py": "2",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 208.0,
+                  "z": 172.0,
+                  "w": 192.0,
+                  "h": 156.0,
+                  "nominal_x": 208.0,
+                  "nominal_z": 172.0,
+                  "nominal_w": 192.0,
+                  "nominal_h": 156.0,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "1",
+                      "py": "3",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 0.0,
+                  "z": 344.0,
+                  "w": 192.0,
+                  "h": 156.0,
+                  "nominal_x": 0.0,
+                  "nominal_z": 344.0,
+                  "nominal_w": 192.0,
+                  "nominal_h": 156.0,
+                  "level": 0,
+                  "children": []
+                }
+              },
+              {
+                "ResolvedCell": {
+                  "cell": {
+                    "Cell": {
+                      "px": "2",
+                      "py": "3",
+                      "fixed": null,
+                      "axis": null,
+                      "children": []
+                    }
+                  },
+                  "x": 208.0,
+                  "z": 344.0,
+                  "w": 192.0,
+                  "h": 156.0,
+                  "nominal_x": 208.0,
+                  "nominal_z": 344.0,
+                  "nominal_w": 192.0,
+                  "nominal_h": 156.0,
+                  "level": 0,
+                  "children": []
+                }
+              }
+            ],
+            "pieces": [
+              {
+                "PanelPiece": {
+                  "axis": "X",
+                  "role": "root",
+                  "path": "x2",
+                  "x": 192.0,
+                  "z": 0.0,
+                  "w": 16.0,
+                  "h": 500.0,
+                  "thickness": 16.0,
+                  "nombre": "Division_X_col_002"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "Y",
+                  "role": "root",
+                  "path": "y2_x1",
+                  "x": 0.0,
+                  "z": 156.0,
+                  "w": 192.0,
+                  "h": 16.0,
+                  "thickness": 16.0,
+                  "nombre": "Repisa_Y_row_002_col_001"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "Y",
+                  "role": "root",
+                  "path": "y2_x2",
+                  "x": 208.0,
+                  "z": 156.0,
+                  "w": 192.0,
+                  "h": 16.0,
+                  "thickness": 16.0,
+                  "nombre": "Repisa_Y_row_002_col_002"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "Y",
+                  "role": "root",
+                  "path": "y3_x1",
+                  "x": 0.0,
+                  "z": 328.0,
+                  "w": 192.0,
+                  "h": 16.0,
+                  "thickness": 16.0,
+                  "nombre": "Repisa_Y_row_003_col_001"
+                }
+              },
+              {
+                "PanelPiece": {
+                  "axis": "Y",
+                  "role": "root",
+                  "path": "y3_x2",
+                  "x": 208.0,
+                  "z": 328.0,
+                  "w": 192.0,
+                  "h": 16.0,
+                  "thickness": 16.0,
+                  "nombre": "Repisa_Y_row_003_col_002"
+                }
+              }
+            ],
+            "warnings": [],
+            "overflow": false,
+            "tiras": []
+          }
+        }
+      ]
     }
   ]
 }

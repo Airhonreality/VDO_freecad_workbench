@@ -1,0 +1,684 @@
+{
+  "calcular_geometria_zocalo": [
+    {
+      "entrada": {
+        "ancho": 600.0,
+        "fondo": 580.0,
+        "alto_zocalo": 100.0,
+        "espesor_tablero": 18.0
+      },
+      "salida": {
+        "tiras": [
+          {
+            "borde": "frente",
+            "nombre_sufijo": "Frente",
+            "x": 18.0,
+            "y": 50.0,
+            "w": 564.0,
+            "h": 18.0,
+            "largo": 564.0,
+            "ancho": 18.0,
+            "d": 18.0,
+            "espesor": 18.0,
+            "distancia_al_canto": 50.0,
+            "largo_tira": "punta_a_punta",
+            "encuentro_esquinas": {
+              "frente_izquierda": "vertical_domina",
+              "frente_derecha": "vertical_domina",
+              "fondo_izquierda": "vertical_domina",
+              "fondo_derecha": "vertical_domina"
+            },
+            "offset_borde": 50.0
+          },
+          {
+            "borde": "fondo",
+            "nombre_sufijo": "Fondo",
+            "x": 18.0,
+            "y": 542.0,
+            "w": 564.0,
+            "h": 18.0,
+            "largo": 564.0,
+            "ancho": 18.0,
+            "d": 18.0,
+            "espesor": 18.0,
+            "distancia_al_canto": 20.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": {
+              "frente_izquierda": "vertical_domina",
+              "frente_derecha": "vertical_domina",
+              "fondo_izquierda": "vertical_domina",
+              "fondo_derecha": "vertical_domina"
+            },
+            "offset_borde": 20.0
+          },
+          {
+            "borde": "izquierda",
+            "nombre_sufijo": "Izq",
+            "x": 0.0,
+            "y": 50.0,
+            "w": 18.0,
+            "h": 510.0,
+            "largo": 510.0,
+            "ancho": 18.0,
+            "d": 18.0,
+            "espesor": 18.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": {
+              "frente_izquierda": "vertical_domina",
+              "frente_derecha": "vertical_domina",
+              "fondo_izquierda": "vertical_domina",
+              "fondo_derecha": "vertical_domina"
+            },
+            "offset_borde": 0.0
+          },
+          {
+            "borde": "derecha",
+            "nombre_sufijo": "Der",
+            "x": 582.0,
+            "y": 50.0,
+            "w": 18.0,
+            "h": 510.0,
+            "largo": 510.0,
+            "ancho": 18.0,
+            "d": 18.0,
+            "espesor": 18.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": {
+              "frente_izquierda": "vertical_domina",
+              "frente_derecha": "vertical_domina",
+              "fondo_izquierda": "vertical_domina",
+              "fondo_derecha": "vertical_domina"
+            },
+            "offset_borde": 0.0
+          }
+        ],
+        "amarres": [],
+        "piezas": [
+          {
+            "nombre": "Zocalo_Frente",
+            "tipo": "panel",
+            "rol": "frente",
+            "borde": "frente",
+            "orientacion": "vertical",
+            "largo": 564.0,
+            "ancho": 100.0,
+            "espesor": 18.0,
+            "cantidad": 1,
+            "material_ref": "melamina_standar",
+            "cantos": {
+              "norte": "RIG",
+              "sur": "RIG",
+              "este": "RIG",
+              "oeste": "RIG"
+            },
+            "grupo": "",
+            "operacion": "Cantear por separado",
+            "largo_tira": "punta_a_punta",
+            "distancia_al_canto": 50.0
+          },
+          {
+            "nombre": "Zocalo_Trasero",
+            "tipo": "panel",
+            "rol": "trasero",
+            "borde": "fondo",
+            "orientacion": "vertical",
+            "largo": 564.0,
+            "ancho": 100.0,
+            "espesor": 18.0,
+            "cantidad": 1,
+            "material_ref": "melamina_standar",
+            "cantos": {
+              "norte": "FX",
+              "sur": "FX",
+              "este": "FX",
+              "oeste": "FX"
+            },
+            "grupo": "",
+            "operacion": "Cantear por separado",
+            "largo_tira": "marco_interior",
+            "distancia_al_canto": 20.0
+          },
+          {
+            "nombre": "Zocalo_Lat_Izq",
+            "tipo": "panel",
+            "rol": "lateral_izquierdo",
+            "borde": "izquierda",
+            "orientacion": "vertical",
+            "largo": 510.0,
+            "ancho": 100.0,
+            "espesor": 18.0,
+            "cantidad": 1,
+            "material_ref": "melamina_standar",
+            "cantos": {
+              "norte": "RIG",
+              "sur": "RIG",
+              "este": "FX",
+              "oeste": "RIG"
+            },
+            "grupo": "",
+            "operacion": "Cantear por separado",
+            "largo_tira": "marco_interior",
+            "distancia_al_canto": 0.0
+          },
+          {
+            "nombre": "Zocalo_Lat_Der",
+            "tipo": "panel",
+            "rol": "lateral_derecho",
+            "borde": "derecha",
+            "orientacion": "vertical",
+            "largo": 510.0,
+            "ancho": 100.0,
+            "espesor": 18.0,
+            "cantidad": 1,
+            "material_ref": "melamina_standar",
+            "cantos": {
+              "norte": "RIG",
+              "sur": "RIG",
+              "este": "RIG",
+              "oeste": "FX"
+            },
+            "grupo": "",
+            "operacion": "Cantear por separado",
+            "largo_tira": "marco_interior",
+            "distancia_al_canto": 0.0
+          }
+        ],
+        "resumen": "Zócalo: 600 × 580 × 100 mm (e=18, trasera=sí)\nZocalo_Frente: 564.0 × 100.0 × 18 mm (punta_a_punta, canto=50.0)\nZocalo_Trasero: 564.0 × 100.0 × 18 mm (marco_interior, canto=20.0)\nZocalo_Lat_Izq: 510.0 × 100.0 × 18 mm (marco_interior, canto=0.0)\nZocalo_Lat_Der: 510.0 × 100.0 × 18 mm (marco_interior, canto=0.0)",
+        "bordes": {
+          "frente": {
+            "activo": true,
+            "ancho": 18.0,
+            "distancia_al_canto": 50.0,
+            "largo_tira": "punta_a_punta",
+            "espesor": 18.0
+          },
+          "izquierda": {
+            "activo": true,
+            "ancho": 18.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "espesor": 18.0
+          },
+          "derecha": {
+            "activo": true,
+            "ancho": 18.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "espesor": 18.0
+          },
+          "fondo": {
+            "activo": true,
+            "ancho": 18.0,
+            "distancia_al_canto": 20.0,
+            "largo_tira": "marco_interior",
+            "espesor": 18.0
+          }
+        }
+      }
+    },
+    {
+      "entrada": {
+        "ancho": 900.0,
+        "fondo": 560.0,
+        "alto_zocalo": 80.0,
+        "espesor_tablero": 18.0,
+        "tiene_trasera": false
+      },
+      "salida": {
+        "tiras": [
+          {
+            "borde": "frente",
+            "nombre_sufijo": "Frente",
+            "x": 18.0,
+            "y": 50.0,
+            "w": 864.0,
+            "h": 18.0,
+            "largo": 864.0,
+            "ancho": 18.0,
+            "d": 18.0,
+            "espesor": 18.0,
+            "distancia_al_canto": 50.0,
+            "largo_tira": "punta_a_punta",
+            "encuentro_esquinas": {
+              "frente_izquierda": "vertical_domina",
+              "frente_derecha": "vertical_domina",
+              "fondo_izquierda": "vertical_domina",
+              "fondo_derecha": "vertical_domina"
+            },
+            "offset_borde": 50.0
+          },
+          {
+            "borde": "izquierda",
+            "nombre_sufijo": "Izq",
+            "x": 0.0,
+            "y": 50.0,
+            "w": 18.0,
+            "h": 490.0,
+            "largo": 490.0,
+            "ancho": 18.0,
+            "d": 18.0,
+            "espesor": 18.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": {
+              "frente_izquierda": "vertical_domina",
+              "frente_derecha": "vertical_domina",
+              "fondo_izquierda": "vertical_domina",
+              "fondo_derecha": "vertical_domina"
+            },
+            "offset_borde": 0.0
+          },
+          {
+            "borde": "derecha",
+            "nombre_sufijo": "Der",
+            "x": 882.0,
+            "y": 50.0,
+            "w": 18.0,
+            "h": 490.0,
+            "largo": 490.0,
+            "ancho": 18.0,
+            "d": 18.0,
+            "espesor": 18.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": {
+              "frente_izquierda": "vertical_domina",
+              "frente_derecha": "vertical_domina",
+              "fondo_izquierda": "vertical_domina",
+              "fondo_derecha": "vertical_domina"
+            },
+            "offset_borde": 0.0
+          }
+        ],
+        "amarres": [],
+        "piezas": [
+          {
+            "nombre": "Zocalo_Frente",
+            "tipo": "panel",
+            "rol": "frente",
+            "borde": "frente",
+            "orientacion": "vertical",
+            "largo": 864.0,
+            "ancho": 80.0,
+            "espesor": 18.0,
+            "cantidad": 1,
+            "material_ref": "melamina_standar",
+            "cantos": {
+              "norte": "RIG",
+              "sur": "RIG",
+              "este": "RIG",
+              "oeste": "RIG"
+            },
+            "grupo": "",
+            "operacion": "Cantear por separado",
+            "largo_tira": "punta_a_punta",
+            "distancia_al_canto": 50.0
+          },
+          {
+            "nombre": "Zocalo_Lat_Izq",
+            "tipo": "panel",
+            "rol": "lateral_izquierdo",
+            "borde": "izquierda",
+            "orientacion": "vertical",
+            "largo": 490.0,
+            "ancho": 80.0,
+            "espesor": 18.0,
+            "cantidad": 1,
+            "material_ref": "melamina_standar",
+            "cantos": {
+              "norte": "RIG",
+              "sur": "RIG",
+              "este": "FX",
+              "oeste": "RIG"
+            },
+            "grupo": "",
+            "operacion": "Cantear por separado",
+            "largo_tira": "marco_interior",
+            "distancia_al_canto": 0.0
+          },
+          {
+            "nombre": "Zocalo_Lat_Der",
+            "tipo": "panel",
+            "rol": "lateral_derecho",
+            "borde": "derecha",
+            "orientacion": "vertical",
+            "largo": 490.0,
+            "ancho": 80.0,
+            "espesor": 18.0,
+            "cantidad": 1,
+            "material_ref": "melamina_standar",
+            "cantos": {
+              "norte": "RIG",
+              "sur": "RIG",
+              "este": "RIG",
+              "oeste": "FX"
+            },
+            "grupo": "",
+            "operacion": "Cantear por separado",
+            "largo_tira": "marco_interior",
+            "distancia_al_canto": 0.0
+          }
+        ],
+        "resumen": "Zócalo: 900 × 560 × 80 mm (e=18, trasera=no)\nZocalo_Frente: 864.0 × 80.0 × 18 mm (punta_a_punta, canto=50.0)\nZocalo_Lat_Izq: 490.0 × 80.0 × 18 mm (marco_interior, canto=0.0)\nZocalo_Lat_Der: 490.0 × 80.0 × 18 mm (marco_interior, canto=0.0)",
+        "bordes": {
+          "frente": {
+            "activo": true,
+            "ancho": 18.0,
+            "distancia_al_canto": 50.0,
+            "largo_tira": "punta_a_punta",
+            "espesor": 18.0
+          },
+          "izquierda": {
+            "activo": true,
+            "ancho": 18.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "espesor": 18.0
+          },
+          "derecha": {
+            "activo": true,
+            "ancho": 18.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "espesor": 18.0
+          },
+          "fondo": {
+            "activo": false,
+            "ancho": 18.0,
+            "distancia_al_canto": 20.0,
+            "largo_tira": "marco_interior",
+            "espesor": 18.0
+          }
+        }
+      }
+    },
+    {
+      "entrada": {
+        "ancho": 450.0,
+        "fondo": 580.0,
+        "alto_zocalo": 100.0,
+        "espesor_tablero": 16.0,
+        "amarres_intermedios": 2
+      },
+      "salida": {
+        "tiras": [
+          {
+            "borde": "frente",
+            "nombre_sufijo": "Frente",
+            "x": 16.0,
+            "y": 50.0,
+            "w": 418.0,
+            "h": 16.0,
+            "largo": 418.0,
+            "ancho": 16.0,
+            "d": 16.0,
+            "espesor": 16.0,
+            "distancia_al_canto": 50.0,
+            "largo_tira": "punta_a_punta",
+            "encuentro_esquinas": {
+              "frente_izquierda": "vertical_domina",
+              "frente_derecha": "vertical_domina",
+              "fondo_izquierda": "vertical_domina",
+              "fondo_derecha": "vertical_domina"
+            },
+            "offset_borde": 50.0
+          },
+          {
+            "borde": "fondo",
+            "nombre_sufijo": "Fondo",
+            "x": 16.0,
+            "y": 544.0,
+            "w": 418.0,
+            "h": 16.0,
+            "largo": 418.0,
+            "ancho": 16.0,
+            "d": 16.0,
+            "espesor": 16.0,
+            "distancia_al_canto": 20.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": {
+              "frente_izquierda": "vertical_domina",
+              "frente_derecha": "vertical_domina",
+              "fondo_izquierda": "vertical_domina",
+              "fondo_derecha": "vertical_domina"
+            },
+            "offset_borde": 20.0
+          },
+          {
+            "borde": "izquierda",
+            "nombre_sufijo": "Izq",
+            "x": 0.0,
+            "y": 50.0,
+            "w": 16.0,
+            "h": 510.0,
+            "largo": 510.0,
+            "ancho": 16.0,
+            "d": 16.0,
+            "espesor": 16.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": {
+              "frente_izquierda": "vertical_domina",
+              "frente_derecha": "vertical_domina",
+              "fondo_izquierda": "vertical_domina",
+              "fondo_derecha": "vertical_domina"
+            },
+            "offset_borde": 0.0
+          },
+          {
+            "borde": "derecha",
+            "nombre_sufijo": "Der",
+            "x": 434.0,
+            "y": 50.0,
+            "w": 16.0,
+            "h": 510.0,
+            "largo": 510.0,
+            "ancho": 16.0,
+            "d": 16.0,
+            "espesor": 16.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "encuentro_esquinas": {
+              "frente_izquierda": "vertical_domina",
+              "frente_derecha": "vertical_domina",
+              "fondo_izquierda": "vertical_domina",
+              "fondo_derecha": "vertical_domina"
+            },
+            "offset_borde": 0.0
+          }
+        ],
+        "amarres": [
+          {
+            "nombre": "Zocalo_Amarre_01",
+            "rol": "amarre",
+            "borde": "amarre",
+            "x": 144.666667,
+            "y": 66.0,
+            "w": 16.0,
+            "h": 478.0,
+            "d": 16.0,
+            "espesor": 16.0
+          },
+          {
+            "nombre": "Zocalo_Amarre_02",
+            "rol": "amarre",
+            "borde": "amarre",
+            "x": 289.333333,
+            "y": 66.0,
+            "w": 16.0,
+            "h": 478.0,
+            "d": 16.0,
+            "espesor": 16.0
+          }
+        ],
+        "piezas": [
+          {
+            "nombre": "Zocalo_Frente",
+            "tipo": "panel",
+            "rol": "frente",
+            "borde": "frente",
+            "orientacion": "vertical",
+            "largo": 418.0,
+            "ancho": 100.0,
+            "espesor": 16.0,
+            "cantidad": 1,
+            "material_ref": "melamina_standar",
+            "cantos": {
+              "norte": "RIG",
+              "sur": "RIG",
+              "este": "RIG",
+              "oeste": "RIG"
+            },
+            "grupo": "",
+            "operacion": "Cantear por separado",
+            "largo_tira": "punta_a_punta",
+            "distancia_al_canto": 50.0
+          },
+          {
+            "nombre": "Zocalo_Trasero",
+            "tipo": "panel",
+            "rol": "trasero",
+            "borde": "fondo",
+            "orientacion": "vertical",
+            "largo": 418.0,
+            "ancho": 100.0,
+            "espesor": 16.0,
+            "cantidad": 1,
+            "material_ref": "melamina_standar",
+            "cantos": {
+              "norte": "FX",
+              "sur": "FX",
+              "este": "FX",
+              "oeste": "FX"
+            },
+            "grupo": "",
+            "operacion": "Cantear por separado",
+            "largo_tira": "marco_interior",
+            "distancia_al_canto": 20.0
+          },
+          {
+            "nombre": "Zocalo_Lat_Izq",
+            "tipo": "panel",
+            "rol": "lateral_izquierdo",
+            "borde": "izquierda",
+            "orientacion": "vertical",
+            "largo": 510.0,
+            "ancho": 100.0,
+            "espesor": 16.0,
+            "cantidad": 1,
+            "material_ref": "melamina_standar",
+            "cantos": {
+              "norte": "RIG",
+              "sur": "RIG",
+              "este": "FX",
+              "oeste": "RIG"
+            },
+            "grupo": "",
+            "operacion": "Cantear por separado",
+            "largo_tira": "marco_interior",
+            "distancia_al_canto": 0.0
+          },
+          {
+            "nombre": "Zocalo_Lat_Der",
+            "tipo": "panel",
+            "rol": "lateral_derecho",
+            "borde": "derecha",
+            "orientacion": "vertical",
+            "largo": 510.0,
+            "ancho": 100.0,
+            "espesor": 16.0,
+            "cantidad": 1,
+            "material_ref": "melamina_standar",
+            "cantos": {
+              "norte": "RIG",
+              "sur": "RIG",
+              "este": "RIG",
+              "oeste": "FX"
+            },
+            "grupo": "",
+            "operacion": "Cantear por separado",
+            "largo_tira": "marco_interior",
+            "distancia_al_canto": 0.0
+          },
+          {
+            "nombre": "Zocalo_Amarre_01",
+            "tipo": "panel",
+            "rol": "amarre",
+            "borde": "amarre",
+            "orientacion": "vertical",
+            "largo": 478.0,
+            "ancho": 100.0,
+            "espesor": 16.0,
+            "cantidad": 1,
+            "material_ref": "melamina_standar",
+            "cantos": {
+              "norte": "FX",
+              "sur": "FX",
+              "este": "FX",
+              "oeste": "FX"
+            },
+            "grupo": "",
+            "operacion": "Cantear por separado",
+            "largo_tira": "punta_a_punta",
+            "distancia_al_canto": 0.0
+          },
+          {
+            "nombre": "Zocalo_Amarre_02",
+            "tipo": "panel",
+            "rol": "amarre",
+            "borde": "amarre",
+            "orientacion": "vertical",
+            "largo": 478.0,
+            "ancho": 100.0,
+            "espesor": 16.0,
+            "cantidad": 1,
+            "material_ref": "melamina_standar",
+            "cantos": {
+              "norte": "FX",
+              "sur": "FX",
+              "este": "FX",
+              "oeste": "FX"
+            },
+            "grupo": "",
+            "operacion": "Cantear por separado",
+            "largo_tira": "punta_a_punta",
+            "distancia_al_canto": 0.0
+          }
+        ],
+        "resumen": "Zócalo: 450 × 580 × 100 mm (e=16, trasera=sí)\nZocalo_Frente: 418.0 × 100.0 × 16 mm (punta_a_punta, canto=50.0)\nZocalo_Trasero: 418.0 × 100.0 × 16 mm (marco_interior, canto=20.0)\nZocalo_Lat_Izq: 510.0 × 100.0 × 16 mm (marco_interior, canto=0.0)\nZocalo_Lat_Der: 510.0 × 100.0 × 16 mm (marco_interior, canto=0.0)\nZocalo_Amarre_01: 478.0 × 100.0 × 16 mm (punta_a_punta, canto=0.0)\nZocalo_Amarre_02: 478.0 × 100.0 × 16 mm (punta_a_punta, canto=0.0)",
+        "bordes": {
+          "frente": {
+            "activo": true,
+            "ancho": 16.0,
+            "distancia_al_canto": 50.0,
+            "largo_tira": "punta_a_punta",
+            "espesor": 16.0
+          },
+          "izquierda": {
+            "activo": true,
+            "ancho": 16.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "espesor": 16.0
+          },
+          "derecha": {
+            "activo": true,
+            "ancho": 16.0,
+            "distancia_al_canto": 0.0,
+            "largo_tira": "marco_interior",
+            "espesor": 16.0
+          },
+          "fondo": {
+            "activo": true,
+            "ancho": 16.0,
+            "distancia_al_canto": 20.0,
+            "largo_tira": "marco_interior",
+            "espesor": 16.0
+          }
+        }
+      }
+    }
+  ]
+}

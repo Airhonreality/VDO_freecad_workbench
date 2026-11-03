@@ -1,0 +1,43 @@
+{
+  "cavidad_interior": [
+    {
+      "entrada": {
+        "alto": 720.0,
+        "ancho": 600.0,
+        "espesor": 18.0
+      },
+      "salida": {
+        "x0": 18.0,
+        "z0": 18.0,
+        "ancho": 564.0,
+        "alto": 684.0
+      }
+    },
+    {
+      "entrada": {
+        "alto": 2100.0,
+        "ancho": 900.0,
+        "espesor": 18.0
+      },
+      "salida": {
+        "x0": 18.0,
+        "z0": 18.0,
+        "ancho": 864.0,
+        "alto": 2064.0
+      }
+    },
+    {
+      "entrada": {
+        "alto": 500.0,
+        "ancho": 400.0,
+        "espesor": 16.0
+      },
+      "salida": {
+        "x0": 16.0,
+        "z0": 16.0,
+        "ancho": 368.0,
+        "alto": 468.0
+      }
+    }
+  ]
+}

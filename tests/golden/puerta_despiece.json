@@ -2,63 +2,99 @@
   "calcular_dimensiones_batiente": [
     {
       "entrada": {
-        "ancho": 600,
-        "alto": 800,
-        "montaje": "parche"
+        "W_neto": 600,
+        "H_neto": 800,
+        "tipo_montaje": "parche"
       },
-      "error": "calcular_dimensiones_batiente() missing 3 required positional arguments: 'W_neto', 'H_neto', and 'tipo_montaje'"
+      "salida": {
+        "W": 614.0,
+        "H": 814.0,
+        "tipo_montaje": "parche",
+        "holgura": 2.0,
+        "solape": 8.0
+      }
     },
     {
       "entrada": {
-        "ancho": 600,
-        "alto": 800,
-        "montaje": "semiparche"
+        "W_neto": 600,
+        "H_neto": 800,
+        "tipo_montaje": "semiparche"
       },
-      "error": "calcular_dimensiones_batiente() missing 3 required positional arguments: 'W_neto', 'H_neto', and 'tipo_montaje'"
+      "salida": {
+        "W": 302.0,
+        "H": 814.0,
+        "tipo_montaje": "semiparche",
+        "holgura": 2.0,
+        "solape": 8.0
+      }
     },
     {
       "entrada": {
-        "ancho": 600,
-        "alto": 800,
-        "montaje": "embebida"
+        "W_neto": 600,
+        "H_neto": 800,
+        "tipo_montaje": "embebida"
       },
-      "error": "calcular_dimensiones_batiente() missing 3 required positional arguments: 'W_neto', 'H_neto', and 'tipo_montaje'"
+      "salida": {
+        "W": 596.0,
+        "H": 796.0,
+        "tipo_montaje": "embebida",
+        "holgura": 2.0,
+        "solape": 8.0
+      }
     }
   ],
   "cantidad_bisagras": [
     {
       "entrada": {
-        "alto": 900
+        "H": 900
       },
-      "error": "cantidad_bisagras() missing 1 required positional argument: 'H'"
+      "salida": 2
     },
     {
       "entrada": {
-        "alto": 1000
+        "H": 1000
       },
-      "error": "cantidad_bisagras() missing 1 required positional argument: 'H'"
+      "salida": 3
     },
     {
       "entrada": {
-        "alto": 1500
+        "H": 1500
       },
-      "error": "cantidad_bisagras() missing 1 required positional argument: 'H'"
+      "salida": 4
     }
   ],
   "posiciones_cazoleta": [
     {
       "entrada": {
-        "alto": 800,
+        "H": 800,
         "n_bisagras": 2
       },
-      "error": "posiciones_cazoleta() missing 1 required positional argument: 'H'"
+      "salida": [
+        100.0,
+        700.0
+      ]
     },
     {
       "entrada": {
-        "alto": 1200,
+        "H": 1200,
         "n_bisagras": 3
       },
-      "error": "posiciones_cazoleta() missing 1 required positional argument: 'H'"
+      "salida": [
+        100.0,
+        600.0,
+        1100.0
+      ]
+    },
+    {
+      "entrada": {
+        "H": 1500
+      },
+      "salida": [
+        100.0,
+        533.333333,
+        966.666667,
+        1400.0
+      ]
     }
   ]
 }

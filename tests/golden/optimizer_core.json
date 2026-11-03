@@ -1,0 +1,332 @@
+{
+  "expand_pieces": [
+    {
+      "entrada": [
+        {
+          "name": "Lateral",
+          "qty": 2,
+          "width": 580.0,
+          "length": 720.0,
+          "thickness": 18.0,
+          "material": "melamina_standar"
+        }
+      ],
+      "salida": [
+        {
+          "name": "Lateral #1",
+          "w": 580.0,
+          "h": 720.0,
+          "thickness": 18.0,
+          "material": "melamina_standar",
+          "cantos": {}
+        },
+        {
+          "name": "Lateral #2",
+          "w": 580.0,
+          "h": 720.0,
+          "thickness": 18.0,
+          "material": "melamina_standar",
+          "cantos": {}
+        }
+      ]
+    },
+    {
+      "entrada": [
+        {
+          "name": "Estante",
+          "qty": 3,
+          "width": 560.0,
+          "length": 600.0,
+          "thickness": 18.0,
+          "material": "melamina_standar",
+          "cantos": {
+            "frente": "FX"
+          }
+        },
+        {
+          "name": "Tapa",
+          "qty": 1,
+          "width": 600.0,
+          "length": 600.0,
+          "thickness": 18.0,
+          "material": "melamina_standar"
+        }
+      ],
+      "salida": [
+        {
+          "name": "Estante #1",
+          "w": 560.0,
+          "h": 600.0,
+          "thickness": 18.0,
+          "material": "melamina_standar",
+          "cantos": {
+            "frente": "FX"
+          }
+        },
+        {
+          "name": "Estante #2",
+          "w": 560.0,
+          "h": 600.0,
+          "thickness": 18.0,
+          "material": "melamina_standar",
+          "cantos": {
+            "frente": "FX"
+          }
+        },
+        {
+          "name": "Estante #3",
+          "w": 560.0,
+          "h": 600.0,
+          "thickness": 18.0,
+          "material": "melamina_standar",
+          "cantos": {
+            "frente": "FX"
+          }
+        },
+        {
+          "name": "Tapa",
+          "w": 600.0,
+          "h": 600.0,
+          "thickness": 18.0,
+          "material": "melamina_standar",
+          "cantos": {}
+        }
+      ]
+    },
+    {
+      "entrada": [
+        {
+          "name": "Fondo",
+          "qty": 1,
+          "width": 600.0,
+          "length": 700.0,
+          "thickness": 6.0,
+          "material": "fondo_mdf"
+        }
+      ],
+      "salida": [
+        {
+          "name": "Fondo",
+          "w": 600.0,
+          "h": 700.0,
+          "thickness": 6.0,
+          "material": "fondo_mdf",
+          "cantos": {}
+        }
+      ]
+    }
+  ],
+  "optimize": [
+    {
+      "entrada": {
+        "pieces": [
+          {
+            "name": "A",
+            "w": 600.0,
+            "h": 700.0,
+            "thickness": 18.0,
+            "material": "melamina_standar",
+            "cantos": {}
+          }
+        ],
+        "board_w": 2440.0,
+        "board_h": 1830.0
+      },
+      "salida": [
+        [
+          {
+            "index": 1,
+            "board_w": 2440.0,
+            "board_h": 1830.0,
+            "placements": [
+              {
+                "name": "A",
+                "material": "melamina_standar",
+                "thickness": 18.0,
+                "x": 10.0,
+                "y": 10.0,
+                "w": 600.0,
+                "h": 700.0,
+                "rotated": false
+              }
+            ],
+            "offcuts": [
+              {
+                "x": 614.0,
+                "y": 10.0,
+                "w": 1816.0,
+                "h": 1810.0
+              },
+              {
+                "x": 10.0,
+                "y": 714.0,
+                "w": 2420.0,
+                "h": 1106.0
+              }
+            ],
+            "used_area": 420000.0,
+            "efficiency": 9.406074
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "entrada": {
+        "pieces": [
+          {
+            "name": "Lateral",
+            "w": 580.0,
+            "h": 720.0,
+            "thickness": 18.0,
+            "material": "melamina_standar",
+            "cantos": {}
+          },
+          {
+            "name": "Estante #1",
+            "w": 560.0,
+            "h": 600.0,
+            "thickness": 18.0,
+            "material": "melamina_standar",
+            "cantos": {
+              "frente": "FX"
+            }
+          },
+          {
+            "name": "Estante #2",
+            "w": 560.0,
+            "h": 600.0,
+            "thickness": 18.0,
+            "material": "melamina_standar",
+            "cantos": {
+              "frente": "FX"
+            }
+          },
+          {
+            "name": "Fondo",
+            "w": 600.0,
+            "h": 700.0,
+            "thickness": 6.0,
+            "material": "fondo_mdf",
+            "cantos": {}
+          }
+        ],
+        "board_w": 2440.0,
+        "board_h": 1830.0
+      },
+      "salida": [
+        [
+          {
+            "index": 1,
+            "board_w": 2440.0,
+            "board_h": 1830.0,
+            "placements": [
+              {
+                "name": "Fondo",
+                "material": "fondo_mdf",
+                "thickness": 6.0,
+                "x": 10.0,
+                "y": 10.0,
+                "w": 600.0,
+                "h": 700.0,
+                "rotated": false
+              },
+              {
+                "name": "Lateral",
+                "material": "melamina_standar",
+                "thickness": 18.0,
+                "x": 10.0,
+                "y": 714.0,
+                "w": 580.0,
+                "h": 720.0,
+                "rotated": false
+              },
+              {
+                "name": "Estante #1",
+                "material": "melamina_standar",
+                "thickness": 18.0,
+                "x": 594.0,
+                "y": 714.0,
+                "w": 560.0,
+                "h": 600.0,
+                "rotated": false
+              },
+              {
+                "name": "Estante #2",
+                "material": "melamina_standar",
+                "thickness": 18.0,
+                "x": 614.0,
+                "y": 10.0,
+                "w": 560.0,
+                "h": 600.0,
+                "rotated": false
+              }
+            ],
+            "offcuts": [
+              {
+                "x": 1178.0,
+                "y": 10.0,
+                "w": 1252.0,
+                "h": 1810.0
+              },
+              {
+                "x": 1158.0,
+                "y": 614.0,
+                "w": 1272.0,
+                "h": 1206.0
+              },
+              {
+                "x": 614.0,
+                "y": 614.0,
+                "w": 1816.0,
+                "h": 100.0
+              },
+              {
+                "x": 594.0,
+                "y": 1318.0,
+                "w": 1836.0,
+                "h": 502.0
+              },
+              {
+                "x": 10.0,
+                "y": 1438.0,
+                "w": 2420.0,
+                "h": 382.0
+              }
+            ],
+            "used_area": 1509600.0,
+            "efficiency": 33.808116
+          }
+        ],
+        []
+      ]
+    },
+    {
+      "entrada": {
+        "pieces": [
+          {
+            "name": "Grande",
+            "w": 2500.0,
+            "h": 1900.0,
+            "thickness": 18.0,
+            "material": "melamina_standar",
+            "cantos": {}
+          }
+        ],
+        "board_w": 2440.0,
+        "board_h": 1830.0
+      },
+      "salida": [
+        [],
+        [
+          {
+            "name": "Grande",
+            "w": 2500.0,
+            "h": 1900.0,
+            "material": "melamina_standar"
+          }
+        ]
+      ]
+    }
+  ]
+}
