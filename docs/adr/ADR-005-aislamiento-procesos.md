@@ -48,3 +48,36 @@ Alternativas consideradas:
 - Plan de correcciones: F19.3 (H16) en `docs/PLAN_CORRECCIONES_F19.md`
 - Plan maestro: sin M-NN; decisión derivada de F19-D1 (un fallo nunca se oculta).
 - Commit: ver `git log` de `refactor/vdo-10`, subfase F19.2-bis F.
+
+## Revisión (F19.2-ter): el segfault seguía, y el disparador era el propio runner
+
+Medido: el commit `8ede619` declaró el segfault resuelto. No lo estaba. Con
+`freecadcmd tools/run_tests.py` cada una de 5 ejecuciones seguidas registró
+`Program received signal SIGSEGV` durante la finalización del intérprete
+(backtrace: `shiboken BindingManager::~BindingManager` → `QWidget::~QWidget`).
+
+Reproducción aislada, sin el runner:
+- Cada módulo de test que usa Qt, en su propio proceso: `rc=0`, sin SIGSEGV.
+- Todos los módulos de test en un proceso con un cargador propio que termina de
+  forma normal: `rc=0`, sin SIGSEGV.
+- Ese mismo cargador con `sys.exit(0)` o `sys.exit(1)` al final: SIGSEGV en
+  ambos casos.
+
+Causa: `tools/run_tests.py` terminaba con `sys.exit(main())` (introducido en
+`c7ad8fd`, para que el código de salida reflejara los fallos). Salir con
+`SystemExit` mientras hay widgets PySide vivos dispara la destrucción de
+shiboken durante la finalización, y ahí cae.
+
+Decisión: el runner escribe el informe, vacía stdout/stderr y termina con
+`os._exit(codigo)`. El código de salida sigue siendo el de los resultados
+(0 si todo pasa, 1 si hay FALLO, ERROR o NO_EJECUTADO). Con `os._exit` no se
+oculta ningún fallo: los resultados ya están en disco cuando termina `main()`.
+Se omite solo la finalización del intérprete, que no forma parte de ningún test.
+
+Medido tras el cambio: 5 de 5 ejecuciones de nivel 2 sin SIGSEGV y con código
+1 (los 3 FALLO de `test_arquitectura`, que son trabajo pendiente de F19.4). Un
+código 0 limpio solo se podrá medir cuando F19.4 cierre esos fallos.
+
+Lo que no se hace: no se excluye ningún test ni se aísla cada módulo en su
+propio proceso. El aislamiento por proceso sigue siendo una opción si el
+segfault vuelve a aparecer con el runner en `os._exit`.

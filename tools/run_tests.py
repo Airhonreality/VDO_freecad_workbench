@@ -102,4 +102,10 @@ def main():
 
 
 # Sin guard __name__: freecadcmd ejecuta el script con otro __name__ y no entraría.
-sys.exit(main())
+# Salida con os._exit tras vaciar la salida: con sys.exit() y widgets PySide vivos,
+# la finalización del intérprete segfaultea (SIGSEGV 139 o señal en el log; ver
+# ADR-005). El informe ya está escrito en disco cuando main() devuelve.
+_codigo_salida = main()
+sys.stdout.flush()
+sys.stderr.flush()
+os._exit(_codigo_salida)
