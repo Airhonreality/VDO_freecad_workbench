@@ -12,12 +12,13 @@
 |---|---|---|
 | Premisas y rama | ✅ | Ver "Comprobaciones iniciales" |
 | Segfault al salir (pre-M0) | ✅ | `c1fa9d2` (en `refactor/vdo-10`) |
-| **M0** — Congelar y medir | ⚠️ **parcial** | Goldens: 13 ficheros para 15 de 19 módulos. Faltan 2 decisiones humanas (ver `PENDIENTES_HUMANO.md`, P-01 a P-03). |
+| **M0** — Congelar y medir | ⚠️ **parcial** | Goldens: 14 ficheros que cubren 17 de 19 módulos. Quedan 2 sin función de cálculo (P-01) y la aprobación de goldens (P-05). |
 | M1 a M11 | ⏸ no iniciadas | El plan exige cerrar M0 antes de empezar M1. |
 
-**Bloqueo:** el gate de M0 pide "los 19 goldens existen". Hay 13 ficheros: 8 de dominio ya existían, 4 nuevos, y `creacion_modulos.json` cubre 5 flujos.
-Cuatro módulos son flujos ya cubiertos por `creacion_modulos`. Dos no tienen función de cálculo (`guardian`, `nesting_presets`). Uno (`module_props`) necesita serializar `App.Rotation`.
-Cerrar el gate exige decidir si los dos sin cálculo cuentan como N/A (P-01) y si se amplía el serializador (P-02).
+**Bloqueo:** el gate de M0 pide "los 19 goldens existen". Hoy hay 14 ficheros:
+- 13 de dominio (incluye `module_props`, con golden desde `b78de04` y reubicación documentada).
+- `creacion_modulos.json` cubre además `panel_core`, `cajon_core`, `puerta_core` y `coco_core`.
+- Quedan `guardian` y `nesting_presets`, que no tienen función de cálculo. Cerrar el gate exige decidir si cuentan como N/A (P-01).
 
 ---
 
@@ -53,6 +54,7 @@ Cambios de otra sesión que **no** son míos (ver `PENDIENTES_HUMANO.md`, P-04):
 | `fc224dd` | M0 | `docs/metricas/minimalismo_base.json` medido |
 | `762d768` | M0 | Goldens: herramienta, entradas de 19 módulos, fixtures de layout |
 | `692b76a` | M0 | 13 goldens desde `b78de04` + `docs/metricas/goldens_origen.md` |
+| `4e29c04` | M0 | `module_props` con golden (serialización de `App.Rotation`, reubicación de `rotacion_z`) |
 
 Previos en la rama (ya en `refactor/vdo-10`): `e10cd12` (plan rector), `c1fa9d2` (segfault).
 
@@ -162,7 +164,7 @@ Entradas en error que quedan (comportamiento registrado, no ocultado):
 | Criterio | Resultado | Evidencia |
 |---|---|---|
 | `minimalismo_base.json` existe | ✅ | `fc224dd` |
-| 19 goldens existen | ⚠️ **no cumplido** | 13 ficheros: 12 dominio + 1 creación (5 flujos). Ver P-01, P-02. |
+| 19 goldens existen | ⚠️ **17 de 19** | 14 ficheros: 13 dominio + creación (5 flujos, cubre 4 módulos). Quedan `guardian` y `nesting_presets` (P-01). |
 | Nivel 2 sin SIGSEGV en 5 de 5 | ✅ | 5 de 5, SIGSEGV=0 |
 | Diferencias documentadas | ✅ | Interfaz en `goldens_origen.md`; sin diferencias de comportamiento |
 
@@ -171,7 +173,8 @@ Entradas en error que quedan (comportamiento registrado, no ocultado):
 ## Abierto (M0)
 
 - **P-01**: aprobar `guardian` y `nesting_presets` como N/A (sin función de cálculo).
-- **P-02**: `module_props.rotacion_z` necesita serializar `App.Rotation`. Pendiente de decidir si se implementa en `golden.py` o se acepta como N/A.
+- **P-02**: resuelto. `App.Rotation` se serializa y `module_props` tiene golden.
+- **P-03**: aceptar que los 4 flujos de creación se den por cubiertos con `creacion_modulos.json`.
 - **P-05**: aprobar los 3 goldens sustituidos (`creacion_modulos`, `coco_spaces`, `puerta_despiece`).
 - **P-04**: destino de los cambios de otra sesión en tests (`os._exit` → `sys.exit`).
 - Los planes anteriores siguen sin archivar (MN-13, M11).

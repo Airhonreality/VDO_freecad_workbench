@@ -28,7 +28,7 @@ Las fechas son **propuesta del ejecutor**, a confirmar por el usuario. Las que d
 
 | # | Ítem | Causa | Responsable | Fecha |
 |---|---|---|---|---|
-| D-01 | Golden de `module_props.rotacion_z` | El serializador no representa `App.Rotation`. Ver P-02 en `PENDIENTES_HUMANO.md`. | usuario (decidir) · ejecutor (implementar si se aprueba) | 2026-11-09 |
+| D-01 | ~~Golden de `module_props.rotacion_z`~~ | Resuelto: serializador de `App.Rotation` y golden con reubicación. Ver P-02. | ejecutor | 2026-11-02 |
 | D-02 | Golden de `guardian` y `nesting_presets` | Sin función de cálculo. Ver P-01. | usuario | 2026-11-09 |
 | D-03 | Método de conteo del plan §1 | El plan dice 88 archivos y 23.920 líneas; `minimalismo.py` mide 85 y 23.608. Hay que fijar un solo método. | usuario | 2026-11-09 |
 | D-04 | `ruff check` = 288 con `.venv` (plan dice 259) | Diferencia de versión o de alcance de ruff. Hay que fijar versión y alcance en `pyproject.toml`. | ejecutor | 2026-11-16 (M9) |
@@ -36,3 +36,4 @@ Las fechas son **propuesta del ejecutor**, a confirmar por el usuario. Las que d
 | D-06 | Cambios de tests de otra sesión sin commitear | `os._exit` → `sys.exit` en `test_gui_wiring.py` y `test_single_dock_convergence.py`, sin verificar. Ver P-04. | usuario | 2026-11-09 |
 | D-07 | Golden de `frames.interpretar_lados` con 1 entrada en error | Entrada JSON inválida. Comportamiento de `b78de04` y actual. Se conserva como caso de error. | ejecutor | M1 |
 | D-08 | Planes anteriores sin archivar | MN-13 pide moverlos a `docs/archivo/`. Se hace en M11. | ejecutor | M11 |
+| D-09 | `rotacion_z` duplicado | Dos definiciones actuales (`core/vdo_helpers.py` y `cad/propiedades.py`), misma lógica. El mensaje de `b2583a6` dice "un solo rotacion_z". Se elimina en M2. | ejecutor | M2 |

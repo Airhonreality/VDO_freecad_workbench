@@ -13,7 +13,11 @@ Orden por urgencia. Cada entrada: qué se necesita, por qué, la opción que rec
 - **Recomiendo:** aceptar N/A con motivo escrito. Si quieres que `guardian` tenga golden, debe ser un volcado de los parámetros creados, y tendría que hacerlo a mano en M0.
 - **Bloquea:** el cierre formal de M0 (gate de 19 goldens).
 
-## P-02 — ¿Se amplía el serializador para `module_props.rotacion_z`?
+## P-02 — ~~¿Se amplía el serializador para `module_props.rotacion_z`?~~ **Resuelto por el ejecutor**
+
+Implementado: `_serializar` representa `App.Rotation` por eje y ángulo. Golden de 3 entradas, desde `b78de04`, verificado OK bajo FreeCAD. Ver `goldens_origen.md`, sección de reubicación.
+
+(Texto original, para historial:)
 
 - **Qué:** `rotacion_z(grados)` devuelve `App.Rotation`. `golden.py::_serializar` solo ve el nombre del tipo (`"Rotation"`), así que no protege nada.
 - **Opciones:**

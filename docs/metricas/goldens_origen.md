@@ -60,17 +60,19 @@ freecadcmd tools/auditoria/golden_creacion.py
 | `coco_spaces.json` | 3 | 0 | **cambiado**: el anterior tenía 3 de 3 entradas en error (firma incorrecta) |
 | `creacion_modulos.json` | 15 (5 flujos × 3) | 0 | **sustituido**: el anterior tenía otro esquema y no tenía generador en el repo |
 | `zocalo_core.json` | 3 | 0 | nuevo |
+| `module_props.json` | 3 | 0 | nuevo (`rotacion_z`, serializado como eje y ángulo) |
 | `layout.json` | 3 | 0 | nuevo |
 | `spaces.json` | 3 | 0 | nuevo |
 | `optimizer_core.json` | 6 | 0 | nuevo |
 
-Total: 119 entradas en 13 ficheros.
+Total: 122 entradas en 14 ficheros.
 
 ## Verificación contra el código actual
 
 | Golden | Resultado con el código actual |
 |---|---|
-| los 12 de dominio (`golden.py --verificar <modulo>`) | OK, 0 diferencias |
+| los 12 de dominio sin FreeCAD (`golden.py --verificar <modulo>`) | OK, 0 diferencias |
+| `module_props` (con FreeCAD, `GOLD_MODS=module_props freecadcmd ...`) | OK, 0 diferencias, con reubicación de `rotacion_z` (ver abajo) |
 | creación (`golden_creacion.py`) | 0 diferencias en 15 entradas |
 
 ## Módulos sin golden y motivo
@@ -80,7 +82,13 @@ Total: 119 entradas en 13 ficheros.
 | `panel_core`, `cajon_core`, `puerta_core`, `coco_core` | Son flujos de creación. Cubiertos por `creacion_modulos.json`. |
 | `guardian` | Sin función de cálculo: solo asegura parámetros en el documento. |
 | `nesting_presets` | Sin funciones públicas (solo datos). |
-| `module_props` | Su única función pura, `rotacion_z`, devuelve `App.Rotation`. El serializador no la representa todavía. Ver `DEUDA_TECNICA.md`. |
+| — | `module_props` ya tiene golden (ver tabla). |
+
+## Reubicación de funciones
+
+| Función | Módulo en `b78de04` | Módulo actual | Efecto |
+|---|---|---|---|
+| `rotacion_z` | `core/vdo_module_props.py` | `core/vdo_helpers.py` **y** `cad/propiedades.py` (dos copias) | El golden se verifica contra `vdo_helpers`. Cuando el módulo original no tiene la función, `golden.py` usa `RELOCALIZADAS`. Comportamiento igual: 0 diferencias. Duplicado registrado en `DEUDA_TECNICA.md` (D-09). |
 
 ## Lo que no está verificado
 
