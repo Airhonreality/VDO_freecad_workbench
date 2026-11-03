@@ -17,3 +17,9 @@ def _get_part():
     """Importa Part de forma perezosa."""
     import Part
     return Part
+
+
+def rotacion_z(grados):
+    """Rotación alrededor de Z; el ángulo entra en grados."""
+    app = _get_app()
+    return app.Rotation(app.Vector(0.0, 0.0, 1.0), float(grados))

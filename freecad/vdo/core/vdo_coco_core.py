@@ -12,13 +12,7 @@ from freecad.vdo.core import vdo_finish as VDO_FINISH
 from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
-from freecad.vdo.core.vdo_helpers import _get_app, _get_part
-
-
-def _rotacion_z(grados):
-    """Rotación alrededor de Z; el ángulo entra en grados (App.Rotation)."""
-    app = _get_app()
-    return app.Rotation(app.Vector(0.0, 0.0, 1.0), float(grados))
+from freecad.vdo.core.vdo_helpers import _get_app, _get_part, rotacion_z
 
 
 def _modificador_mapa(mapa, clave):
@@ -621,7 +615,7 @@ def make_coco(doc, configuracion):
         configuracion.get("lados_apoyados", [VDO_FR.FONDO]))
     if rotacion:
         obj.Placement = _get_app().Placement(
-            obj.Placement.Base, _rotacion_z(rotacion))
+            obj.Placement.Base, rotacion_z(rotacion))
 
     doc.recompute()
     _get_app().Console.PrintMessage(

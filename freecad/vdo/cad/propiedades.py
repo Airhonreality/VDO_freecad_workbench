@@ -7,6 +7,8 @@ No contiene lógica de dominio: solo adapta datos de core/ al documento.
 
 from __future__ import annotations
 
+from typing import Any
+
 import FreeCAD as App
 
 from freecad.vdo.core import vdo_frames as VDO_FR
@@ -92,7 +94,7 @@ def aplicar_rotacion(obj, grados):
 
 
 
-def ocultar_vista(obj):
+def ocultar_vista(obj: Any) -> None:
     """Oculta la vista del objeto mientras su panel de creación está abierto.
 
     Escritura de presentación sobre el objeto FreeCAD: vive en cad/ (D6).

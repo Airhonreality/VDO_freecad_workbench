@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Callable
+from typing import Any
 
 from freecad.vdo.app.puertos import Documento
 from freecad.vdo.cad.propiedades import add_common_props as _cad_add_common_props
@@ -44,11 +45,11 @@ def _nombre_unico(doc: Documento, base: str) -> str:
 
 def crear_modulo_interactivo(
     module_key: str,
-    config: dict | None = None,
+    config: dict[str, Any] | None = None,
     *,
-    abrir_panel: Callable | None = None,
-    colocar: Callable | None = None,
-):
+    abrir_panel: Callable[..., None] | None = None,
+    colocar: Callable[..., None] | None = None,
+) -> Any:
     """Crea un módulo VDO, abre su panel y, al aceptarlo, lo coloca con clic.
 
     abrir_panel(spec, obj, on_accept, on_cancel): muestra el panel de configuración.
@@ -80,14 +81,14 @@ def crear_modulo_interactivo(
     if obj is None:
         raise RuntimeError("La factory no devolvió un objeto")
 
-    def cancelar():
+    def cancelar() -> None:
         if tx_propia:
             doc.abortTransaction()
         if doc.getObject(obj.Name) is not None:
             doc.removeObject(obj.Name)
         doc.recompute()
 
-    def confirmar():
+    def confirmar() -> None:
         doc.recompute()
         if tx_propia:
             doc.commitTransaction()
@@ -104,14 +105,14 @@ def crear_modulo_interactivo(
 
     estado = {"aceptado": False}
 
-    def on_accept():
+    def on_accept() -> None:
         # Un panel puede disparar Aceptar dos veces: solo la primera cuenta.
         if estado["aceptado"]:
             return
         estado["aceptado"] = True
         colocar(obj, on_done=confirmar, on_cancel=cancelar)
 
-    def on_cancel():
+    def on_cancel() -> None:
         if estado["aceptado"]:
             return
         estado["aceptado"] = True

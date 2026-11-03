@@ -9,6 +9,7 @@ colocación): core/ no debe conocer objetos FreeCAD.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 import FreeCAD as App
 
@@ -16,7 +17,7 @@ from freecad.vdo.cad.propiedades import rotacion_z
 from freecad.vdo.core.vdo_module_props import ANCLAJE_DEFAULT
 
 
-def leer_rotacion(obj):
+def leer_rotacion(obj: Any) -> float:
     """Devuelve la rotación en grados (lee el atributo del objeto)."""
     try:
         return float(getattr(obj, "VDO_RotacionZ", 0.0))
@@ -24,7 +25,7 @@ def leer_rotacion(obj):
         return 0.0
 
 
-def ancla_local(obj, anclaje=None):
+def ancla_local(obj: Any, anclaje: str | None = None) -> Any:
     """Devuelve el punto local (Vector) de la esquina de anclaje.
 
     Convención de ejes:
@@ -63,11 +64,11 @@ def ancla_local(obj, anclaje=None):
 class PlanColocacion:
     """Rotación y anclaje de un módulo fijados antes de empezar a colocarlo."""
 
-    rot: object  # App.Rotation
-    ancla: object  # App.Vector, punto local del anclaje
+    rot: Any  # App.Rotation
+    ancla: Any  # App.Vector, punto local del anclaje
 
 
-def preparar_colocacion(obj, anclaje=None) -> PlanColocacion:
+def preparar_colocacion(obj: Any, anclaje: str | None = None) -> PlanColocacion:
     """Lee la rotación del objeto y calcula su punto de anclaje local."""
     rot = rotacion_z(leer_rotacion(obj))
     ancla = ancla_local(
@@ -75,7 +76,7 @@ def preparar_colocacion(obj, anclaje=None) -> PlanColocacion:
     return PlanColocacion(rot=rot, ancla=ancla)
 
 
-def aplicar_colocacion(obj, punto, plan: PlanColocacion) -> None:
+def aplicar_colocacion(obj: Any, punto: Any, plan: PlanColocacion) -> None:
     """Sitúa el objeto para que su anclaje quede en ``punto``."""
     base = punto - plan.rot.multVec(plan.ancla)
     obj.Placement = App.Placement(base, plan.rot)

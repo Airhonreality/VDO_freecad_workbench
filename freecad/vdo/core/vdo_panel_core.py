@@ -21,15 +21,9 @@ from freecad.vdo.cad.geometria import forma_ref
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
-from freecad.vdo.core.vdo_helpers import _get_app, _get_part
+from freecad.vdo.core.vdo_helpers import _get_app, _get_part, rotacion_z
 
 CANTOS_VALIDOS = ("RIG", "FX", "SMRG")
-
-
-def _rotacion_z(grados):
-    """Rotación alrededor de Z; el ángulo entra en grados (App.Rotation)."""
-    app = _get_app()
-    return app.Rotation(app.Vector(0.0, 0.0, 1.0), float(grados))
 
 
 def add_reengrose_props(obj):
@@ -341,7 +335,7 @@ def crear_pieza(doc, configuracion):
 
     if rotacion:
         panel.Placement = _get_app().Placement(
-            panel.Placement.Base, _rotacion_z(rotacion))
+            panel.Placement.Base, rotacion_z(rotacion))
     elif es_nuevo:
         panel.Placement = _get_app().Placement()
 

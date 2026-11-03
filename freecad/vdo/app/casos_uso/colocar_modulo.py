@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from freecad.vdo.app.dto import ColocarModuloDTO, ColocarModuloResultado
 from freecad.vdo.cad.colocacion import PlanColocacion
 from freecad.vdo.cad.colocacion import aplicar_colocacion as _cad_aplicar
@@ -28,11 +30,11 @@ def colocar_modulo(doc, dto: ColocarModuloDTO) -> ColocarModuloResultado:
 # Colocación interactiva (la UI llama a estas dos funciones; no importa cad/).
 # ---------------------------------------------------------------------
 
-def preparar_colocacion(obj, anclaje=None) -> PlanColocacion:
+def preparar_colocacion(obj: Any, anclaje: str | None = None) -> PlanColocacion:
     """Fija la rotación y el anclaje del módulo antes de colocarlo con clic."""
     return _cad_preparar(obj, anclaje)
 
 
-def colocar_en_punto(obj, punto, plan: PlanColocacion) -> None:
+def colocar_en_punto(obj: Any, punto: Any, plan: PlanColocacion) -> None:
     """Sitúa el módulo para que su anclaje quede en ``punto``."""
     _cad_aplicar(obj, punto, plan)

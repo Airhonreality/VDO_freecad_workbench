@@ -12,14 +12,8 @@ import json
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
-from freecad.vdo.core.vdo_helpers import _get_app, _get_part
+from freecad.vdo.core.vdo_helpers import _get_app, _get_part, rotacion_z
 from freecad.vdo.core.vdo_layout import AXIS_X, Layout, Track, resolve_layout
-
-
-def _rotacion_z(grados):
-    """Rotación alrededor de Z; el ángulo entra en grados (App.Rotation)."""
-    app = _get_app()
-    return app.Rotation(app.Vector(0.0, 0.0, 1.0), float(grados))
 
 
 class ZocaloError(ValueError):
@@ -404,7 +398,7 @@ def make_zocalo(doc, configuracion):
         "anclaje", VDO_MOD.ANCLAJE_DEFAULT)
     if rotacion:
         obj.Placement = _get_app().Placement(
-            obj.Placement.Base, _rotacion_z(rotacion))
+            obj.Placement.Base, rotacion_z(rotacion))
 
     doc.recompute()
     _get_app().Console.PrintMessage(
