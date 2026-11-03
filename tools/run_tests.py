@@ -102,10 +102,12 @@ def main():
 
 
 # Sin guard __name__: freecadcmd ejecuta el script con otro __name__ y no entraría.
-# Salida con os._exit tras vaciar la salida: con sys.exit() y widgets PySide vivos,
-# la finalización del intérprete segfaultea (SIGSEGV 139 o señal en el log; ver
-# ADR-005). El informe ya está escrito en disco cuando main() devuelve.
+# Antes de salir se liberan los widgets Qt con Python vivo (ADR-005). No se usa atexit:
+# bajo freecadcmd no se ejecuta.
 _codigo_salida = main()
+from tests.soporte.qt import liberar_widgets  # noqa: E402 (requiere raiz en sys.path, puesto por main)
+
+liberar_widgets()
 sys.stdout.flush()
 sys.stderr.flush()
-os._exit(_codigo_salida)
+sys.exit(_codigo_salida)

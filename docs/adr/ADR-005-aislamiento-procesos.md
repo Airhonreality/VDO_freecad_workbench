@@ -81,3 +81,37 @@ código 0 limpio solo se podrá medir cuando F19.4 cierre esos fallos.
 Lo que no se hace: no se excluye ningún test ni se aísla cada módulo en su
 propio proceso. El aislamiento por proceso sigue siendo una opción si el
 segfault vuelve a aparecer con el runner en `os._exit`.
+
+## Revisión (F19.2-quater, plan minimalismo M0): causa real y `os._exit` retirado
+
+Lo que F19.2-ter afirmó arriba era incorrecto. Medido de nuevo en M0:
+
+- `sys.exit` **no** era la causa. Un módulo que termina con `sys.exit(0)` y
+  no deja widgets vivos sale con rc=0.
+- Los manejadores de `atexit` **no se ejecutan** bajo `freecadcmd` (ningún
+  `print` registrado en `atexit` aparece, en 5 corridas). La limpieza del
+  apartado de F19.2-bis nunca corrió. El crash ocurre en la destrucción
+  estática de shiboken (`Shiboken::BindingManager::~BindingManager` →
+  `QWidget::~QWidget`), que va después.
+- Causa verificada: `deleteLater()` seguido de `processEvents()` **no procesa**
+  los `DeferredDelete` fuera de un bucle de eventos. Los widgets quedaban vivos.
+  Medido en la suite completa al terminar: 464 widgets de nivel superior y 3559
+  en total vivos. Los tests que más lo provocan son los que crean un panel de
+  tarea (`CocoUnifiedTaskPanel`, `PanelTaskPanel`) sobre un documento que
+  `tearDown` cierra, sin cerrar antes el panel.
+
+Cambios aplicados:
+
+1. `tests/soporte/qt.py::liberar_widgets()` cierra y libera los widgets de
+   nivel superior en hasta 20 pasadas, con `sendPostedEvents(None,
+   DeferredDelete)`. Sustituye al `atexit`.
+2. `tools/run_tests.py` llama a `liberar_widgets()` con Python vivo y después
+   sale con `sys.exit(codigo)`. Ya no usa `os._exit`.
+
+Medido (nivel 2, `freecadcmd tools/run_tests.py`, 5 de 5 ejecuciones):
+SIGSEGV = 0 en las 5. Resultado: `ejecutados=260 fallos=3 errores=0 skip=26`.
+El código de salida es 1 por los 3 FALLO de `tests/test_arquitectura.py`, que
+son violaciones reales de MN-03 y se corrigen en M5. Código 0 limpio queda
+pendiente de M5, no de este ADR.
+
+Medido (nivel 1, `python3 -I`): `ejecutados=262 fallos=3 skip=107`.
