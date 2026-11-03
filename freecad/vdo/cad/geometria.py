@@ -10,7 +10,7 @@ from __future__ import annotations
 import FreeCAD as App
 import Part
 
-_DIM_SOL = {"x": "w", "y": "h", "z": "d"}
+from freecad.vdo.core.vdo_helpers import DIMENSION_POR_EJE
 
 
 def _extruir_poligono(puntos, eje, largo):
@@ -51,9 +51,9 @@ def forma_ref(ref: dict) -> object | None:
             puntos = [App.Vector(float(p[0]), float(p[1]), float(p[2]))
                       for p in poly]
             eje = str(ref.get("eje_extrusion", "z")).lower()
-            if eje not in _DIM_SOL:
+            if eje not in DIMENSION_POR_EJE:
                 eje = "z"
-            dim = _DIM_SOL[eje]
+            dim = DIMENSION_POR_EJE[eje]
             largo = float(ref.get(dim, ref.get("espesor", 0.0)))
             if largo > 1e-9:
                 solido = _extruir_poligono(puntos, eje, largo)

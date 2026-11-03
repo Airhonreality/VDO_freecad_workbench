@@ -6,6 +6,10 @@ core no tenga que definir sus propias copias de ``_get_app`` y ``_get_part``.
 
 from __future__ import annotations
 
+# Eje local -> campo de dimensión de la caja (x = largo "w", y = ancho "h", z = espesor "d").
+# Lo usan core/vdo_reengrose y cad/geometria: una sola definición (M2, H-06).
+DIMENSION_POR_EJE = {"x": "w", "y": "h", "z": "d"}
+
 
 def _get_app():
     """Importa FreeCAD de forma perezosa."""

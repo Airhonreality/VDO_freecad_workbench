@@ -15,6 +15,7 @@ Nota: ``forma_ref`` (Part.Shape) se movió a ``freecad.vdo.cad.geometria``
 import json
 
 from freecad.vdo.core.vdo_finish import BORDES, CANTOS_VALIDOS
+from freecad.vdo.core.vdo_helpers import DIMENSION_POR_EJE
 
 # Motor puro: no importa FreeCAD ni Part. La parte CAD vive en cad/geometria.py.
 
@@ -1373,9 +1374,6 @@ def calcular_vano_neto_con_reengrose(vano_original, division_con_reengrose):
 # Anclaje topologico y encuentros entre tiras
 # =====================================================================
 _EJES = ("x", "y", "z")
-_DIM = {"x": "w", "y": "h", "z": "d"}
-
-
 def _aabb_dict(caja):
     x, y, z, w, h, d = _aabb(caja)
     return {"x": x, "y": y, "z": z, "w": w, "h": h, "d": d}
@@ -1463,7 +1461,7 @@ def recortar_tira_contra_tira(perdedora, ganadora, tolerancia=1e-6):
 
     base = _aabb_dict(perdedora)
     eje = _eje_mayor(_aabb(perdedora))
-    dim = _DIM[eje]
+    dim = DIMENSION_POR_EJE[eje]
     idx = _EJES.index(eje)
     inicio = base[eje]
     fin = inicio + base[dim]
@@ -1622,9 +1620,9 @@ def _retroceso_panel(panel_t, tira_t, eje_normal, eje_ancho):
             return _aabb_dict(panel)
         if (t0h + t1h) / 2.0 < (p0h + p1h) / 2.0:
             panel[eje] = corte1
-            panel[_DIM[eje]] = max(0.0, p1h - corte1)
+            panel[DIMENSION_POR_EJE[eje]] = max(0.0, p1h - corte1)
         else:
-            panel[_DIM[eje]] = max(0.0, corte0 - p0h)
+            panel[DIMENSION_POR_EJE[eje]] = max(0.0, corte0 - p0h)
         return _aabb_dict(panel)
 
     if t0 <= p0 + tol:
@@ -1632,14 +1630,14 @@ def _retroceso_panel(panel_t, tira_t, eje_normal, eje_ancho):
         # de su cara posterior y conserva la cota hasta el fondo.
         nuevo = max(p0, t1)
         panel[a] = nuevo
-        panel[_DIM[a]] = max(0.0, p1 - nuevo)
+        panel[DIMENSION_POR_EJE[a]] = max(0.0, p1 - nuevo)
     else:
         # La tira esta delante del panel: retroceder el origen hasta su
         # cara posterior. Antes se asignaba la profundidad igual al offset,
         # lo que colapsaba la repisa a una tira flotante.
         nuevo = min(p1, t1)
         panel[a] = nuevo
-        panel[_DIM[a]] = max(0.0, p1 - nuevo)
+        panel[DIMENSION_POR_EJE[a]] = max(0.0, p1 - nuevo)
     return _aabb_dict(panel)
 
 
