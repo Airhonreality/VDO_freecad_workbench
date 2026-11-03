@@ -7,6 +7,13 @@
 
 from __future__ import annotations
 
+from freecad.vdo.core.aperturas import (
+    DESCUENTO_ALTO as APERTURA_DESCUENTO_ALTO,
+)
+from freecad.vdo.core.aperturas import (
+    SISTEMAS_APERTURA,
+    normalizar_apertura,
+)
 from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
@@ -32,7 +39,6 @@ from freecad.vdo.core.vdo_hardware_hub import (
     resolve_hinge,
     resolve_sliding,
 )
-from freecad.vdo.datos.valores import TIRADOR
 
 # ---------------------------------------------------------------------
 # Constantes de taller (fuente única: vdo_facade_contract.py)
@@ -284,47 +290,8 @@ def calcular_corrediza(inner_w, inner_h, tipo_mueble="closet", n_hojas=2,
 # D. Sistemas de Apertura (consumen vdo_facade_contract.py)
 # =====================================================================
 
-# Nombres legados mantenidos para compatibilidad con el resto del ecosistema.
-SISTEMAS_APERTURA = (
-    APERTURA_TIRADOR,
-    APERTURA_45_GRADOS,
-    APERTURA_GOLA,
-    APERTURA_PUSH_OPEN,
-)
-
-# Mapeo de nombres de visualización (UI) y nombres legados a claves del contrato.
-# Cubre tanto los valores del enum de vdo_puerta_core.py como los usados
-# históricamente en vdo_puerta_task.py.
-APERTURA_LEGADO_A_CONTRATO = {
-    # Nombres de visualización del enum SistemaApertura (vdo_puerta_core.py)
-    "tirador tradicional": APERTURA_TIRADOR,
-    "inglete 45 grados": APERTURA_45_GRADOS,
-    "perfil gola": APERTURA_GOLA,
-    "push to open": APERTURA_PUSH_OPEN,
-    # Nombres legacy de vdo_puerta_task.py (antes del contrato)
-    TIRADOR: APERTURA_TIRADOR,
-    "fachada_a_45_grados": APERTURA_45_GRADOS,
-    "perfil_gola_aluminio": APERTURA_GOLA,
-    "push_open_mecanico": APERTURA_PUSH_OPEN,
-    "inglete_45": APERTURA_45_GRADOS,
-    "gola_aluminio": APERTURA_GOLA,
-    "push_open": APERTURA_PUSH_OPEN,
-}
-
-# Descuento de altura por sistema (según el contrato central)
-APERTURA_DESCUENTO_ALTO = {
-    APERTURA_TIRADOR: 0.0,
-    APERTURA_45_GRADOS: 0.0,
-    APERTURA_GOLA: GOLA_DESCUENTO_ALTURA_DEFAULT,
-    APERTURA_PUSH_OPEN: 0.0,
-}
-
-
-def _normalizar_apertura(tipo_apertura: str) -> str:
-    """Normaliza un nombre de apertura (legado o canonico) a la clave del contrato."""
-    tipo_apertura = str(tipo_apertura).strip().lower()
-    return APERTURA_LEGADO_A_CONTRATO.get(tipo_apertura, tipo_apertura)
-
+# Tabla única de sistemas de apertura en core/aperturas (MN-06). Aquí solo se
+# re-exportan los nombres que usan los consumidores.
 
 def ajuste_altura_apertura(tipo_apertura, H):
     """Devuelve la altura ajustada segun el sistema de apertura.
@@ -332,7 +299,7 @@ def ajuste_altura_apertura(tipo_apertura, H):
     Consume `aplicar_sistema_apertura` de vdo_facade_contract.py.
     Retorna (h_ajustada, descuento).
     """
-    contrato = _normalizar_apertura(tipo_apertura)
+    contrato = normalizar_apertura(tipo_apertura)
     h_ajustada, _operacion = aplicar_sistema_apertura(
         float(H), contrato,
         descuento_gola=GOLA_DESCUENTO_ALTURA_DEFAULT)

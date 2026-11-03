@@ -15,8 +15,23 @@
 
 from types import MappingProxyType
 
+from freecad.vdo.core.vdo_facade_contract import (
+    APERTURA_45_GRADOS,  # noqa: F401 (re-exportado: lo importan vdo_cajon_core y la UI)
+    APERTURA_GOLA,  # noqa: F401 (re-exportado: lo importan vdo_cajon_core y la UI)
+    APERTURA_PUSH_OPEN,  # noqa: F401 (re-exportado: lo importan vdo_cajon_core y la UI)
+    APERTURA_TIRADOR,
+    GOLA_DESCUENTO_ALTURA_DEFAULT,
+    MONTAJE_PARCHE,
+    SOLAPE_PARCHE_NOMINAL,
+    aplicar_sistema_apertura,
+    calcular_fachada_base,
+    cantos_por_sistema_apertura,
+    necesita_bisel_45,
+    necesita_descuento_gola,
+    necesita_expulsor_magnetico,
+)
 from freecad.vdo.core.vdo_manifest import _obtener_json
-from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR, OCULTA, TIRADOR
+from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR, OCULTA
 
 _MANIFEST = MappingProxyType(_obtener_json())  # solo lectura (D-18)
 
@@ -30,81 +45,6 @@ try:
 except ImportError:
     H = None
 
-try:
-    from freecad.vdo.core.vdo_facade_contract import (
-        APERTURA_45_GRADOS,
-        APERTURA_GOLA,
-        APERTURA_PUSH_OPEN,
-        APERTURA_TIRADOR,
-        GOLA_DESCUENTO_ALTURA_DEFAULT,
-        HOLGURA_PERIMETRAL_DEFAULT,
-        MONTAJE_EMBEBIDA,
-        MONTAJE_PARCHE,
-        MONTAJE_SEMIPARCHE,
-        OPERACION_CANTO_45,
-        OPERACION_CANTO_ESTANDAR,
-        OPERACION_CANTO_GOLA,
-        SOLAPE_PARCHE_NOMINAL,
-        aplicar_sistema_apertura,
-        calcular_fachada_base,
-        cantos_por_sistema_apertura,
-        necesita_bisel_45,
-        necesita_descuento_gola,
-        necesita_expulsor_magnetico,
-    )
-except ImportError:
-    APERTURA_TIRADOR = TIRADOR
-    APERTURA_GOLA = "gola_aluminio"
-    APERTURA_45_GRADOS = "inglete_45"
-    OPERACION_CANTO_ESTANDAR = "CANTO_ESTANDAR"
-    OPERACION_CANTO_GOLA = "CORTE_RECTO_GOLA"
-    OPERACION_CANTO_45 = "BISEL_45"
-    HOLGURA_PERIMETRAL_DEFAULT = 2.0
-    GOLA_DESCUENTO_ALTURA_DEFAULT = 35.0
-    SOLAPE_PARCHE_NOMINAL = 16.0
-    MONTAJE_PARCHE = "parche"
-    MONTAJE_SEMIPARCHE = "semiparche"
-    MONTAJE_EMBEBIDA = "embebida"
-
-    def calcular_fachada_base(w_vano, h_vano, tipo_montaje,
-                              holgura=HOLGURA_PERIMETRAL_DEFAULT,
-                              solape=SOLAPE_PARCHE_NOMINAL):
-        """Fallback puro de calcular_fachada_base si vdo_facade_contract no está."""
-        w_vano = float(w_vano)
-        h_vano = float(h_vano)
-        tipo_montaje = str(tipo_montaje).strip().lower()
-        if tipo_montaje == MONTAJE_PARCHE:
-            w = w_vano + (2.0 * solape) - holgura
-            h = h_vano + (2.0 * solape) - holgura
-        elif tipo_montaje == MONTAJE_SEMIPARCHE:
-            w = (w_vano + solape) / 2.0 - holgura
-            h = h_vano + (2.0 * solape) - holgura
-        elif tipo_montaje == MONTAJE_EMBEBIDA:
-            w = w_vano - (2.0 * holgura)
-            h = h_vano - (2.0 * holgura)
-        else:
-            raise ValueError(
-                f"Tipo de montaje desconocido: {tipo_montaje!r}.")
-        if w <= 0 or h <= 0:
-            raise ValueError(
-                f"Dimensiones de fachada invalidas: {w:.1f} x {h:.1f} mm.")
-        return (round(w, 6), round(h, 6))
-
-    def aplicar_sistema_apertura(h, sistema, descuento_gola=35.0):
-        if sistema == APERTURA_GOLA:
-            return (max(0.0, h - descuento_gola), OPERACION_CANTO_GOLA)
-        if sistema == APERTURA_45_GRADOS:
-            return (h, OPERACION_CANTO_45)
-        return (h, OPERACION_CANTO_ESTANDAR)
-
-    def cantos_por_sistema_apertura(sistema, **kwargs):
-        return {"norte": "FX", "sur": "FX", "este": "FX", "oeste": "FX"}
-
-    def necesita_descuento_gola(sistema):
-        return sistema == APERTURA_GOLA
-
-    def necesita_bisel_45(sistema):
-        return sistema == APERTURA_45_GRADOS
 
 
 def obtener_marca(marca_id):

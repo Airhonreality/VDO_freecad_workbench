@@ -6,7 +6,9 @@
 
 import FreeCAD as App
 
+from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import vdo_hardware_hub as H
+from freecad.vdo.core.aperturas import ETIQUETAS, SISTEMA_POR_ETIQUETA
 from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
@@ -23,7 +25,6 @@ from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_LABELS,
     ANCLAJES,
 )
-from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core.vdo_puerta_despiece import (
     SISTEMAS_APERTURA,
     ajuste_altura_apertura,
@@ -43,13 +44,6 @@ SENTIDOS_CORREDIZA = ["2 hojas", "3 hojas"]
 # ---------------------------------------------------------------------
 # Mapeo de nombres de visualización (UI) a constantes del contrato.
 # ---------------------------------------------------------------------
-APERTURA_LABELS = {
-    APERTURA_TIRADOR: "Tirador Tradicional",
-    APERTURA_45_GRADOS: "Inglete 45 Grados",
-    APERTURA_GOLA: "Perfil Gola",
-    APERTURA_PUSH_OPEN: "Push to Open",
-}
-APERTURA_VALUES = {v: k for k, v in APERTURA_LABELS.items()}
 
 # Colores del Manifiesto de UI VDO (tema oscuro)
 COLOR_FONDO = "#1e1e1e"
@@ -215,7 +209,7 @@ class PuertaTaskPanel(VDOTransactionMixin):
         grid_a.addWidget(QtWidgets.QLabel("Tipo:"), 0, 0)
         self.combo_apertura = QtWidgets.QComboBox()
         self.combo_apertura.addItems(
-            [APERTURA_LABELS[k] for k in SISTEMAS_APERTURA])
+            [ETIQUETAS[k] for k in SISTEMAS_APERTURA])
         grid_a.addWidget(self.combo_apertura, 0, 1)
         main.addWidget(grp_ape)
 
@@ -321,7 +315,7 @@ class PuertaTaskPanel(VDOTransactionMixin):
         idx = self.combo_sentido.findText(obj.SentidoApertura)
         if idx >= 0:
             self.combo_sentido.setCurrentIndex(idx)
-        label = APERTURA_LABELS.get(obj.SistemaApertura, obj.SistemaApertura)
+        label = ETIQUETAS.get(obj.SistemaApertura, obj.SistemaApertura)
         idx = self.combo_apertura.findText(label)
         if idx >= 0:
             self.combo_apertura.setCurrentIndex(idx)
@@ -397,7 +391,7 @@ class PuertaTaskPanel(VDOTransactionMixin):
             t = self.spin_espesor.value()
             sistema = self.combo_sistema.currentText()
             apertura_label = self.combo_apertura.currentText()
-            apertura = APERTURA_VALUES.get(apertura_label, apertura_label)
+            apertura = SISTEMA_POR_ETIQUETA.get(apertura_label, apertura_label)
 
             # Usar el sistema de apertura para calcular la altura efectiva
             # y obtener los cantos para el header.
@@ -476,7 +470,7 @@ class PuertaTaskPanel(VDOTransactionMixin):
             self.obj.TipoMontaje = self.combo_montaje.currentText()
             self.obj.SentidoApertura = self.combo_sentido.currentText()
             label = self.combo_apertura.currentText()
-            self.obj.SistemaApertura = APERTURA_VALUES.get(label, label)
+            self.obj.SistemaApertura = SISTEMA_POR_ETIQUETA.get(label, label)
             self.obj.HardwareSKU = self.combo_sku.currentText()
             self.obj.Ancho = self.spin_ancho.value()
             self.obj.Alto = self.spin_alto.value()

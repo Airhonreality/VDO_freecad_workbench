@@ -7,23 +7,26 @@
 
 from __future__ import annotations
 
-from freecad.vdo.datos.valores import TIRADOR
+from freecad.vdo.core.aperturas import (
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+    GOLA_DESCUENTO_ALTURA_DEFAULT,
+    OPERACION_CANTO_45,
+    OPERACION_CANTO_ESTANDAR,
+    OPERACION_CANTO_GOLA,
+    SISTEMAS_APERTURA_VALIDOS,
+    necesita_bisel_45,
+    necesita_cantos_45,
+    necesita_descuento_gola,
+    necesita_expulsor_magnetico,
+)
 
 # ---------------------------------------------------------------------
 # 1. SISTEMAS DE APERTURA (Constantes Oficiales)
 # ---------------------------------------------------------------------
 
-APERTURA_TIRADOR = TIRADOR         # Tirador o manija tradicional postiza
-APERTURA_GOLA = "gola_aluminio"      # Perfil Gola de aluminio integrado (C o L)
-APERTURA_45_GRADOS = "inglete_45"    # Canto con bisel a 45° (uñero corrido)
-APERTURA_PUSH_OPEN = "push_open"     # Apertura por presión (émbolo magnético)
-
-SISTEMAS_APERTURA_VALIDOS = (
-    APERTURA_TIRADOR,
-    APERTURA_GOLA,
-    APERTURA_45_GRADOS,
-    APERTURA_PUSH_OPEN,
-)
 
 # ---------------------------------------------------------------------
 # 2. TIPOLOGÍAS DE MONTAJE FRONTALES
@@ -39,7 +42,6 @@ MONTAJE_EMBEBIDA = "embebida"      # A ras dentro del vano (deja cantos vistos)
 
 HOLGURA_PERIMETRAL_DEFAULT = 2.0    # mm de luz perimetral entre fachada y armazón
 CALLE_ENTRE_FRENTES_DEFAULT = 2.5   # mm de separación horizontal entre frentes adyacentes
-GOLA_DESCUENTO_ALTURA_DEFAULT = 35.0   # mm que se restan a la altura de la fachada para el perfil C/L
 BISEL_45_ANGULO_DEFAULT = 45.0    # Grados de chaflán en arista de agarre
 SOLAPE_PARCHE_NOMINAL = 16.0      # mm de recubrimiento sobre canto de 18 mm
 
@@ -47,9 +49,6 @@ SOLAPE_PARCHE_NOMINAL = 16.0      # mm de recubrimiento sobre canto de 18 mm
 # 4. OPERACIONES DE CANTO (metadata para el despiece y el PanelHeaderWidget)
 # ---------------------------------------------------------------------
 
-OPERACION_CANTO_ESTANDAR = "CANTO_ESTANDAR"
-OPERACION_CANTO_GOLA = "CORTE_RECTO_GOLA"
-OPERACION_CANTO_45 = "BISEL_45"
 
 
 # =====================================================================
@@ -119,29 +118,6 @@ def aplicar_sistema_apertura(h_fachada: float,
 
     # tirador y push_open conservan la altura total
     return (round(h_fachada, 6), OPERACION_CANTO_ESTANDAR)
-
-
-def necesita_descuento_gola(sistema_apertura: str) -> bool:
-    """True si el sistema requiere descuento de 35 mm en altura (gola)."""
-    return str(sistema_apertura).strip().lower() == APERTURA_GOLA
-
-
-def necesita_bisel_45(sistema_apertura: str) -> bool:
-    """True si el sistema requiere bisel a 45° en la arista de agarre."""
-    return str(sistema_apertura).strip().lower() == APERTURA_45_GRADOS
-
-
-def necesita_cantos_45(sistema_apertura: str) -> bool:
-    """True si el sistema requiere bisel a 45° en el canto de agarre.
-
-    Alias de `necesita_bisel_45` para el vocabulario de puertas.
-    """
-    return necesita_bisel_45(sistema_apertura)
-
-
-def necesita_expulsor_magnetico(sistema_apertura: str) -> bool:
-    """True si el sistema inyecta expulsor magnetico al BOM (push_open)."""
-    return str(sistema_apertura).strip().lower() == APERTURA_PUSH_OPEN
 
 
 # ---------------------------------------------------------------------
