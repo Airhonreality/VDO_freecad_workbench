@@ -12,7 +12,7 @@
 |---|---|---|
 | Premisas y rama | ✅ | Ver "Comprobaciones iniciales" |
 | Segfault al salir (pre-M0) | ✅ | `c1fa9d2` (en `refactor/vdo-10`) |
-| **M0** — Congelar y medir | ⚠️ **parcial** | Goldens: 14 ficheros que cubren 17 de 19 módulos. Quedan 2 sin función de cálculo (P-01) y la aprobación de goldens (P-05). |
+| **M0** — Congelar y medir | ✅ **cerrada** | 14 goldens cubren 19 de 19 módulos: 13 con golden propio, 4 flujos de creación en `creacion_modulos.json`, 2 N/A (P-01, decidido). Revisión humana de goldens sustituidos: P-05, no bloquea. |
 | M1 a M11 | ⏸ no iniciadas | El plan exige cerrar M0 antes de empezar M1. |
 
 **Bloqueo:** el gate de M0 pide "los 19 goldens existen". Hoy hay 14 ficheros:
@@ -164,17 +164,17 @@ Entradas en error que quedan (comportamiento registrado, no ocultado):
 | Criterio | Resultado | Evidencia |
 |---|---|---|
 | `minimalismo_base.json` existe | ✅ | `fc224dd` |
-| 19 goldens existen | ⚠️ **17 de 19** | 14 ficheros: 13 dominio + creación (5 flujos, cubre 4 módulos). Quedan `guardian` y `nesting_presets` (P-01). |
+| 19 goldens existen | ✅ 19 de 19 | 14 ficheros. 13 de dominio, 4 flujos de creación en `creacion_modulos.json`, 2 N/A con motivo (P-01). |
 | Nivel 2 sin SIGSEGV en 5 de 5 | ✅ | 5 de 5, SIGSEGV=0 |
 | Diferencias documentadas | ✅ | Interfaz en `goldens_origen.md`; sin diferencias de comportamiento |
 
 ---
 
-## Abierto (M0)
+## Abierto tras cerrar M0
 
-- **P-01**: aprobar `guardian` y `nesting_presets` como N/A (sin función de cálculo).
+- **P-01**: decidido N/A (revertible). Ver `PENDIENTES_HUMANO.md`.
 - **P-02**: resuelto. `App.Rotation` se serializa y `module_props` tiene golden.
 - **P-03**: aceptar que los 4 flujos de creación se den por cubiertos con `creacion_modulos.json`.
-- **P-05**: aprobar los 3 goldens sustituidos (`creacion_modulos`, `coco_spaces`, `puerta_despiece`).
+- **P-05**: revisión humana de los 3 goldens sustituidos (`creacion_modulos`, `coco_spaces`, `puerta_despiece`). No bloquea.
 - **P-04**: destino de los cambios de otra sesión en tests (`os._exit` → `sys.exit`).
 - Los planes anteriores siguen sin archivar (MN-13, M11).

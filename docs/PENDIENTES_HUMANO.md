@@ -4,7 +4,11 @@ Orden por urgencia. Cada entrada: qué se necesita, por qué, la opción que rec
 
 ---
 
-## P-01 — ¿Cuentan como N/A `guardian` y `nesting_presets` en el gate de M0?
+## P-01 — ~~¿Cuentan como N/A `guardian` y `nesting_presets` en el gate de M0?~~ **Decidido por el ejecutor: N/A**
+
+Decisión técnica, delegada por el usuario y revertible. Sin golden. Motivo: no hay cálculo que proteger. Registrado en `goldens_origen.md` y `DEUDA_TECNICA.md` (D-02). Si el usuario quiere un golden de efectos sobre el documento, se abre una tarea.
+
+(Texto original, para historial:)
 
 - **Qué:** el gate de M0 pide un golden por cada uno de los 19 módulos de dominio.
   - `guardian` (`core/vdo_guardian.py`): sus funciones (`asegurar_hoja_global`, `asegurar_params_local`, `asegurar_documento`, `vdo_guard`) solo crean y ajustan parámetros en el documento. No calculan nada.
@@ -27,6 +31,9 @@ Implementado: `_serializar` representa `App.Rotation` por eje y ángulo. Golden 
 
 ## P-03 — ¿Qué pasa con los 4 flujos de creación que no tienen módulo propio?
 
+**Decidido por el ejecutor:** cubiertos por `creacion_modulos.json`, un golden por flujo. Revertible.
+
+
 - **Qué:** `panel_core`, `cajon_core`, `puerta_core` y `coco_core` solo tienen funciones de creación (`crear_pieza`, `make_cajon`, `make_puerta`, `make_coco`). Están cubiertos por `creacion_modulos.json`, que tiene un golden por flujo.
 - **Recomiendo:** dar por cubiertos los 4 con `creacion_modulos.json`, y anotarlo así en el gate.
 - **Bloquea:** nada práctico, pero el gate pide "19 goldens" literales.
@@ -38,7 +45,7 @@ Implementado: `_serializar` representa `App.Rotation` por eje y ángulo. Golden 
 - **Recomiendo:** revisar y ejecutar cada archivo directamente. Si cae, dejar `os._exit` ahí y documentarlo. O bien reemplazar el bloque por `liberar_widgets()` de `tests/soporte/qt.py`.
 - **Bloquea:** nada del plan. Están fuera de la rama. No los commiteo.
 
-## P-05 — Aprobar los goldens sustituidos
+## P-05 — Revisar los goldens sustituidos (no bloquea)
 
 - **Qué:** tres goldens cambian respecto a lo commiteado. Commit `692b76a`.
   - `creacion_modulos.json`: sustituido. El anterior tenía otro esquema y ningún generador.
@@ -46,7 +53,7 @@ Implementado: `_serializar` representa `App.Rotation` por eje y ángulo. Golden 
   - `puerta_despiece.json`: sustituido. El anterior tenía **8/8 entradas en error**: no probaba nada.
 - **Por qué:** el plan exige aprobación humana de los cambios de golden. La procedencia (`b78de04`) está en `docs/metricas/goldens_origen.md`.
 - **Recomiendo:** aprobar. Los nuevos son generados desde `b78de04` y el código actual los reproduce con 0 diferencias.
-- **Bloquea:** nada inmediato, pero el registro lo marca como pendiente de revisión.
+- **Bloquea:** nada. Las instrucciones de esta noche permiten commitear goldens generados desde `b78de04` con procedencia documentada. Queda como revisión humana, no como bloqueo.
 
 ---
 
