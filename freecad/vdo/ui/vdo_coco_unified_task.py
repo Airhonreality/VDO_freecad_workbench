@@ -10,6 +10,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 
 from freecad.vdo.cad.colocacion import aplicar_rotacion
+from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core import vdo_module_props
 from freecad.vdo.core.vdo_cajon_core import make_cajon
@@ -25,7 +26,6 @@ from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_LABELS,
     ANCLAJES,
 )
-from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core.vdo_puerta_core import make_puerta
 from freecad.vdo.core.vdo_spaces import (
     ESPACIO_FIJO,
@@ -36,6 +36,7 @@ from freecad.vdo.core.vdo_spaces import (
     deserializar_espacios,
     serializar_espacios,
 )
+from freecad.vdo.datos.valores import BLUM_TANDEM
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
@@ -1199,7 +1200,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
             existente.GrosorCaja = 16.0
             existente.GrosorFondo = 6.0
             existente.GrosorFachada = 18.0
-            existente.MarcaCorredera = "blum_tandem"
+            existente.MarcaCorredera = BLUM_TANDEM
             existente.LongitudGuia = 0.0
             existente.MontajeTrasera = "entre_laterales"
             existente.TipoCorredera = tipo_corredera

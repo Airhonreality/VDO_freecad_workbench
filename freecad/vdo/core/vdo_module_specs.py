@@ -6,7 +6,7 @@
 
 import importlib
 
-from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
+from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR
 
 MODULE_SPECS = {
     "coco_4c": {
@@ -51,7 +51,7 @@ MODULE_SPECS = {
             "grosor_caja": 16,
             "grosor_fondo": 6,
             "grosor_fachada": 18,
-            "marca": "blum_tandem",
+            "marca": BLUM_TANDEM,
             "longitud_guia": 0.0,
             "montaje_trasera": "entre_laterales",
             "rotacion": 0.0,

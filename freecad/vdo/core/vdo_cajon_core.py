@@ -39,7 +39,7 @@ from freecad.vdo.core.vdo_facade_contract import (
     MONTAJE_SEMIPARCHE,
 )
 from freecad.vdo.core.vdo_helpers import _get_app, _get_part
-from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
+from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR
 
 # ---------------------------------------------------------------------
 # Helpers geométricos puros (coordenadas relativas calculadas)
@@ -182,7 +182,7 @@ class CajonFeature:
         obj.addProperty("App::PropertyEnumeration", "MarcaCorredera",
                         "Herraje", "Marca de corredera oculta (delta y cotas)"
                         ).MarcaCorredera = marcas
-        obj.MarcaCorredera = "blum_tandem" if "blum_tandem" in marcas else marcas[0]
+        obj.MarcaCorredera = BLUM_TANDEM if BLUM_TANDEM in marcas else marcas[0]
         obj.addProperty("App::PropertyLength", "LongitudGuia", "Herraje",
                         "Largo nominal de la guía (0 = auto según ProfLibre)"
                         ).LongitudGuia = 0.0
@@ -461,7 +461,7 @@ def make_cajon(doc, configuracion):
     obj.GrosorCaja = configuracion.get("grosor_caja", VDO_D.CAJON_GROSOR_DEFAULT)
     obj.GrosorFondo = configuracion.get("grosor_fondo", VDO_D.CAJON_FONDO_DEFAULT)
     obj.GrosorFachada = configuracion.get("grosor_fachada", VDO_D.CAJON_FACHADA_DEFAULT)
-    obj.MarcaCorredera = configuracion.get("marca", "blum_tandem")
+    obj.MarcaCorredera = configuracion.get("marca", BLUM_TANDEM)
     obj.LongitudGuia = configuracion.get("longitud_guia", 0.0)
     obj.MontajeTrasera = configuracion.get("montaje_trasera", "entre_laterales")
     obj.TipoCorredera = configuracion.get("tipo_corredera", CORREDERA_OCULTA)

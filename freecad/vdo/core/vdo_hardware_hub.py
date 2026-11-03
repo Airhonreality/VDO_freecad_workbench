@@ -10,6 +10,8 @@ from __future__ import annotations
 import json
 import os
 
+from freecad.vdo.datos.valores import BLUM_TANDEM
+
 try:
     _HERE = os.path.dirname(os.path.abspath(__file__))
 except NameError:
@@ -40,7 +42,7 @@ _DEFAULT_SLIDING_BY_MUEBLE = {
 # hacia los SKU del catálogo de Capa H. Permite consumir el catálogo desde
 # vdo_cajon_despiece sin romper configuraciones existentes.
 _MARCA_A_SKU = {
-    "blum_tandem": "BLUM-TANDEM",
+    BLUM_TANDEM: "BLUM-TANDEM",
     "generica": "GEN-OCULTA",
     "hafele": "HAFELE-OCULTA",
     "ducasse": "DUCASSE-OCULTA",
@@ -164,7 +166,7 @@ def resolve_sliding(tipo_mueble="closet", catalogo=None):
     return get_hardware(sku, catalogo)
 
 
-def resolve_drawer_slide(tipo="oculta", marca="blum_tandem", catalogo=None):
+def resolve_drawer_slide(tipo="oculta", marca=BLUM_TANDEM, catalogo=None):
     """Helper para correderas de cajón.
 
     Devuelve el diccionario completo del herraje (comercial +

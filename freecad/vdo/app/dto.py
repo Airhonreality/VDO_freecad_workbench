@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
+from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR
 
 
 @dataclass(frozen=True)
@@ -90,7 +90,7 @@ class CajonDTO:
     grosor_caja: float = 16.0
     grosor_fondo: float = 6.0
     grosor_fachada: float = 18.0
-    marca: str = "blum_tandem"
+    marca: str = BLUM_TANDEM
     longitud_guia: float = 0.0
     montaje_trasera: str = "entre_laterales"
     tipo_corredera: str = "oculta"

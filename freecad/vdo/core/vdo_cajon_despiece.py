@@ -14,7 +14,7 @@
 # =====================================================================
 
 from freecad.vdo.core.vdo_manifest import _obtener_json
-from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
+from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR
 
 _MANIFEST = _obtener_json()
 
@@ -267,7 +267,7 @@ def calcular_despiece(config):
     prof_int = float(config["prof_libre"])
     float(config["ancho_modulo"])
     alto_frente = float(config["alto_frente"])
-    marca_id = config.get("marca", "blum_tandem")
+    marca_id = config.get("marca", BLUM_TANDEM)
 
     marca = obtener_marca(marca_id)
     delta = float(marca["delta_ancho"])
@@ -577,7 +577,7 @@ if __name__ == "__main__":
         "prof_libre": 580.0,       # ProfInt
         "ancho_modulo": 640.0,
         "alto_frente": 225.0,
-        "marca": "blum_tandem",
+        "marca": BLUM_TANDEM,
         "alto_caja": 120.0,
         "grosor_caja": 16.0,
         "grosor_fondo": 6.0,

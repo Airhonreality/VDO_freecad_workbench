@@ -56,7 +56,7 @@ from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_LABELS,
     ANCLAJES,
 )
-from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
+from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
@@ -387,7 +387,7 @@ class CajonTaskPanel(VDOTransactionMixin):
         # Si no hay SKUs en el catálogo, añadir opciones manuales
         if self.combo_sku.count() == 0:
             if tipo == CORREDERA_OCULTA:
-                self.combo_sku.addItem("BLUM-TANDEM — Blum Tandem", "blum_tandem")
+                self.combo_sku.addItem("BLUM-TANDEM — Blum Tandem", BLUM_TANDEM)
                 self.combo_sku.addItem("GEN-OCULTA — Genérica", "generica")
                 self.combo_sku.addItem("HAFELE-OCULTA — Hafele", "hafele")
                 self.combo_sku.addItem("DUCASSE-OCULTA — Ducasse", "ducasse")
