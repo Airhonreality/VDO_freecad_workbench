@@ -14,7 +14,7 @@ try:
     _HERE = os.path.dirname(os.path.abspath(__file__))
 except NameError:
     _HERE = os.getcwd()
-_CATALOGO_PATH = os.path.join(_HERE, "vdo_hardware_catalog.json")
+CATALOGO_PATH = os.path.join(_HERE, "vdo_hardware_catalog.json")
 
 _FAMILIAS = (
     "bisagra_cazoleta",
@@ -54,12 +54,12 @@ def _cargar_catalogo():
     es un objeto JSON, falla con error explícito. No hay datos de respaldo en código.
     """
     try:
-        with open(_CATALOGO_PATH, encoding="utf-8") as _fh:
+        with open(CATALOGO_PATH, encoding="utf-8") as _fh:
             datos = json.load(_fh)
     except OSError as exc:
-        raise FileNotFoundError(f"Falta el catálogo de herrajes: {_CATALOGO_PATH}") from exc
+        raise FileNotFoundError(f"Falta el catálogo de herrajes: {CATALOGO_PATH}") from exc
     if not isinstance(datos, dict):
-        raise ValueError(f"El catálogo de herrajes no es un objeto JSON: {_CATALOGO_PATH}")
+        raise ValueError(f"El catálogo de herrajes no es un objeto JSON: {CATALOGO_PATH}")
     return datos
 
 
@@ -69,7 +69,7 @@ def _catalogo_completo():
     for _fam in ("bisagra_cazoleta", "sistema_corredizo"):
         if not catalogo.get(_fam):
             raise ValueError(
-                f"Catálogo de herrajes sin la familia obligatoria '{_fam}': {_CATALOGO_PATH}")
+                f"Catálogo de herrajes sin la familia obligatoria '{_fam}': {CATALOGO_PATH}")
     return catalogo
 
 

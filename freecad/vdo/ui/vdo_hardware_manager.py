@@ -12,9 +12,6 @@ from freecad.vdo.core import vdo_hardware_hub as H
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 
-_HERE = os.path.dirname(os.path.abspath(__file__))
-_CATALOGO_PATH = os.path.join(_HERE, "vdo_hardware_catalog.json")
-
 FAMILIAS = {
     "bisagra_cazoleta": "Bisagras de Cazoleta",
     "sistema_corredizo": "Sistemas Corredizos",
@@ -90,7 +87,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
     # ------------------------------------------------------------------
     def _cargar_catalogo(self):
         try:
-            with open(_CATALOGO_PATH, encoding="utf-8") as fh:
+            with open(H.CATALOGO_PATH, encoding="utf-8") as fh:
                 return json.load(fh)
         except (OSError, ValueError) as exc:
             QtWidgets.QMessageBox.critical(
@@ -99,7 +96,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
             return {"bisagra_cazoleta": {}, "sistema_corredizo": {}}
 
     def _guardar_catalogo(self):
-        with open(_CATALOGO_PATH, "w", encoding="utf-8") as fh:
+        with open(H.CATALOGO_PATH, "w", encoding="utf-8") as fh:
             json.dump(self._catalogo, fh, ensure_ascii=False, indent=2)
 
     # ------------------------------------------------------------------
