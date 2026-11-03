@@ -14,13 +14,13 @@
 # =====================================================================
 
 from freecad.vdo.core.vdo_manifest import _obtener_json
-from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR
+from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR, OCULTA
 
 _MANIFEST = _obtener_json()
 
 # Tipologías de corredera (compatibles con vdo_cajon_core.py)
 CORREDERA_TELESCOPICA = "telescopica"
-CORREDERA_OCULTA = "oculta"
+CORREDERA_OCULTA = OCULTA
 CAJA_METALICA = "metalica"
 
 try:
@@ -121,7 +121,7 @@ def obtener_marca(marca_id):
     if H is not None:
         hw = None
         try:
-            hw = H.resolve_drawer_slide(tipo="oculta", marca=marca_id)
+            hw = H.resolve_drawer_slide(tipo=OCULTA, marca=marca_id)
         except (KeyError, ValueError):
             hw = None
         if hw is not None:

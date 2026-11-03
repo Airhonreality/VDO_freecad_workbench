@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 import os
 
-from freecad.vdo.datos.valores import BLUM_TANDEM
+from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 
 try:
     _HERE = os.path.dirname(os.path.abspath(__file__))
@@ -166,7 +166,7 @@ def resolve_sliding(tipo_mueble="closet", catalogo=None):
     return get_hardware(sku, catalogo)
 
 
-def resolve_drawer_slide(tipo="oculta", marca=BLUM_TANDEM, catalogo=None):
+def resolve_drawer_slide(tipo=OCULTA, marca=BLUM_TANDEM, catalogo=None):
     """Helper para correderas de cajón.
 
     Devuelve el diccionario completo del herraje (comercial +
@@ -225,7 +225,7 @@ def resolve_drawer_slide(tipo="oculta", marca=BLUM_TANDEM, catalogo=None):
             return {**hw, "sku": sku_encontrado}
 
     # 4. Búsqueda por familia si se pasó el tipo genérico.
-    familia = "corredera_oculta" if tipo == "oculta" else "corredera_telescopica"
+    familia = "corredera_oculta" if tipo == OCULTA else "corredera_telescopica"
     try:
         familia_skus = get_family(familia, catalogo)
     except KeyError:

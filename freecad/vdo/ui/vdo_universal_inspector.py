@@ -54,7 +54,7 @@ except ImportError:  # pragma: no cover
     cavidad_interior = None
 
 from freecad.vdo.core import vdo_hardware_hub as HH
-from freecad.vdo.datos.valores import BLUM_TANDEM
+from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 
 # ----------------------------------------------------------------------
@@ -659,7 +659,7 @@ class PaginaVano(_PaginaBase):
             if h:
                 self.lbl_puerta_hub.setText(f"{h.get('nombre')} · ${h.get('precio_unitario', 0.0):.2f} {h.get('moneda', 'USD')}")
         elif habitante == "cajon":
-            s = HH.resolve_drawer_slide("oculta", BLUM_TANDEM)
+            s = HH.resolve_drawer_slide(OCULTA, BLUM_TANDEM)
             if s:
                 self.lbl_cajon_hub.setText(f"{s.get('nombre')} · ${s.get('precio_unitario', 0.0):.2f} {s.get('moneda', 'USD')}")
 
@@ -952,7 +952,7 @@ class PaginaCierre(_PaginaBase):
 
         elif target_type == "CAJON":
             marca = _str_seguro(getattr(obj, "MarcaCorredera", BLUM_TANDEM)).lower()
-            tipo_cor = _str_seguro(getattr(obj, "TipoCorredera", "oculta")).lower()
+            tipo_cor = _str_seguro(getattr(obj, "TipoCorredera", OCULTA)).lower()
             s = HH.resolve_drawer_slide(tipo_cor, marca)
             if s:
                 self.lbl_sku.setText(s.get("sku", "BLUM-TANDEM"))
@@ -985,7 +985,7 @@ class PaginaCierre(_PaginaBase):
                 self.lbl_precio.setText(f"${h.get('precio_unitario', 0.0):.2f} {h.get('moneda', 'USD')}")
                 self.lbl_fresado.setText("Cazoleta 35mm × 11.5mm | K=4mm")
         else:
-            s = HH.resolve_drawer_slide("oculta", BLUM_TANDEM)
+            s = HH.resolve_drawer_slide(OCULTA, BLUM_TANDEM)
             if s:
                 self.lbl_sku.setText(s.get("sku", "BLUM-TANDEM"))
                 self.lbl_proveedor.setText(s.get("proveedor", "Blum"))
