@@ -162,7 +162,9 @@ Motivo de (3) y (4): el plan exige **mínimo 3 entradas por función**. El regis
 
 **Responsable:** usuario, para aprobar el cambio. Ejecutor, para implementarlo tras la aprobación.
 
-**Actualización (2026-11-03, D-11, `169135b`):** la causa está corregida en código. `cad/vdo_guardian.py` escribe los números como `=N/D` (`Fraction(repr(valor))`), y `tests/test_guardian_locale.py` prueba la lectura en `es_CO.UTF-8` y en `C`. El golden `guardian.json` **no se ha regenerado**: la única diferencia es la celda `B5` (`canto_fino`), que pasa de `"0.4"` a `"=2 / 5"` en las 6 entradas, con el mismo valor leído. Hasta que el humano apruebe la regeneración, `test_goldens.test_guardian` sigue en rojo con esa causa. Los documentos ya guardados con `0` no se corrigen por código.
+**Actualización (2026-11-03, D-11, `169135b`):** la causa está corregida en código. `cad/vdo_guardian.py` escribe los números como `=N/D` (`Fraction(repr(valor))`), y `tests/test_guardian_locale.py` prueba la lectura en `es_CO.UTF-8` y en `C`. El golden `guardian.json` **se regeneró en D-14** (ver abajo). Antes la única diferencia era la celda `B5` (`canto_fino`), que pasa de `"0.4"` a `"=2 / 5"` en las 6 entradas, con el mismo valor leído. Los documentos ya guardados con `0` no se corrigen por código.
+
+**Regeneración D-14 (2026-11-03):** `tests/golden/guardian.json` regenerado con `tools/auditoria/golden.py` (`regenerar("guardian")`) desde el código de D-13 (commit `1984d9e`). Diff comparado campo a campo: 6 cambios, todos en `Params_Melamina!B5` (`canto_fino`), `"0.4"` → `"=2 / 5"`. Ningún otro campo cambia. `verificar(guardian)` = True; `test_guardian` pasa. Procedencia del diseño de escenarios: la de la sección anterior, sin cambios. Esta regeneración es contra el código actual, aprobada por D-14 en `DECISIONES_DELEGADAS.md`.
 
 ## Lo que no está verificado
 
