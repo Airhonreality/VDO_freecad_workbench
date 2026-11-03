@@ -84,7 +84,9 @@ MODULOS_FUNCIONES: dict[str, list[str]] = {
         "calculate_sliding_doors",
     ],
     # Los siguientes dependen de FreeCAD; se verifican en nivel 2.
-    "module_props": [],
+    "module_props": [
+        "rotacion_z",
+    ],
     "guardian": [],
     "zocalo_core": [
         "calcular_geometria_zocalo",
@@ -105,6 +107,24 @@ MODULOS_FUNCIONES: dict[str, list[str]] = {
         "calcular_espacio_libre",
     ],
 }
+
+
+# Funciones que cambiaron de módulo después de b78de04. Solo se usa cuando el módulo de
+# origen ya no tiene la función. Cada entrada debe quedar registrada en
+# docs/metricas/goldens_origen.md y en docs/DEUDA_TECNICA.md.
+RELOCALIZADAS: dict[tuple[str, str], str] = {
+    ("module_props", "rotacion_z"): "freecad.vdo.core.vdo_helpers",
+}
+
+
+def _modulo_para_funcion(modulo: str, mod, nombre_func: str):
+    """Módulo que expone la función. Usa la reubicación conocida si el original no la tiene."""
+    if hasattr(mod, nombre_func):
+        return mod
+    destino = RELOCALIZADAS.get((modulo, nombre_func))
+    if destino is None:
+        return mod
+    return importlib.import_module(destino)
 
 
 def _ruta_golden_json(modulo: str) -> Path:
@@ -134,6 +154,11 @@ def _serializar(obj, _prof=0):
         return round(obj, 6)
     if obj is None or isinstance(obj, (int, str, bool)):
         return obj
+    if hasattr(obj, "Axis") and hasattr(obj, "Angle") and hasattr(obj, "Matrix"):
+        # App.Rotation de FreeCAD: eje y ángulo en radianes, redondeados.
+        eje = obj.Axis
+        return {"Rotation": {"axis": [round(eje.x, 6), round(eje.y, 6), round(eje.z, 6)],
+                             "angle": round(obj.Angle, 6)}}
     if hasattr(obj, "__dict__") and _prof < _PROFUNDIDAD_MAX:
         atributos = {k: v for k, v in vars(obj).items() if not k.startswith("_")}
         return {type(obj).__name__: _serializar(atributos, _prof + 1)}
@@ -360,6 +385,13 @@ def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
             {"inner_w": 1200.0, "inner_h": 2200.0, "sku": "DUC-AL-1535-MAD", "n_hojas": 3},
         ]
 
+    elif modulo == "module_props":
+        entradas["rotacion_z"] = [
+            {"grados": 0.0},
+            {"grados": 90.0},
+            {"grados": 45.0},
+        ]
+
     elif modulo == "zocalo_core":
         entradas["calcular_geometria_zocalo"] = [
             {"ancho": 600.0, "fondo": 580.0, "alto_zocalo": 100.0, "espesor_tablero": 18.0},
@@ -443,7 +475,7 @@ def regenerar(modulo: str):
         salidas = []
         for entrada in entradas:
             try:
-                salida = _serializar(_ejecutar_funcion(mod, fn_name, entrada))
+                salida = _serializar(_ejecutar_funcion(_modulo_para_funcion(modulo, mod, fn_name), fn_name, entrada))
                 salidas.append({"entrada": entrada, "salida": salida})
             except Exception as exc:
                 salidas.append({"entrada": entrada, "error": str(exc)})
@@ -476,7 +508,7 @@ def verificar(modulo: str | None = None) -> bool:
             for i, exp in enumerate(esperadas):
                 entrada = entradas[i] if i < len(entradas) else exp["entrada"]
                 try:
-                    salida = _ejecutar_funcion(mod, fn_name, entrada)
+                    salida = _ejecutar_funcion(_modulo_para_funcion(mod_name, mod, fn_name), fn_name, entrada)
                     salida_serial = _serializar(salida)
                     if "error" in exp:
                         print(f"  {mod_name}.{fn_name}[{i}]: esperaba error, obtuvo salida")
