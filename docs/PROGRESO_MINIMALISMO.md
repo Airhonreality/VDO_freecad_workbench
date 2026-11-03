@@ -12,7 +12,7 @@
 |---|---|---|
 | Premisas y rama | ✅ | Ver "Comprobaciones iniciales" |
 | Segfault al salir (pre-M0) | ✅ | `c1fa9d2` (en `refactor/vdo-10`) |
-| **M0** — Congelar y medir | ⚠️ **parcial: 18 de 19** | 19 módulos de dominio: 18 con golden (14 de módulo + 4 flujos de creación en `creacion_modulos.json`). Falta `nesting_presets`: en `b78de04` no carga dentro de FreeCAD. Decisión humana: **P-10**. |
+| **M0** — Congelar y medir | ✅ **cerrada según el criterio del encargo**: 18 goldens válidos + 1 N/A justificado | 18 goldens: 14 de módulo + 4 flujos de creación en `creacion_modulos.json`. `nesting_presets`: N/A con motivo (P-10, `DECISIONES_DELEGADAS.md`), deuda antes de M5. Nivel 2: 1 fallo documentado (`guardian` con locale, ver "Defecto de locale" en `goldens_origen.md`). No se reclasifica. |
 | **M1** — Inventario de hechos | ⚠️ **parcial** | Inventario en `docs/INVENTARIO_HECHOS.md`. El gate pide "cada hecho duplicado con destino único decidido". Faltan: H-60 a H-62 (**P-06**), H-04 (**P-07**), y decisiones marcadas [decisión] sin tomar: H-21, H-24, H-52. |
 | **M2** — Un hecho, un lugar: datos | ⚠️ **parcial** | Ver "M2" más abajo. Tablas idénticas 9 → 2. Literales: 53 sin cambio. |
 | M3 a M11 | ⏸ no iniciadas | M2 sigue abierta. |
@@ -22,11 +22,12 @@
 | Criterio | Resultado | Evidencia |
 |---|---|---|
 | `minimalismo_base.json` existe | ✅ | `fc224dd` |
-| 19 goldens de dominio existen | ⚠️ 18 de 19 | `nesting_presets` pendiente (P-10) |
-| Nivel 2 sin SIGSEGV en 5 de 5 | ✅ | Ver "Medición" |
-| Diferencias documentadas | ✅ | `goldens_origen.md`, secciones "Guardián" y "Revisión de goldens sustituidos (P-05)" |
+| 18 goldens válidos existen | ✅ 18 de 18 | 14 ficheros de módulo + 4 flujos de creación. Todos verifican contra el código actual (ver "Medición"). |
+| N/A justificado | ✅ | `nesting_presets` (P-10). Motivo y deuda en `goldens_origen.md`. |
+| Nivel 2 sin SIGSEGV | ✅ | 0 segfault en todas las ejecuciones. |
+| Fallos de comportamiento documentados con causa | ✅ | `guardian` en nivel 2 (locale, `goldens_origen.md`). Los 3 de `test_arquitectura` (D-05). |
 
-**Bloqueo de M0:** P-10 (`nesting_presets`). Sin decisión, M0 queda parcial.
+**M3 no se inicia:** el plan (§6) exige que M2 cierre antes. M2 sigue parcial.
 
 ---
 
@@ -75,6 +76,9 @@ Estado de otra sesión (**no es mío**):
 | `1b5a1b7` | M2 | `CANTOS_VALIDOS` y `BORDES` en una sola definición (H-02, H-03) |
 | `bb58afc` | M2 | `CANTOS` de fachada eliminado (sin usos), `CHOQUES_NUCLEO` eliminado (sin usos), `BORDES` de la UI → `BORDES_2D` (H-03, H-03b, H-05) |
 | `cbfb55f` | M2 | `DIMENSION_POR_EJE` en `core/vdo_helpers` para `_DIM` y `_DIM_SOL` (H-06) |
+| `cc43fdf` | registro | Estado y cifras medidas al cierre de la primera pasada |
+| `47045b0` | M2 / P-08 | Quita el re-export de `add_common_props` desde `core/vdo_module_props`; llamadores importan de `cad/propiedades`. Añade `tools/auditoria/ciclos.py`. |
+| `843ce9e` | M0 | `tests/test_goldens.py` en el runner; `frames` sin entrada en error; `hardware_hub` +3 y `reengrose` +6 entradas (mínimo 3 por función) |
 
 Previos en la rama (ya en `refactor/vdo-10`): `e10cd12` (plan rector), `c1fa9d2` (segfault).
 
@@ -153,6 +157,51 @@ Salida resumida de `python3 -I tools/auditoria/verificar.py` (sin cambios de reg
 
 ---
 
+## Medición de la segunda pasada (tras `843ce9e`)
+
+Comandos, salidas literales:
+
+```
+$ VDO_TEST_DIR=tests VDO_TEST_OUT=... python3 -I tools/run_tests.py          # nivel 1
+RESUMEN ejecutados=280 fallos=3 errores=0 skip=111 no_ejecutado=0
+  FALLO test_arquitectura.CapasTests.test_core_no_importa_app_ui_cad
+  FALLO test_arquitectura.CapasTests.test_ui_no_escritura_freecad
+  FALLO test_arquitectura.CapasTests.test_ui_no_importa_core_cad_app_api
+  SKIP x4 test_goldens (coco_spaces, guardian, zocalo_core: importan FreeCAD a nivel de módulo;
+         module_props: necesita FreeCAD al ejecutarse) — motivo explícito en cada skip
+
+$ VDO_TEST_DIR=tests VDO_TEST_OUT=... freecadcmd tools/run_tests.py          # nivel 2
+RESUMEN ejecutados=278 fallos=4 errores=0 skip=26 no_ejecutado=0   (segfault=0)
+  FALLO test_arquitectura (×3, los de siempre)
+  FALLO test_goldens.GoldensVerificacionTests.test_guardian   (locale, ver goldens_origen.md)
+
+$ python3 -I tools/auditoria/ciclos.py
+CICLOS: 4 componentes  (uno dentro de cad: cad.colocacion, cad.propiedades; tres en ui/)
+ARISTAS core->cad: 8
+
+$ .venv/bin/ruff check . --no-cache --statistics                            # comando único de ruff
+Found 303 errors.
+  freecad/vdo 152 · tools/auditoria 51 · tests/test_smoke_l3_desk_assembly.py 24 ·
+  tests/test_workbench_convergence.py 11 · tests/test_single_dock_convergence.py 10 (no mío, P-04) ·
+  tests/test_cajon_core.py 9 · tests/test_coco_reengrose_avanzado.py 7 · tools/run_tests.py 5
+
+$ python3 -I tools/auditoria/minimalismo.py resumen
+TOTAL | 85 | 23484 | 880 | -        (core 8671 líneas, ui 13505, cad 367, app 941)
+$ python3 -I tools/auditoria/minimalismo.py duplicados   -> tablas constantes idénticas: 2
+$ python3 -I tools/auditoria/minimalismo.py literales    -> literales vigilados fuera de datos/: 53
+$ python3 -I tools/auditoria/minimalismo.py excepciones  -> except que tragan errores: 89
+$ python3 -I tools/auditoria/minimalismo.py tamano       -> archivos > 400 líneas: 17
+$ python3 -I tools/auditoria/minimalismo.py ramas        -> funciones con 4+ ramas if/elif: 12
+```
+
+Goldens: 15 ficheros, 140 entradas, 0 errores (script sobre `tests/golden/*.json`).
+
+Goldens de dominio contra el código actual (`freecadcmd`, `GOLD_MODS=...`): 14 de 14 OK. Creación: `VERIFICAR diferencias= 0`.
+
+Cifras de ruff en el tiempo: el registro decía 288; al cierre de la primera pasada `ruff check .` daba 299; al cierre de esta pasada da 303. Medido por fichero: `tests/test_goldens.py` y `tools/auditoria/ciclos.py` dan 0 incidencias. El resto del aumento no lo he separado por commit, así que no atribuyo causa.
+
+---
+
 ## Alcance de ruff y mypy (D-04)
 
 Ver `docs/PLAN_MINIMALISMO_VDO.md` §2, decisión D-04.
@@ -209,11 +258,13 @@ No iniciadas. M2 está abierta (literales, `MODULE_SPECS`, `LUCIDE_ICONS`, `_CAT
 
 ## Abierto
 
-- **P-10**: decidir el golden de `nesting_presets` (bloquea M0).
-- **P-06**: ubicación de `rotacion_z` (bloquea M1 y parte de M2).
-- **P-07**: `ESQUINAS` frente a `TIPOS_ENCUENTRO` (bloquea M1 y parte de M2).
-- **P-08**: ciclo core↔cad (bloquea M2 en `core/vdo_module_props.py` y en los módulos con `forma_ref`).
-- **P-09**: sin definir en el repo ni en el encargo. Hay que definirlo o retirarlo.
-- **P-05**: aprobar los 3 goldens sustituidos.
-- **P-04**: cambios de tests de otra sesión sin commitear.
+Estado de cada decisión de `DECISIONES_DELEGADAS.md` (fuente vigente; `PENDIENTES_HUMANO.md` lo escribe otra sesión y no se ha tocado):
+
+- **P-04**: no se tocan ni commitean los 2 tests de otra sesión. Pendiente del usuario. Nota: `tests/test_single_dock_convergence.py` usa `sys` sin importarlo (ruff F821, línea 218): su `__main__` falla con NameError. Es un defecto de ese cambio sin commitear.
+- **P-05**: aprobados por delegación. Revertir: `git revert 200c79c`.
+- **P-06**: decidido (única definición de `rotacion_z` en `cad/propiedades.py`), **no aplicado**: el borrado de la copia de `core/vdo_helpers` es de M5. Fuera de la lista de esta pasada.
+- **P-07**: decidido (unificar solo duplicados exactos del box controller con `core/vdo_reengrose`), **no aplicado**: fuera de la lista de esta pasada. Quedan 2 tablas idénticas en `minimalismo.py duplicados`.
+- **P-08**: **aplicado** (`47045b0`). Core↔cad ya no cierra ciclo. Aristas core→cad: 4 → 8 (ver "Medición"). Queda un ciclo **dentro de cad**: `cad.colocacion ↔ cad.propiedades`, por el import diferido de `aplicar_rotacion`. No estaba en la decisión, que solo contaba el ciclo con `core`. Decidir dónde vive `ancla_local` o `aplicar_rotacion` es decisión nueva; no la he tomado.
+- **P-09**: retirado (no hay definición). Lo registra el documento de decisiones.
+- **P-10**: N/A con motivo y deuda antes de M5 (`goldens_origen.md`).
 - Los planes anteriores siguen sin archivar (MN-13, M11).
