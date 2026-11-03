@@ -1,3 +1,5 @@
+> **SUSTITUIDO** por `docs/PLAN_MINIMALISMO_VDO.md`. No ejecutar este documento.
+
 # Plan de correcciones F19
 
 **Estado:** vinculante. Se ejecuta sobre `refactor/vdo-10` (HEAD `7e389be`, tag `vdo10-final`).

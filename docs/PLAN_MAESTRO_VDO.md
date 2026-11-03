@@ -1,3 +1,5 @@
+> **SUSTITUIDO** por `docs/PLAN_MINIMALISMO_VDO.md`. No ejecutar este documento.
+
 # Plan maestro VDO — de 5,5 a 10/10
 
 **Estado:** vinculante. Sustituye a `docs/PLAN_REFACTOR_VDO.md` (F1–F9) y al plan de costuras (P0–P9 de la conversación). Lo que ya está hecho en esos planes se incorpora aquí como punto de partida, no se repite como trabajo.
