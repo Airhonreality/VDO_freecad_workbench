@@ -14,8 +14,8 @@
 | Segfault al salir (pre-M0) | ✅ | `c1fa9d2` (en `refactor/vdo-10`) |
 | **M0** — Congelar y medir | ✅ **cerrada según el criterio del encargo**: 18 goldens válidos + 1 N/A justificado | 18 goldens: 14 de módulo + 4 flujos de creación en `creacion_modulos.json`. `nesting_presets`: N/A con motivo (P-10, `DECISIONES_DELEGADAS.md`), deuda antes de M5. Nivel 2: 1 fallo documentado (`guardian` con locale, ver "Defecto de locale" en `goldens_origen.md`). No se reclasifica. |
 | **M1** — Inventario de hechos | ⚠️ **parcial** | Inventario en `docs/INVENTARIO_HECHOS.md`. El gate pide "cada hecho duplicado con destino único decidido". Faltan: H-60 a H-62 (**P-06**), H-04 (**P-07**), y decisiones marcadas [decisión] sin tomar: H-21, H-24, H-52. |
-| **M2** — Un hecho, un lugar: datos | ⚠️ **parcial** | Ver "M2" más abajo. Tablas idénticas 9 → 2. Literales: 53 sin cambio. |
-| M3 a M11 | ⏸ no iniciadas | M2 sigue abierta. |
+| **M2** — Un hecho, un lugar: datos | ⚠️ **parcial, no cerrada** | Tablas idénticas 9 → 0. `LUCIDE_ICONS` en una tabla. Ruta del catálogo única (corrige un defecto). Quedan: literales de dominio (53) y `MODULE_SPECS` (H-22, sin golden desde `b78de04`). Ver "M2". |
+| M3 a M11 | ⏸ no iniciadas | M2 no cierra en esta sesión (ver "M2"). M3 no se inicia. |
 
 ### M0: gate
 
@@ -79,6 +79,11 @@ Estado de otra sesión (**no es mío**):
 | `cc43fdf` | registro | Estado y cifras medidas al cierre de la primera pasada |
 | `47045b0` | M2 / P-08 | Quita el re-export de `add_common_props` desde `core/vdo_module_props`; llamadores importan de `cad/propiedades`. Añade `tools/auditoria/ciclos.py`. |
 | `843ce9e` | M0 | `tests/test_goldens.py` en el runner; `frames` sin entrada en error; `hardware_hub` +3 y `reengrose` +6 entradas (mínimo 3 por función) |
+| `00fdf7f` | M2 / D-12 | `aplicar_rotacion` pasa a `cad/colocacion.py`. Se rompe el ciclo `cad.colocacion` ↔ `cad.propiedades`. Ciclos dentro de `cad`: 0. |
+| `169135b` | M0 / D-11 | El guardián escribe números como `=N/D`, que no dependen de LC_NUMERIC. Prueba nueva `tests/test_guardian_locale.py`. **Cambia el contenido de B5 en `guardian.json`; el golden queda pendiente de aprobación humana.** |
+| `9040cca` | M2 / P-07 | `TIPOS_ENCUENTRO` y `ESQUINAS` del box controller referencian las tablas de `core/vdo_reengrose`. Tablas idénticas 2 → 0. |
+| `04a83e5` | M2 / H-23 | `LUCIDE_ICONS` en una sola tabla en `ui/tema.py` (19 claves). Cambia el icono `inglete_45` del box controller; pendiente de verificación visual. |
+| `7566f34` | M2 / H-21 | Una sola ruta del catálogo: `core/vdo_hardware_hub.CATALOGO_PATH`. **Corrige un defecto:** el gestor leía y guardaba en `ui/vdo_hardware_catalog.json`, que no existe. |
 
 Previos en la rama (ya en `refactor/vdo-10`): `e10cd12` (plan rector), `c1fa9d2` (segfault).
 
@@ -202,6 +207,82 @@ Cifras de ruff en el tiempo: el registro decía 288; al cierre de la primera pas
 
 ---
 
+## Medición de la tercera pasada (tras `7566f34`)
+
+Comandos, salidas literales (sin editar). Sesión de D-11, D-12 y M2 parcial.
+
+```
+$ readlink ~/.local/share/FreeCAD/Mod/VDO
+/home/airhon/Proyectos/VDO_freecad_workbench
+$ git rev-parse --short HEAD
+7566f34
+
+$ VDO_TEST_DIR=tests VDO_TEST_OUT=... python3 -I tools/run_tests.py          # nivel 1
+RESUMEN ejecutados=284 fallos=3 errores=0 skip=113 no_ejecutado=0
+  FALLO test_arquitectura.CapasTests.test_core_no_importa_app_ui_cad
+  FALLO test_arquitectura.CapasTests.test_ui_no_escritura_freecad
+  FALLO test_arquitectura.CapasTests.test_ui_no_importa_core_cad_app_api
+
+$ VDO_TEST_DIR=tests VDO_TEST_OUT=... freecadcmd tools/run_tests.py          # nivel 2, 3 ejecuciones
+RUN 1 EXIT=1 SIGSEGV_LINEAS=0 -> RESUMEN ejecutados=282 fallos=4 errores=0 skip=26 no_ejecutado=0
+RUN 2 EXIT=1 SIGSEGV_LINEAS=0 -> RESUMEN ejecutados=282 fallos=4 errores=0 skip=26 no_ejecutado=0
+RUN 3 EXIT=1 SIGSEGV_LINEAS=0 -> RESUMEN ejecutados=282 fallos=4 errores=0 skip=26 no_ejecutado=0
+  FALLO test_arquitectura (×3, los de siempre)
+  FALLO test_goldens.GoldensVerificacionTests.test_guardian  (golden pendiente, ver D-11)
+  (test_guardian_locale: OK en ambas ejecuciones con LC_NUMERIC=es_CO.UTF-8 y LC_NUMERIC=C)
+
+$ python3 -I tools/auditoria/ciclos.py
+CICLOS: 3 componentes  (todos en ui/; ninguno en core ni en cad)
+ARISTAS core->cad: 8
+
+$ python3 -I tools/auditoria/minimalismo.py resumen
+=== RESUMEN por capa ===
+capa | archivos | lineas | funciones | api_publica
+--------------------------------------------------
+core | 26 | 8671 | 308 | 249
+ui | 33 | 13472 | 513 | 301
+cad | 5 | 387 | 18 | 13
+app | 21 | 941 | 42 | 50
+TOTAL | 85 | 23471 | 881 | -
+$ minimalismo.py duplicados -> tablas constantes idénticas (AST): 0 ; funciones con cuerpo idéntico: 3
+$ minimalismo.py literales   -> literales vigilados fuera de datos/: 53
+$ minimalismo.py ramas      -> funciones con 4+ ramas if/elif: 12
+$ minimalismo.py tamano     -> archivos > 400 líneas: 17 ; funciones > 60 líneas: 68
+$ minimalismo.py excepciones-> except que tragan errores: 89
+$ minimalismo.py fachadas   -> 0
+
+$ .venv/bin/ruff check . --no-cache --statistics
+Found 300 errors.
+[*] 23 fixable with `--fix` (10 unsafe fixes available with `--fix --unsafe-fixes`).
+```
+
+Cifras de ruff: 303 en la pasada anterior, 300 ahora. El desglose por carpeta no se ha vuelto a medir en esta pasada.
+
+**Nota de una ejecución descartada:** una ejecución de nivel 2 con `VDO_TEST_OUT` apuntando a un directorio terminó con código 139 (SIGSEGV al salir), tras un `IsADirectoryError` en el runner. Con la ruta correcta, 3 de 3 ejecuciones dan código 1 y 0 SIGSEGV. No se ha investigado más allá de esa observación.
+
+### D-11 — salidas de locale (sonda con `freecadcmd`, locale forzado con `locale.setlocale`)
+
+```
+# Antes del cambio (escritura str(valor)), LC_NUMERIC forzado es_CO.UTF-8:
+A1 entrada='0.4'  lectura=0
+A2 entrada='=0.4' lectura=0
+A5 entrada='7417634.708' lectura=7417634
+# Antes del cambio, LC_NUMERIC forzado C:
+A1 entrada='0.4'  lectura=0.4
+A5 entrada='7417634.708' lectura=7417634.708
+
+# Después del cambio (=N/D), LC_NUMERIC forzado es_CO.UTF-8 y C:
+A1 txt==2/5 leido=0.4 IGUAL ; A2 txt==1854408677/250 leido=7417634.708 IGUAL ; ... (9 casos)
+TODAS_IGUALES   (con es_CO.UTF-8)
+TODAS_IGUALES   (con C)
+```
+
+Nota: `locale.setlocale(LC_NUMERIC)` sin argumentos devuelve `C` en el arranque aunque el entorno pida `es_CO`. Por eso la sonda fuerza el locale con `setlocale(LC_NUMERIC, ...)` explícito.
+
+**Golden `guardian.json`:** diferencia medida con `golden.py` (sin regenerar): en las 6 entradas, solo la celda `Params_Melamina!B5` (`canto_fino`): esperado `{'contenido': '0.4'}`, obtenido `{'contenido': '=2 / 5'}`. El alias y el valor leído no cambian. Requiere aprobación humana.
+
+---
+
 ## Alcance de ruff y mypy (D-04)
 
 Ver `docs/PLAN_MINIMALISMO_VDO.md` §2, decisión D-04.
@@ -240,12 +321,13 @@ Goldens sustituidos (P-05, pendientes de aprobación humana): `creacion_modulos`
 - `DIMENSION_POR_EJE` en `core/vdo_helpers` (`cbfb55f`, H-06).
 
 **Pendiente, con causa:**
-- `ESQUINAS` (H-04): **bloqueado por P-07**.
+- `ESQUINAS` (H-04): **hecho** (`9040cca`, P-07).
 - `rotacion_z` (H-60 a H-62): **bloqueado por P-06**.
-- Ciclo core↔cad (H-01b, D-10, `forma_ref`): **bloqueado por P-08**.
+- Ciclo dentro de `cad`: **resuelto** (`00fdf7f`, D-12). Quedan 3 ciclos dentro de `ui/` (fuera de D-12) y 8 aristas core→cad (H-01b, D-10, `forma_ref`), que se eliminan en M5.
 - `MODULE_SPECS` (H-22, 162 líneas): para pasarlo a `datos/modulos.json` hace falta un golden de la tabla antes del cambio. Hoy no hay ninguno. No lo he hecho.
-- `LUCIDE_ICONS` (H-23): el inventario dice "comparar el contenido de las dos copias antes de migrar". No lo he comparado.
-- `_CATALOGO_PATH` (H-21) y caché/logger (H-24): marcados [decisión] en el inventario, sin decidir.
+- `LUCIDE_ICONS` (H-23): **hecho** (`04a83e5`). Las dos tablas no eran copias: compartían solo `inglete_45`, con SVG distinto. Decisión registrada en `DECISIONES_DELEGADAS.md`.
+- `CATALOGO_PATH` (H-21): **hecho** (`7566f34`). Corrige un defecto: la UI usaba una ruta inexistente.
+- Caché de iconos y logger (H-24): **decididos, no unificados** (no son hechos de dominio; ver `DECISIONES_DELEGADAS.md`).
 - **Literales (53):** `oculta` y `tirador` ya tienen constantes de dominio (`CORREDERA_OCULTA` en `core/vdo_cajon_despiece.py:22`, `APERTURA_TIRADOR` en `core/vdo_facade_contract.py:14`). Lo correcto es reemplazar por esas constantes, no crear un JSON nuevo. `melamina_standar` (23 usos) y `blum_tandem` (14) necesitan una constante nueva. Es una sustitución por ocurrencia, con su propio golden. No la he hecho en esta pasada.
 
 ---
@@ -263,8 +345,10 @@ Estado de cada decisión de `DECISIONES_DELEGADAS.md` (fuente vigente; `PENDIENT
 - **P-04**: no se tocan ni commitean los 2 tests de otra sesión. Pendiente del usuario. Nota: `tests/test_single_dock_convergence.py` usa `sys` sin importarlo (ruff F821, línea 218): su `__main__` falla con NameError. Es un defecto de ese cambio sin commitear.
 - **P-05**: aprobados por delegación. Revertir: `git revert 200c79c`.
 - **P-06**: decidido (única definición de `rotacion_z` en `cad/propiedades.py`), **no aplicado**: el borrado de la copia de `core/vdo_helpers` es de M5. Fuera de la lista de esta pasada.
-- **P-07**: decidido (unificar solo duplicados exactos del box controller con `core/vdo_reengrose`), **no aplicado**: fuera de la lista de esta pasada. Quedan 2 tablas idénticas en `minimalismo.py duplicados`.
-- **P-08**: **aplicado** (`47045b0`). Core↔cad ya no cierra ciclo. Aristas core→cad: 4 → 8 (ver "Medición"). Queda un ciclo **dentro de cad**: `cad.colocacion ↔ cad.propiedades`, por el import diferido de `aplicar_rotacion`. No estaba en la decisión, que solo contaba el ciclo con `core`. Decidir dónde vive `ancla_local` o `aplicar_rotacion` es decisión nueva; no la he tomado.
+- **P-07**: **aplicado** (`9040cca`). `minimalismo.py duplicados`: tablas idénticas 2 → 0.
+- **P-08**: **aplicado** (`47045b0`). Core↔cad ya no cierra ciclo. Aristas core→cad: 4 → 8 (ver "Medición"; se eliminan en M5).
+- **D-12** (decidida por el asistente): **aplicada** (`00fdf7f`). `aplicar_rotacion` vive en `cad/colocacion.py`. Ciclo dentro de `cad`: resuelto.
+- **D-11** (aprobada por el usuario): **código aplicado** (`169135b`). Golden `guardian.json` pendiente de aprobación humana (ver `goldens_origen.md`). Documentos ya guardados con `0` **no se corrigen por código** (ver `DECISIONES_DELEGADAS.md`, pendientes humanos).
 - **P-09**: retirado (no hay definición). Lo registra el documento de decisiones.
 - **P-10**: N/A con motivo y deuda antes de M5 (`goldens_origen.md`).
 - Los planes anteriores siguen sin archivar (MN-13, M11).
