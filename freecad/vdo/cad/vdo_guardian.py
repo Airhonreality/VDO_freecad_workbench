@@ -9,6 +9,8 @@ No contiene lógica de dominio: solo escribe lo que core/planifica.
 
 from __future__ import annotations
 
+from fractions import Fraction
+
 import FreeCAD as App
 
 from freecad.vdo.core import vdo_defaults as VDO_D
@@ -31,6 +33,20 @@ def _tiene_alias(hoja, celda):
     return hoja.getAlias(celda) is not None
 
 
+def _celda_numerica(valor):
+    """Contenido de celda que FreeCAD lee igual con cualquier LC_NUMERIC.
+
+    Con locale de coma decimal, FreeCAD lee "0.4" como 0 (D-11). Las
+    fracciones enteras "=N/D" no tienen separador decimal: se parsean igual
+    en cualquier locale. Fraction(repr(...)) es exacto y la división de dos
+    enteros exactos da el mismo double que float("0.4").
+    """
+    fraccion = Fraction(repr(float(valor)))
+    if fraccion.denominator == 1:
+        return str(fraccion.numerator)
+    return f"={fraccion.numerator}/{fraccion.denominator}"
+
+
 def _asegurar_parametros(hoja, fila_inicio, fila_valor, fila_descripcion,
                          parametros):
     """Inyecta etiqueta/valor+alias/descripcion en cada fila de parametros.
@@ -42,11 +58,11 @@ def _asegurar_parametros(hoja, fila_inicio, fila_valor, fila_descripcion,
         if _tiene_alias(hoja, celda_valor):
             continue
         if fila_valor == "A":
-            hoja.set(f"A{fila}", str(info["valor"]))
+            hoja.set(f"A{fila}", _celda_numerica(info["valor"]))
             hoja.setAlias(f"A{fila}", nombre)
         else:
             hoja.set(f"A{fila}", f"'{nombre}")
-            hoja.set(f"{fila_valor}{fila}", str(info["valor"]))
+            hoja.set(f"{fila_valor}{fila}", _celda_numerica(info["valor"]))
             hoja.setAlias(f"{fila_valor}{fila}", nombre)
         if info.get("descripcion"):
             hoja.set(f"{fila_descripcion}{fila}", f"'{info['descripcion']}")
