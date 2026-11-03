@@ -19,38 +19,21 @@ import logging
 import sys
 
 from freecad.vdo.core import vdo_reengrose as VDO_RE
+
 _LOG = logging.getLogger(__name__)
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtSvg, QtWidgets
+from freecad.vdo.ui.tema import LUCIDE_ICONS
+from freecad.vdo.ui.tema import get_svg_icon as _svg_icon
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 
 # ----------------------------------------------------------------------
 # Iconos Vectoriales Lucide Embebidos (SVG)
 # ----------------------------------------------------------------------
-LUCIDE_ICONS = {
-    # Lucide: link (Cadena enlazada)
-    "link": """<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>""",
-
-    # Lucide: unlink (Cadena rota / desvinculada)
-    "unlink": """<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18.84 12.25 1.72-1.71a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="m5.16 11.75-1.72 1.71a5 5 0 0 0 7.07 7.07l1.71-1.71"/><line x1="2" y1="2" x2="22" y2="22"/></svg>""",
-
-    # Lucide: corner-up-right / Miter 45°
-    "inglete_45": """<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#007acc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="20" y2="4"/><circle cx="4" cy="20" r="1.5" fill="#007acc"/><circle cx="20" cy="4" r="1.5" fill="#007acc"/></svg>""",
-
-    # Icono Tope Vertical (Barra vertical continua, horizontal corta)
-    "vertical_domina": """<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2"><rect x="4" y="3" width="5" height="18" fill="#555555" stroke="#777777"/><rect x="9" y="8" width="11" height="8" fill="#222222" stroke="#555555"/></svg>""",
-
-    # Icono Tope Horizontal (Barra horizontal continua, vertical corta)
-    "horizontal_domina": """<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2"><rect x="3" y="4" width="18" height="5" fill="#555555" stroke="#777777"/><rect x="8" y="9" width="8" height="11" fill="#222222" stroke="#555555"/></svg>""",
-
-    # Icono Marco Interior (Ambas frenan antes de la esquina exterior)
-    "marco_interior": """<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2"><rect x="6" y="6" width="12" height="12" stroke-dasharray="2 2" stroke="#888888"/><path d="M6 10 h6 v6"/></svg>"""
-}
 
 _ICON_CACHE = {}
 
 
-from freecad.vdo.ui.tema import get_svg_icon as _svg_icon
 
 
 def obtener_svg_icon(name, size=22):
