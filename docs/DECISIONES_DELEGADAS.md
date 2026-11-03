@@ -190,3 +190,70 @@ Este bloque va aquí y no en `docs/PENDIENTES_HUMANO.md`. Ese archivo lo escribe
 4. **P-04** (sin cambios): `tests/test_gui_wiring.py` y `tests/test_single_dock_convergence.py` siguen modificados sin commitear. No son de este plan.
 5. **Literales de dominio (53) y `MODULE_SPECS` (H-22):** siguen abiertos. Para `MODULE_SPECS` hace falta un golden desde `b78de04`, con procedencia en `goldens_origen.md`. Ese golden no existe todavía.
 
+
+---
+
+## Decisiones del asistente (sesión del 2026-11-03, tercera): D-13 a D-18
+
+**Criterio.** El usuario indicó que no quiere aprobar cada decisión y que el asistente tome las decisiones con sentido común, sin poner en riesgo el proceso. Cada decisión de esta sección es del asistente, es revertible con `git revert` del commit indicado, y se registra con su razón. Se detiene y consulta solo ante acciones destructivas o irreversibles, o ante conflicto con otra sesión.
+
+### D-13 — Forma de escribir números en la hoja (cierra D-11 y el pendiente 1)
+
+**Decisión:** se mantiene `=N/D`. Dos cambios:
+1. Antes de la fracción, el valor se redondea a 10 decimales: `Fraction(repr(round(valor, 10)))`. Así el denominador queda por debajo de 10^10, muy por debajo de 2^53, y la lectura de FreeCAD es exacta. El cambio máximo es menor que 5·10^-11 mm. Para medidas de carpintería no tiene efecto.
+2. Si el numerador o el denominador superan 2^53, la función lanza `ParametroInvalido` (de `core/errores.py`). No se escribe un valor incorrecto en silencio.
+
+**Por qué no otra forma:** las medidas de `es_CO` muestran que `"0.4"` y `"=0.4"` se leen como 0 y que `"7417634.708"` se trunca. No hay otra escritura de texto que sea independiente del locale.
+
+**Efecto visible que se acepta:** la celda muestra `=2 / 5` en vez de `0.4`. El valor es el mismo. Es feo, pero es correcto y reversible.
+
+**Prueba obligatoria:** lectura de vuelta en `LC_NUMERIC=es_CO.UTF-8` y en `C` para todos los valores que escribe el guardián, leídos del manifiesto con un comando, no a mano. Y una prueba que confirme que un valor con denominador mayor que 2^53 lanza el error.
+
+**Revertir:** `git revert` del commit que aplique D-13.
+
+### D-14 — Golden `guardian.json` (cierra el pendiente 1)
+
+**Decisión:** se regenera. Razón: la lectura de vuelta da el mismo valor en ambos locales, así que el cambio es solo de representación de la celda. El golden guarda lo que se escribe, y eso es lo que cambia.
+
+**Condición:** el diff de la regeneración debe tocar solo la celda B5 (y las demás celdas de `canto_fino` si las hay). Si toca otra cosa, se revierte la regeneración y se registra.
+
+**Revertir:** `git revert` del commit de la regeneración.
+
+### D-15 — Documentos guardados con `0` (cierra el pendiente 2)
+
+**Decisión:** no se corrigen. El código no puede arreglar documentos ya guardados y no hay forma segura de adivinar qué valor debía tener cada parámetro. Se registra la lista de documentos afectados si existe alguno localizable, y el usuario los revisa a mano. Es la única decisión de esta sección que deja trabajo para una persona, y no se puede resolver de otra manera sin riesgo.
+
+**Deuda:** `docs/DEUDA_TECNICA.md`, responsable `usuario`.
+
+### D-16 — Literales de dominio (cierra la parte de literales de M2)
+
+**Decisión:** un módulo de datos `freecad/vdo/datos/valores.py` con una constante por valor: `MELAMINA_ESTANDAR`, `BLUM_TANDEM`, `OCULTA`, `TIRADOR`. El código de `core/` y `ui/` usa las constantes. Los JSON de `datos/` conservan los literales, porque ahí son datos. Los tests pueden seguir con literales cuando comprueban un valor concreto del manifiesto, porque así se detecta un cambio de dato. Ningún otro archivo del paquete debe contener esos literales.
+
+**Revertir:** `git revert` de cada commit de literales.
+
+### D-17 — `MODULE_SPECS` (cierra H-22)
+
+**Decisión:** antes de mover nada se genera el golden desde `b78de04`, serializando el diccionario `MODULE_SPECS` tal como existe en ese commit. Si el golden de origen coincide con el actual, el diccionario se mueve a `freecad/vdo/datos/modulos.json` y `core/vdo_module_specs.py` conserva solo las funciones (`get_spec`, `resolver_panel`, `_resolver`). Si el origen no coincide, se registra la diferencia y no se mueve.
+
+**Por qué es sensato:** el diccionario no tiene funciones ni lambdas (solo strings, números, booleanos y tuplas de strings). Es un dato puro, y MN-04 dice que los datos van en `datos/`.
+
+**Revertir:** `git revert` del commit del movimiento.
+
+### D-18 — Estado de módulo de solo lectura (cierra H-24 y el criterio R5)
+
+**Decisión:** la regla MN-08 prohíbe **estado mutable** de módulo. No prohíbe datos de solo lectura cargados una vez. Por tanto:
+- `VDO_MANIFEST`, `_MANIFEST` y `_CATALOGO` se convierten en constantes de solo lectura (`types.MappingProxyType` sobre dict, o tuplas) con nombre en mayúsculas. Su contenido no cambia en tiempo de ejecución.
+- `LOGGER` en `app/registro.py` queda como está: es configuración de logging, no dominio.
+- Los caché de iconos de runtime no se tocan.
+
+Si `verificar.py` o `minimalismo.py` cuentan estas constantes como estado mutable, la regla de conteo se corrige para distinguir solo lectura, y la corrección va en el mismo commit con su motivo.
+
+**Revertir:** `git revert` del commit.
+
+### Ciclos dentro de `ui/` (no cubierto por el plan)
+
+**Decisión:** el agente lista los tres componentes con sus imports exactos. Si un ciclo se rompe moviendo una constante o un dato a `ui/tema.py` o a `datos/`, se hace y se registra. Si requiere mover lógica entre módulos de UI, se deja documentado en `DEUDA_TECNICA.md` con responsable `ejecutor` y no se toca en esta sesión.
+
+### Regla de consulta
+
+Solo se consulta al usuario ante: borrar datos de usuario, cambiar archivos fuera de este repo, o conflicto con otra sesión activa. Lo demás se decide, se registra y se avisa en el informe final.
