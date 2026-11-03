@@ -102,6 +102,14 @@ Total: **140 entradas en 15 ficheros, 0 entradas en error** (medido con un scrip
   `OK golden: guardian`, 0 diferencias.
 - **Limitación:** el golden solo cubre estos escenarios. No hay entradas con error.
 
+## MODULE_SPECS (`tests/golden/module_specs.json`, D-17)
+
+- **Origen:** `freecad/vdo/core/vdo_module_specs.py` en `b78de04`, variable `MODULE_SPECS` (líneas 13-174 de ese commit).
+- **Método:** lectura del fichero con `git show b78de04:...` y evaluación de la asignación con `ast.literal_eval`. No se ejecuta el módulo: el diccionario es puro dato. Se conserva el orden de claves y los literales tal como están en origen (`"blum_tandem"`, `"melamina_standar"`, etc.).
+- **Contenido:** 7 módulos (`coco_4c`, `cajon_oculta`, `panel_estandar`, `panel_fachada`, `panel_division`, `puerta`, `zocalo`).
+- **Comparación con el código actual:** antes de mover nada, el valor de `MODULE_SPECS` en HEAD (con sus constantes resueltas desde `datos/valores.py`) es igual al de `b78de04`, incluido el orden de claves. Medido con `ast`: `IGUALES (valor, nombres resueltos): True`.
+- **Prueba:** `tests/test_module_specs_golden.py`.
+
 ## Reubicación de funciones
 
 | Función | Módulo en `b78de04` | Módulo actual | Efecto |
