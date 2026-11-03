@@ -108,6 +108,7 @@ Total: **140 entradas en 15 ficheros, 0 entradas en error** (medido con un scrip
 - **Método:** lectura del fichero con `git show b78de04:...` y evaluación de la asignación con `ast.literal_eval`. No se ejecuta el módulo: el diccionario es puro dato. Se conserva el orden de claves y los literales tal como están en origen (`"blum_tandem"`, `"melamina_standar"`, etc.).
 - **Contenido:** 7 módulos (`coco_4c`, `cajon_oculta`, `panel_estandar`, `panel_fachada`, `panel_division`, `puerta`, `zocalo`).
 - **Comparación con el código actual:** antes de mover nada, el valor de `MODULE_SPECS` en HEAD (con sus constantes resueltas desde `datos/valores.py`) es igual al de `b78de04`, incluido el orden de claves. Medido con `ast`: `IGUALES (valor, nombres resueltos): True`.
+- **Serialización:** las tuplas de origen (p. ej. `factory`) se guardan como listas, porque el golden es JSON. La prueba normaliza ambos lados por JSON.
 - **Prueba:** `tests/test_module_specs_golden.py`.
 
 ## Reubicación de funciones

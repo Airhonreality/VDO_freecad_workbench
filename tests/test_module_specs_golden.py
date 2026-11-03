@@ -31,7 +31,9 @@ class ModuleSpecsGoldenTests(unittest.TestCase):
         golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
         vigente = _vigente()
         self.assertEqual(list(vigente.keys()), list(golden.keys()))
-        self.assertEqual(vigente, golden)
+        # El golden está en JSON: las tuplas de origen (p. ej. 'factory') son listas.
+        # Se normalizan ambos lados igual, para no comparar tupla con lista.
+        self.assertEqual(json.loads(json.dumps(vigente)), golden)
 
 
 if __name__ == "__main__":
