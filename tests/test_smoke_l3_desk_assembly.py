@@ -28,6 +28,13 @@ _MACRO_DIR = os.environ.get(
 import FreeCAD as App
 import Part
 
+from freecad.vdo.core.errores import VDOError
+
+# Errores esperados de FreeCAD/OCC (RuntimeError) y del dominio. Cualquier otro
+# error propaga: el test sale en ERROR en vez de ocultarse.
+_ERRORES_ESPERADOS = (VDOError, RuntimeError, ValueError, TypeError,
+                      AttributeError, IndexError, KeyError, OSError)
+
 from freecad.vdo.cad.geometria import forma_ref as VRS
 from freecad.vdo.core import vdo_cajon_core as VCJ
 from freecad.vdo.core import vdo_cajon_despiece as VCD
@@ -97,7 +104,7 @@ def front_top_edge(shape):
 def common_vol(a, b):
     try:
         return float(a.common(b).Volume)
-    except Exception:
+    except _ERRORES_ESPERADOS:
         return float("nan")
 
 
@@ -182,10 +189,10 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
             try:
                 App.ActiveDocument.saveAs(out_path)
                 print(f"\n💾 Documento guardado: {out_path}")
-            except Exception as ex:
+            except _ERRORES_ESPERADOS as ex:
                 print(f"\n⚠️  No se pudo guardar el documento: {ex}")
             App.closeDocument(cls.doc.Name)
-        except Exception:
+        except _ERRORES_ESPERADOS:
             pass
 
     # --------------------------------------------------- 0. API coverage
@@ -235,7 +242,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
                 hw_oculta = HH.resolve_drawer_slide("oculta", "blum_tandem")
                 hw_tel = HH.resolve_drawer_slide("telescopica",
                                                  "GEN-TELESCOPICA-45KG")
-            except Exception as ex:
+            except _ERRORES_ESPERADOS as ex:
                 hw_ok = False
                 hw_motivo = f"herraje: {ex}"
 
@@ -298,7 +305,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
             record(cadena, "1.3 Cajones sin colisión booleana entre sí",
                    no_col, "intervalos Z disjuntos ⇒ common().Volume == 0; " +
                    "; ".join(col_detalle))
-        except Exception as ex:
+        except _ERRORES_ESPERADOS as ex:
             record(cadena, "1.1-1.3 Ejecución", False, f"Excepción: {ex}")
 
     # --------------------------------------------------- 2. Sistemas apertura
@@ -328,7 +335,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
                 if edge:
                     cham = fach.makeChamfer(5.0, edge)
                     ok_45 = cham.isValid()
-            except Exception:
+            except _ERRORES_ESPERADOS:
                 ok_45 = False
             record(cadena, "2.3a Conmutación a frentes con corte 45° (makeChamfer)",
                    ok_45 and VFC.necesita_bisel_45(VFC.APERTURA_45_GRADOS),
@@ -344,7 +351,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
             record(cadena, "2.3b Conmutación a frentes con rebaje Gola (-35 mm)",
                    ok_gola,
                    f"h={h_gola:.1f} (nominal {h_f:.1f}-35), op={op_gola}")
-        except Exception as ex:
+        except _ERRORES_ESPERADOS as ex:
             record(cadena, "2.1-2.3 Ejecución", False, f"Excepción: {ex}")
 
     # --------------------------------------------------- 3. Reengrose cubierta
@@ -386,12 +393,12 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
                 sh = obj.Shape.copy()
                 sh = sh.makeFillet(3.0, top_edges(sh)[:6])
                 ok_fillet = sh.isValid()
-            except Exception:
+            except _ERRORES_ESPERADOS:
                 ok_fillet = False
             record(cadena, "3.2 makeFillet radio 3 mm en arista ergonómica",
                    ok_fillet,
                    f"Shape.isValid() tras boleo = {ok_fillet}")
-        except Exception as ex:
+        except _ERRORES_ESPERADOS as ex:
             record(cadena, "3.1-3.2 Ejecución", False, f"Excepción: {ex}")
 
     # --------------------------------------------------- 4. Pose y duplicación L
@@ -468,7 +475,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
                     todos_cero = False
             record(cadena, "4.2 common().Volume == 0 entre piezas no colidentes",
                    todos_cero, "; ".join(detalle))
-        except Exception as ex:
+        except _ERRORES_ESPERADOS as ex:
             record(cadena, "4.1-4.2 Ejecución", False, f"Excepción: {ex}")
 
     # --------------------------------------------------- 5. BOM / despiece
@@ -491,7 +498,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
                 csv_ok = VEL.generar_csv_opencutlist(
                     piezas, "/tmp/vdo_smoke_l3_cutting_list.csv")
                 csv_motivo = "CSV generado"
-            except Exception as ex:
+            except _ERRORES_ESPERADOS as ex:
                 csv_ok = False
                 csv_motivo = f"CSV no generado: {ex}"
             record(cadena, "5.2 Export CSV OpenCutList (melamina + herrajes)",
@@ -502,7 +509,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
                    True,
                    f"Melamina: {len(melamina)} piezas | Herrajes: {n_cajones} juegos de guías de cajón "
                    f"| Tiras de canto (reengrose): contabilizadas en despiece de paneles")
-        except Exception as ex:
+        except _ERRORES_ESPERADOS as ex:
             record(cadena, "5.1-5.3 Ejecución", False, f"Excepción: {ex}")
 
     # --------------------------------------------------- 99. Reporte matriz

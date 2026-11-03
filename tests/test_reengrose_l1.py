@@ -18,7 +18,7 @@ except ImportError:
 
 try:
     from freecad.vdo.ui.vdo_panel_task import PanelTaskPanel
-except Exception:
+except ImportError:
     PanelTaskPanel = None
 
 from tests.soporte.qt import qapplication
