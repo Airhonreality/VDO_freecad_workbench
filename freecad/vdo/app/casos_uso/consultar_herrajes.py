@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from freecad.vdo.app.dto import ConsultarHerrajesDTO, ConsultarHerrajesResultado
+from freecad.vdo.datos.valores import TIRADOR
 
 
 def consultar_herrajes(doc, dto: ConsultarHerrajesDTO) -> ConsultarHerrajesResultado:
@@ -10,8 +11,8 @@ def consultar_herrajes(doc, dto: ConsultarHerrajesDTO) -> ConsultarHerrajesResul
     if doc is None:
         raise ValueError("Documento requerido para consultar herrajes.")
     herrajes = []
-    if dto.tipo is None or dto.tipo == "tirador":
-        herrajes.append({"tipo": "tirador", "sku": "TIR-001"})
+    if dto.tipo is None or dto.tipo == TIRADOR:
+        herrajes.append({"tipo": TIRADOR, "sku": "TIR-001"})
     if dto.tipo is None or dto.tipo == "bisagra":
         herrajes.append({"tipo": "bisagra", "sku": "BIS-001"})
     if dto.tipo is None or dto.tipo == "guia":

@@ -32,6 +32,7 @@ from freecad.vdo.core.vdo_hardware_hub import (
     resolve_hinge,
     resolve_sliding,
 )
+from freecad.vdo.datos.valores import TIRADOR
 
 # ---------------------------------------------------------------------
 # Constantes de taller (fuente única: vdo_facade_contract.py)
@@ -301,7 +302,7 @@ APERTURA_LEGADO_A_CONTRATO = {
     "perfil gola": APERTURA_GOLA,
     "push to open": APERTURA_PUSH_OPEN,
     # Nombres legacy de vdo_puerta_task.py (antes del contrato)
-    "tirador": APERTURA_TIRADOR,
+    TIRADOR: APERTURA_TIRADOR,
     "fachada_a_45_grados": APERTURA_45_GRADOS,
     "perfil_gola_aluminio": APERTURA_GOLA,
     "push_open_mecanico": APERTURA_PUSH_OPEN,

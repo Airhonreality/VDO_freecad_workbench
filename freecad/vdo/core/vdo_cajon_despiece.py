@@ -14,7 +14,7 @@
 # =====================================================================
 
 from freecad.vdo.core.vdo_manifest import _obtener_json
-from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR, OCULTA
+from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR, OCULTA, TIRADOR
 
 _MANIFEST = _obtener_json()
 
@@ -51,7 +51,7 @@ try:
         necesita_expulsor_magnetico,
     )
 except ImportError:
-    APERTURA_TIRADOR = "tirador"
+    APERTURA_TIRADOR = TIRADOR
     APERTURA_GOLA = "gola_aluminio"
     APERTURA_45_GRADOS = "inglete_45"
     OPERACION_CANTO_ESTANDAR = "CANTO_ESTANDAR"

@@ -28,6 +28,7 @@ from freecad.vdo.core.vdo_layout import (
     resolve_layout,
 )
 from freecad.vdo.core.vdo_puerta_core import make_puerta
+from freecad.vdo.datos.valores import TIRADOR
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_coco_preview2d import CocoPreview2D
 
@@ -694,7 +695,7 @@ class DivisionesEditor(QtWidgets.QWidget):
                         cfg = contenido.get("config", {})
                         cfg.get("nombre", f"Puerta_{cell.label}")
                         montaje = cfg.get("tipo_montaje", "Parche")
-                        apertura = cfg.get("sistema_apertura", "tirador")
+                        apertura = cfg.get("sistema_apertura", TIRADOR)
                         child = QtWidgets.QTreeWidgetItem([
                             f"🚪 Puerta ({montaje} · {apertura})", "", "", ""])
                         child.setData(0, ROLE_DATA, {

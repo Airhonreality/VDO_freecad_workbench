@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR, OCULTA
+from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR, OCULTA, TIRADOR
 
 
 @dataclass(frozen=True)
@@ -94,7 +94,7 @@ class CajonDTO:
     longitud_guia: float = 0.0
     montaje_trasera: str = "entre_laterales"
     tipo_corredera: str = OCULTA
-    sistema_apertura: str = "tirador"
+    sistema_apertura: str = TIRADOR
     tipo_montaje: str = "parche"
     material_ref: str = MELAMINA_ESTANDAR
     rotacion: float = 0.0
@@ -114,7 +114,7 @@ class PuertaDTO:
     alto: float
     espesor: float = 18.0
     tipo_montaje: str = "parche"
-    sistema_apertura: str = "tirador"
+    sistema_apertura: str = TIRADOR
     material_ref: str = MELAMINA_ESTANDAR
     rotacion: float = 0.0
     anclaje: str = "inferior_izquierda_frente"

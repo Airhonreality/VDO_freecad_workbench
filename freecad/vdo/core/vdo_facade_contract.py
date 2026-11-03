@@ -7,11 +7,13 @@
 
 from __future__ import annotations
 
+from freecad.vdo.datos.valores import TIRADOR
+
 # ---------------------------------------------------------------------
 # 1. SISTEMAS DE APERTURA (Constantes Oficiales)
 # ---------------------------------------------------------------------
 
-APERTURA_TIRADOR = "tirador"         # Tirador o manija tradicional postiza
+APERTURA_TIRADOR = TIRADOR         # Tirador o manija tradicional postiza
 APERTURA_GOLA = "gola_aluminio"      # Perfil Gola de aluminio integrado (C o L)
 APERTURA_45_GRADOS = "inglete_45"    # Canto con bisel a 45° (uñero corrido)
 APERTURA_PUSH_OPEN = "push_open"     # Apertura por presión (émbolo magnético)
