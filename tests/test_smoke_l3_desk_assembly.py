@@ -28,13 +28,6 @@ _MACRO_DIR = os.environ.get(
 import FreeCAD as App
 import Part
 
-from freecad.vdo.core.errores import VDOError
-
-# Errores esperados de FreeCAD/OCC (RuntimeError) y del dominio. Cualquier otro
-# error propaga: el test sale en ERROR en vez de ocultarse.
-_ERRORES_ESPERADOS = (VDOError, RuntimeError, ValueError, TypeError,
-                      AttributeError, IndexError, KeyError, OSError)
-
 from freecad.vdo.cad.geometria import forma_ref as VRS
 from freecad.vdo.core import vdo_cajon_core as VCJ
 from freecad.vdo.core import vdo_cajon_despiece as VCD
@@ -48,11 +41,17 @@ from freecad.vdo.core import vdo_layout as VL
 from freecad.vdo.core import vdo_module_props as VMOD
 from freecad.vdo.core import vdo_panel_core as VP
 from freecad.vdo.core import vdo_reengrose as VR
+from freecad.vdo.core.errores import VDOError
 from tests.soporte.requisitos import requiere_freecad
 try:
     from freecad.vdo.ui import vdo_export_cutting_list as VEL
 except ImportError:
     VEL = None  # sin FreeCADGui el módulo se niega a cargar; la clase lo exige
+
+# Errores esperados de FreeCAD/OCC (RuntimeError) y del dominio. Cualquier otro
+# error propaga: el test sale en ERROR en vez de ocultarse.
+_ERRORES_ESPERADOS = (VDOError, RuntimeError, ValueError, TypeError,
+                      AttributeError, IndexError, KeyError, OSError)
 
 # ---------------------------------------------------------------------------
 # Matriz de resultados: {cadena, punto, resultado, motivo}

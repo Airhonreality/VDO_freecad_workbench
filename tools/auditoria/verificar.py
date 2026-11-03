@@ -48,24 +48,38 @@ def _run(cmd: list[str], **kw) -> subprocess.CompletedProcess:
 
 
 def _grep_count(pattern: str, path: Path, flags: int = 0) -> int:
-    """Cuenta líneas que coinciden con el patrón (regex) bajo path."""
+    """Cuenta líneas que coinciden con el patrón (regex) bajo path.
+
+    Un fallo de rg (no instalado, error de patrón) lanza excepción: no se
+    convierte en 0 coincidencias, porque eso daría un falso verde.
+    """
+    res = _run(["rg", "-n", pattern, str(path)], timeout=60)
+    if res.returncode == 0:
+        return len([l for l in res.stdout.splitlines() if l.strip()])
+    if res.returncode == 1:
+        return 0
+    raise RuntimeError(f"rg falló ({res.returncode}): {res.stderr.strip()[:200]}")
+
+
+def _ruff_incidencias(rutas: list[str], extra: list[str] | None = None) -> int:
+    """Número de incidencias de ruff (salida JSON), no su código de salida."""
+    cmd = [str(ROOT / ".venv" / "bin" / "ruff"), "check", *(extra or []),
+           "--output-format", "json", *rutas]
+    res = _run(cmd, timeout=120)
     try:
-        res = _run(["rg", "-n", pattern, str(path)], timeout=60)
-        if res.returncode == 0:
-            return len([l for l in res.stdout.splitlines() if l.strip()])
-        return 0
-    except Exception:
-        return 0
+        return len(json.loads(res.stdout or "[]"))
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"ruff sin salida JSON: {res.stderr.strip()[:200]}") from exc
 
 
 def _grep_files(pattern: str, path: Path) -> list[str]:
-    try:
-        res = _run(["rg", "-l", pattern, str(path)], timeout=60)
-        if res.returncode == 0:
-            return [l for l in res.stdout.splitlines() if l.strip()]
+    # rg: 0 = coincidencias, 1 = ninguna, 2+ = error. Un error no es "cero coincidencias".
+    res = _run(["rg", "-l", pattern, str(path)], timeout=60)
+    if res.returncode == 0:
+        return [l for l in res.stdout.splitlines() if l.strip()]
+    if res.returncode == 1:
         return []
-    except Exception:
-        return []
+    raise RuntimeError(f"rg falló ({res.returncode}): {res.stderr.strip()[:200]}")
 
 
 # ---------------------------------------------------------------------------
@@ -323,14 +337,12 @@ def _m8_complejidad():
     cumple_ast = len(largas) == 0
 
     # ruff C901
-    res = _run([str(ROOT / ".venv" / "bin" / "ruff"), "check",
-                "--select", "C901", "--config", "max-complexity=12", str(FREECAD)],
-               timeout=120)
-    ruff_ok = res.returncode == 0
+    # Umbral 12 en pyproject.toml ([tool.ruff.lint.mccabe]).
+    n_c901 = _ruff_incidencias([str(FREECAD)], ["--select", "C901"])
     _registrar("R8_funciones_le100", len(largas), 0, cumple_ast,
                "funciones > 100 líneas: " + str(largas) if largas else "ninguna")
-    _registrar("R8_ruff_c901_le12", 0 if ruff_ok else 1, 0, ruff_ok,
-               "ruff C901: " + ("ok" if ruff_ok else "incidencias"))
+    _registrar("R8_ruff_c901_le12", n_c901, 0, n_c901 == 0,
+               f"ruff C901 (max 12): {n_c901} incidencias")
 
 
 # ---------------------------------------------------------------------------
@@ -418,9 +430,7 @@ def _contar_defs_no_usadas() -> int:
 # ---------------------------------------------------------------------------
 def _m10_consistencia():
     # ruff check
-    res = _run([str(ROOT / ".venv" / "bin" / "ruff"), "check", str(FREECAD),
-                str(TESTS), str(TOOLS)], timeout=120)
-    n_ruff = res.returncode
+    n_ruff = _ruff_incidencias([str(FREECAD), str(TESTS), str(TOOLS)])
 
     # mypy strict en core/app/cad
     mypy_ok = True
@@ -462,7 +472,7 @@ def _m10_consistencia():
             n_hex += 1
 
     _registrar("R10_ruff_check_cero", n_ruff, 0, n_ruff == 0,
-               f"ruff check devolvió {n_ruff}")
+               f"ruff check: {n_ruff} incidencias")
     _registrar("R10_mypy_strict_cero", mypy_errores, 0, mypy_ok,
                f"mypy strict: {mypy_errores} errores")
     _registrar("R10_cero_print", n_print, 0, n_print == 0,

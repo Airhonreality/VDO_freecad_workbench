@@ -26,3 +26,7 @@ strict = true
 explicit_package_bases = true
 packages = ["freecad.vdo.core", "freecad.vdo.app", "freecad.vdo.cad"]
 ignore_missing_imports = true
+
+[tool.ruff.lint.mccabe]
+# Umbral de complejidad del plan (R8, F19-D11 / M-15): máximo 12.
+max-complexity = 12
