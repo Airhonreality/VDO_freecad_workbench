@@ -8,6 +8,7 @@
 
 import json
 import os
+from types import MappingProxyType
 
 
 def _obtener_json():
@@ -49,4 +50,6 @@ def get_loader():
 
 # Cargar JSON al importar (conservado para compatibilidad; las funciones
 # de acceso siempre leen fresco del fichero).
-VDO_MANIFEST = _obtener_json()
+# Solo lectura (D-18): mapping de nivel superior inmutable. Los sub-dicts siguen siendo
+# dicts; ningún código los muta (verificado por grep).
+VDO_MANIFEST = MappingProxyType(_obtener_json())

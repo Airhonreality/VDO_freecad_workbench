@@ -13,10 +13,12 @@
 #   Gfrente  = grosor de la fachada (18 mm)
 # =====================================================================
 
+from types import MappingProxyType
+
 from freecad.vdo.core.vdo_manifest import _obtener_json
 from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR, OCULTA, TIRADOR
 
-_MANIFEST = _obtener_json()
+_MANIFEST = MappingProxyType(_obtener_json())  # solo lectura (D-18)
 
 # Tipologías de corredera (compatibles con vdo_cajon_core.py)
 CORREDERA_TELESCOPICA = "telescopica"
