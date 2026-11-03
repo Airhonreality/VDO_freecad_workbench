@@ -26,6 +26,12 @@ from freecad.vdo.core.vdo_helpers import _get_app, _get_part
 CANTOS_VALIDOS = ("RIG", "FX", "SMRG")
 
 
+def _rotacion_z(grados):
+    """Rotación alrededor de Z; el ángulo entra en grados (App.Rotation)."""
+    app = _get_app()
+    return app.Rotation(app.Vector(0.0, 0.0, 1.0), float(grados))
+
+
 def add_reengrose_props(obj):
     """Anade las propiedades del motor de reengrose a un panel L1."""
     if not hasattr(obj, "VDO_Reengrose_Activo"):
@@ -335,7 +341,7 @@ def crear_pieza(doc, configuracion):
 
     if rotacion:
         panel.Placement = _get_app().Placement(
-            panel.Placement.Base, VDO_MOD.rotacion_z(rotacion))
+            panel.Placement.Base, _rotacion_z(rotacion))
     elif es_nuevo:
         panel.Placement = _get_app().Placement()
 

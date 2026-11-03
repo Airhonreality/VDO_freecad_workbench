@@ -37,47 +37,4 @@ ANCLAJE_LABELS = {
 ANCLAJE_IDS = {label: idx for idx, label in ANCLAJE_LABELS.items()}
 
 
-def leer_rotacion(obj):
-    """Devuelve la rotación en grados (lee el atributo del objeto)."""
-    try:
-        return float(getattr(obj, "VDO_RotacionZ", 0.0))
-    except (TypeError, ValueError):
-        return 0.0
-
-
-def ancla_local(obj, anclaje=None):
-    """Devuelve el punto local (Vector) de la esquina de anclaje.
-
-    Convención de ejes:
-      X: izquierda (min) / derecha (max)
-      Y: frente (min) / fondo (max)
-      Z: inferior (min) / superior (max)
-    """
-    anclaje = anclaje or getattr(obj, "VDO_Anclaje", ANCLAJE_DEFAULT)
-    bb = obj.Shape.BoundBox
-    if bb is None:
-        xmin = xmax = ymin = ymax = zmin = zmax = 0.0
-    else:
-        xmin, xmax = bb.XMin, bb.XMax
-        ymin, ymax = bb.YMin, bb.YMax
-        zmin, zmax = bb.ZMin, bb.ZMax
-
-    izquierda = str(anclaje).startswith("inferior_izquierda") or str(anclaje).startswith("superior_izquierda")
-    derecha = str(anclaje).startswith("inferior_derecha") or str(anclaje).startswith("superior_derecha")
-    frente = str(anclaje).endswith("_frente")
-    fondo = str(anclaje).endswith("_fondo")
-    superior = str(anclaje).startswith("superior_")
-    centro_inferior = str(anclaje) == "centro_inferior"
-
-    from freecad.vdo.core.vdo_helpers import _get_app
-    App = _get_app()
-    if centro_inferior:
-        return App.Vector((xmin + xmax) / 2.0, (ymin + ymax) / 2.0, zmin)
-    return App.Vector(
-        xmin if izquierda else (xmax if derecha else (xmin + xmax) / 2.0),
-        ymin if frente else (ymax if fondo else (ymin + ymax) / 2.0),
-        zmax if superior else zmin,
-    )
-
-
 from freecad.vdo.cad.propiedades import add_common_props  # noqa: F401

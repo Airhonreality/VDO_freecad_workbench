@@ -15,7 +15,6 @@ from freecad.vdo.core.vdo_facade_contract import (
     OPERACION_CANTO_45,
     OPERACION_CANTO_ESTANDAR,
     OPERACION_CANTO_GOLA,
-    SISTEMAS_APERTURA,
     cantos_por_sistema_apertura,
     necesita_cantos_45,
     necesita_expulsor_magnetico,
@@ -26,6 +25,7 @@ from freecad.vdo.core.vdo_module_props import (
     add_common_props,
 )
 from freecad.vdo.core.vdo_puerta_despiece import (
+    SISTEMAS_APERTURA,
     ajuste_altura_apertura,
     bisagras_para_puerta,
     calcular_corrediza,

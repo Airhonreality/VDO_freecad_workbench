@@ -80,8 +80,8 @@ def rotacion_z(grados):
 
 def aplicar_rotacion(obj, grados):
     """Aplica rotación Z alrededor del anclaje, manteniéndolo fijo."""
-    from freecad.vdo.core import vdo_module_props as VDO_MOD
-    ancla = VDO_MOD.ancla_local(obj)
+    from freecad.vdo.cad.colocacion import ancla_local
+    ancla = ancla_local(obj)
     p = obj.Placement
     ancla_global = p.multVec(ancla)
     rot = rotacion_z(grados)
@@ -90,3 +90,14 @@ def aplicar_rotacion(obj, grados):
     if hasattr(obj, "VDO_RotacionZ"):
         obj.VDO_RotacionZ = float(grados)
 
+
+
+def ocultar_vista(obj):
+    """Oculta la vista del objeto mientras su panel de creación está abierto.
+
+    Escritura de presentación sobre el objeto FreeCAD: vive en cad/ (D6).
+    Sin GUI el objeto no tiene ViewObject y no hay nada que ocultar.
+    """
+    vista = getattr(obj, "ViewObject", None)
+    if vista is not None:
+        vista.Visibility = False

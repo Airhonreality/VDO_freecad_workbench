@@ -52,8 +52,14 @@ class _ComandoCreacion(_ComandoBase):
     CONFIG = {}
 
     def Activated(self):
+        # Entrada (commands.py) = composición: aquí se inyecta la interfaz en app/.
         from freecad.vdo.app.vdo_creacion import crear_modulo_interactivo
-        crear_modulo_interactivo(self.MODULE_KEY, dict(self.CONFIG))
+        # Sin GUI no hay panel ni colocación: el caso de uso confirma en el origen.
+        interfaz = {}
+        if _gui_activa():
+            from freecad.vdo.ui.vdo_interfaz import abrir_panel, colocar
+            interfaz = {"abrir_panel": abrir_panel, "colocar": colocar}
+        crear_modulo_interactivo(self.MODULE_KEY, dict(self.CONFIG), **interfaz)
 
 
 class CmdCrearHoja(_ComandoBase):

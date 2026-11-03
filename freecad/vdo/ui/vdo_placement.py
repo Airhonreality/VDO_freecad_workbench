@@ -12,11 +12,9 @@
 
 import FreeCAD as App
 
-from freecad.vdo.core.vdo_module_props import (
-    ANCLAJE_DEFAULT,
-    ancla_local,
-    leer_rotacion,
-    rotacion_z,
+from freecad.vdo.app.casos_uso.colocar_modulo import (
+    colocar_en_punto,
+    preparar_colocacion,
 )
 
 try:
@@ -37,9 +35,7 @@ class ColocadorModulo:
         self.obj = obj
         self.on_done = on_done
         self.on_cancel = on_cancel
-        self.rot = rotacion_z(leer_rotacion(obj))
-        self.ancla = ancla_local(
-            obj, anclaje or getattr(obj, "VDO_Anclaje", ANCLAJE_DEFAULT))
+        self.plan = preparar_colocacion(obj, anclaje)
         self._medio = None
         self._finalizado = False
         self._visible = False
@@ -211,8 +207,7 @@ class ColocadorModulo:
         self._visible = True
 
     def _aplicar(self, punto):
-        base = punto - self.rot.multVec(self.ancla)
-        self.obj.Placement = App.Placement(base, self.rot)
+        colocar_en_punto(self.obj, punto, self.plan)
 
     def _finalizar(self):
         if self._finalizado:
