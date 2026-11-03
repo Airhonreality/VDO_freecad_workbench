@@ -7,38 +7,25 @@ No contiene lógica de dominio: solo adapta datos de core/ al documento.
 
 from __future__ import annotations
 
+import json
+import os
 from typing import Any
 
 import FreeCAD as App
 
 from freecad.vdo.core import vdo_frames as VDO_FR
 
-ANCLAJES = [
-    "inferior_izquierda_frente",
-    "inferior_derecha_frente",
-    "inferior_izquierda_fondo",
-    "inferior_derecha_fondo",
-    "superior_izquierda_frente",
-    "superior_derecha_frente",
-    "superior_izquierda_fondo",
-    "superior_derecha_fondo",
-    "centro_inferior",
-]
+# Tabla de anclajes: datos en freecad/vdo/datos/anclajes.json (MN-04).
+# Se carga aquí y en cad/propiedades.py. Unificar el cargador cuando core deje de
+# importar cad (M5, ver DEUDA_TECNICA.md D-10).
+_RUTA_ANCLAJES = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "datos", "anclajes.json")
+with open(_RUTA_ANCLAJES, encoding="utf-8") as _fh:
+    _DATOS_ANCLAJES = json.load(_fh)
 
-ANCLAJE_DEFAULT = "inferior_izquierda_frente"
-
-ANCLAJE_LABELS = {
-    "inferior_izquierda_frente": "Inferior izquierda (frente)",
-    "inferior_derecha_frente": "Inferior derecha (frente)",
-    "inferior_izquierda_fondo": "Inferior izquierda (fondo)",
-    "inferior_derecha_fondo": "Inferior derecha (fondo)",
-    "superior_izquierda_frente": "Superior izquierda (frente)",
-    "superior_derecha_frente": "Superior derecha (frente)",
-    "superior_izquierda_fondo": "Superior izquierda (fondo)",
-    "superior_derecha_fondo": "Superior derecha (fondo)",
-    "centro_inferior": "Centro inferior",
-}
-
+ANCLAJES = list(_DATOS_ANCLAJES["anclajes"])
+ANCLAJE_DEFAULT = _DATOS_ANCLAJES["defecto"]
+ANCLAJE_LABELS = dict(_DATOS_ANCLAJES["etiquetas"])
 ANCLAJE_IDS = {label: idx for idx, label in ANCLAJE_LABELS.items()}
 
 
