@@ -60,12 +60,8 @@ def obtener_svg_icon(name, size=22):
 # ----------------------------------------------------------------------
 # Constantes de Geometría y Encuentros
 # ----------------------------------------------------------------------
-TIPOS_ENCUENTRO = (
-    "vertical_domina",
-    "horizontal_domina",
-    "inglete_45",
-    "marco_interior",
-)
+# Tablas de dominio: una sola definición en core (P-07, duplicados exactos).
+TIPOS_ENCUENTRO = VDO_RE.ESQUINAS
 
 ENCUENTRO_TOOLTIPS = {
     "vertical_domina": "Tope lateral (Lateral pasa continuo punta a punta)",
@@ -81,12 +77,7 @@ ENCUENTRO_LABELS = {
     "marco_interior": "Marco interior",
 }
 
-ESQUINAS = (
-    "frente_izquierda",
-    "frente_derecha",
-    "fondo_izquierda",
-    "fondo_derecha",
-)
+ESQUINAS = VDO_RE.ESQUINAS_2D
 
 BORDE_NOMBRES = {
     "frente": "Frente (Sur)",
