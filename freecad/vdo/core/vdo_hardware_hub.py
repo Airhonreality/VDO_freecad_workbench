@@ -16,94 +16,6 @@ except NameError:
     _HERE = os.getcwd()
 _CATALOGO_PATH = os.path.join(_HERE, "vdo_hardware_catalog.json")
 
-# ---------------------------------------------------------------------
-# Datos de fallback integrados (usados si el catálogo en disco falta o
-# no tiene las familias esperadas). Nunca rompe con FileNotFoundError.
-# ---------------------------------------------------------------------
-_FALLBACK_BISAGRA = {
-    "GEN-CAZ-35-PARCHE": {
-        "nombre": "Bisagra Cazoleta 35mm Cierre Suave - Recta (Parche)",
-        "proveedor": "Genérico / Taller",
-        "precio_unitario": 1.20,
-        "moneda": "USD",
-        "parametros_tecnicos": {
-            "tipo_montaje": "parche",
-            "brazo": "recta",
-            "diametro_cazoleta": 35.0,
-            "profundidad_cazoleta": 11.5,
-            "cota_k_default": 4.0,
-            "distancia_base_frente": 37.0,
-            "separacion_tornillos_base": 32.0,
-            "solape_nominal": 16.0,
-            "holgura_luz": 2.0,
-        },
-    },
-    "GEN-CAZ-35-SEMIPARCHE": {
-        "nombre": "Bisagra Cazoleta 35mm Cierre Suave - Acodada (Semiparche)",
-        "proveedor": "Genérico / Taller",
-        "precio_unitario": 1.30,
-        "moneda": "USD",
-        "parametros_tecnicos": {
-            "tipo_montaje": "semiparche",
-            "brazo": "acodada",
-            "diametro_cazoleta": 35.0,
-            "profundidad_cazoleta": 11.5,
-            "cota_k_default": 4.0,
-            "solape_nominal": 8.0,
-            "holgura_luz": 2.0,
-        },
-    },
-    "GEN-CAZ-35-EMBEBIDA": {
-        "nombre": "Bisagra Cazoleta 35mm Cierre Suave - Súper Acodada (Embebida)",
-        "proveedor": "Genérico / Taller",
-        "precio_unitario": 1.40,
-        "moneda": "USD",
-        "parametros_tecnicos": {
-            "tipo_montaje": "embebida",
-            "brazo": "super_acodada",
-            "diametro_cazoleta": 35.0,
-            "profundidad_cazoleta": 11.5,
-            "cota_k_default": 4.0,
-            "holgura_perimetral_min": 2.0,
-        },
-    },
-}
-
-_FALLBACK_CORREDIZO = {
-    "DUC-KIT-D52": {
-        "nombre": "Kit Corredizo Ducasse D-52 (Closet / Placard al Piso)",
-        "proveedor": "Ducasse Industrial",
-        "precio_unitario": 18.50,
-        "moneda": "USD",
-        "parametros_tecnicos": {
-            "aplicacion": "closet_placard",
-            "capacidad_peso_kg": 50.0,
-            "montaje": "al_piso_dentro_vano",
-            "ancho_minimo_hoja": 650.0,
-            "descuento_altura_hoja": 33.0,
-            "traslape_minimo": 35.0,
-            "ancho_piso_riel_doble": 60.0,
-            "espesor_hoja_min": 15.0,
-        },
-    },
-    "DUC-AL-1535-MAD": {
-        "nombre": "Sistema Corredizo Ducasse AL 1535 Madera (Muebles / Alacenas)",
-        "proveedor": "Ducasse Industrial",
-        "precio_unitario": 9.80,
-        "moneda": "USD",
-        "parametros_tecnicos": {
-            "aplicacion": "muebles_alacenas",
-            "capacidad_peso_kg": 15.0,
-            "montaje": "al_piso_dentro_vano",
-            "descuento_altura_hoja": 10.0,
-            "traslape_minimo": 25.0,
-            "ancho_piso_riel_doble": 26.0,
-            "espesor_hoja_min": 15.0,
-            "luz_cerrada_sin_cenefa": True,
-        },
-    },
-}
-
 _FAMILIAS = (
     "bisagra_cazoleta",
     "sistema_corredizo",
@@ -136,36 +48,28 @@ _MARCA_A_SKU = {
 
 
 def _cargar_catalogo():
-    """Carga el catálogo desde disco de forma segura.
+    """Carga el catálogo de herrajes desde disco.
 
-    Nunca lanza FileNotFoundError: si el archivo falta o está mal formado,
-    devuelve un dict vacío y se confía en los datos de fallback integrados.
+    MN-05: el JSON es la única fuente de datos de herrajes. Si el archivo falta o no
+    es un objeto JSON, falla con error explícito. No hay datos de respaldo en código.
     """
-    datos = {}
     try:
         with open(_CATALOGO_PATH, encoding="utf-8") as _fh:
             datos = json.load(_fh)
-    except (FileNotFoundError, json.JSONDecodeError, OSError, ValueError):
-        datos = {}
-    if isinstance(datos, dict):
-        return datos
-    return {}
+    except OSError as exc:
+        raise FileNotFoundError(f"Falta el catálogo de herrajes: {_CATALOGO_PATH}") from exc
+    if not isinstance(datos, dict):
+        raise ValueError(f"El catálogo de herrajes no es un objeto JSON: {_CATALOGO_PATH}")
+    return datos
 
 
 def _catalogo_completo():
-    """Devuelve el catálogo con fallbacks inyectados, cargado fresco.
-
-    No guarda en variable de módulo: cada llamada lee de disco. Así no hay
-    estado mutable de módulo (M-08). El llamador puede inyectar su propio
-    catálogo si ya lo cargó una vez (app/composicion.py).
-    """
+    """Devuelve el catálogo cargado desde disco, verificando las familias obligatorias."""
     catalogo = _cargar_catalogo()
     for _fam in ("bisagra_cazoleta", "sistema_corredizo"):
-        if _fam not in catalogo or not catalogo[_fam]:
-            if _fam == "bisagra_cazoleta":
-                catalogo[_fam] = dict(_FALLBACK_BISAGRA)
-            elif _fam == "sistema_corredizo":
-                catalogo[_fam] = dict(_FALLBACK_CORREDIZO)
+        if not catalogo.get(_fam):
+            raise ValueError(
+                f"Catálogo de herrajes sin la familia obligatoria '{_fam}': {_CATALOGO_PATH}")
     return catalogo
 
 
