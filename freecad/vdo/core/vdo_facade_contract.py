@@ -146,8 +146,6 @@ def necesita_expulsor_magnetico(sistema_apertura: str) -> bool:
 # Metadatos para PanelHeaderWidget (cantos y mecanizados)
 # ---------------------------------------------------------------------
 
-CANTOS = ("norte", "sur", "este", "oeste")
-
 CANTO_ESTADOS = ("FX", "RIG", "SMRG", "NONE")
 
 
@@ -184,7 +182,6 @@ __all__ = [
     "BISEL_45_ANGULO_DEFAULT",
     "CALLE_ENTRE_FRENTES_DEFAULT",
     # Utilidades
-    "CANTOS",
     "CANTO_ESTADOS",
     "GOLA_DESCUENTO_ALTURA_DEFAULT",
     # Constantes de taller

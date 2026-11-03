@@ -56,7 +56,6 @@ DISTANCIA_AL_CANTO_DEFAULT = 0.0
 LARGO_TIRA_DEFAULT = "marco_interior"
 ENCUENTRO_ESQUINAS_DEFAULT = "vertical_domina"
 FABRICACIONES = ("pacha", "independiente")
-CHOQUES_NUCLEO = ("retroceso", "mocheo", "interrumpir_tira")
 SUFIJOS_BORDE = {
     "frente": "Frente",
     "fondo": "Fondo",

@@ -81,7 +81,6 @@ ENCUENTRO_LABELS = {
     "marco_interior": "Marco interior",
 }
 
-BORDES = ("frente", "fondo", "izquierda", "derecha")
 ESQUINAS = (
     "frente_izquierda",
     "frente_derecha",
@@ -242,14 +241,14 @@ class _VDOConcentricCenterCanvas(QtWidgets.QWidget):
         self.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.setMouseTracking(True)
-        self.activos = {b: False for b in BORDES}
-        self.valores = {b: {"ancho": 70.0, "offset": 0.0} for b in BORDES}
+        self.activos = {b: False for b in VDO_RE.BORDES_2D}
+        self.valores = {b: {"ancho": 70.0, "offset": 0.0} for b in VDO_RE.BORDES_2D}
         self.esquinas = {e: "vertical_domina" for e in ESQUINAS}
         self.margen_sel = "frente"
 
     def actualizar(self, activos, valores, esquinas, margen_sel):
         self.activos = dict(activos)
-        self.valores = {b: dict(valores[b]) for b in BORDES}
+        self.valores = {b: dict(valores[b]) for b in VDO_RE.BORDES_2D}
         self.esquinas = dict(esquinas)
         self.margen_sel = margen_sel
         self.update()
@@ -405,7 +404,7 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
         self._borde_seleccionado = "frente"
         self._valores_bordes = {
             borde: {"ancho": 70.0, "offset": 0.0}
-            for borde in BORDES
+            for borde in VDO_RE.BORDES_2D
         }
         self._esquinas = {
             esquina: "vertical_domina"
@@ -654,7 +653,7 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
         # Compatibilidad: spins individuales mapeados en dict
         self.spin_ancho_borde = {}
         self.spin_offset_borde = {}
-        for b in BORDES:
+        for b in VDO_RE.BORDES_2D:
             self.spin_ancho_borde[b] = self._spin(70.0)
             self.spin_offset_borde[b] = self._spin(0.0)
 
@@ -732,16 +731,16 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
         self._emitir_cambio()
 
     def _hay_bordes_activos(self):
-        return any(self.btn_borde[b].isChecked() for b in BORDES)
+        return any(self.btn_borde[b].isChecked() for b in VDO_RE.BORDES_2D)
 
     def _on_all_clicked(self):
         if self._cargando:
             return
-        activos_actuales = sum(1 for b in BORDES if self.btn_borde[b].isChecked())
-        nuevo_estado = (activos_actuales < len(BORDES))
+        activos_actuales = sum(1 for b in VDO_RE.BORDES_2D if self.btn_borde[b].isChecked())
+        nuevo_estado = (activos_actuales < len(VDO_RE.BORDES_2D))
 
         self._cargando = True
-        for b in BORDES:
+        for b in VDO_RE.BORDES_2D:
             self.btn_borde[b].setChecked(nuevo_estado)
         self.btn_all.setChecked(nuevo_estado)
         if nuevo_estado and not self.chk_activo.isChecked():
@@ -802,7 +801,7 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
         w = self.spin_ancho.value()
         if self.btn_centro.isChecked():
             # Uniforme: replicar a todos los bordes
-            for b in BORDES:
+            for b in VDO_RE.BORDES_2D:
                 self._valores_bordes[b]["ancho"] = w
                 self.spin_ancho_borde[b].setValue(w)
         else:
@@ -820,7 +819,7 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
         d = self.spin_offset.value()
         if self.btn_centro.isChecked():
             # Uniforme: replicar a todos los bordes
-            for b in BORDES:
+            for b in VDO_RE.BORDES_2D:
                 self._valores_bordes[b]["offset"] = d
                 self.spin_offset_borde[b].setValue(d)
         else:
@@ -842,7 +841,7 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
             self.btn_centro.setIcon(obtener_svg_icon("link"))
             ancho_u = self.spin_ancho.value()
             dist_u = self.spin_offset.value()
-            for b in BORDES:
+            for b in VDO_RE.BORDES_2D:
                 self._valores_bordes[b]["ancho"] = ancho_u
                 self._valores_bordes[b]["offset"] = dist_u
                 self.spin_ancho_borde[b].setValue(ancho_u)
@@ -859,18 +858,18 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
         self._emitir_cambio()
 
     def _actualizar_estado_all(self):
-        todos = all(self.btn_borde[b].isChecked() for b in BORDES)
+        todos = all(self.btn_borde[b].isChecked() for b in VDO_RE.BORDES_2D)
         self.btn_all.blockSignals(True)
         self.btn_all.setChecked(todos)
         self.btn_all.blockSignals(False)
 
     def _actualizar_canvas_concentrico(self):
-        activos = {b: self.btn_borde[b].isChecked() for b in BORDES}
+        activos = {b: self.btn_borde[b].isChecked() for b in VDO_RE.BORDES_2D}
         self.canvas_concentrico.actualizar(
             activos, self._valores_bordes, self._esquinas, self._margen_seleccionado)
 
         # Actualizar texto explicativo en los 4 botones de borde
-        for b in BORDES:
+        for b in VDO_RE.BORDES_2D:
             btn = self.btn_borde[b]
             w = self._valores_bordes[b]["ancho"]
             d = self._valores_bordes[b]["offset"]
@@ -973,7 +972,7 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
         if not self.chk_activo.isChecked():
             self.lbl_resumen.setText("Reengrose desactivado.")
             return
-        activos = [b for b in BORDES if self.btn_borde[b].isChecked()]
+        activos = [b for b in VDO_RE.BORDES_2D if self.btn_borde[b].isChecked()]
         if not activos:
             self.lbl_resumen.setText("Sin bordes perimetrales activos.")
             return
@@ -1052,7 +1051,7 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
             # 3. Bordes
             bordes_data = cfg.get("bordes", {})
             activos = []
-            for b in BORDES:
+            for b in VDO_RE.BORDES_2D:
                 b_cfg = bordes_data.get(b, {})
                 if hasattr(b_cfg, "to_dict"):
                     b_cfg = b_cfg.to_dict()
@@ -1129,7 +1128,7 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
         espesor = float(esp_val) if esp_val > 0.0 else None
 
         bordes = {}
-        for b in BORDES:
+        for b in VDO_RE.BORDES_2D:
             activo = self.btn_borde[b].isChecked()
             if uniforme:
                 w = ancho_u
@@ -1215,7 +1214,7 @@ if __name__ == "__main__":
         "esquinas": "inglete_45",
         "bordes": {
             b: {"activo": True, "ancho": 70.0, "offset_borde": 0.0}
-            for b in BORDES
+            for b in VDO_RE.BORDES_2D
         }
     })
 
