@@ -156,7 +156,7 @@ REQUIRED_API = [
     ("freecad.vdo.core.vdo_reengrose", "calcular_geometria_reengrose"),
     ("freecad.vdo.ui.vdo_export_cutting_list", "extraer_piezas_del_documento"),
     ("freecad.vdo.ui.vdo_export_cutting_list", "generar_csv_opencutlist"),
-    ("freecad.vdo.core.vdo_module_props", "add_common_props"),
+    ("freecad.vdo.cad.propiedades", "add_common_props"),
     ("freecad.vdo.cad.propiedades", "aplicar_rotacion"),
     ("freecad.vdo.cad.propiedades", "rotacion_z"),
     ("freecad.vdo.core.vdo_frames", "normal"),

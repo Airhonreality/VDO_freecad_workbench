@@ -18,6 +18,7 @@
 # Bootstrap
 
 from freecad.vdo.cad.geometria import forma_ref
+from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
@@ -203,7 +204,7 @@ class PanelFeature:
             setattr(obj, prop_name, "FX")
 
         add_reengrose_props(obj)
-        VDO_MOD.add_common_props(obj)
+        add_common_props(obj)
 
         obj.Proxy = self
 

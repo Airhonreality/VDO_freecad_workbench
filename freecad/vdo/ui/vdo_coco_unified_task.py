@@ -24,8 +24,8 @@ from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_DEFAULT,
     ANCLAJE_LABELS,
     ANCLAJES,
-    add_common_props,
 )
+from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core.vdo_puerta_core import make_puerta
 from freecad.vdo.core.vdo_spaces import (
     ESPACIO_FIJO,

@@ -54,8 +54,8 @@ from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_DEFAULT,
     ANCLAJE_LABELS,
     ANCLAJES,
-    add_common_props,
 )
+from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo

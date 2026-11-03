@@ -9,6 +9,7 @@
 
 import json
 
+from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
@@ -296,7 +297,7 @@ class ZocaloFeature:
         obj.addProperty("App::PropertyString", "VDO_ResumenDespiece", "VDO",
                         "Resumen legible del despiece (solo lectura)")
 
-        VDO_MOD.add_common_props(obj)
+        add_common_props(obj)
 
         obj.Proxy = self
 

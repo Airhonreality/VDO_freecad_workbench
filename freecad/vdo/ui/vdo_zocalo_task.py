@@ -11,8 +11,8 @@ from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_DEFAULT,
     ANCLAJE_LABELS,
     ANCLAJES,
-    add_common_props,
 )
+from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core.vdo_zocalo_core import ZocaloError, calcular_geometria_zocalo
 from freecad.vdo.qt_compat import QtGui, QtWidgets
 from freecad.vdo.ui.vdo_form_builder import FormBuilder

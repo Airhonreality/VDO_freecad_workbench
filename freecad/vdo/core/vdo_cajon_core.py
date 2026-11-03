@@ -17,6 +17,7 @@
 
 import json
 
+from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core.vdo_cajon_despiece import (
@@ -230,7 +231,7 @@ class CajonFeature:
                         "Resumen legible del despiece (solo lectura)")
 
         # Pose común VDO (rotación + anclaje). No altera la geometría.
-        VDO_MOD.add_common_props(obj)
+        add_common_props(obj)
 
         # Vínculo padre-hijo (kinematics de Placement)
         obj.addProperty("App::PropertyLink", "ParentCOCO", "VDO",

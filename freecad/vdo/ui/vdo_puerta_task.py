@@ -22,8 +22,8 @@ from freecad.vdo.core.vdo_facade_contract import (
 from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_LABELS,
     ANCLAJES,
-    add_common_props,
 )
+from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core.vdo_puerta_despiece import (
     SISTEMAS_APERTURA,
     ajuste_altura_apertura,

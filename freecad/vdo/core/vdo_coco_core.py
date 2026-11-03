@@ -7,6 +7,7 @@
 import json
 
 from freecad.vdo.cad.geometria import forma_ref
+from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_finish as VDO_FINISH
 from freecad.vdo.core import vdo_frames as VDO_FR
@@ -131,7 +132,7 @@ class CocoFeature:
                         "Insertos contenidos (puertas, cajones)").Hijos = []
 
         # Pose común VDO (rotación + anclaje). No altera la geometría.
-        VDO_MOD.add_common_props(obj)
+        add_common_props(obj)
 
         obj.Proxy = self
 

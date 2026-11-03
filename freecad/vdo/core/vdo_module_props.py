@@ -24,5 +24,3 @@ ANCLAJE_DEFAULT = _DATOS_ANCLAJES["defecto"]
 ANCLAJE_LABELS = dict(_DATOS_ANCLAJES["etiquetas"])
 ANCLAJE_IDS = {label: idx for idx, label in ANCLAJE_LABELS.items()}
 
-
-from freecad.vdo.cad.propiedades import add_common_props  # noqa: F401
