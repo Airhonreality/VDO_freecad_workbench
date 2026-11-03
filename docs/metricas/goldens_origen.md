@@ -51,11 +51,11 @@ freecadcmd tools/auditoria/golden_creacion.py
 | Golden | Entradas | Errores registrados | Origen |
 |---|---|---|---|
 | `facade_contract.json` | 23 | 0 | sin cambio respecto a lo commiteado |
-| `frames.json` | 18 | 1 (`interpretar_lados`: JSON inválido, comportamiento esperado) | sin cambio |
+| `frames.json` | 18 | 0 | **corregido** (ver "Cambios de esta sesión"): la entrada en error `interpretar_lados` pasa a ser una entrada válida |
 | `finish.json` | 6 | 0 | sin cambio |
-| `reengrose.json` | 18 | 0 | sin cambio |
+| `reengrose.json` | 24 | 0 | 18 en M0; **+6** en esta sesión (una entrada más para las 6 funciones que tenían 2) |
 | `cajon_despiece.json` | 3 | 0 | sin cambio |
-| `hardware_hub.json` | 9 | 0 | sin cambio |
+| `hardware_hub.json` | 12 | 0 | 9 en M0; **+3** en esta sesión (una entrada más para las 3 funciones que tenían 2) |
 | `guardian.json` | 9 (3 funciones × 3 escenarios) | 0 | nuevo, desde `b78de04` (ver sección "Guardián") |
 | `puerta_despiece.json` | 9 | 0 | **cambiado**: el anterior tenía 8 de 8 entradas en error |
 | `coco_spaces.json` | 3 | 0 | **cambiado**: el anterior tenía 3 de 3 entradas en error (firma incorrecta) |
@@ -66,7 +66,7 @@ freecadcmd tools/auditoria/golden_creacion.py
 | `spaces.json` | 3 | 0 | nuevo |
 | `optimizer_core.json` | 6 | 0 | nuevo |
 
-Total: 131 entradas en 15 ficheros (medido con un script sobre `tests/golden/*.json`, 1 entrada en error: `frames.interpretar_lados`).
+Total: **140 entradas en 15 ficheros, 0 entradas en error** (medido con un script sobre `tests/golden/*.json`, al cierre de esta sesión).
 
 ## Verificación contra el código actual
 
@@ -81,7 +81,7 @@ Total: 131 entradas en 15 ficheros (medido con un script sobre `tests/golden/*.j
 | Módulo | Motivo |
 |---|---|
 | `panel_core`, `cajon_core`, `puerta_core`, `coco_core` | Son flujos de creación. Cubiertos por `creacion_modulos.json`. |
-| `nesting_presets` | **No cubierto. Decisión humana pendiente (P-10).** En `b78de04` el módulo no se puede importar dentro de FreeCAD: `initialize_defaults()` se ejecuta al cargar y llama a `FreeCAD.ParamGet` sin tener `FreeCAD` en el ámbito (`NameError`, medido con `freecadcmd`). No hay comportamiento de origen que capturar. Tiene 9 métodos estáticos (`get_preset`, `save_preset`, etc.); no es "solo datos", como decía la versión anterior de este documento. |
+| `nesting_presets` | **N/A con motivo (P-10, decisión delegada, ver `DECISIONES_DELEGADAS.md`).** En `b78de04` el módulo no se puede importar dentro de FreeCAD: `initialize_defaults()` se ejecuta al cargar y llama a `FreeCAD.ParamGet` sin tener `FreeCAD` en el ámbito (`NameError`, medido con `freecadcmd`). No hay comportamiento de origen que capturar, y generar un golden contra el código actual no probaría nada de origen. Tiene 9 métodos estáticos. **Deuda:** responsable `ejecutor`, plazo antes de M5, porque toca escritura de preferencias. Hay que arreglar la carga en el código actual y generar un golden de ese comportamiento, marcado como "nuevo, no de origen". |
 | — | `module_props` ya tiene golden (ver tabla). |
 
 ## Guardián (`guardian.json`)
@@ -134,6 +134,33 @@ Anterior = `692b76a^` (lo que había commiteado). Ahora = `692b76a`. Pendiente d
 - **¿Altera una salida esperada?** **Sí.** De error a valor. Va a P-05.
 
 Sin cambios en salidas: los 12 goldens de dominio restantes (incluido `module_props`, con la reubicación de `rotacion_z`) y `guardian`, que es nuevo.
+
+## Cambios de esta sesión (2026-11-03)
+
+Todos generados desde `b78de04` con `gold_drv.py` y `HOME=/tmp/vdo_home_noche`. Ninguno regenerado contra el código actual.
+
+1. **`frames.interpretar_lados`: entrada en error sustituida por una válida.** Antes: `valor = "[frente, fondo]"`, que no es JSON válido (los nombres no van entre comillas). `interpretar_lados` la trata como JSON, así que el error viene de la entrada del golden, no del código; `b78de04` hace lo mismo. Ahora: `valor = '["frente", "fondo"]'`, salida `["frente", "fondo"]`. El golden queda con 0 entradas en error.
+2. **`frames`, forma de guardar floats.** En `rotar_z` y `normal_global`, las salidas se guardan redondeadas a 6 decimales (`6.123e-17` pasa a `0.0`). `_serializar` ya redondeaba al comparar, así que no cambia el comportamiento. Comprobado: tras normalizar, las salidas antiguas y nuevas son idénticas (`golden.py --verificar frames: OK`).
+3. **`hardware_hub`: +3 entradas** (una por función que tenía 2): `resolve_sliding` (`alacena`), `resolve_drawer_slide` (`HAFELE-OCULTA`), `calculate_sliding_doors` (`DUC-AL-1535-VID`). Las entradas previas no cambian.
+4. **`reengrose`: +6 entradas** (una por función que tenía 2): `calcular_geometria_reengrose`, `calcular_geometria_caja`, `despiece_panel`, `despiece_caja`, `resolver_politica_cantos` (`modo_fabricacion = pacha`), `detectar_colision` (caja que toca sin solapar). Las entradas previas no cambian.
+
+Motivo de (3) y (4): el plan exige **mínimo 3 entradas por función**. El registro anterior decía que lo cumplía, y no era cierto: 7 funciones tenían 2.
+
+**P-05 aprobado** (decisión delegada en `DECISIONES_DELEGADAS.md`): `creacion_modulos`, `coco_spaces` y `puerta_despiece`, con el detalle de arriba.
+
+## Defecto de locale (abierto, no es del golden)
+
+`guardian.json` falla en el nivel 2 cuando el test corre después de otros tests de la misma sesión. Causa medida:
+
+- Crear una `QApplication` (lo hacen los tests de UI) pone `LC_NUMERIC` a `es_CO`, porque Qt lee `LANG=es_CO.UTF-8` (medido: `('None','None')` antes, `('es_CO','UTF-8')` después).
+- Con ese locale, FreeCAD lee el texto `"0.4"` como `0`. El guardián escribe `str(info["valor"])` en la hoja, así que `canto_fino` queda en `0` (medido: el manifiesto sigue en `0.4`; la hoja nueva guarda `'0'`).
+- Ejecutado de forma aislada, el golden pasa.
+
+**Riesgo para el usuario:** es un defecto de producto. Una sesión de FreeCAD con GUI y locale de coma decimal escribiría `canto_fino = 0` en el documento. No he verificado el comportamiento de la GUI real.
+
+**Por qué no se corrige ahora:** la solución de fondo (escribir los números sin depender del locale, p. ej. con `=0.4`) cambia el contenido guardado en las celdas. Es un cambio de salida esperada: necesita aprobación humana. Tampoco se oculta: el test se queda en rojo en el nivel 2, como fallo documentado.
+
+**Responsable:** usuario, para aprobar el cambio. Ejecutor, para implementarlo tras la aprobación.
 
 ## Lo que no está verificado
 

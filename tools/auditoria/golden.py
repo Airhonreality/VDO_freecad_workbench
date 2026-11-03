@@ -270,7 +270,7 @@ def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
             {"lado": "izquierda", "rotacion_z": 45.0},
         ]
         entradas["interpretar_lados"] = [
-            {"valor": "[frente, fondo]", "por_defecto": ["izquierda"]},
+            {"valor": '["frente", "fondo"]', "por_defecto": ["izquierda"]},
             {"valor": "frente,derecha"},
             {"valor": None, "por_defecto": ["superior"]},
         ]
@@ -314,18 +314,24 @@ def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
              "modifier": {"activo": False}},
             {"panel_base": {"nombre": "P", "largo": 600.0, "ancho": 500.0, "espesor": 18.0},
              "modifier": {"activo": True, "orientacion": "paralela", "ancho": 70.0}},
+            {"panel_base": {"nombre": "P", "largo": 800.0, "ancho": 450.0, "espesor": 18.0},
+             "modifier": {"activo": True, "orientacion": "transversal", "ancho": 50.0}},
         ]
         entradas["calcular_geometria_caja"] = [
             {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 600, "h": 500, "d": 18},
              "modifier": {"activo": False}},
             {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 600, "h": 500, "d": 18},
              "modifier": {"activo": True, "orientacion": "paralela", "ancho": 70.0}},
+            {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 800, "h": 450, "d": 18},
+             "modifier": {"activo": True, "orientacion": "transversal", "ancho": 50.0}},
         ]
         entradas["despiece_panel"] = [
             {"nombre": "Panel", "largo": 600.0, "ancho": 500.0, "espesor": 18.0,
              "modifier": {"activo": False}},
             {"nombre": "Panel", "largo": 600.0, "ancho": 500.0, "espesor": 18.0,
              "modifier": {"activo": True, "orientacion": "paralela", "ancho": 70.0}},
+            {"nombre": "Panel", "largo": 800.0, "ancho": 450.0, "espesor": 18.0,
+             "modifier": {"activo": True, "orientacion": "transversal", "ancho": 50.0}},
         ]
         entradas["despiece_caja"] = [
             {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 600, "h": 500, "d": 18},
@@ -333,16 +339,23 @@ def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
             {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 600, "h": 500, "d": 18},
              "modifier": {"activo": True, "orientacion": "paralela", "ancho": 70.0},
              "ejes": {"largo": "x", "ancho": "y", "espesor": "z"}},
+            {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 800, "h": 450, "d": 18},
+             "modifier": {"activo": True, "orientacion": "transversal", "ancho": 50.0},
+             "ejes": {"largo": "y", "ancho": "x", "espesor": "z"}},
         ]
         entradas["resolver_politica_cantos"] = [
             {"panel_base": {"cantos": {}}, "modifier": {"activo": False}},
             {"panel_base": {"cantos": {}}, "modifier": {"activo": True, "modo_fabricacion": "independiente"}},
+            {"panel_base": {"cantos": {"frente": "FX"}},
+             "modifier": {"activo": True, "modo_fabricacion": "pacha"}},
         ]
         entradas["detectar_colision"] = [
             {"a": {"x": 0, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10},
              "b": {"x": 20, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10}},
             {"a": {"x": 0, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10},
              "b": {"x": 5, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10}},
+            {"a": {"x": 0, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10},
+             "b": {"x": 10, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10}},
         ]
 
     elif modulo == "cajon_despiece":
@@ -403,14 +416,17 @@ def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
         entradas["resolve_sliding"] = [
             {"tipo_mueble": "closet"},
             {"tipo_mueble": "mueble"},
+            {"tipo_mueble": "alacena"},
         ]
         entradas["resolve_drawer_slide"] = [
             {"tipo": "oculta", "marca": "blum_tandem"},
             {"tipo": "oculta", "marca": "generica"},
+            {"tipo": "oculta", "marca": "HAFELE-OCULTA"},
         ]
         entradas["calculate_sliding_doors"] = [
             {"inner_w": 1000.0, "inner_h": 2000.0, "sku": "DUC-KIT-D52", "n_hojas": 2},
             {"inner_w": 1200.0, "inner_h": 2200.0, "sku": "DUC-AL-1535-MAD", "n_hojas": 3},
+            {"inner_w": 1500.0, "inner_h": 2100.0, "sku": "DUC-AL-1535-VID", "n_hojas": 2},
         ]
 
     elif modulo == "module_props":
@@ -497,7 +513,10 @@ def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
 
 
 def _preparar_guardian(doc, estado: str) -> None:
-    """Estado previo del documento. Las ediciones se hacen con la API de FreeCAD, no con el guardián."""
+    """Estado previo del documento.
+
+    Las ediciones se hacen con la API de FreeCAD, no con el guardián.
+    """
     if estado == "vacio":
         return
     crear_global = estado in ("hoja_global_vacia", "hoja_global_editada", "ambas_editadas")

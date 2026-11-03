@@ -517,6 +517,101 @@
           "usa_bordes": false
         }
       }
+    },
+    {
+      "entrada": {
+        "panel_base": {
+          "nombre": "P",
+          "largo": 800.0,
+          "ancho": 450.0,
+          "espesor": 18.0
+        },
+        "modifier": {
+          "activo": true,
+          "orientacion": "transversal",
+          "ancho": 50.0
+        }
+      },
+      "salida": {
+        "base": {
+          "nombre": "P",
+          "rol": "base",
+          "largo": 800.0,
+          "ancho": 450.0,
+          "espesor": 18.0,
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "refuerzos": [
+          {
+            "nombre": "P_Reengrose",
+            "rol": "refuerzo",
+            "largo": 450.0,
+            "ancho": 50.0,
+            "espesor": 18.0,
+            "x": 375.0,
+            "y": 0.0,
+            "z": 18.0
+          }
+        ],
+        "grupo_pacha": "Pacha_P",
+        "modificador": {
+          "activo": true,
+          "orientacion": "transversal",
+          "ancho": 50.0,
+          "espesor": null,
+          "cara": "cara_a",
+          "alineacion_profundidad": "frente",
+          "modo_fabricacion": "pacha",
+          "alcance": "parcial",
+          "politica_repisa": "retroceder",
+          "prioridad_encuentro_tiras": "vertical_domina",
+          "comportamiento_choque_nucleo": "retroceso",
+          "esquinas": "vertical_domina",
+          "fabricacion": "pacha",
+          "choque_nucleo": "retroceso",
+          "bordes": {
+            "frente": {
+              "activo": false,
+              "ancho": 50.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "fondo": {
+              "activo": false,
+              "ancho": 50.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "izquierda": {
+              "activo": false,
+              "ancho": 50.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "derecha": {
+              "activo": false,
+              "ancho": 50.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            }
+          },
+          "usa_bordes": false
+        }
+      }
     }
   ],
   "calcular_geometria_caja": [
@@ -699,6 +794,103 @@
           "usa_bordes": false
         }
       }
+    },
+    {
+      "entrada": {
+        "caja": {
+          "nombre": "C",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 800,
+          "h": 450,
+          "d": 18
+        },
+        "modifier": {
+          "activo": true,
+          "orientacion": "transversal",
+          "ancho": 50.0
+        }
+      },
+      "salida": {
+        "base": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 800.0,
+          "h": 450.0,
+          "d": 18.0
+        },
+        "refuerzos": [
+          {
+            "x": 375.0,
+            "y": 0.0,
+            "z": 18.0,
+            "w": 50.0,
+            "h": 450.0,
+            "d": 18.0,
+            "nombre": "C_Reengrose",
+            "rol": "refuerzo",
+            "cara": "cara_a"
+          }
+        ],
+        "grupo_pacha": "Pacha_C",
+        "modificador": {
+          "activo": true,
+          "orientacion": "transversal",
+          "ancho": 50.0,
+          "espesor": null,
+          "cara": "cara_a",
+          "alineacion_profundidad": "frente",
+          "modo_fabricacion": "pacha",
+          "alcance": "parcial",
+          "politica_repisa": "retroceder",
+          "prioridad_encuentro_tiras": "vertical_domina",
+          "comportamiento_choque_nucleo": "retroceso",
+          "esquinas": "vertical_domina",
+          "fabricacion": "pacha",
+          "choque_nucleo": "retroceso",
+          "bordes": {
+            "frente": {
+              "activo": false,
+              "ancho": 50.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "fondo": {
+              "activo": false,
+              "ancho": 50.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "izquierda": {
+              "activo": false,
+              "ancho": 50.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            },
+            "derecha": {
+              "activo": false,
+              "ancho": 50.0,
+              "distancia_al_canto": 0.0,
+              "largo_tira": "marco_interior",
+              "encuentro_esquinas": null,
+              "espesor": null,
+              "offset_borde": 0.0
+            }
+          },
+          "usa_bordes": false
+        }
+      }
     }
   ],
   "despiece_panel": [
@@ -789,6 +981,81 @@
           "ancho": 70.0,
           "espesor": 18.0,
           "x": 0.0,
+          "y": 0.0,
+          "z": 18.0,
+          "tipo": "panel",
+          "orientacion": "vertical",
+          "cantidad": 1,
+          "material_ref": "melamina_standar",
+          "cantos": {
+            "norte": "FX",
+            "sur": "FX",
+            "este": "FX",
+            "oeste": "FX"
+          },
+          "grupo": "Pacha_Panel",
+          "grupo_pacha": "Pacha_Panel",
+          "operacion": "Encolar + canto de bloque unificado",
+          "rol_reengrose": "refuerzo",
+          "cantos_bloque": {
+            "norte": "RIG",
+            "sur": "RIG",
+            "este": "RIG",
+            "oeste": "RIG"
+          }
+        }
+      ]
+    },
+    {
+      "entrada": {
+        "nombre": "Panel",
+        "largo": 800.0,
+        "ancho": 450.0,
+        "espesor": 18.0,
+        "modifier": {
+          "activo": true,
+          "orientacion": "transversal",
+          "ancho": 50.0
+        }
+      },
+      "salida": [
+        {
+          "nombre": "Panel",
+          "rol": "base",
+          "largo": 800.0,
+          "ancho": 450.0,
+          "espesor": 18.0,
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "tipo": "panel",
+          "orientacion": "vertical",
+          "cantidad": 1,
+          "material_ref": "melamina_standar",
+          "cantos": {
+            "norte": "FX",
+            "sur": "FX",
+            "este": "FX",
+            "oeste": "FX"
+          },
+          "grupo": "Pacha_Panel",
+          "grupo_pacha": "Pacha_Panel",
+          "operacion": "Encolar + canto de bloque unificado",
+          "rol_reengrose": "base",
+          "cantos_bloque": {
+            "norte": "RIG",
+            "sur": "RIG",
+            "este": "RIG",
+            "oeste": "RIG"
+          }
+        },
+        {
+          "nombre": "Panel_Reengrose",
+          "rol": "refuerzo",
+          "largo": 450.0,
+          "ancho": 50.0,
+          "espesor": 18.0,
+          "x": 375.0,
           "y": 0.0,
           "z": 18.0,
           "tipo": "panel",
@@ -935,6 +1202,83 @@
           }
         }
       ]
+    },
+    {
+      "entrada": {
+        "caja": {
+          "nombre": "C",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 800,
+          "h": 450,
+          "d": 18
+        },
+        "modifier": {
+          "activo": true,
+          "orientacion": "transversal",
+          "ancho": 50.0
+        },
+        "ejes": {
+          "largo": "y",
+          "ancho": "x",
+          "espesor": "z"
+        }
+      },
+      "salida": [
+        {
+          "nombre": "C",
+          "tipo": "panel",
+          "orientacion": "vertical",
+          "largo": 450.0,
+          "ancho": 800.0,
+          "espesor": 18.0,
+          "cantidad": 1,
+          "material_ref": "melamina_standar",
+          "cantos": {
+            "norte": "FX",
+            "sur": "FX",
+            "este": "FX",
+            "oeste": "FX"
+          },
+          "grupo": "Pacha_C",
+          "grupo_pacha": "Pacha_C",
+          "operacion": "Encolar + canto de bloque unificado",
+          "rol_reengrose": "base",
+          "cantos_bloque": {
+            "norte": "RIG",
+            "sur": "RIG",
+            "este": "RIG",
+            "oeste": "RIG"
+          }
+        },
+        {
+          "nombre": "C_Reengrose",
+          "tipo": "panel",
+          "orientacion": "vertical",
+          "largo": 50.0,
+          "ancho": 800.0,
+          "espesor": 18.0,
+          "cantidad": 1,
+          "material_ref": "melamina_standar",
+          "cantos": {
+            "norte": "FX",
+            "sur": "FX",
+            "este": "FX",
+            "oeste": "FX"
+          },
+          "grupo": "Pacha_C",
+          "grupo_pacha": "Pacha_C",
+          "operacion": "Encolar + canto de bloque unificado",
+          "rol_reengrose": "refuerzo",
+          "cantos_bloque": {
+            "norte": "RIG",
+            "sur": "RIG",
+            "este": "RIG",
+            "oeste": "RIG"
+          }
+        }
+      ]
     }
   ],
   "resolver_politica_cantos": [
@@ -983,6 +1327,39 @@
         },
         "bloque": {}
       }
+    },
+    {
+      "entrada": {
+        "panel_base": {
+          "cantos": {
+            "frente": "FX"
+          }
+        },
+        "modifier": {
+          "activo": true,
+          "modo_fabricacion": "pacha"
+        }
+      },
+      "salida": {
+        "base": {
+          "norte": "FX",
+          "sur": "FX",
+          "este": "FX",
+          "oeste": "FX"
+        },
+        "tira": {
+          "norte": "FX",
+          "sur": "FX",
+          "este": "FX",
+          "oeste": "FX"
+        },
+        "bloque": {
+          "norte": "RIG",
+          "sur": "RIG",
+          "este": "RIG",
+          "oeste": "RIG"
+        }
+      }
     }
   ],
   "detectar_colision": [
@@ -1027,6 +1404,27 @@
         }
       },
       "salida": true
+    },
+    {
+      "entrada": {
+        "a": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 10,
+          "h": 10,
+          "d": 10
+        },
+        "b": {
+          "x": 10,
+          "y": 0,
+          "z": 0,
+          "w": 10,
+          "h": 10,
+          "d": 10
+        }
+      },
+      "salida": false
     }
   ]
 }

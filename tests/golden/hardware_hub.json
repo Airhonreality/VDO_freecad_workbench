@@ -104,6 +104,27 @@
           "luz_cerrada_sin_cenefa": true
         }
       }
+    },
+    {
+      "entrada": {
+        "tipo_mueble": "alacena"
+      },
+      "salida": {
+        "nombre": "Sistema Corredizo Ducasse AL 1535 Madera (Muebles / Alacenas)",
+        "proveedor": "Ducasse Industrial",
+        "precio_unitario": 9.8,
+        "moneda": "USD",
+        "parametros_tecnicos": {
+          "aplicacion": "muebles_alacenas",
+          "capacidad_peso_kg": 15.0,
+          "montaje": "al_piso_dentro_vano",
+          "descuento_altura_hoja": 10.0,
+          "traslape_minimo": 25.0,
+          "ancho_piso_riel_doble": 26.0,
+          "espesor_hoja_min": 15.0,
+          "luz_cerrada_sin_cenefa": true
+        }
+      }
     }
   ],
   "resolve_drawer_slide": [
@@ -178,6 +199,42 @@
           "capacidad_peso_kg": 25.0
         },
         "sku": "GEN-OCULTA"
+      }
+    },
+    {
+      "entrada": {
+        "tipo": "oculta",
+        "marca": "HAFELE-OCULTA"
+      },
+      "salida": {
+        "nombre": "Corredera Oculta Hafele",
+        "proveedor": "Hafele",
+        "precio_unitario": 10.9,
+        "moneda": "USD",
+        "parametros_tecnicos": {
+          "tipo_corredera": "oculta",
+          "aplicacion": "cajon",
+          "delta_ancho": 45.0,
+          "longitudes_comerciales": [
+            300.0,
+            350.0,
+            400.0,
+            450.0,
+            500.0,
+            550.0
+          ],
+          "longitud_default": 550.0,
+          "cota_ranura_z": 11.0,
+          "diametro_pin_trasero": 6.0,
+          "profundidad_pin_trasero": 12.0,
+          "distancia_pin_borde_trasero": 8.0,
+          "prof_ranura_lateral": 4.0,
+          "notch_ancho": 35.0,
+          "notch_alto": 12.0,
+          "grosor_caja_ideal": 16.0,
+          "capacidad_peso_kg": 35.0
+        },
+        "sku": "HAFELE-OCULTA"
       }
     }
   ],
@@ -274,6 +331,50 @@
             "proveedor": "Ducasse Industrial",
             "ancho_corte": 416.666667,
             "alto_corte": 2190.0,
+            "descuento_altura_hoja": 10.0,
+            "traslape_minimo": 25.0
+          }
+        ]
+      }
+    },
+    {
+      "entrada": {
+        "inner_w": 1500.0,
+        "inner_h": 2100.0,
+        "sku": "DUC-AL-1535-VID",
+        "n_hojas": 2
+      },
+      "salida": {
+        "sku": "DUC-AL-1535-VID",
+        "nombre": "Sistema Corredizo Ducasse AL 1535 Vidrio (4-6mm)",
+        "proveedor": "Ducasse Industrial",
+        "precio_unitario": 12.5,
+        "moneda": "USD",
+        "inner_w": 1500.0,
+        "inner_h": 2100.0,
+        "n_hojas": 2,
+        "descuento_altura_hoja": 10.0,
+        "traslape_minimo": 25.0,
+        "alto_hoja": 2090.0,
+        "ancho_hoja": 762.5,
+        "hojas": [
+          {
+            "hoja": 1,
+            "sku": "DUC-AL-1535-VID",
+            "nombre": "Sistema Corredizo Ducasse AL 1535 Vidrio (4-6mm)",
+            "proveedor": "Ducasse Industrial",
+            "ancho_corte": 762.5,
+            "alto_corte": 2090.0,
+            "descuento_altura_hoja": 10.0,
+            "traslape_minimo": 25.0
+          },
+          {
+            "hoja": 2,
+            "sku": "DUC-AL-1535-VID",
+            "nombre": "Sistema Corredizo Ducasse AL 1535 Vidrio (4-6mm)",
+            "proveedor": "Ducasse Industrial",
+            "ancho_corte": 762.5,
+            "alto_corte": 2090.0,
             "descuento_altura_hoja": 10.0,
             "traslape_minimo": 25.0
           }
