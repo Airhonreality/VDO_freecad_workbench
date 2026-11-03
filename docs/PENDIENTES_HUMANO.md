@@ -55,6 +55,20 @@ Implementado: `_serializar` representa `App.Rotation` por eje y ángulo. Golden 
 - **Recomiendo:** aprobar. Los nuevos son generados desde `b78de04` y el código actual los reproduce con 0 diferencias.
 - **Bloquea:** nada. Las instrucciones de esta noche permiten commitear goldens generados desde `b78de04` con procedencia documentada. Queda como revisión humana, no como bloqueo.
 
+## P-06 — ¿Dónde vive `rotacion_z`?
+
+- **Qué:** hay dos copias actuales (`core/vdo_helpers.py` y `cad/propiedades.py`) con la misma lógica. Ver `INVENTARIO_HECHOS.md`, H-60 a H-62.
+- **Por qué no lo decido yo:** `core/` no puede importar `App` (MN-03), pero hay 12 ficheros que la usan, y varios son de `core/`. Poner la única copia en `cad/` obliga a que `core` deje de usarla. Eso cambia cómo se calculan rotaciones en `core`.
+- **Recomiendo:** `cad/propiedades.py` como única ubicación, y que `core` reciba la rotación ya construida desde quien llama, o trabaje con grados. Hay que revisar los 12 usos antes de tocar.
+- **Bloquea:** el destino único de H-60 a H-62 (M1 y M2). El resto de M2 no depende de esto.
+
+## P-07 — ¿`ESQUINAS` y `TIPOS_ENCUENTRO` son el mismo concepto?
+
+- **Qué:** `core/vdo_reengrose.py` define `ESQUINAS` y `ui/vdo_box_controller.py` define `TIPOS_ENCUENTRO`. Tienen el mismo contenido con nombres distintos (`minimalismo.py duplicados`).
+- **Por qué no lo decido yo:** unificar sin saber si significan lo mismo puede cambiar el comportamiento de la UI sin que ningún golden lo detecte. Los goldens cubren `core`, no la UI.
+- **Recomiendo:** confirmar el significado. Si es el mismo, un solo nombre en `core/vdo_reengrose.py`. Si no, son dos conceptos y se documentan así.
+- **Bloquea:** H-04 en M2.
+
 ---
 
 ## Cambios que no se pueden hacer sin decisión (plan §9)

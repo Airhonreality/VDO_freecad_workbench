@@ -13,7 +13,9 @@
 | Premisas y rama | ✅ | Ver "Comprobaciones iniciales" |
 | Segfault al salir (pre-M0) | ✅ | `c1fa9d2` (en `refactor/vdo-10`) |
 | **M0** — Congelar y medir | ✅ **cerrada** | 14 goldens cubren 19 de 19 módulos: 13 con golden propio, 4 flujos de creación en `creacion_modulos.json`, 2 N/A (P-01, decidido). Revisión humana de goldens sustituidos: P-05, no bloquea. |
-| M1 a M11 | ⏸ no iniciadas | El plan exige cerrar M0 antes de empezar M1. |
+| **M1** — Inventario de hechos | ✅ **cerrada con 2 destinos pendientes** | `docs/INVENTARIO_HECHOS.md`. Cada hecho duplicado tiene destino; H-60 a H-62 (`rotacion_z`) y H-04 (`ESQUINAS`) esperan P-06 y P-07. |
+| **M2** — Un hecho, un lugar: datos | ⚠️ **parcial** | Hecho: herrajes sin fallbacks (`8b85ce3`), anclajes en un dato (`699e944`). Tablas idénticas 9 → 7. Pendiente: `LUCIDE_ICONS`, `MODULE_SPECS`, literales vigilados, `CANTOS`/`BORDES`, `_CATALOGO_PATH`. |
+| M3 a M11 | ⏸ no iniciadas | M2 sigue abierta. |
 
 **Bloqueo:** el gate de M0 pide "los 19 goldens existen". Hoy hay 14 ficheros:
 - 13 de dominio (incluye `module_props`, con golden desde `b78de04` y reubicación documentada).
@@ -55,6 +57,9 @@ Cambios de otra sesión que **no** son míos (ver `PENDIENTES_HUMANO.md`, P-04):
 | `762d768` | M0 | Goldens: herramienta, entradas de 19 módulos, fixtures de layout |
 | `692b76a` | M0 | 13 goldens desde `b78de04` + `docs/metricas/goldens_origen.md` |
 | `4e29c04` | M0 | `module_props` con golden (serialización de `App.Rotation`, reubicación de `rotacion_z`) |
+| `66e0765` | M0 | Cierre de M0 con decisiones P-01 y P-03 |
+| `8b85ce3` | M2 | Herrajes solo desde el JSON; sin `_FALLBACK_*` (MN-05). Golden `hardware_hub` 0 diferencias. |
+| `699e944` | M2 | Anclajes en `datos/anclajes.json`; `cad` deja de duplicar la tabla. Duplicado de carga queda en D-10. |
 
 Previos en la rama (ya en `refactor/vdo-10`): `e10cd12` (plan rector), `c1fa9d2` (segfault).
 
