@@ -585,3 +585,647 @@ exit=1
 Estado: F19.2-ter cumple su objetivo (medidor honesto). F19 no está cerrada: R1, R3, R8, R9, R10 siguen en FALLA, y la suite de nivel 1 y 2 tiene 3 FALLO reales que son trabajo de F19.4.
 
 Pendiente de decisión humana (sin cambios desde F19.2-bis): `iniciar_colocacion` (`ui/vdo_placement.py`): conectar al workbench o eliminar; `ruta_recursos` (`app/rutas.py`) se decide en F19.5.
+
+## Fase F19.2-ter (sesión 2) — Colocación, segfault y medición
+
+Commits (rama `refactor/vdo-10`, sin push, sin merge, sin etiqueta de cierre):
+- `abf59b1` paso 1: colocación restaurada en el flujo de creación y dos defectos de creación.
+- `6bab241` paso 2: segfault al salir corregido en el runner (ADR-005 actualizado).
+- `b2583a6` paso 3: duplicado de rotación eliminado y tipado de las funciones nuevas.
+
+### Paso 1 — Colocación (regresión de F5)
+
+Qué estaba roto (medido, no supuesto):
+- `b78de04` abría el panel y, al aceptar, llamaba a `iniciar_colocacion` a través de `core/vdo_ui_registry`. F5 quitó el registro y `ui/vdo_registro.registrar_piezas` es un no-op desde entonces. Resultado: el módulo se creaba oculto en el origen, sin panel y sin colocación.
+- `ui/vdo_placement.py` no se podía importar: pedía `rotacion_z` a `core/vdo_module_props`, y esa función había pasado a `cad/propiedades` en F19.1.
+- `panel.puerta` no se podía abrir: `ImportError` de `SISTEMAS_APERTURA` en `vdo_facade_contract` (se había movido a `vdo_puerta_despiece`).
+- `make_coco`, `crear_pieza` y `make_zocalo` fallaban con `AttributeError` con rotación distinta de cero (`VDO_MOD.rotacion_z` no existe). Probe: `AttributeError module 'freecad.vdo.core.vdo_module_props' has no attribute 'rotacion_z'`.
+
+Qué cambió:
+- `app/vdo_creacion.crear_modulo_interactivo(..., *, abrir_panel=None, colocar=None)`: las dos funciones de interfaz llegan por parámetro. `app/` no importa `ui/`. Sin ellas confirma en el origen.
+- `ui/vdo_interfaz.py` (nuevo): `abrir_panel` (mapa `panel.* -> clase TaskPanel`, el mismo de `b78de04`) y `colocar` (`iniciar_colocacion`).
+- `commands.py`: inyecta la interfaz solo si hay GUI (`_gui_activa()`).
+- `cad/colocacion.py` (nuevo): `leer_rotacion`, `ancla_local`, `preparar_colocacion`, `aplicar_colocacion`. Movidos desde `core/vdo_module_props.py` (que pierde 43 líneas).
+- `app/casos_uso/colocar_modulo.py`: `preparar_colocacion` y `colocar_en_punto` como API para la UI.
+- `cad/propiedades.ocultar_vista`: oculta la vista. Tolera objetos sin `ViewObject`.
+
+Tests nuevos en `tests/test_creacion_colocacion.py` (nivel 2, 8 tests): flujo aceptar, aceptar dos veces, cancelar, colocación real sin GUI (cancela y devuelve `False`), rotación de coco/panel/zócalo, y resolución de la clase de panel para todas las specs.
+
+Lo que NO está verificado: la colocación con clic en GUI (Snapper o fallback Coin3D). Solo se ejecuta la rama sin GUI. Requiere sesión gráfica y revisión humana (F19.11).
+
+Desviación de la prueba: `HasPendingTransaction` es siempre `False` en `freecadcmd` (medido con `/tmp/f19d/probe_tx.py`), así que el test no afirma sobre él.
+
+### Paso 2 — Segfault al salir
+
+Corrección de F19.2-bis: el registro decía "5 de 5 ejecuciones con código 0". El código era 0, pero el log contenía `Program received signal SIGSEGV` en cada ejecución (la señal sale en el backtrace de shiboken, durante la finalización). El segfault no estaba resuelto.
+
+Localización (medida):
+- Cada módulo de test que usa Qt, en su propio proceso: `rc=0`, sin SIGSEGV.
+- Todos los módulos en un proceso con un cargador propio que termina normalmente: `rc=0`, sin SIGSEGV.
+- El mismo cargador con `sys.exit(0)` o `sys.exit(1)` al final: SIGSEGV.
+- Disparador: `tools/run_tests.py` terminaba con `sys.exit(main())`, introducido en `c7ad8fd` (F19.2-ter, paso anterior de esta sesión). El segfault del registro original venía de otra causa (ADR-005), pero la salida con `sys.exit` lo reproducía igual.
+
+Cambio: el runner escribe el informe, vacía stdout/stderr y termina con `os._exit(codigo)`. El código sigue siendo el de los resultados. Nada se excluye.
+
+Resultado de las 5 ejecuciones de nivel 2 con el comando del prompt (`VDO_TEST_DIR=tests VDO_TEST_OUT=/tmp/x.txt freecadcmd tools/run_tests.py; echo $?`):
+```
+1: RESUMEN ejecutados=260 fallos=3 errores=0 skip=26 no_ejecutado=0
+2: RESUMEN ejecutados=260 fallos=3 errores=0 skip=26 no_ejecutado=0
+3: RESUMEN ejecutados=260 fallos=3 errores=0 skip=26 no_ejecutado=0
+4: RESUMEN ejecutados=260 fallos=3 errores=0 skip=26 no_ejecutado=0
+5: RESUMEN ejecutados=260 fallos=3 errores=0 skip=26 no_ejecutado=0
+```
+Código 1 en las cinco por los 3 FALLO de `test_arquitectura` (F19.4). Sin SIGSEGV en las cinco (`grep -c SIGSEGV` = 0).
+
+### Paso 3 — Duplicado y tipado
+
+- `_rotacion_z` estaba copiado en tres módulos de core. R9_clones pasó a 1. Ahora un solo `rotacion_z` en `core/vdo_helpers`. R9_clones = 0.
+- Anotaciones de tipo en las funciones nuevas. Medido: mypy strict en `core/ app/ cad/` pasó de 1108 (tras el paso 1) a 1081. La línea base de la sesión era 1092.
+- La docstring de `rotacion_z` decía `App.Rotation`: R3 la contaba como escritura de FreeCAD. Reescrita.
+
+### Medición literal (paso 4)
+
+Nivel 1 (`VDO_TEST_DIR=tests VDO_TEST_OUT=/tmp/x.txt python3 tools/run_tests.py; echo exit=$?`):
+```
+SKIP setUpClass (test_comandos_workbench.ComandosFreeCADTests) :: requiere FreeCAD real (freecadcmd)
+SKIP setUpClass (test_headless_core.HeadlessCoreTests) :: requiere FreeCAD real (freecadcmd)
+OK test_arquitectura.CapasTests.test_app_no_importa_ui
+OK test_arquitectura.CapasTests.test_cad_no_importa_ui_app
+FALLO test_arquitectura.CapasTests.test_core_no_importa_app_ui_cad :: -  'freecad/vdo/core/vdo_panel_core.py'] : core/ importa app/ui/cad: ['freecad/vdo/core/vdo_coco_core.py', 'freecad/vdo/core/vdo_coco_spaces.py', 'freecad/vdo/core/vdo_module_props.py', 'freecad/vdo/core/vdo_panel_core.py']
+FALLO test_arquitectura.CapasTests.test_ui_no_escritura_freecad :: Diff is 857 characters long. Set self.maxDiff to None to see it. : ui/ escribe en FreeCAD: ['freecad/vdo/ui/vdo_bim_bridge.py', 'freecad/vdo/ui/vdo_cajon_task.py', 'freecad/vdo/ui/vdo_coco_unified_task.py', 'freecad/vdo/ui/vdo_cutting_list_menu.py', 'freecad/vdo/ui/vdo_cutting_list_preview.py', 'fre
+FALLO test_arquitectura.CapasTests.test_ui_no_importa_core_cad_app_api :: Diff is 743 characters long. Set self.maxDiff to None to see it. : ui/ importa core/cad/app.vdo_api: ['freecad/vdo/ui/vdo_box_controller.py', 'freecad/vdo/ui/vdo_cajon_task.py', 'freecad/vdo/ui/vdo_coco_preview2d.py', 'freecad/vdo/ui/vdo_coco_unified_task.py', 'freecad/vdo/ui/vdo_cutting_list_previe
+OK test_build_zip.TestBuildZip.test_leer_version
+OK test_build_zip.TestBuildZip.test_zip_contiene_solo_archivos_permitidos
+OK test_cajon_core.TestBooleanLogicMocked.test_aplicar_corte_devuelve_original_si_falla
+OK test_cajon_core.TestBooleanLogicMocked.test_bisel_45_crea_herramienta_triangular
+OK test_cajon_core.TestBooleanLogicMocked.test_notch_reduce_volumen
+OK test_cajon_core.TestBooleanLogicMocked.test_pin_hole_reduce_volumen
+OK test_cajon_core.TestBooleanLogicMocked.test_ranura_piso_reduce_volumen
+OK test_cajon_core.TestCoordenadasCalculadas.test_fachada_con_gola
+OK test_cajon_core.TestCoordenadasCalculadas.test_piso_en_ranura_telescopica
+OK test_cajon_core.TestCoordenadasCalculadas.test_posiciones_laterales
+OK test_cajon_core.TestDespieceTipologias.test_listar_marcas_incluye_nuevas
+OK test_cajon_core.TestDespieceTipologias.test_metalica_sin_laterales
+OK test_cajon_core.TestDespieceTipologias.test_oculta_blum_tandem
+OK test_cajon_core.TestDespieceTipologias.test_oculta_generica
+OK test_cajon_core.TestDespieceTipologias.test_telescopica
+OK test_cajon_core.TestFacadeContractIntegracion.test_cantos_por_sistema_apertura
+OK test_cajon_core.TestFacadeContractIntegracion.test_gola_descuenta_35mm_en_alto
+OK test_cajon_core.TestFacadeContractIntegracion.test_inglete_45_conserva_altura
+OK test_cajon_core.TestFacadeContractIntegracion.test_push_open_conserva_altura
+OK test_cajon_core.TestFacadeContractIntegracion.test_tirador_conserva_altura
+OK test_cajon_core.TestHardwareHubIntegracion.test_resolve_blum_tandem_desde_manifest
+OK test_cajon_core.TestHardwareHubIntegracion.test_resolve_generica
+OK test_cajon_core.TestHardwareHubIntegracion.test_resolve_inexistente_lanza_keyerror
+OK test_cajon_core.TestHardwareHubIntegracion.test_resolve_sku_directo
+OK test_cajon_core.TestHardwareHubIntegracion.test_resolve_telescopica
+OK test_capas_arquitectura.CapasTests.test_core_no_importa_interfaz_ni_qt
+OK test_capas_arquitectura.CapasTests.test_registro_de_ui_no_esta_en_core
+OK test_cli_optimizador.TestOptimizadorCLI.test_parse_board_con_decimales
+OK test_cli_optimizador.TestOptimizadorCLI.test_parse_board_invalido
+OK test_cli_optimizador.TestOptimizadorCLI.test_parse_board_valido
+SKIP test_coco_reengrose.CocoReengroseTests.test_carcasa_base_sin_solapes :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose.CocoReengroseTests.test_carcasa_lateral_sin_solapes :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose.CocoReengroseTests.test_coco_estandar_regresion :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose.CocoReengroseTests.test_export_csv_grupo :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose.CocoReengroseTests.test_mocheo_repisa :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose.CocoReengroseTests.test_pacha_en_despiece :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose.CocoReengroseTests.test_retroceso_repisa :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose.CocoReengroseTests.test_ui_contextual :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_borde_unico_retrocompatible :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_division_reengrose_no_colapsa_repisa :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_esquina_techo_lateral_horizontal_domina :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_esquina_techo_lateral_vertical_domina :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_esquinas_independientes_ui :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_inglete_45_sin_solapes :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_interrumpir_tira_en_division :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_marco_perimetral_4_bordes_inglete :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_repisa_retranqueada_ancla_cara_real :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_sync_esquinas_ui :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_techo_reengrose_division_vertical :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_techo_retroceso_contiene_repisas :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_ui_contextual_modos_nuevos :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_zocalo_u_tres_bordes :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_comandos_workbench.ComandosFreeCADTests.test_barras_solo_referencian_comandos_registrados :: requiere FreeCAD real (freecadcmd)
+SKIP test_comandos_workbench.ComandosFreeCADTests.test_comandos_registrados :: requiere FreeCAD real (freecadcmd)
+SKIP test_comandos_workbench.ComandosFreeCADTests.test_panel_estandar_crea_hoja_y_panel :: requiere FreeCAD real (freecadcmd)
+SKIP test_comandos_workbench.ComandosFreeCADTests.test_todos_los_iconos_existen :: requiere FreeCAD real (freecadcmd)
+SKIP test_comandos_workbench.ComandosFreeCADTests.test_zocalo_anade_objetos :: requiere FreeCAD real (freecadcmd)
+OK test_comandos_workbench.SinExecTests.test_ningun_exec_builtin_en_el_codigo
+SKIP test_creacion_colocacion.FlujoCreacionColocacionTests.test_aceptar_abre_panel_y_coloca_el_modulo :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_creacion_colocacion.FlujoCreacionColocacionTests.test_aceptar_dos_veces_coloca_una_sola :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_creacion_colocacion.FlujoCreacionColocacionTests.test_cancelar_panel_borra_el_modulo :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_creacion_colocacion.FlujoCreacionColocacionTests.test_colocacion_real_sin_gui_cancela_y_devuelve_falso :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_creacion_colocacion.FlujoCreacionColocacionTests.test_sin_interfaz_confirma_en_origen :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_creacion_colocacion.PanelesResuelvenTests.test_todas_las_specs_tienen_clase_de_panel :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_creacion_colocacion.RotacionCreacionTests.test_coco_con_rotacion :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_creacion_colocacion.RotacionCreacionTests.test_panel_con_rotacion :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_creacion_colocacion.RotacionCreacionTests.test_zocalo_con_rotacion :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_creacion_modulos.CreacionModulosTests.test_crear_pieza_devuelve_panel_con_shape :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_creacion_modulos.CreacionModulosTests.test_crear_pieza_sin_doc_devuelve_none :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_creacion_modulos.CreacionModulosTests.test_make_cajon_devuelve_objeto_con_shape :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_creacion_modulos.CreacionModulosTests.test_make_coco_devuelve_objeto_con_shape :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_creacion_modulos.CreacionModulosTests.test_make_zocalo_devuelve_objeto_con_shape :: requiere FreeCAD real (import falló o solo hay un mock)
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_gola
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_inglete_45
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_metalica
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_oculta_blum
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_oculta_generica
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_push_open
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_telescopica
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_tirador
+OK test_despiece_snapshots.TestDespieceSnapshotsPuerta.test_batiente_embebida
+OK test_despiece_snapshots.TestDespieceSnapshotsPuerta.test_batiente_parche
+OK test_despiece_snapshots.TestDespieceSnapshotsPuerta.test_batiente_semiparche
+OK test_despiece_snapshots.TestDespieceSnapshotsPuerta.test_bisagras_para_puerta_800
+OK test_despiece_snapshots.TestDespieceSnapshotsPuerta.test_corrediza_2hojas
+OK test_facade_harmony.TestAplicarSistemaApertura.test_gola_con_descuento_personalizado
+OK test_facade_harmony.TestAplicarSistemaApertura.test_gola_descuenta_35
+OK test_facade_harmony.TestAplicarSistemaApertura.test_inglete_45_conserva_altura
+OK test_facade_harmony.TestAplicarSistemaApertura.test_push_open_conserva_altura
+OK test_facade_harmony.TestAplicarSistemaApertura.test_sistema_invalido
+OK test_facade_harmony.TestAplicarSistemaApertura.test_tirador_conserva_altura
+OK test_facade_harmony.TestCalculoFachadaBase.test_embebida
+OK test_facade_harmony.TestCalculoFachadaBase.test_holgura_personalizada
+OK test_facade_harmony.TestCalculoFachadaBase.test_montaje_invalido
+OK test_facade_harmony.TestCalculoFachadaBase.test_parche
+OK test_facade_harmony.TestCalculoFachadaBase.test_semiparche
+OK test_facade_harmony.TestContratoFachadas.test_constantes_taller
+OK test_facade_harmony.TestContratoFachadas.test_enums_validos
+OK test_facade_harmony.TestContratoFachadas.test_operaciones_canto
+OK test_facade_harmony.TestContratoFachadas.test_sistemas_apertura_validos
+OK test_facade_harmony.TestFuncionesAuxiliares.test_cantos_por_sistema_apertura
+OK test_facade_harmony.TestFuncionesAuxiliares.test_necesita_bisel_45
+OK test_facade_harmony.TestFuncionesAuxiliares.test_necesita_cantos_45
+OK test_facade_harmony.TestFuncionesAuxiliares.test_necesita_descuento_gola
+OK test_facade_harmony.TestFuncionesAuxiliares.test_necesita_expulsor_magnetico
+OK test_facade_harmony.TestImportacionYEnums.test_cajon_consume_contrato
+OK test_facade_harmony.TestImportacionYEnums.test_contrato_importable
+OK test_facade_harmony.TestImportacionYEnums.test_no_discrepancias_strings
+OK test_facade_harmony.TestImportacionYEnums.test_puerta_consume_contrato
+OK test_facade_harmony.TestInglete45.test_altura_conservada
+OK test_facade_harmony.TestInglete45.test_operacion_canto_bisel_45
+OK test_facade_harmony.TestSimetriaGolaPuertaVsCajon.test_altura_igual_con_gola
+SKIP test_gui_wiring.TestGuiWiring.test_dock_inspector_en_mainwindow :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_gui_wiring.TestGuiWiring.test_enfocar_inspector_universal :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_gui_wiring.TestGuiWiring.test_extirpacion_combos_planos_en_coco_task :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_gui_wiring.TestGuiWiring.test_viewprovider_coco_redireccion :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+OK test_hardware_hub.HardwareHubTests.test_calculate_sliding_doors_alacena_al1535
+OK test_hardware_hub.HardwareHubTests.test_calculate_sliding_doors_placard_d52
+OK test_hardware_hub.HardwareHubTests.test_get_family
+OK test_hardware_hub.HardwareHubTests.test_get_family_corredera_oculta
+OK test_hardware_hub.HardwareHubTests.test_get_family_corredera_telescopica
+OK test_hardware_hub.HardwareHubTests.test_get_hardware_al1535
+OK test_hardware_hub.HardwareHubTests.test_get_hardware_ducasse_d52
+OK test_hardware_hub.HardwareHubTests.test_get_hardware_sku_no_existente
+OK test_hardware_hub.HardwareHubTests.test_no_gui_imports
+OK test_hardware_hub.HardwareHubTests.test_resolve_drawer_slide_blum_tandem
+OK test_hardware_hub.HardwareHubTests.test_resolve_drawer_slide_sku_directo
+OK test_hardware_hub.HardwareHubTests.test_resolve_drawer_slide_sku_inexistente
+OK test_hardware_hub.HardwareHubTests.test_resolve_drawer_slide_telescopica
+OK test_hardware_hub.HardwareHubTests.test_resolve_hinge_generic_parche
+OK test_hardware_hub.HardwareHubTests.test_resolve_hinge_prefer_sku
+OK test_hardware_hub.HardwareHubTests.test_resolve_sliding
+SKIP test_headless_core.HeadlessCoreTests.test_core_no_carga_gui_ni_pyside :: requiere FreeCAD real (freecadcmd)
+SKIP test_headless_core.HeadlessCoreTests.test_freecad_no_tiene_init_en_el_repo :: requiere FreeCAD real (freecadcmd)
+SKIP test_headless_core.HeadlessCoreTests.test_namespace_freecad_incluye_paquete_del_repo :: requiere FreeCAD real (freecadcmd)
+OK test_layout_reengrose.LayoutReengroseTests.test_ambos_lados
+OK test_layout_reengrose.LayoutReengroseTests.test_division_derecha_reduce_vano
+OK test_layout_reengrose.LayoutReengroseTests.test_division_izquierda_reduce_vano
+OK test_layout_reengrose.LayoutReengroseTests.test_lateral_izquierdo
+OK test_layout_reengrose.LayoutReengroseTests.test_repisa_nominal_para_mocheo
+OK test_layout_reengrose.LayoutReengroseTests.test_sin_reengrose
+SKIP test_puerta_core.CoreImportTests.test_import_core :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_puerta_core.CoreImportTests.test_make_puerta_existe :: requiere FreeCAD real (import falló o solo hay un mock)
+OK test_puerta_core.DespieceBasculanteTests.test_descripcion_piston
+OK test_puerta_core.DespieceBasculanteTests.test_fuerza_piston
+OK test_puerta_core.DespieceBasculanteTests.test_masa_puerta
+OK test_puerta_core.DespieceBasculanteTests.test_piston_recomendado
+OK test_puerta_core.DespieceBatienteTests.test_bisagras_para_puerta
+OK test_puerta_core.DespieceBatienteTests.test_cantidad_bisagras
+OK test_puerta_core.DespieceBatienteTests.test_cota_cazoleta
+OK test_puerta_core.DespieceBatienteTests.test_dimensiones_embebida
+OK test_puerta_core.DespieceBatienteTests.test_dimensiones_parche
+OK test_puerta_core.DespieceBatienteTests.test_dimensiones_semiparche
+OK test_puerta_core.DespieceBatienteTests.test_posiciones_cazoleta_2_bisagras
+OK test_puerta_core.DespieceBatienteTests.test_posiciones_cazoleta_3_bisagras
+OK test_puerta_core.DespieceBatienteTests.test_posiciones_cazoleta_4_bisagras
+OK test_puerta_core.DespieceCorredizaTests.test_corrediza_al1535
+OK test_puerta_core.DespieceCorredizaTests.test_corrediza_d52
+OK test_puerta_core.SistemasAperturaTests.test_ajuste_altura_gola
+OK test_puerta_core.SistemasAperturaTests.test_ajuste_altura_push
+OK test_puerta_core.SistemasAperturaTests.test_ajuste_altura_tirador
+OK test_puerta_core.SistemasAperturaTests.test_necesita_cantos_45
+OK test_puerta_core.SistemasAperturaTests.test_necesita_expulsor
+SKIP test_reengrose_l1.ReengroseL1Tests.test_desde_objeto :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_reengrose_l1.ReengroseL1Tests.test_independiente :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_reengrose_l1.ReengroseL1Tests.test_pacha_parcial :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_reengrose_l1.ReengroseL1Tests.test_pacha_total :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_reengrose_l1.ReengroseL1Tests.test_panel_viejo_sin_propiedades :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_reengrose_l1.ReengroseL1Tests.test_ui_tooltips_y_accept :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_selection_bridge.SelectionBridgeTests.test_add_selection_dispara_callback :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_add_selection_todos_los_tipos :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_box_nativo_desconocido :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_cajon :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_coco :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_none :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_panel :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_precision_100 :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_puerta :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_zocalo :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_clear_selection_resetear_estado :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_desregistrar_observer_idempotente :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_repeticion_seleccion_deseleccion_sin_excepciones :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_single_dock_convergence.TestSingleDockConvergence.test_abrir_panel_objeto_no_abre_dialogo_flotante :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_single_dock_convergence.TestSingleDockConvergence.test_anatomia_panel_unico :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_single_dock_convergence.TestSingleDockConvergence.test_carga_coco_puebla_micro_header_y_arbol :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_single_dock_convergence.TestSingleDockConvergence.test_click_arbol_conmuta_stack :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_single_dock_convergence.TestSingleDockConvergence.test_click_preview_2d_sincroniza_arbol_y_stack :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_single_dock_convergence.TestSingleDockConvergence.test_edicion_micro_header_actualiza_coco_y_preview :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_smoke_l3_desk_assembly.TestSmokeL3DeskAssembly.test_00_api_coverage :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_smoke_l3_desk_assembly.TestSmokeL3DeskAssembly.test_01_chain1_subdivision_torre_cajones :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_smoke_l3_desk_assembly.TestSmokeL3DeskAssembly.test_02_chain2_sistemas_apertura_fachadas :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_smoke_l3_desk_assembly.TestSmokeL3DeskAssembly.test_03_chain3_reengrose_boleo_cubierta :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_smoke_l3_desk_assembly.TestSmokeL3DeskAssembly.test_04_chain4_pose_duplicacion_en_l :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_smoke_l3_desk_assembly.TestSmokeL3DeskAssembly.test_05_chain5_lista_materiales_despiece :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_smoke_l3_desk_assembly.TestSmokeL3DeskAssembly.test_99_report_matriz :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_universal_inspector.UniversalInspectorTests.test_cerrar_inspector_no_lanza :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_universal_inspector.UniversalInspectorTests.test_desconexion_observer_limpia :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_universal_inspector.UniversalInspectorTests.test_instanciacion_sin_errores :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_universal_inspector.UniversalInspectorTests.test_pagina_inicial_es_chasis :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_universal_inspector.UniversalInspectorTests.test_puente_creado :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_universal_inspector.UniversalInspectorTests.test_seleccion_coco_cambia_a_chasis :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_universal_inspector.UniversalInspectorTests.test_seleccion_panel_actualiza_header_cantos :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_universal_inspector.UniversalInspectorTests.test_seleccion_panel_cambia_a_pieza :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_universal_inspector.UniversalInspectorTests.test_seleccion_vacio_regresa_chasis :: requiere FreeCAD real (import falló o solo hay un mock)
+OK test_vdo_agnosticism.TestReglasCalidadFreecad.test_no_except_desnudo_en_freecad
+OK test_vdo_agnosticism.TestReglasCalidadFreecad.test_no_print_en_freecad
+OK test_vdo_agnosticism.VDOAgnosticismTests.test_01_contrato_espacial_del_vano
+OK test_vdo_agnosticism.VDOAgnosticismTests.test_02_agnosticidad_dilatacion_muro
+OK test_vdo_agnosticism.VDOAgnosticismTests.test_03_agnosticidad_zocalo_con_amarres
+OK test_vdo_agnosticism.VDOAgnosticismTests.test_04_simulacion_inserto_universal
+OK test_vdo_agnosticism.VDOAgnosticismTests.test_qt_compat_solo_punto_entrada_pyside
+OK test_vdo_chassis_widget.TestVDOChassisWidget.test_archetypes
+OK test_vdo_chassis_widget.TestVDOChassisWidget.test_corner_cycling
+OK test_vdo_chassis_widget.TestVDOChassisWidget.test_default_config
+OK test_vdo_chassis_widget.TestVDOChassisWidget.test_estrategia_base_switching
+OK test_vdo_chassis_widget.TestVDOChassisWidget.test_face_toggling
+OK test_vdo_chassis_widget.TestVDOChassisWidget.test_fondo_selection
+OK test_vdo_chassis_widget.TestVDOChassisWidget.test_set_chassis_config
+OK test_vdo_reengrose.ReengrosePureTests.test_colision_y_mocheo
+OK test_vdo_reengrose.ReengrosePureTests.test_defaults_and_validation
+OK test_vdo_reengrose.ReengrosePureTests.test_despiece_pacha
+OK test_vdo_reengrose.ReengrosePureTests.test_pacha_total
+OK test_vdo_reengrose.ReengrosePureTests.test_paralela_cara_a
+OK test_vdo_reengrose.ReengrosePureTests.test_paralela_fondo_y_cara_b
+OK test_vdo_reengrose.ReengrosePureTests.test_politica_cantos
+OK test_vdo_reengrose.ReengrosePureTests.test_transversal
+OK test_vdo_reengrose.ReengrosePureTests.test_vano_neto
+SKIP test_vdo_zocalo.ZocaloGeometryTests.test_despiece_longitudes :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_vdo_zocalo.ZocaloGeometryTests.test_errores_de_configuracion :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_vdo_zocalo.ZocaloGeometryTests.test_geometria_con_trasera :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_vdo_zocalo.ZocaloGeometryTests.test_make_zocalo_sin_solapes :: requiere FreeCAD real (import falló o solo hay un mock)
+SKIP test_vdo_zocalo.ZocaloGeometryTests.test_sin_trasera_y_amarres :: requiere FreeCAD real (import falló o solo hay un mock)
+OK test_verificar.TestR5EstadoInmutable.test_asignacion_anotada_de_modulo_si_cuenta
+OK test_verificar.TestR5EstadoInmutable.test_asignacion_de_modulo_si_cuenta
+OK test_verificar.TestR5EstadoInmutable.test_constante_mayusculas_y_all_no_cuentan
+OK test_verificar.TestR5EstadoInmutable.test_variable_local_no_cuenta
+OK test_verificar.TestR7Errores.test_except_con_raise_no_se_cuenta
+OK test_verificar.TestR7Errores.test_except_exception_se_cuenta_con_cualquier_cuerpo
+OK test_verificar.TestR7Errores.test_except_pass_se_cuenta
+OK test_verificar.TestR9DefsNoUsadas.test_funcion_sin_referencias_se_reporta
+OK test_verificar.TestR9DefsNoUsadas.test_metodo_no_cuenta_como_def_modulo
+OK test_verificar.TestR9DefsNoUsadas.test_privada_sin_referencias_se_reporta
+OK test_verificar.TestR9DefsNoUsadas.test_referencia_por_cadena_cuenta
+OK test_verificar.TestR9DefsNoUsadas.test_uso_en_el_mismo_archivo_cuenta
+OK test_verificar.TestR9DefsNoUsadas.test_uso_por_atributo_cuenta
+OK test_verificar.TestR9DefsNoUsadas.test_uso_por_import_from_cuenta
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_interaccion_box_controller_pieza :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_interaccion_chasis_emite_capa1 :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_interaccion_vano_dock :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_lifecycle_context_manager :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_zoom_semantico_chasis :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_zoom_semantico_cierre_cajon :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_zoom_semantico_cierre_puerta :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_zoom_semantico_pieza_l1 :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_zoom_semantico_vano :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+
+RESUMEN ejecutados=262 fallos=3 errores=0 skip=107 no_ejecutado=0
+exit=1
+```
+
+Nivel 2 (`VDO_TEST_DIR=tests VDO_TEST_OUT=/tmp/x.txt freecadcmd tools/run_tests.py; echo exit=$?`):
+```
+OK test_arquitectura.CapasTests.test_app_no_importa_ui
+OK test_arquitectura.CapasTests.test_cad_no_importa_ui_app
+FALLO test_arquitectura.CapasTests.test_core_no_importa_app_ui_cad :: -  'freecad/vdo/core/vdo_panel_core.py'] : core/ importa app/ui/cad: ['freecad/vdo/core/vdo_coco_core.py', 'freecad/vdo/core/vdo_coco_spaces.py', 'freecad/vdo/core/vdo_module_props.py', 'freecad/vdo/core/vdo_panel_core.py']
+FALLO test_arquitectura.CapasTests.test_ui_no_escritura_freecad :: Diff is 857 characters long. Set self.maxDiff to None to see it. : ui/ escribe en FreeCAD: ['freecad/vdo/ui/vdo_bim_bridge.py', 'freecad/vdo/ui/vdo_cajon_task.py', 'freecad/vdo/ui/vdo_coco_unified_task.py', 'freecad/vdo/ui/vdo_cutting_list_menu.py', 'freecad/vdo/ui/vdo_cutting_list_preview.py', 'fre
+FALLO test_arquitectura.CapasTests.test_ui_no_importa_core_cad_app_api :: Diff is 743 characters long. Set self.maxDiff to None to see it. : ui/ importa core/cad/app.vdo_api: ['freecad/vdo/ui/vdo_box_controller.py', 'freecad/vdo/ui/vdo_cajon_task.py', 'freecad/vdo/ui/vdo_coco_preview2d.py', 'freecad/vdo/ui/vdo_coco_unified_task.py', 'freecad/vdo/ui/vdo_cutting_list_previe
+OK test_build_zip.TestBuildZip.test_leer_version
+OK test_build_zip.TestBuildZip.test_zip_contiene_solo_archivos_permitidos
+OK test_cajon_core.TestBooleanLogicMocked.test_aplicar_corte_devuelve_original_si_falla
+OK test_cajon_core.TestBooleanLogicMocked.test_bisel_45_crea_herramienta_triangular
+OK test_cajon_core.TestBooleanLogicMocked.test_notch_reduce_volumen
+OK test_cajon_core.TestBooleanLogicMocked.test_pin_hole_reduce_volumen
+OK test_cajon_core.TestBooleanLogicMocked.test_ranura_piso_reduce_volumen
+OK test_cajon_core.TestCoordenadasCalculadas.test_fachada_con_gola
+OK test_cajon_core.TestCoordenadasCalculadas.test_piso_en_ranura_telescopica
+OK test_cajon_core.TestCoordenadasCalculadas.test_posiciones_laterales
+OK test_cajon_core.TestDespieceTipologias.test_listar_marcas_incluye_nuevas
+OK test_cajon_core.TestDespieceTipologias.test_metalica_sin_laterales
+OK test_cajon_core.TestDespieceTipologias.test_oculta_blum_tandem
+OK test_cajon_core.TestDespieceTipologias.test_oculta_generica
+OK test_cajon_core.TestDespieceTipologias.test_telescopica
+OK test_cajon_core.TestFacadeContractIntegracion.test_cantos_por_sistema_apertura
+OK test_cajon_core.TestFacadeContractIntegracion.test_gola_descuenta_35mm_en_alto
+OK test_cajon_core.TestFacadeContractIntegracion.test_inglete_45_conserva_altura
+OK test_cajon_core.TestFacadeContractIntegracion.test_push_open_conserva_altura
+OK test_cajon_core.TestFacadeContractIntegracion.test_tirador_conserva_altura
+OK test_cajon_core.TestHardwareHubIntegracion.test_resolve_blum_tandem_desde_manifest
+OK test_cajon_core.TestHardwareHubIntegracion.test_resolve_generica
+OK test_cajon_core.TestHardwareHubIntegracion.test_resolve_inexistente_lanza_keyerror
+OK test_cajon_core.TestHardwareHubIntegracion.test_resolve_sku_directo
+OK test_cajon_core.TestHardwareHubIntegracion.test_resolve_telescopica
+OK test_capas_arquitectura.CapasTests.test_core_no_importa_interfaz_ni_qt
+OK test_capas_arquitectura.CapasTests.test_registro_de_ui_no_esta_en_core
+OK test_cli_optimizador.TestOptimizadorCLI.test_parse_board_con_decimales
+OK test_cli_optimizador.TestOptimizadorCLI.test_parse_board_invalido
+OK test_cli_optimizador.TestOptimizadorCLI.test_parse_board_valido
+OK test_coco_reengrose.CocoReengroseTests.test_carcasa_base_sin_solapes
+OK test_coco_reengrose.CocoReengroseTests.test_carcasa_lateral_sin_solapes
+OK test_coco_reengrose.CocoReengroseTests.test_coco_estandar_regresion
+OK test_coco_reengrose.CocoReengroseTests.test_export_csv_grupo
+OK test_coco_reengrose.CocoReengroseTests.test_mocheo_repisa
+OK test_coco_reengrose.CocoReengroseTests.test_pacha_en_despiece
+OK test_coco_reengrose.CocoReengroseTests.test_retroceso_repisa
+OK test_coco_reengrose.CocoReengroseTests.test_ui_contextual
+OK test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_borde_unico_retrocompatible
+OK test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_division_reengrose_no_colapsa_repisa
+OK test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_esquina_techo_lateral_horizontal_domina
+OK test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_esquina_techo_lateral_vertical_domina
+OK test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_esquinas_independientes_ui
+OK test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_inglete_45_sin_solapes
+OK test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_interrumpir_tira_en_division
+OK test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_marco_perimetral_4_bordes_inglete
+OK test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_repisa_retranqueada_ancla_cara_real
+OK test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_sync_esquinas_ui
+OK test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_techo_reengrose_division_vertical
+OK test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_techo_retroceso_contiene_repisas
+OK test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_ui_contextual_modos_nuevos
+OK test_coco_reengrose_avanzado.CocoReengroseAvanzadoTests.test_zocalo_u_tres_bordes
+OK test_comandos_workbench.ComandosFreeCADTests.test_barras_solo_referencian_comandos_registrados
+OK test_comandos_workbench.ComandosFreeCADTests.test_comandos_registrados
+OK test_comandos_workbench.ComandosFreeCADTests.test_panel_estandar_crea_hoja_y_panel
+OK test_comandos_workbench.ComandosFreeCADTests.test_todos_los_iconos_existen
+OK test_comandos_workbench.ComandosFreeCADTests.test_zocalo_anade_objetos
+OK test_comandos_workbench.SinExecTests.test_ningun_exec_builtin_en_el_codigo
+OK test_creacion_colocacion.FlujoCreacionColocacionTests.test_aceptar_abre_panel_y_coloca_el_modulo
+OK test_creacion_colocacion.FlujoCreacionColocacionTests.test_aceptar_dos_veces_coloca_una_sola
+OK test_creacion_colocacion.FlujoCreacionColocacionTests.test_cancelar_panel_borra_el_modulo
+OK test_creacion_colocacion.FlujoCreacionColocacionTests.test_colocacion_real_sin_gui_cancela_y_devuelve_falso
+OK test_creacion_colocacion.FlujoCreacionColocacionTests.test_sin_interfaz_confirma_en_origen
+OK test_creacion_colocacion.PanelesResuelvenTests.test_todas_las_specs_tienen_clase_de_panel
+OK test_creacion_colocacion.RotacionCreacionTests.test_coco_con_rotacion
+OK test_creacion_colocacion.RotacionCreacionTests.test_panel_con_rotacion
+OK test_creacion_colocacion.RotacionCreacionTests.test_zocalo_con_rotacion
+OK test_creacion_modulos.CreacionModulosTests.test_crear_pieza_devuelve_panel_con_shape
+OK test_creacion_modulos.CreacionModulosTests.test_crear_pieza_sin_doc_devuelve_none
+OK test_creacion_modulos.CreacionModulosTests.test_make_cajon_devuelve_objeto_con_shape
+OK test_creacion_modulos.CreacionModulosTests.test_make_coco_devuelve_objeto_con_shape
+OK test_creacion_modulos.CreacionModulosTests.test_make_zocalo_devuelve_objeto_con_shape
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_gola
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_inglete_45
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_metalica
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_oculta_blum
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_oculta_generica
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_push_open
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_telescopica
+OK test_despiece_snapshots.TestDespieceSnapshotsCajon.test_tirador
+OK test_despiece_snapshots.TestDespieceSnapshotsPuerta.test_batiente_embebida
+OK test_despiece_snapshots.TestDespieceSnapshotsPuerta.test_batiente_parche
+OK test_despiece_snapshots.TestDespieceSnapshotsPuerta.test_batiente_semiparche
+OK test_despiece_snapshots.TestDespieceSnapshotsPuerta.test_bisagras_para_puerta_800
+OK test_despiece_snapshots.TestDespieceSnapshotsPuerta.test_corrediza_2hojas
+OK test_facade_harmony.TestAplicarSistemaApertura.test_gola_con_descuento_personalizado
+OK test_facade_harmony.TestAplicarSistemaApertura.test_gola_descuenta_35
+OK test_facade_harmony.TestAplicarSistemaApertura.test_inglete_45_conserva_altura
+OK test_facade_harmony.TestAplicarSistemaApertura.test_push_open_conserva_altura
+OK test_facade_harmony.TestAplicarSistemaApertura.test_sistema_invalido
+OK test_facade_harmony.TestAplicarSistemaApertura.test_tirador_conserva_altura
+OK test_facade_harmony.TestCalculoFachadaBase.test_embebida
+OK test_facade_harmony.TestCalculoFachadaBase.test_holgura_personalizada
+OK test_facade_harmony.TestCalculoFachadaBase.test_montaje_invalido
+OK test_facade_harmony.TestCalculoFachadaBase.test_parche
+OK test_facade_harmony.TestCalculoFachadaBase.test_semiparche
+OK test_facade_harmony.TestContratoFachadas.test_constantes_taller
+OK test_facade_harmony.TestContratoFachadas.test_enums_validos
+OK test_facade_harmony.TestContratoFachadas.test_operaciones_canto
+OK test_facade_harmony.TestContratoFachadas.test_sistemas_apertura_validos
+OK test_facade_harmony.TestFuncionesAuxiliares.test_cantos_por_sistema_apertura
+OK test_facade_harmony.TestFuncionesAuxiliares.test_necesita_bisel_45
+OK test_facade_harmony.TestFuncionesAuxiliares.test_necesita_cantos_45
+OK test_facade_harmony.TestFuncionesAuxiliares.test_necesita_descuento_gola
+OK test_facade_harmony.TestFuncionesAuxiliares.test_necesita_expulsor_magnetico
+OK test_facade_harmony.TestImportacionYEnums.test_cajon_consume_contrato
+OK test_facade_harmony.TestImportacionYEnums.test_contrato_importable
+OK test_facade_harmony.TestImportacionYEnums.test_no_discrepancias_strings
+OK test_facade_harmony.TestImportacionYEnums.test_puerta_consume_contrato
+OK test_facade_harmony.TestInglete45.test_altura_conservada
+OK test_facade_harmony.TestInglete45.test_operacion_canto_bisel_45
+OK test_facade_harmony.TestSimetriaGolaPuertaVsCajon.test_altura_igual_con_gola
+SKIP test_gui_wiring.TestGuiWiring.test_dock_inspector_en_mainwindow :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_gui_wiring.TestGuiWiring.test_enfocar_inspector_universal :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_gui_wiring.TestGuiWiring.test_extirpacion_combos_planos_en_coco_task :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_gui_wiring.TestGuiWiring.test_viewprovider_coco_redireccion :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+OK test_hardware_hub.HardwareHubTests.test_calculate_sliding_doors_alacena_al1535
+OK test_hardware_hub.HardwareHubTests.test_calculate_sliding_doors_placard_d52
+OK test_hardware_hub.HardwareHubTests.test_get_family
+OK test_hardware_hub.HardwareHubTests.test_get_family_corredera_oculta
+OK test_hardware_hub.HardwareHubTests.test_get_family_corredera_telescopica
+OK test_hardware_hub.HardwareHubTests.test_get_hardware_al1535
+OK test_hardware_hub.HardwareHubTests.test_get_hardware_ducasse_d52
+OK test_hardware_hub.HardwareHubTests.test_get_hardware_sku_no_existente
+OK test_hardware_hub.HardwareHubTests.test_no_gui_imports
+OK test_hardware_hub.HardwareHubTests.test_resolve_drawer_slide_blum_tandem
+OK test_hardware_hub.HardwareHubTests.test_resolve_drawer_slide_sku_directo
+OK test_hardware_hub.HardwareHubTests.test_resolve_drawer_slide_sku_inexistente
+OK test_hardware_hub.HardwareHubTests.test_resolve_drawer_slide_telescopica
+OK test_hardware_hub.HardwareHubTests.test_resolve_hinge_generic_parche
+OK test_hardware_hub.HardwareHubTests.test_resolve_hinge_prefer_sku
+OK test_hardware_hub.HardwareHubTests.test_resolve_sliding
+OK test_headless_core.HeadlessCoreTests.test_core_no_carga_gui_ni_pyside
+OK test_headless_core.HeadlessCoreTests.test_freecad_no_tiene_init_en_el_repo
+OK test_headless_core.HeadlessCoreTests.test_namespace_freecad_incluye_paquete_del_repo
+OK test_layout_reengrose.LayoutReengroseTests.test_ambos_lados
+OK test_layout_reengrose.LayoutReengroseTests.test_division_derecha_reduce_vano
+OK test_layout_reengrose.LayoutReengroseTests.test_division_izquierda_reduce_vano
+OK test_layout_reengrose.LayoutReengroseTests.test_lateral_izquierdo
+OK test_layout_reengrose.LayoutReengroseTests.test_repisa_nominal_para_mocheo
+OK test_layout_reengrose.LayoutReengroseTests.test_sin_reengrose
+OK test_puerta_core.CoreImportTests.test_import_core
+OK test_puerta_core.CoreImportTests.test_make_puerta_existe
+OK test_puerta_core.DespieceBasculanteTests.test_descripcion_piston
+OK test_puerta_core.DespieceBasculanteTests.test_fuerza_piston
+OK test_puerta_core.DespieceBasculanteTests.test_masa_puerta
+OK test_puerta_core.DespieceBasculanteTests.test_piston_recomendado
+OK test_puerta_core.DespieceBatienteTests.test_bisagras_para_puerta
+OK test_puerta_core.DespieceBatienteTests.test_cantidad_bisagras
+OK test_puerta_core.DespieceBatienteTests.test_cota_cazoleta
+OK test_puerta_core.DespieceBatienteTests.test_dimensiones_embebida
+OK test_puerta_core.DespieceBatienteTests.test_dimensiones_parche
+OK test_puerta_core.DespieceBatienteTests.test_dimensiones_semiparche
+OK test_puerta_core.DespieceBatienteTests.test_posiciones_cazoleta_2_bisagras
+OK test_puerta_core.DespieceBatienteTests.test_posiciones_cazoleta_3_bisagras
+OK test_puerta_core.DespieceBatienteTests.test_posiciones_cazoleta_4_bisagras
+OK test_puerta_core.DespieceCorredizaTests.test_corrediza_al1535
+OK test_puerta_core.DespieceCorredizaTests.test_corrediza_d52
+OK test_puerta_core.SistemasAperturaTests.test_ajuste_altura_gola
+OK test_puerta_core.SistemasAperturaTests.test_ajuste_altura_push
+OK test_puerta_core.SistemasAperturaTests.test_ajuste_altura_tirador
+OK test_puerta_core.SistemasAperturaTests.test_necesita_cantos_45
+OK test_puerta_core.SistemasAperturaTests.test_necesita_expulsor
+OK test_reengrose_l1.ReengroseL1Tests.test_desde_objeto
+OK test_reengrose_l1.ReengroseL1Tests.test_independiente
+OK test_reengrose_l1.ReengroseL1Tests.test_pacha_parcial
+OK test_reengrose_l1.ReengroseL1Tests.test_pacha_total
+OK test_reengrose_l1.ReengroseL1Tests.test_panel_viejo_sin_propiedades
+OK test_reengrose_l1.ReengroseL1Tests.test_ui_tooltips_y_accept
+SKIP test_selection_bridge.SelectionBridgeTests.test_add_selection_dispara_callback :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_add_selection_todos_los_tipos :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_box_nativo_desconocido :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_cajon :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_coco :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_none :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_panel :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_precision_100 :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_puerta :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_classify_zocalo :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_clear_selection_resetear_estado :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_desregistrar_observer_idempotente :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_selection_bridge.SelectionBridgeTests.test_repeticion_seleccion_deseleccion_sin_excepciones :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+OK test_single_dock_convergence.TestSingleDockConvergence.test_abrir_panel_objeto_no_abre_dialogo_flotante
+OK test_single_dock_convergence.TestSingleDockConvergence.test_anatomia_panel_unico
+OK test_single_dock_convergence.TestSingleDockConvergence.test_carga_coco_puebla_micro_header_y_arbol
+OK test_single_dock_convergence.TestSingleDockConvergence.test_click_arbol_conmuta_stack
+OK test_single_dock_convergence.TestSingleDockConvergence.test_click_preview_2d_sincroniza_arbol_y_stack
+OK test_single_dock_convergence.TestSingleDockConvergence.test_edicion_micro_header_actualiza_coco_y_preview
+OK test_smoke_l3_desk_assembly.TestSmokeL3DeskAssembly.test_00_api_coverage
+OK test_smoke_l3_desk_assembly.TestSmokeL3DeskAssembly.test_01_chain1_subdivision_torre_cajones
+OK test_smoke_l3_desk_assembly.TestSmokeL3DeskAssembly.test_02_chain2_sistemas_apertura_fachadas
+OK test_smoke_l3_desk_assembly.TestSmokeL3DeskAssembly.test_03_chain3_reengrose_boleo_cubierta
+OK test_smoke_l3_desk_assembly.TestSmokeL3DeskAssembly.test_04_chain4_pose_duplicacion_en_l
+OK test_smoke_l3_desk_assembly.TestSmokeL3DeskAssembly.test_05_chain5_lista_materiales_despiece
+OK test_smoke_l3_desk_assembly.TestSmokeL3DeskAssembly.test_99_report_matriz
+OK test_universal_inspector.UniversalInspectorTests.test_cerrar_inspector_no_lanza
+OK test_universal_inspector.UniversalInspectorTests.test_desconexion_observer_limpia
+OK test_universal_inspector.UniversalInspectorTests.test_instanciacion_sin_errores
+OK test_universal_inspector.UniversalInspectorTests.test_pagina_inicial_es_chasis
+OK test_universal_inspector.UniversalInspectorTests.test_puente_creado
+OK test_universal_inspector.UniversalInspectorTests.test_seleccion_coco_cambia_a_chasis
+OK test_universal_inspector.UniversalInspectorTests.test_seleccion_panel_actualiza_header_cantos
+OK test_universal_inspector.UniversalInspectorTests.test_seleccion_panel_cambia_a_pieza
+OK test_universal_inspector.UniversalInspectorTests.test_seleccion_vacio_regresa_chasis
+OK test_vdo_agnosticism.TestReglasCalidadFreecad.test_no_except_desnudo_en_freecad
+OK test_vdo_agnosticism.TestReglasCalidadFreecad.test_no_print_en_freecad
+OK test_vdo_agnosticism.VDOAgnosticismTests.test_01_contrato_espacial_del_vano
+OK test_vdo_agnosticism.VDOAgnosticismTests.test_02_agnosticidad_dilatacion_muro
+OK test_vdo_agnosticism.VDOAgnosticismTests.test_03_agnosticidad_zocalo_con_amarres
+OK test_vdo_agnosticism.VDOAgnosticismTests.test_04_simulacion_inserto_universal
+OK test_vdo_agnosticism.VDOAgnosticismTests.test_qt_compat_solo_punto_entrada_pyside
+OK test_vdo_chassis_widget.TestVDOChassisWidget.test_archetypes
+OK test_vdo_chassis_widget.TestVDOChassisWidget.test_corner_cycling
+OK test_vdo_chassis_widget.TestVDOChassisWidget.test_default_config
+OK test_vdo_chassis_widget.TestVDOChassisWidget.test_estrategia_base_switching
+OK test_vdo_chassis_widget.TestVDOChassisWidget.test_face_toggling
+OK test_vdo_chassis_widget.TestVDOChassisWidget.test_fondo_selection
+OK test_vdo_chassis_widget.TestVDOChassisWidget.test_set_chassis_config
+OK test_vdo_reengrose.ReengrosePureTests.test_colision_y_mocheo
+OK test_vdo_reengrose.ReengrosePureTests.test_defaults_and_validation
+OK test_vdo_reengrose.ReengrosePureTests.test_despiece_pacha
+OK test_vdo_reengrose.ReengrosePureTests.test_pacha_total
+OK test_vdo_reengrose.ReengrosePureTests.test_paralela_cara_a
+OK test_vdo_reengrose.ReengrosePureTests.test_paralela_fondo_y_cara_b
+OK test_vdo_reengrose.ReengrosePureTests.test_politica_cantos
+OK test_vdo_reengrose.ReengrosePureTests.test_transversal
+OK test_vdo_reengrose.ReengrosePureTests.test_vano_neto
+OK test_vdo_zocalo.ZocaloGeometryTests.test_despiece_longitudes
+OK test_vdo_zocalo.ZocaloGeometryTests.test_errores_de_configuracion
+OK test_vdo_zocalo.ZocaloGeometryTests.test_geometria_con_trasera
+OK test_vdo_zocalo.ZocaloGeometryTests.test_make_zocalo_sin_solapes
+OK test_vdo_zocalo.ZocaloGeometryTests.test_sin_trasera_y_amarres
+OK test_verificar.TestR5EstadoInmutable.test_asignacion_anotada_de_modulo_si_cuenta
+OK test_verificar.TestR5EstadoInmutable.test_asignacion_de_modulo_si_cuenta
+OK test_verificar.TestR5EstadoInmutable.test_constante_mayusculas_y_all_no_cuentan
+OK test_verificar.TestR5EstadoInmutable.test_variable_local_no_cuenta
+OK test_verificar.TestR7Errores.test_except_con_raise_no_se_cuenta
+OK test_verificar.TestR7Errores.test_except_exception_se_cuenta_con_cualquier_cuerpo
+OK test_verificar.TestR7Errores.test_except_pass_se_cuenta
+OK test_verificar.TestR9DefsNoUsadas.test_funcion_sin_referencias_se_reporta
+OK test_verificar.TestR9DefsNoUsadas.test_metodo_no_cuenta_como_def_modulo
+OK test_verificar.TestR9DefsNoUsadas.test_privada_sin_referencias_se_reporta
+OK test_verificar.TestR9DefsNoUsadas.test_referencia_por_cadena_cuenta
+OK test_verificar.TestR9DefsNoUsadas.test_uso_en_el_mismo_archivo_cuenta
+OK test_verificar.TestR9DefsNoUsadas.test_uso_por_atributo_cuenta
+OK test_verificar.TestR9DefsNoUsadas.test_uso_por_import_from_cuenta
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_interaccion_box_controller_pieza :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_interaccion_chasis_emite_capa1 :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_interaccion_vano_dock :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_lifecycle_context_manager :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_zoom_semantico_chasis :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_zoom_semantico_cierre_cajon :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_zoom_semantico_cierre_puerta :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_zoom_semantico_pieza_l1 :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+SKIP test_workbench_convergence.TestWorkbenchConvergence.test_zoom_semantico_vano :: requiere FreeCAD con GUI (GuiUp, FreeCADGui y DISPLAY/WAYLAND_DISPLAY)
+
+RESUMEN ejecutados=260 fallos=3 errores=0 skip=26 no_ejecutado=0
+exit=1 (SIGSEGV en el log: 0)
+```
+
+Verificador (`python3 -I tools/auditoria/verificar.py; echo exit=$?`):
+```
+=== VDO — verificación de métricas §2 ===
+[FALLA] R1_capas: valor=17 umbral=0 (violaciones: freecad/vdo/ui/vdo_box_controller.py, freecad/vdo/ui/vdo_cajon_task.py, freecad/vdo/ui/vdo_coco_preview2d.py, freecad/vdo/ui/vdo_coco_unified_task.py, freecad/vdo/ui/vdo_cutting_list_preview.py, freecad/vdo/ui/vdo_export_cutting_list.py, freecad/vdo/ui/vdo_hardware_manager.py, freecad/vdo/ui/vdo_nesting_workflow.py, freecad/vdo/ui/vdo_optimizer_dialog.py, freecad/vdo/ui/vdo_optimizer_view.py, freecad/vdo/ui/vdo_panel_task.py, freecad/vdo/ui/vdo_puerta_task.py, freecad/vdo/ui/vdo_reengrose_ui.py, freecad/vdo/ui/vdo_universal_inspector.py, freecad/vdo/ui/vdo_view_providers.py, freecad/vdo/ui/vdo_widgets_coco.py, freecad/vdo/ui/vdo_zocalo_task.py)
+[OK] R2_agnosticismo_core: valor=0 umbral=0 (ninguno)
+[FALLA] R3_dominio_como_datos: valor=32 umbral=0 (escrituras fuera de cad/: freecad/vdo/app/casos_uso/colocar_modulo.py, freecad/vdo/app/casos_uso/editar_modulo.py, freecad/vdo/app/registro.py, freecad/vdo/app/vdo_creacion.py, freecad/vdo/commands.py, freecad/vdo/core/vdo_cajon_core.py, freecad/vdo/core/vdo_cajon_despiece.py, freecad/vdo/core/vdo_coco_core.py, freecad/vdo/core/vdo_panel_core.py, freecad/vdo/core/vdo_puerta_core.py, freecad/vdo/core/vdo_reengrose.py, freecad/vdo/core/vdo_zocalo_core.py, freecad/vdo/ui/vdo_bim_bridge.py, freecad/vdo/ui/vdo_cajon_task.py, freecad/vdo/ui/vdo_coco_unified_task.py, freecad/vdo/ui/vdo_cutting_list_menu.py, freecad/vdo/ui/vdo_cutting_list_preview.py, freecad/vdo/ui/vdo_drag_handles.py, freecad/vdo/ui/vdo_export_cutting_list.py, freecad/vdo/ui/vdo_inspector_dock.py, freecad/vdo/ui/vdo_nesting_workflow.py, freecad/vdo/ui/vdo_optimizer_dialog.py, freecad/vdo/ui/vdo_panel_task.py, freecad/vdo/ui/vdo_placement.py, freecad/vdo/ui/vdo_plano_cero.py, freecad/vdo/ui/vdo_puerta_task.py, freecad/vdo/ui/vdo_selection_bridge.py, freecad/vdo/ui/vdo_task_base.py, freecad/vdo/ui/vdo_universal_inspector.py, freecad/vdo/ui/vdo_view_providers.py, freecad/vdo/ui/vdo_widgets_coco.py, freecad/vdo/ui/vdo_zocalo_task.py)
+[OK] R4_orquestacion_app: valor=0 umbral=0 (todos presentes)
+[OK] R5_estado_inmutable: valor=0 umbral=0 (ninguna)
+[OK] R6_paneles_accept_le15: valor=0 umbral=0 (todos ≤ 15)
+[OK] R7_except_pass: valor=0 umbral=0 (0 except … pass)
+[OK] R7_except_exception_core_cad_app: valor=0 umbral=0 (0 except Exception en core/cad/app)
+[FALLA] R8_funciones_le100: valor=25 umbral=0 (funciones > 100 líneas: [('freecad/vdo/core/vdo_cajon_core.py', 'execute', 152), ('freecad/vdo/core/vdo_cajon_despiece.py', 'calcular_despiece', 323), ('freecad/vdo/core/vdo_coco_core.py', 'execute', 420), ('freecad/vdo/core/vdo_coco_spaces.py', 'generar_divisiones_matriz', 195), ('freecad/vdo/core/vdo_panel_core.py', 'crear_pieza', 101), ('freecad/vdo/core/vdo_puerta_core.py', 'execute', 138), ('freecad/vdo/core/vdo_reengrose.py', 'normalizar_modificador', 102), ('freecad/vdo/core/vdo_reengrose.py', 'generar_tiras_perimetrales', 220), ('freecad/vdo/core/vdo_spaces.py', 'resolver_espacios_eje', 122), ('freecad/vdo/core/vdo_zocalo_core.py', 'calcular_geometria_zocalo', 189), ('freecad/vdo/ui/vdo_box_controller.py', 'paintEvent', 105), ('freecad/vdo/ui/vdo_box_controller.py', '_construir_ui', 232), ('freecad/vdo/ui/vdo_cajon_task.py', '_crear_widget', 209), ('freecad/vdo/ui/vdo_chassis_widget.py', 'paintEvent', 210), ('freecad/vdo/ui/vdo_chassis_widget.py', '_init_ui', 238), ('freecad/vdo/ui/vdo_chassis_widget.py', '_aplicar_estilos', 112), ('freecad/vdo/ui/vdo_coco_unified_task.py', '_crear_widget', 172), ('freecad/vdo/ui/vdo_panel_task.py', '_crear_widget', 126), ('freecad/vdo/ui/vdo_puerta_task.py', '_crear_widget', 169), ('freecad/vdo/ui/vdo_reengrose_ui.py', '_construir', 139), ('freecad/vdo/ui/vdo_universal_inspector.py', '__init__', 207), ('freecad/vdo/ui/vdo_universal_inspector.py', '_actualizar_vista_completa', 110), ('freecad/vdo/ui/vdo_widgets_coco.py', '_crear_widget', 247), ('freecad/vdo/ui/vdo_widgets_coco.py', '_actualizar_inspector', 222), ('freecad/vdo/ui/vdo_zocalo_task.py', '_crear_widget', 123)])
+[FALLA] R8_ruff_c901_le12: valor=28 umbral=0 (ruff C901 (max 12): 28 incidencias)
+[OK] R9_clones: valor=0 umbral=0 (0 grupos de clones)
+[FALLA] R9_defs_no_usadas: valor=2 umbral=0 (2 definiciones no usadas)
+[FALLA] R10_ruff_check_cero: valor=259 umbral=0 (ruff check: 259 incidencias)
+[FALLA] R10_mypy_strict_cero: valor=1081 umbral=0 (mypy strict: 1081 errores)
+[OK] R10_cero_print: valor=0 umbral=0 (0 print() en freecad/)
+[FALLA] R10_cero_hex_fuera_tema: valor=417 umbral=0 (417 literales hex fuera de ui/tema.py)
+[OK] R11_golden_masters: valor=9 umbral=>=1 (9 golden.json)
+[OK] R11_suite_nivel1_estructura: valor=0 umbral=0 (tests/ existe)
+[OK] R12_documentacion: valor=0 umbral=0 (ARQUITECTURA=True, ADRs=4, DEUDA=True, GLOSARIO=True)
+[OK] R14_freecad_real: valor=1.1.4 umbral=1.x (binario: /usr/bin/freecadcmd, salida: FreeCAD 1.1.4 Revision: 45040 (Git))
+
+MÉTRICAS FALLADAS (8): R1_capas, R3_dominio_como_datos, R8_funciones_le100, R8_ruff_c901_le12, R9_defs_no_usadas, R10_ruff_check_cero, R10_mypy_strict_cero, R10_cero_hex_fuera_tema
+```
+
+Otras cifras medidas en esta subfase:
+- `.venv/bin/ruff check freecad tests tools` → 259 incidencias (`Found 259 errors` en el resumen de ruff).
+- `python3 -m unittest tests.test_verificar` → `OK` (14 tests).
+- `readlink ~/.local/share/FreeCAD/Mod/VDO` → `/home/airhon/Proyectos/VDO_freecad_workbench` (sin cambios).
+- `git rev-parse --short vdo10-final` → `7e389be` (no movido).
+
+### Correcciones de cifras de la entrada anterior (F19.2-ter sesión 1)
+
+| Entrada anterior | Corrección |
+|---|---|
+| "Gate de F19.2-ter" no mencionaba el segfault | El segfault seguía (SIGSEGV en log en 5 de 5). Ver paso 2. |
+| R10 mypy "1092" como cifra estable | Medido en esta sesión: 1108 tras el paso 1 y 1081 tras el paso 3. |
+
+### Qué queda abierto (con causa)
+
+1. **F19.4 sin cerrar.** `test_arquitectura` falla en 3 pruebas. Causas medidas: `core/` importa `cad/` (4 módulos), `ui/` escribe en FreeCAD (20 módulos) e `ui/` importa `core/` o `cad/` (17 módulos tras el paso 1). Las escrituras de `make_*` siguen en `core/`.
+2. **Conflicto de plan (decisión humana).** Existe `docs/PLAN_MINIMALISMO_VDO.md` (sin commitear) que declara sustituidos `PLAN_MAESTRO_VDO.md` y `PLAN_CORRECCIONES_F19.md`, y MN-01 elimina `app/`. Este prompt exige F19.4 con `app/casos_uso/`. No se ha ejecutado ninguno de los dos planes en exclusiva; el trabajo de esta sesión es compatible con ambos solo en la colocación.
+3. **Colocación con clic sin verificar en GUI** (F19.11, humano).
+4. **Goldens nuevos (F19.10)**: no se han generado ni commiteado.
+5. **Defectos fuera de alcance observados:** `vdo_cajon_despiece.py:34` F401 (preexistente). `commands.py` y `crear_modulo_interactivo` con C901 > 12 (F19.6).
+6. **Tests que se omiten en nivel 1 por entorno**: 107 SKIP (antes 98), los 9 nuevos son `requiere_freecad` en modo puro. Motivo impreso.
