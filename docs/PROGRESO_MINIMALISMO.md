@@ -6,21 +6,27 @@
 
 ---
 
-## Estado
+## Estado (actualizado 2026-11-03)
 
 | Fase | Estado | Motivo |
 |---|---|---|
 | Premisas y rama | ✅ | Ver "Comprobaciones iniciales" |
 | Segfault al salir (pre-M0) | ✅ | `c1fa9d2` (en `refactor/vdo-10`) |
-| **M0** — Congelar y medir | ✅ **cerrada** | 14 goldens cubren 19 de 19 módulos: 13 con golden propio, 4 flujos de creación en `creacion_modulos.json`, 2 N/A (P-01, decidido). Revisión humana de goldens sustituidos: P-05, no bloquea. |
-| **M1** — Inventario de hechos | ✅ **cerrada con 2 destinos pendientes** | `docs/INVENTARIO_HECHOS.md`. Cada hecho duplicado tiene destino; H-60 a H-62 (`rotacion_z`) y H-04 (`ESQUINAS`) esperan P-06 y P-07. |
-| **M2** — Un hecho, un lugar: datos | ⚠️ **parcial** | Hecho: herrajes sin fallbacks (`8b85ce3`), anclajes en un dato (`699e944`). Tablas idénticas 9 → 7. Pendiente: `LUCIDE_ICONS`, `MODULE_SPECS`, literales vigilados, `CANTOS`/`BORDES`, `_CATALOGO_PATH`. |
+| **M0** — Congelar y medir | ⚠️ **parcial: 18 de 19** | 19 módulos de dominio: 18 con golden (14 de módulo + 4 flujos de creación en `creacion_modulos.json`). Falta `nesting_presets`: en `b78de04` no carga dentro de FreeCAD. Decisión humana: **P-10**. |
+| **M1** — Inventario de hechos | ⚠️ **parcial** | Inventario en `docs/INVENTARIO_HECHOS.md`. El gate pide "cada hecho duplicado con destino único decidido". Faltan: H-60 a H-62 (**P-06**), H-04 (**P-07**), y decisiones marcadas [decisión] sin tomar: H-21, H-24, H-52. |
+| **M2** — Un hecho, un lugar: datos | ⚠️ **parcial** | Ver "M2" más abajo. Tablas idénticas 9 → 2. Literales: 53 sin cambio. |
 | M3 a M11 | ⏸ no iniciadas | M2 sigue abierta. |
 
-**Bloqueo:** el gate de M0 pide "los 19 goldens existen". Hoy hay 14 ficheros:
-- 13 de dominio (incluye `module_props`, con golden desde `b78de04` y reubicación documentada).
-- `creacion_modulos.json` cubre además `panel_core`, `cajon_core`, `puerta_core` y `coco_core`.
-- Quedan `guardian` y `nesting_presets`, que no tienen función de cálculo. Cerrar el gate exige decidir si cuentan como N/A (P-01).
+### M0: gate
+
+| Criterio | Resultado | Evidencia |
+|---|---|---|
+| `minimalismo_base.json` existe | ✅ | `fc224dd` |
+| 19 goldens de dominio existen | ⚠️ 18 de 19 | `nesting_presets` pendiente (P-10) |
+| Nivel 2 sin SIGSEGV en 5 de 5 | ✅ | Ver "Medición" |
+| Diferencias documentadas | ✅ | `goldens_origen.md`, secciones "Guardián" y "Revisión de goldens sustituidos (P-05)" |
+
+**Bloqueo de M0:** P-10 (`nesting_presets`). Sin decisión, M0 queda parcial.
 
 ---
 
@@ -34,19 +40,20 @@ $ git show HEAD:docs/PLAN_MAESTRO_VDO.md | head -1      # antes de c59587b: sin 
 $ git show c59587b --stat --format=%s
 docs(minimalismo): marcar planes anteriores como sustituidos   (2 ficheros, 4 líneas)
 $ readlink ~/.local/share/FreeCAD/Mod/VDO
-/home/airhon/Proyectos/VDO_freecad_workbench             # sin cambios
+/home/airhon/Proyectos/VDO_freecad_workbench             # sin cambios (comprobado al cierre)
 ```
 
 Correcciones a premisas del prompt:
 - `cad/colocacion.py`, `ui/vdo_interfaz.py` y `tests/test_creacion_colocacion.py` **ya estaban commiteados** (`abf59b1`, `b2583a6`). No había pendientes de esos.
 - El aviso "SUSTITUIDO" de los dos planes viejos no estaba commiteado. Commiteado en `c59587b`.
 
-Cambios de otra sesión que **no** son míos (ver `PENDIENTES_HUMANO.md`, P-04):
-- `tests/test_gui_wiring.py` y `tests/test_single_dock_convergence.py`: `os._exit` → `sys.exit` en bloques `__main__`. **Sin commitear.** No verificados.
+Estado de otra sesión (**no es mío**):
+- Al inicio había dos procesos `claude` con cwd en este repo (PID 36672 y 143086). Siguen vivos al cierre; el encargo indicó seguir.
+- `tests/test_gui_wiring.py` y `tests/test_single_dock_convergence.py` siguen **modificados sin commitear** (`os._exit` → `sys.exit`). No los he tocado ni commiteado (P-04). `test_single_dock_convergence.py` tiene 10 incidencias de ruff frente a 9 en HEAD.
 
 ---
 
-## Commits de la noche
+## Commits de la sesión
 
 | Hash | Fase | Qué hace |
 |---|---|---|
@@ -57,56 +64,78 @@ Cambios de otra sesión que **no** son míos (ver `PENDIENTES_HUMANO.md`, P-04):
 | `762d768` | M0 | Goldens: herramienta, entradas de 19 módulos, fixtures de layout |
 | `692b76a` | M0 | 13 goldens desde `b78de04` + `docs/metricas/goldens_origen.md` |
 | `4e29c04` | M0 | `module_props` con golden (serialización de `App.Rotation`, reubicación de `rotacion_z`) |
-| `66e0765` | M0 | Cierre de M0 con decisiones P-01 y P-03 |
+| `66e0765` | M0 | Cierre de M0 con decisiones P-01 y P-03 (**revisado: M0 no está cerrada, ver arriba**) |
 | `8b85ce3` | M2 | Herrajes solo desde el JSON; sin `_FALLBACK_*` (MN-05). Golden `hardware_hub` 0 diferencias. |
 | `699e944` | M2 | Anclajes en `datos/anclajes.json`; `cad` deja de duplicar la tabla. Duplicado de carga queda en D-10. |
+| `f278a99` | docs | Inventario de hechos (M1) y estado de M2 (de la noche anterior) |
+| `a892231` | M0 | Golden de `guardian` desde `b78de04` (9 entradas). Corrige "guardian no tiene función de cálculo" |
+| `391dfce` | M0 | Alcance de ruff y mypy (D-04) en `pyproject.toml` y plan §2. Migra la config de ruff a `[tool.ruff.lint]` |
+| `882b1fc` | M1 | Inventario medido core↔cad (P-08). Pendientes P-05 (detallado), P-08, P-09, P-10 |
+| `200c79c` | M0 | Revisión P-05 de los 3 goldens sustituidos (antes, por qué estaba mal, ahora) |
+| `1b5a1b7` | M2 | `CANTOS_VALIDOS` y `BORDES` en una sola definición (H-02, H-03) |
+| `bb58afc` | M2 | `CANTOS` de fachada eliminado (sin usos), `CHOQUES_NUCLEO` eliminado (sin usos), `BORDES` de la UI → `BORDES_2D` (H-03, H-03b, H-05) |
+| `cbfb55f` | M2 | `DIMENSION_POR_EJE` en `core/vdo_helpers` para `_DIM` y `_DIM_SOL` (H-06) |
 
 Previos en la rama (ya en `refactor/vdo-10`): `e10cd12` (plan rector), `c1fa9d2` (segfault).
 
 ---
 
-## M0 — medición
+## Medición (salidas literales)
 
-### Línea base (`minimalismo.py`, sobre `fc224dd`)
+### Nivel 1 — `python3 -I tools/run_tests.py` (al cierre, tras `cbfb55f`)
 
-Salida de `python3 -I tools/auditoria/minimalismo.py resumen` (literal):
+```
+RESUMEN ejecutados=262 fallos=3 errores=0 skip=107 no_ejecutado=0
+FALLO test_arquitectura.CapasTests.test_core_no_importa_app_ui_cad
+FALLO test_arquitectura.CapasTests.test_ui_no_escritura_freecad
+FALLO test_arquitectura.CapasTests.test_ui_no_importa_core_cad_app_api
+```
+
+### Nivel 2 — `freecadcmd tools/run_tests.py`
+
+Cinco ejecuciones sobre `692b76a` (antes de M2):
+```
+RUN 1..5 EXIT=1 SIGSEGV_LINEAS=0
+RESUMEN ejecutados=260 fallos=3 errores=0 skip=26 no_ejecutado=0   (×5)
+```
+
+Tres ejecuciones tras cada commit de M2 (`1b5a1b7`, `bb58afc`, `cbfb55f`):
+```
+RESUMEN ejecutados=260 fallos=3 errores=0 skip=26 no_ejecutado=0   (×3, segfault=0)
+```
+
+Código de salida 1 en todas, por los mismos 3 FALLO de `test_arquitectura.py`. No es crash.
+
+### `minimalismo.py resumen` (al cierre)
 
 ```
 === RESUMEN por capa ===
 capa | archivos | lineas | funciones | api_publica
 --------------------------------------------------
-core | 26 | 8780 | 308 | 249
-ui | 33 | 13507 | 513 | 301
-cad | 5 | 380 | 17 | 13
+core | 26 | 8669 | 308 | 249
+ui | 33 | 13505 | 513 | 301
+cad | 5 | 367 | 17 | 13
 app | 21 | 941 | 42 | 50
-TOTAL | 85 | 23608 | 880 | -
+TOTAL | 85 | 23482 | 880 | -
 ```
 
-Diferencia con el plan (§1): el plan dice 88 archivos y 23.920 líneas (medido en `e4b10d3`).
-La herramienta mide 85 y 23.608. Causa: el conteo del plan y el de la herramienta no
-cuentan igual. Pendiente de decidir qué método es el de referencia (ver `DEUDA_TECNICA.md`).
+Base (`fc224dd`): `core` 8780 líneas, `ui` 13507, `cad` 380, `app` 941, total 23608.
 
-Resto de subcomandos, sobre el código actual (`docs/metricas/minimalismo_base.json`):
+### Otros subcomandos (al cierre)
 
-| Subcomando | Valor | Plan (§1) | Nota |
+| Subcomando | Base (`fc224dd`) | Ahora | Nota |
 |---|---|---|---|
-| `duplicados` tablas idénticas | **9** | 2 pares | El plan contó a mano; la herramienta mide 9 grupos de contenedores con 2+ elementos. Incluye `ANCLAJES`/`ANCLAJE_LABELS`. |
-| `duplicados` cuerpos idénticos | 3 | — | |
-| `literales` usos de dominio | **53** | 26 + 14 + 9 + 8 | Cuenta por AST sobre literales de cadena. `melamina_standar` = 23. |
-| `ramas` funciones con cadena if/elif ≥ 4 | **12** | 16 | Heurística distinta de la del plan. |
-| `fachadas` | 0 | — | |
-| `tamano` archivos > 400 líneas | 17 | 10 | Límite de 400 del plan §3; el plan citaba 10 módulos > 600. |
-| `tamano` funciones > 60 líneas | 68 | 25 > 100 | Medido con umbral 60 (plan §3). |
-| `excepciones` que tragan errores | 90 | — | Ver `minimalismo.py excepciones`. |
+| `duplicados` tablas idénticas | 9 | **2** | Quedan `ESQUINAS` (P-07) y `ESQUINAS_2D`↔`ESQUINAS` de UI (mismo bloque H-04, P-07). |
+| `duplicados` cuerpos idénticos | 3 | 3 | Sin cambio. Fuera de M2 (H-50, H-51, H-52 son de M6). |
+| `literales` usos de dominio | 53 | **53** | Sin cambio. Ver "M2 pendiente". |
+| `ramas` funciones con cadena if/elif ≥ 4 | 12 | 12 | Sin cambio. |
+| `tamano` archivos > 400 líneas | 17 | 17 | Sin cambio. |
+| `tamano` funciones > 60 líneas | 68 | 68 | Sin cambio. |
+| `excepciones` que tragan errores | 90 | **89** | Corregido: el registro decía 90. |
 
-**Correcciones de la herramienta antes de medir** (commits `5fe5eea`, `31785b2`):
-- `literales` contaba subcadenas en texto (`tirador` en `tirador_x`, comentarios). Ahora cuenta literales de cadena por AST.
-- `ramas` sumaba `if` independientes. Ahora cuenta la mayor cadena `if`/`elif` real.
-- `duplicados` contaba escalares (`VERSION = 1`) como tablas. Ahora solo contenedores de 2+ elementos. Pasó de 30 a 9.
+### `verificar.py` (referencia, no es gate de fase)
 
-### Verificación de referencia (`verificar.py`, con `.venv` en PATH)
-
-Salida de `python3 -I tools/auditoria/verificar.py` (resumen; salida completa en `/tmp/vdo_m0/verificar_salida.txt`):
+Salida resumida de `python3 -I tools/auditoria/verificar.py` (sin cambios de reglas):
 
 ```
 [FALLA] R1_capas: valor=17
@@ -114,72 +143,77 @@ Salida de `python3 -I tools/auditoria/verificar.py` (resumen; salida completa en
 [FALLA] R8_funciones_le100: valor=25
 [FALLA] R8_ruff_c901_le12: valor=28
 [FALLA] R9_defs_no_usadas: valor=2
-[FALLA] R10_ruff_check_cero: valor=288
+[FALLA] R10_ruff_check_cero: valor=291 (freecad/+tests/+tools/; ver D-04)
 [FALLA] R10_mypy_strict_cero: valor=1081
 [FALLA] R10_cero_hex_fuera_tema: valor=417
-[OK]    R11_golden_masters: valor=13
-MÉTRICAS FALLADAS (8): ...
+[OK]    R11_golden_masters: valor=15
 ```
 
-Contraste con el prompt: R1=17, R3=32, R8>100=25, C901=28, R9=2, mypy=1081, hex=417 coinciden.
-**ruff da 288, no 259.** Con `.venv/bin/ruff` 0.17.3 la cifra cambia. Registrado tal cual.
-
-### Nivel 1 y nivel 2
-
-Nivel 2, `freecadcmd tools/run_tests.py`, 5 ejecuciones (tras `692b76a`):
-
-```
-RESUMEN ejecutados=260 fallos=3 errores=0 skip=26 no_ejecutado=0   (×5, SIGSEGV=0 en las 5)
-```
-
-Código de salida 1 en las 5, por los 3 FALLO de `test_arquitectura.py`. No es crash.
-
-Nivel 1, `python3 -I tools/run_tests.py`:
-
-```
-RESUMEN ejecutados=262 fallos=3 errores=0 skip=107 no_ejecutado=0
-```
-
-### Goldens
-
-Procedencia completa en `docs/metricas/goldens_origen.md`.
-
-Verificación de los 13 ficheros contra el código actual:
-
-```
-$ PYTHONPATH=$PWD python3 tools/auditoria/golden.py --verificar <modulo>   # 12 de dominio: OK, 0 diferencias
-$ freecadcmd tools/auditoria/golden_creacion.py                            # VERIFICAR diferencias= 0
-```
-
-**Diferencias entre `b78de04` y el código actual:**
-- **Firma de creación**: `b78de04` usa `f(configuracion)` con `App.ActiveDocument`. El código actual usa `f(doc, configuracion)`. Es un cambio de interfaz, no de comportamiento: las salidas de los 15 casos son iguales. Causa: refactor posterior a `b78de04`.
-- **`crear_panel`**: no existe en `b78de04`. No tiene golden de referencia.
-- **Ningún golden de dominio tiene diferencias de comportamiento** con el código actual.
-
-**Cambios de golden respecto a lo commiteado** (requieren revisión humana, P-05):
-- `creacion_modulos.json`: sustituido. El anterior tenía otro esquema y ningún generador en el repo.
-- `coco_spaces.json`: sustituido. El anterior tenía 3 de 3 entradas en error.
-- `puerta_despiece.json`: sustituido. El anterior tenía 8 de 8 entradas en error. **No probaba nada.**
-
-Entradas en error que quedan (comportamiento registrado, no ocultado):
-- `frames.json` › `interpretar_lados`: 1 de 18. Entrada JSON inválida en `b78de04` y en el código actual.
-
-### Gate de M0
-
-| Criterio | Resultado | Evidencia |
-|---|---|---|
-| `minimalismo_base.json` existe | ✅ | `fc224dd` |
-| 19 goldens existen | ✅ 19 de 19 | 14 ficheros. 13 de dominio, 4 flujos de creación en `creacion_modulos.json`, 2 N/A con motivo (P-01). |
-| Nivel 2 sin SIGSEGV en 5 de 5 | ✅ | 5 de 5, SIGSEGV=0 |
-| Diferencias documentadas | ✅ | Interfaz en `goldens_origen.md`; sin diferencias de comportamiento |
+**Corrección:** el registro decía `R10_ruff_check_cero = 288`. Esa cifra no se reproduce: hoy `verificar.py` da 291 con el mismo alcance. La diferencia de 1 incidencia en `test_single_dock_convergence.py` viene de los cambios sin commitear de P-04. Ver `DEUDA_TECNICA.md` D-04.
 
 ---
 
-## Abierto tras cerrar M0
+## Alcance de ruff y mypy (D-04)
 
-- **P-01**: decidido N/A (revertible). Ver `PENDIENTES_HUMANO.md`.
-- **P-02**: resuelto. `App.Rotation` se serializa y `module_props` tiene golden.
-- **P-03**: aceptar que los 4 flujos de creación se den por cubiertos con `creacion_modulos.json`.
-- **P-05**: revisión humana de los 3 goldens sustituidos (`creacion_modulos`, `coco_spaces`, `puerta_despiece`). No bloquea.
-- **P-04**: destino de los cambios de otra sesión en tests (`os._exit` → `sys.exit`).
+Ver `docs/PLAN_MINIMALISMO_VDO.md` §2, decisión D-04.
+
+- **Ruff:** `ruff check .` desde la raíz, sin excluir carpetas. **299** incidencias: `freecad/` 147, `tests/` 86, `tools/` 58, `Init.py` + `InitGui.py` 8. Versión 0.17.3 (`.venv`).
+- **Mypy:** paquete de `pyproject.toml` (`core`, `app`, `cad`). **1081** errores: `core` 1008, `app` 45, `cad` 28. Versión 2.4.1 (`.venv`).
+
+---
+
+## M0 — goldens
+
+Procedencia completa en `docs/metricas/goldens_origen.md`.
+
+| Fichero | Entradas | Errores |
+|---|---|---|
+| cajon_despiece, coco_spaces, facade_contract (23), finish, frames (18, 1 en error), guardian (9), hardware_hub, layout, module_props, optimizer_core, puerta_despiece, reengrose (18), spaces, zocalo_core, creacion_modulos (15) | **131** entradas en **15** ficheros | **1** (`frames.interpretar_lados`, JSON inválido, comportamiento de origen) |
+
+Verificación contra el código actual (medida al cierre, `freecadcmd` con `GOLD_MODS`):
+- Los 14 goldens de dominio (`facade_contract`, `frames`, `finish`, `reengrose`, `cajon_despiece`, `puerta_despiece`, `coco_spaces`, `hardware_hub`, `module_props`, `guardian`, `zocalo_core`, `layout`, `optimizer_core`, `spaces`): `OK golden` en los 14, 0 diferencias.
+- `golden_creacion.py`: `VERIFICAR diferencias= 0`.
+
+Goldens sustituidos (P-05, pendientes de aprobación humana): `creacion_modulos`, `coco_spaces`, `puerta_despiece`. Detalle en `goldens_origen.md`. Dos pasan de error a valor (cambio de salida esperada).
+
+---
+
+## M2 — estado
+
+**Hecho:**
+- Herrajes solo desde el JSON; sin `_FALLBACK_*` (`8b85ce3`, H-20).
+- Anclajes en `datos/anclajes.json` (`699e944`, H-01). El duplicado de carga en `cad` queda en D-10.
+- `CANTOS_VALIDOS` en un solo sitio, `core/vdo_finish` (`1b5a1b7`, H-02).
+- `BORDES` en un solo sitio, `core/vdo_finish`; la UI lo consume desde ahí (`1b5a1b7`, H-03 grupo A).
+- `CANTOS` de la fachada eliminado: sin usos en el repo (`bb58afc`).
+- `CHOQUES_NUCLEO` eliminado: sin usos; queda `MODOS_CHOQUE_NUCLEO` (`bb58afc`, H-05).
+- `BORDES_2D` (reengrose) como único sitio para la UI de caja (`bb58afc`, H-03b).
+- `DIMENSION_POR_EJE` en `core/vdo_helpers` (`cbfb55f`, H-06).
+
+**Pendiente, con causa:**
+- `ESQUINAS` (H-04): **bloqueado por P-07**.
+- `rotacion_z` (H-60 a H-62): **bloqueado por P-06**.
+- Ciclo core↔cad (H-01b, D-10, `forma_ref`): **bloqueado por P-08**.
+- `MODULE_SPECS` (H-22, 162 líneas): para pasarlo a `datos/modulos.json` hace falta un golden de la tabla antes del cambio. Hoy no hay ninguno. No lo he hecho.
+- `LUCIDE_ICONS` (H-23): el inventario dice "comparar el contenido de las dos copias antes de migrar". No lo he comparado.
+- `_CATALOGO_PATH` (H-21) y caché/logger (H-24): marcados [decisión] en el inventario, sin decidir.
+- **Literales (53):** `oculta` y `tirador` ya tienen constantes de dominio (`CORREDERA_OCULTA` en `core/vdo_cajon_despiece.py:22`, `APERTURA_TIRADOR` en `core/vdo_facade_contract.py:14`). Lo correcto es reemplazar por esas constantes, no crear un JSON nuevo. `melamina_standar` (23 usos) y `blum_tandem` (14) necesitan una constante nueva. Es una sustitución por ocurrencia, con su propio golden. No la he hecho en esta pasada.
+
+---
+
+## M3 a M11
+
+No iniciadas. M2 está abierta (literales, `MODULE_SPECS`, `LUCIDE_ICONS`, `_CATALOGO_PATH`).
+
+---
+
+## Abierto
+
+- **P-10**: decidir el golden de `nesting_presets` (bloquea M0).
+- **P-06**: ubicación de `rotacion_z` (bloquea M1 y parte de M2).
+- **P-07**: `ESQUINAS` frente a `TIPOS_ENCUENTRO` (bloquea M1 y parte de M2).
+- **P-08**: ciclo core↔cad (bloquea M2 en `core/vdo_module_props.py` y en los módulos con `forma_ref`).
+- **P-09**: sin definir en el repo ni en el encargo. Hay que definirlo o retirarlo.
+- **P-05**: aprobar los 3 goldens sustituidos.
+- **P-04**: cambios de tests de otra sesión sin commitear.
 - Los planes anteriores siguen sin archivar (MN-13, M11).
