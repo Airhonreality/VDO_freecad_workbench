@@ -500,3 +500,88 @@ Desviaciones del plan: ninguna en alcance. Se encontraron defectos fuera de H1�
 
 Tests del verificador: `python3 -m unittest tests.test_verificar` → 14 tests OK (antes 7 sobre copias de las reglas).
 
+## Fase F19.2-ter — Medidor honesto (corrección de F19.2-bis) y primer contacto con F19.4
+
+Commits (rama `refactor/vdo-10`, sin push, sin merge):
+- `34e6d51` deuda de tests: 12 `except Exception` del smoke L3 sustituidos por `_ERRORES_ESPERADOS`; guardas de import a `ImportError`.
+- `c7ad8fd` `tests/test_arquitectura.py` y `tools/run_tests.py` (ver abajo).
+- `7f9f9a2` `tools/auditoria/verificar.py` y `pyproject.toml` (ver abajo).
+
+### Correcciones a cifras y afirmaciones anteriores
+
+| Afirmación anterior | Medido ahora | Origen del error |
+|---|---|---|
+| F19.2-bis: "nivel 1 y nivel 2 con 0 fallos; verificador R1–R3 OK en arquitectura" | Nivel 2 y nivel 1: 3 FALLO cada uno (`test_arquitectura`) | `test_arquitectura.py` tenía `ROOT` tres niveles arriba (`/home/airhon/Proyectos`): escaneaba 0 archivos y pasaba en vacío. Las 5 pruebas eran falsos verdes. |
+| F19.2-bis: `run_tests.py` "exit=0" como gate | `run_tests.py` salía con 0 aunque hubiera fallos | El runner nunca devolvía código de error. Corregido: devuelve 1 si hay FALLO, ERROR o NO_EJECUTADO. |
+| F19.8: "ruff check hoy falla con 1 error" | 273 incidencias antes de esta subfase; 260 ahora | `verificar.py` registraba el código de salida de ruff (1) como si fuera el número de incidencias. |
+| R8 C901 "valor=1 (incidencias)" | 28 funciones de `freecad/` con complejidad > 12 | Mismo error de medición. Además `--config max-complexity=12` no es válido en ruff: el umbral va en `pyproject.toml`. |
+| `_grep_count` y `_grep_files` | — | Devolvían 0 ante cualquier excepción (si falla `rg`, R10 daría verde). Ahora solo rc=1 es "cero coincidencias". |
+
+Nota: `tests/test_arquitectura.py` ahora falla si una capa no existe o no tiene `.py` (ya no puede pasar en vacío).
+
+### Estado medido de F19.4 (lo que el test de arquitectura ya ve)
+
+- `core/` importa `cad/`: 4 módulos (`vdo_coco_core`, `vdo_coco_spaces`, `vdo_module_props`, `vdo_panel_core`). Causa: `forma_ref` (`cad/geometria`) y `add_common_props` (`cad/propiedades`, reexportado en `vdo_module_props` línea 83 con `noqa: F401`).
+- `ui/` escribe en FreeCAD: 20 módulos. Test `test_ui_no_escritura_freecad`.
+- `ui/` importa `core`/`cad`: 18 módulos. Test `test_ui_no_importa_core_cad_app_api`.
+- `core/` escribe en el documento: `make_coco`, `make_panel`, `make_zocalo`, `make_cajon`, `make_puerta` llaman a `addObject`/`recompute` y asignan propiedades. Es la causa raíz de los dos primeros puntos y la razón por la que F19.4 no puede cerrarse por bloques pequeños: hay que separar, función a función, el cálculo puro (que queda en `core/`) de la escritura (que pasa a `cad/`), tal como pide F4.8–F4.13. Tamaño medido: 2.793 líneas en los 7 módulos y 145 líneas de importadores fuera de ellos.
+- `app/casos_uso/` tiene los 13 archivos (R4 OK), pero son esqueletos de 12–36 líneas, y la UI no los llama. `crear_coco` llama a `make_coco` de core, así que app→core escribe en el documento.
+
+Decisión tomada (no requiere al usuario): la separación cálculo/escritura se hace por módulo, en commits separados, con nivel 2 en verde tras cada uno. El orden es el de F4: `module_props` (quitar reexport), `coco`, `panel`, `zocalo`, `cajon`, `puerta`.
+
+### Gate medido de esta subfase
+
+```
+$ VDO_TEST_DIR=tests VDO_TEST_OUT=/tmp/f19c/n2e.txt freecadcmd tools/run_tests.py; echo exit=$?
+exit=1
+RESUMEN ejecutados=251 fallos=3 errores=0 skip=26 no_ejecutado=0
+FALLO test_arquitectura.CapasTests.test_core_no_importa_app_ui_cad
+FALLO test_arquitectura.CapasTests.test_ui_no_escritura_freecad
+FALLO test_arquitectura.CapasTests.test_ui_no_importa_core_cad_app_api
+
+$ VDO_TEST_DIR=tests VDO_TEST_OUT=/tmp/f19c/n1e.txt python3 tools/run_tests.py; echo exit=$?
+exit=1
+RESUMEN ejecutados=253 fallos=3 errores=0 skip=98 no_ejecutado=0
+(mismos 3 FALLO)
+
+$ python3 -m unittest tests.test_verificar
+Ran 14 tests in 0.001s
+OK
+
+$ .venv/bin/ruff check freecad tests tools
+Found 260 errors.
+[*] 12 fixable with `--fix`.
+
+$ .venv/bin/mypy freecad/vdo/core freecad/vdo/app freecad/vdo/cad
+Found 1092 errors in 46 files (checked 51 source files)
+
+$ python3 -I tools/auditoria/verificar.py; echo exit=$?
+=== VDO — verificación de métricas §2 ===
+[FALLA] R1_capas: valor=18 umbral=0 (violaciones: freecad/vdo/ui/vdo_box_controller.py, freecad/vdo/ui/vdo_cajon_task.py, freecad/vdo/ui/vdo_coco_preview2d.py, freecad/vdo/ui/vdo_coco_unified_task.py, freecad/vdo/ui/vdo_cutting_list_preview.py, freecad/vdo/ui/vdo_export_cutting_list.py, freecad/vdo/ui/vdo_hardware_manager.py, freecad/vdo/ui/vdo_nesting_workflow.py, freecad/vdo/ui/vdo_optimizer_dialog.py, freecad/vdo/ui/vdo_optimizer_view.py, freecad/vdo/ui/vdo_panel_task.py, freecad/vdo/ui/vdo_placement.py, freecad/vdo/ui/vdo_puerta_task.py, freecad/vdo/ui/vdo_reengrose_ui.py, freecad/vdo/ui/vdo_universal_inspector.py, freecad/vdo/ui/vdo_view_providers.py, freecad/vdo/ui/vdo_widgets_coco.py, freecad/vdo/ui/vdo_zocalo_task.py)
+[OK] R2_agnosticismo_core: valor=0 umbral=0 (ninguno)
+[FALLA] R3_dominio_como_datos: valor=33 umbral=0 (escrituras fuera de cad/: freecad/vdo/app/casos_uso/colocar_modulo.py, freecad/vdo/app/casos_uso/editar_modulo.py, freecad/vdo/app/registro.py, freecad/vdo/app/vdo_creacion.py, freecad/vdo/commands.py, freecad/vdo/core/vdo_cajon_core.py, freecad/vdo/core/vdo_cajon_despiece.py, freecad/vdo/core/vdo_coco_core.py, freecad/vdo/core/vdo_module_props.py, freecad/vdo/core/vdo_panel_core.py, freecad/vdo/core/vdo_puerta_core.py, freecad/vdo/core/vdo_reengrose.py, freecad/vdo/core/vdo_zocalo_core.py, freecad/vdo/ui/vdo_bim_bridge.py, freecad/vdo/ui/vdo_cajon_task.py, freecad/vdo/ui/vdo_coco_unified_task.py, freecad/vdo/ui/vdo_cutting_list_menu.py, freecad/vdo/ui/vdo_cutting_list_preview.py, freecad/vdo/ui/vdo_drag_handles.py, freecad/vdo/ui/vdo_export_cutting_list.py, freecad/vdo/ui/vdo_inspector_dock.py, freecad/vdo/ui/vdo_nesting_workflow.py, freecad/vdo/ui/vdo_optimizer_dialog.py, freecad/vdo/ui/vdo_panel_task.py, freecad/vdo/ui/vdo_placement.py, freecad/vdo/ui/vdo_plano_cero.py, freecad/vdo/ui/vdo_puerta_task.py, freecad/vdo/ui/vdo_selection_bridge.py, freecad/vdo/ui/vdo_task_base.py, freecad/vdo/ui/vdo_universal_inspector.py, freecad/vdo/ui/vdo_view_providers.py, freecad/vdo/ui/vdo_widgets_coco.py, freecad/vdo/ui/vdo_zocalo_task.py)
+[OK] R4_orquestacion_app: valor=0 umbral=0 (todos presentes)
+[OK] R5_estado_inmutable: valor=0 umbral=0 (ninguna)
+[OK] R6_paneles_accept_le15: valor=0 umbral=0 (todos ≤ 15)
+[OK] R7_except_pass: valor=0 umbral=0 (0 except … pass)
+[OK] R7_except_exception_core_cad_app: valor=0 umbral=0 (0 except Exception en core/cad/app)
+[FALLA] R8_funciones_le100: valor=25 umbral=0 (funciones > 100 líneas: [('freecad/vdo/core/vdo_cajon_core.py', 'execute', 152), ('freecad/vdo/core/vdo_cajon_despiece.py', 'calcular_despiece', 323), ('freecad/vdo/core/vdo_coco_core.py', 'execute', 420), ('freecad/vdo/core/vdo_coco_spaces.py', 'generar_divisiones_matriz', 195), ('freecad/vdo/core/vdo_panel_core.py', 'crear_pieza', 101), ('freecad/vdo/core/vdo_puerta_core.py', 'execute', 138), ('freecad/vdo/core/vdo_reengrose.py', 'normalizar_modificador', 102), ('freecad/vdo/core/vdo_reengrose.py', 'generar_tiras_perimetrales', 220), ('freecad/vdo/core/vdo_spaces.py', 'resolver_espacios_eje', 122), ('freecad/vdo/core/vdo_zocalo_core.py', 'calcular_geometria_zocalo', 189), ('freecad/vdo/ui/vdo_box_controller.py', 'paintEvent', 105), ('freecad/vdo/ui/vdo_box_controller.py', '_construir_ui', 232), ('freecad/vdo/ui/vdo_cajon_task.py', '_crear_widget', 209), ('freecad/vdo/ui/vdo_chassis_widget.py', 'paintEvent', 210), ('freecad/vdo/ui/vdo_chassis_widget.py', '_init_ui', 238), ('freecad/vdo/ui/vdo_chassis_widget.py', '_aplicar_estilos', 112), ('freecad/vdo/ui/vdo_coco_unified_task.py', '_crear_widget', 172), ('freecad/vdo/ui/vdo_panel_task.py', '_crear_widget', 126), ('freecad/vdo/ui/vdo_puerta_task.py', '_crear_widget', 169), ('freecad/vdo/ui/vdo_reengrose_ui.py', '_construir', 139), ('freecad/vdo/ui/vdo_universal_inspector.py', '__init__', 207), ('freecad/vdo/ui/vdo_universal_inspector.py', '_actualizar_vista_completa', 110), ('freecad/vdo/ui/vdo_widgets_coco.py', '_crear_widget', 247), ('freecad/vdo/ui/vdo_widgets_coco.py', '_actualizar_inspector', 222), ('freecad/vdo/ui/vdo_zocalo_task.py', '_crear_widget', 123)])
+[FALLA] R8_ruff_c901_le12: valor=28 umbral=0 (ruff C901 (max 12): 28 incidencias)
+[OK] R9_clones: valor=0 umbral=0 (0 grupos de clones)
+[FALLA] R9_defs_no_usadas: valor=2 umbral=0 (2 definiciones no usadas)
+[FALLA] R10_ruff_check_cero: valor=260 umbral=0 (ruff check: 260 incidencias)
+[FALLA] R10_mypy_strict_cero: valor=1092 umbral=0 (mypy strict: 1092 errores)
+[OK] R10_cero_print: valor=0 umbral=0 (0 print() en freecad/)
+[FALLA] R10_cero_hex_fuera_tema: valor=417 umbral=0 (417 literales hex fuera de ui/tema.py)
+[OK] R11_golden_masters: valor=9 umbral=>=1 (9 golden.json)
+[OK] R11_suite_nivel1_estructura: valor=0 umbral=0 (tests/ existe)
+[OK] R12_documentacion: valor=0 umbral=0 (ARQUITECTURA=True, ADRs=4, DEUDA=True, GLOSARIO=True)
+[OK] R14_freecad_real: valor=1.1.4 umbral=1.x (binario: /usr/bin/freecadcmd, salida: FreeCAD 1.1.4 Revision: 45040 (Git))
+
+MÉTRICAS FALLADAS (8): R1_capas, R3_dominio_como_datos, R8_funciones_le100, R8_ruff_c901_le12, R9_defs_no_usadas, R10_ruff_check_cero, R10_mypy_strict_cero, R10_cero_hex_fuera_tema
+exit=1
+```
+
+Estado: F19.2-ter cumple su objetivo (medidor honesto). F19 no está cerrada: R1, R3, R8, R9, R10 siguen en FALLA, y la suite de nivel 1 y 2 tiene 3 FALLO reales que son trabajo de F19.4.
+
+Pendiente de decisión humana (sin cambios desde F19.2-bis): `iniciar_colocacion` (`ui/vdo_placement.py`): conectar al workbench o eliminar; `ruta_recursos` (`app/rutas.py`) se decide en F19.5.
