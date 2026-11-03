@@ -26,7 +26,7 @@ SISTEMAS = {
     APERTURA_TIRADOR: {
         "etiqueta": "Tirador Tradicional", "operacion": OPERACION_CANTO_ESTANDAR,
         "descuento_alto": 0.0, "descuento_gola": False, "bisel_45": False, "expulsor": False,
-        "legado": ("tirador tradicional", "tirador"),
+        "legado": ("tirador tradicional", TIRADOR),
     },
     APERTURA_45_GRADOS: {
         "etiqueta": "Inglete 45 Grados", "operacion": OPERACION_CANTO_45,
