@@ -15,6 +15,7 @@ import FreeCAD as App
 
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_manifest as VM
+from freecad.vdo.core.errores import ParametroInvalido
 
 HOJA_GLOBAL = "Params_Melamina"
 HOJA_LOCAL = "Params"
@@ -33,15 +34,25 @@ def _tiene_alias(hoja, celda):
     return hoja.getAlias(celda) is not None
 
 
+# Por encima de 2^53 un entero no se representa exactamente como double.
+LIMITE_EXACTO = 2 ** 53
+
+
 def _celda_numerica(valor):
     """Contenido de celda que FreeCAD lee igual con cualquier LC_NUMERIC.
 
     Con locale de coma decimal, FreeCAD lee "0.4" como 0 (D-11). Las
     fracciones enteras "=N/D" no tienen separador decimal: se parsean igual
-    en cualquier locale. Fraction(repr(...)) es exacto y la división de dos
-    enteros exactos da el mismo double que float("0.4").
+    en cualquier locale. Se redondea a 10 decimales (D-13) para que el
+    denominador quede acotado. Si numerador o denominador superan 2^53, se
+    lanza ParametroInvalido: no se escribe un valor incorrecto en silencio.
     """
-    fraccion = Fraction(repr(float(valor)))
+    fraccion = Fraction(repr(round(float(valor), 10)))
+    if max(abs(fraccion.numerator), fraccion.denominator) > LIMITE_EXACTO:
+        raise ParametroInvalido(
+            "valor no representable exactamente en una celda de hoja",
+            {"valor": valor, "numerador": fraccion.numerator,
+             "denominador": fraccion.denominator})
     if fraccion.denominator == 1:
         return str(fraccion.numerator)
     return f"={fraccion.numerator}/{fraccion.denominator}"

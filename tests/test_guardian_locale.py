@@ -13,13 +13,19 @@ import unittest
 from tests.soporte.requisitos import requiere_freecad
 
 _LOCALES_PRUEBA = ("es_CO.UTF-8", "C")
-_VALORES = {
-    "canto_fino": {"valor": 0.4},
-    "espesor_base": {"valor": 7417634.708},
-    "fraccion_negativa": {"valor": -0.4},
-    "entero": {"valor": 1},
-    "notacion_cientifica": {"valor": 1e-05},
-}
+
+
+def _valores_del_manifiesto() -> dict:
+    """Todos los parámetros que escribe el guardián, leídos del manifiesto (D-13)."""
+    from freecad.vdo.core import vdo_manifest as VM
+
+    valores = {}
+    valores.update(VM.VDO_MANIFEST["parametros_globales"])
+    valores.update(VM.VDO_MANIFEST["parametros_locales"])
+    return valores
+
+
+_VALORES = _valores_del_manifiesto()
 
 
 def _locale_disponible(nombre: str) -> bool:
@@ -72,6 +78,13 @@ class GuardianLocaleTests(unittest.TestCase):
                             leidos[nombre], float(info["valor"]),
                             f"{nombre} con {nombre_locale}: leído {leidos[nombre]!r}",
                         )
+
+    def test_valor_que_desborda_2_53_lanza_error(self):
+        from freecad.vdo.cad import vdo_guardian as G
+        from freecad.vdo.core.errores import ParametroInvalido
+
+        with self.assertRaises(ParametroInvalido):
+            G._celda_numerica(1e16)
 
     def test_mismo_resultado_en_ambos_locales(self):
         if not all(_locale_disponible(n) for n in _LOCALES_PRUEBA):
