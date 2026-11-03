@@ -8,12 +8,17 @@ requires-python = ">=3.10"
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+# Alcance de medición (decisión D-04 en docs/PLAN_MINIMALISMO_VDO.md §2):
+# `ruff check .` desde la raíz, sin excluir carpetas. Medido con ruff 0.17.3 (.venv).
+# Cifras por carpeta: freecad/ 147, tests/ 86, tools/ 58, Init.py + InitGui.py 8 (total 299).
 [tool.ruff]
 line-length = 100
+
+[tool.ruff.lint]
 select = ["E", "F", "W", "B", "UP", "C901", "SIM", "I", "RUF"]
 ignore = []
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "freecad/vdo/cad/**" = ["F401"]
 "freecad/vdo/commands.py" = ["F401"]
 "freecad/vdo/app/vdo_api.py" = ["F401"]

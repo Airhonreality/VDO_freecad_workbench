@@ -29,9 +29,9 @@ Las fechas son **propuesta del ejecutor**, a confirmar por el usuario. Las que d
 | # | Ítem | Causa | Responsable | Fecha |
 |---|---|---|---|---|
 | D-01 | ~~Golden de `module_props.rotacion_z`~~ | Resuelto: serializador de `App.Rotation` y golden con reubicación. Ver P-02. | ejecutor | 2026-11-02 |
-| D-02 | ~~Golden de `guardian` y `nesting_presets`~~ | Decidido N/A (sin función de cálculo). Ver P-01. Revertible. | ejecutor | 2026-11-02 |
+| D-02 | Golden de `guardian` y `nesting_presets` | `guardian`: **resuelto**, golden de 9 entradas desde `b78de04` (ver `goldens_origen.md`). `nesting_presets`: **pendiente de decisión humana (P-10)**; no carga en `b78de04` (`NameError` al importar). | ejecutor / usuario | 2026-11-09 |
 | D-03 | Método de conteo del plan §1 | El plan dice 88 archivos y 23.920 líneas; `minimalismo.py` mide 85 y 23.608. Hay que fijar un solo método. | usuario | 2026-11-09 |
-| D-04 | `ruff check` = 288 con `.venv` (plan dice 259) | Diferencia de versión o de alcance de ruff. Hay que fijar versión y alcance en `pyproject.toml`. | ejecutor | 2026-11-16 (M9) |
+| D-04 | ~~`ruff check` = 288 con `.venv` (plan dice 259)~~ | **Resuelto en M0**: alcance y versión fijados en el plan §2 (D-04) y en `pyproject.toml`. Medido hoy con `ruff check .`: 299. `verificar.py` (`freecad/`+`tests/`+`tools/`) da 291; la cifra de 288 del registro no se reproduce. La diferencia de 1 incidencia en `test_single_dock_convergence.py` viene de los cambios sin commitear de P-04. | ejecutor | 2026-11-03 |
 | D-05 | `test_arquitectura.py` en rojo (3 FALLO) | Violaciones reales de MN-03. Se corrigen en M5. Por eso el nivel 2 sale con código 1. | ejecutor | M5 |
 | D-06 | Cambios de tests de otra sesión sin commitear | `os._exit` → `sys.exit` en `test_gui_wiring.py` y `test_single_dock_convergence.py`, sin verificar. Ver P-04. | usuario | 2026-11-09 |
 | D-07 | Golden de `frames.interpretar_lados` con 1 entrada en error | Entrada JSON inválida. Comportamiento de `b78de04` y actual. Se conserva como caso de error. | ejecutor | M1 |
