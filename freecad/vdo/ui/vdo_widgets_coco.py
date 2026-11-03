@@ -35,7 +35,6 @@ ROLE_DATA = QtCore.Qt.UserRole + 1
 ROLE_KIND = QtCore.Qt.UserRole + 2
 ROLE_KEY = QtCore.Qt.UserRole + 3
 
-BORDES = ("norte", "sur", "este", "oeste")
 BORDE_LABELS = {
     "norte": "Norte", "sur": "Sur", "este": "Este", "oeste": "Oeste"}
 
@@ -71,7 +70,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
 
     def _normalizar_cantos(self, cantos):
         datos = {}
-        for borde in BORDES:
+        for borde in VDO_FIN.BORDES:
             valor = str((cantos or {}).get(borde, "FX") or "FX").upper()
             datos[borde] = valor
         return datos
@@ -87,7 +86,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
             f"{float(espesor):.1f} mm")
         datos = self._normalizar_cantos(cantos)
         self.lbl_cantos.setText(" · ".join(
-            f"{BORDE_LABELS[borde]}: {datos[borde]}" for borde in BORDES))
+            f"{BORDE_LABELS[borde]}: {datos[borde]}" for borde in VDO_FIN.BORDES))
 
     def set_strip(self, nombre, largo, ancho, espesor, cantos=None):
         self.set_panel(nombre, largo, ancho, espesor, cantos,
@@ -807,7 +806,7 @@ class DivisionesEditor(QtWidgets.QWidget):
             cantos = VDO_FIN.cantos_para_rol(
                 rol, self._vistos(), tapa=self._tapa, base=self._base)
         except Exception:
-            cantos = {borde: "FX" for borde in BORDES}
+            cantos = {borde: "FX" for borde in VDO_FIN.BORDES}
         if es_reengrose and clave:
             datos = self.reengroses.get(clave)
             if datos:

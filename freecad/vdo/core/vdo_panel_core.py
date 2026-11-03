@@ -21,9 +21,8 @@ from freecad.vdo.cad.geometria import forma_ref
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.core.vdo_finish import CANTOS_VALIDOS
 from freecad.vdo.core.vdo_helpers import _get_app, _get_part, rotacion_z
-
-CANTOS_VALIDOS = ("RIG", "FX", "SMRG")
 
 
 def add_reengrose_props(obj):

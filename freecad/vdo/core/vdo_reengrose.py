@@ -14,6 +14,8 @@ Nota: ``forma_ref`` (Part.Shape) se movió a ``freecad.vdo.cad.geometria``
 
 import json
 
+from freecad.vdo.core.vdo_finish import BORDES, CANTOS_VALIDOS
+
 # Motor puro: no importa FreeCAD ni Part. La parte CAD vive en cad/geometria.py.
 
 
@@ -153,10 +155,8 @@ class ReengroseDTO:
         }
 
 
-BORDES = ("norte", "sur", "este", "oeste")
 CANTO_VISTO = "RIG"
 CANTO_OCULTO = "FX"
-CANTOS_VALIDOS = ("RIG", "FX", "SMRG")
 
 PROPS = {
     "activo": "VDO_Reengrose_Activo",
