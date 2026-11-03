@@ -14,6 +14,7 @@
 # =====================================================================
 
 from freecad.vdo.core.vdo_manifest import _obtener_json
+from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 _MANIFEST = _obtener_json()
 
@@ -302,7 +303,7 @@ def calcular_despiece(config):
     holg_inf = float(config.get("holgura_inferior_fachada")
                      or _p("holgura_inferior_fachada", 2))
     montaje = config.get("montaje_trasera", "entre_laterales")
-    material_ref = config.get("material_ref", "melamina_standar")
+    material_ref = config.get("material_ref", MELAMINA_ESTANDAR)
     tipo_montaje_fachada = str(
         config.get("tipo_montaje_fachada", MONTAJE_PARCHE)).strip().lower()
 

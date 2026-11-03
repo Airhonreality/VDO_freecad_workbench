@@ -24,6 +24,7 @@ from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.core.vdo_finish import CANTOS_VALIDOS
 from freecad.vdo.core.vdo_helpers import _get_app, _get_part, rotacion_z
+from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 
 def add_reengrose_props(obj):
@@ -193,7 +194,7 @@ class PanelFeature:
         obj.addProperty(
             "App::PropertyString", "VDO_Material_Ref", "VDO",
             "Material de la pieza"
-        ).VDO_Material_Ref = "melamina_standar"
+        ).VDO_Material_Ref = MELAMINA_ESTANDAR
 
         for direccion in ["Norte", "Sur", "Este", "Oeste"]:
             prop_name = f"VDO_Canto_{direccion}"
@@ -271,7 +272,7 @@ def crear_pieza(doc, configuracion):
     cantos = configuracion.get("cantos", {})
     etiqueta = configuracion.get("etiqueta", nombre)
     material_ref = configuracion.get(
-        "material_ref", "melamina_standar")
+        "material_ref", MELAMINA_ESTANDAR)
 
     es_nuevo = False
     panel = doc.getObject(nombre)

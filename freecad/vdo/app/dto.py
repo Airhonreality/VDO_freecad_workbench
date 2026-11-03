@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
+
 
 @dataclass(frozen=True)
 class PanelDTO:
@@ -19,7 +21,7 @@ class PanelDTO:
     ancho: float
     espesor: float
     cantos: dict  # {"norte": str, "sur": str, "este": str, "oeste": str}
-    material_ref: str = "melamina_standar"
+    material_ref: str = MELAMINA_ESTANDAR
     usar_params: bool = True
     rotacion: float = 0.0
     anclaje: str = "inferior_izquierda_frente"
@@ -66,7 +68,7 @@ class ZocaloDTO:
     distancia_trasera: float = 20.0
     tiene_trasera: bool = True
     amarres_intermedios: int = 0
-    material_ref: str = "melamina_standar"
+    material_ref: str = MELAMINA_ESTANDAR
     rotacion: float = 0.0
     anclaje: str = "inferior_izquierda_frente"
 
@@ -94,7 +96,7 @@ class CajonDTO:
     tipo_corredera: str = "oculta"
     sistema_apertura: str = "tirador"
     tipo_montaje: str = "parche"
-    material_ref: str = "melamina_standar"
+    material_ref: str = MELAMINA_ESTANDAR
     rotacion: float = 0.0
     anclaje: str = "inferior_izquierda_frente"
 
@@ -113,7 +115,7 @@ class PuertaDTO:
     espesor: float = 18.0
     tipo_montaje: str = "parche"
     sistema_apertura: str = "tirador"
-    material_ref: str = "melamina_standar"
+    material_ref: str = MELAMINA_ESTANDAR
     rotacion: float = 0.0
     anclaje: str = "inferior_izquierda_frente"
 

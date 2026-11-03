@@ -6,6 +6,7 @@
 import FreeCAD as App
 
 from freecad.vdo.cad.colocacion import aplicar_rotacion
+from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props
 from freecad.vdo.core import vdo_reengrose as VDO_RE
@@ -14,8 +15,8 @@ from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_LABELS,
     ANCLAJES,
 )
-from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core.vdo_panel_core import CANTOS_VALIDOS, add_reengrose_props
+from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 from freecad.vdo.qt_compat import QtGui, QtWidgets
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox, VDO_ExpressionInput
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
@@ -216,7 +217,7 @@ class PanelTaskPanel(VDOTransactionMixin):
     def _cargar_valores(self, obj):
         self.edit_etiqueta.setText(getattr(obj, "VDO_Etiqueta", ""))
         self.edit_material.setText(
-            getattr(obj, "VDO_Material_Ref", "melamina_standar"))
+            getattr(obj, "VDO_Material_Ref", MELAMINA_ESTANDAR))
         idx = self.combo_orientacion.findText(
             getattr(obj, "VDO_Orientacion", "horizontal"))
         if idx >= 0:

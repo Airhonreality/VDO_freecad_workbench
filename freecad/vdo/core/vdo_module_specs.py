@@ -6,6 +6,8 @@
 
 import importlib
 
+from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
+
 MODULE_SPECS = {
     "coco_4c": {
         "label": "COCO 4C",
@@ -72,7 +74,7 @@ MODULE_SPECS = {
                 "este": "RIG",
                 "oeste": "FX",
             },
-            "material_ref": "melamina_standar",
+            "material_ref": MELAMINA_ESTANDAR,
             "usar_params": True,
             "rotacion": 0.0,
             "anclaje": "inferior_izquierda_frente",
@@ -94,7 +96,7 @@ MODULE_SPECS = {
                 "este": "RIG",
                 "oeste": "RIG",
             },
-            "material_ref": "melamina_standar",
+            "material_ref": MELAMINA_ESTANDAR,
             "usar_params": True,
             "rotacion": 0.0,
             "anclaje": "inferior_izquierda_frente",
@@ -116,7 +118,7 @@ MODULE_SPECS = {
                 "este": "FX",
                 "oeste": "FX",
             },
-            "material_ref": "melamina_standar",
+            "material_ref": MELAMINA_ESTANDAR,
             "usar_params": True,
             "rotacion": 0.0,
             "anclaje": "inferior_izquierda_frente",
@@ -162,7 +164,7 @@ MODULE_SPECS = {
             "distancia_trasera": 20.0,
             "tiene_trasera": True,
             "amarres_intermedios": 0,
-            "material_ref": "melamina_standar",
+            "material_ref": MELAMINA_ESTANDAR,
             "rotacion": 0.0,
             "anclaje": "inferior_izquierda_frente",
         },

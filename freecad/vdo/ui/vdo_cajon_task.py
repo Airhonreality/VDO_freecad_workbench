@@ -7,6 +7,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 
 from freecad.vdo.cad.colocacion import aplicar_rotacion
+from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import vdo_hardware_hub, vdo_module_props
 from freecad.vdo.core.vdo_cajon_despiece import (
     CAJA_METALICA,
@@ -55,7 +56,7 @@ from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_LABELS,
     ANCLAJES,
 )
-from freecad.vdo.cad.propiedades import add_common_props
+from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
@@ -496,7 +497,7 @@ class CajonTaskPanel(VDOTransactionMixin):
                 "holgura_lateral_fachada": 2.0,
                 "holgura_superior_fachada": 2.0,
                 "holgura_inferior_fachada": 2.0,
-                "material_ref": "melamina_standar",
+                "material_ref": MELAMINA_ESTANDAR,
             }
             d = calcular_despiece(config)
             self.header.actualizar(d.get("fachada", {}))

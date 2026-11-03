@@ -39,6 +39,7 @@ from freecad.vdo.core.vdo_facade_contract import (
     MONTAJE_SEMIPARCHE,
 )
 from freecad.vdo.core.vdo_helpers import _get_app, _get_part
+from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 # ---------------------------------------------------------------------
 # Helpers geométricos puros (coordenadas relativas calculadas)
@@ -221,7 +222,7 @@ class CajonFeature:
                         "Subtipo").VDO_Subtipo = "cajon_oculta"
         obj.addProperty("App::PropertyString", "VDO_Material_Ref", "VDO",
                         "Material de las piezas"
-                        ).VDO_Material_Ref = "melamina_standar"
+                        ).VDO_Material_Ref = MELAMINA_ESTANDAR
         obj.addProperty("App::PropertyString", "VDO_Herraje_Ref", "VDO",
                         "Herraje de corredera oculta"
                         ).VDO_Herraje_Ref = obj.MarcaCorredera

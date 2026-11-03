@@ -20,6 +20,7 @@ except ImportError:
 # Importar loader
 from freecad.vdo.core import vdo_manifest
 from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 
 def _datos_panel(obj):
@@ -54,14 +55,14 @@ def extraer_piezas_panel(obj):
     try:
         piezas = VDO_RE.despiece_panel(
             obj.Label, largo, ancho, espesor, mod, cantos=cantos,
-            material_ref=getattr(obj, "VDO_Material_Ref", "melamina_standar"),
+            material_ref=getattr(obj, "VDO_Material_Ref", MELAMINA_ESTANDAR),
             orientacion=orientacion)
     except VDO_RE.ReengroseError as exc:
         App.Console.PrintMessage(f"⚠️  Reengrose inválido en '{obj.Label}': {exc}")
         piezas = VDO_RE.despiece_panel(
             obj.Label, largo, ancho, espesor, VDO_RE.ReengroseModifier(),
             cantos=cantos,
-            material_ref=getattr(obj, "VDO_Material_Ref", "melamina_standar"),
+            material_ref=getattr(obj, "VDO_Material_Ref", MELAMINA_ESTANDAR),
             orientacion=orientacion)
     for pieza in piezas:
         pieza.setdefault("herrajes", getattr(obj, "VDO_Hardware", ""))

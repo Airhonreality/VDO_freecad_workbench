@@ -15,6 +15,7 @@ from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.core.vdo_helpers import _get_app, _get_part, rotacion_z
 from freecad.vdo.core.vdo_layout import AXIS_X, Layout, Track, resolve_layout
+from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 
 class ZocaloError(ValueError):
@@ -68,7 +69,7 @@ def calcular_geometria_zocalo(ancho, fondo, alto_zocalo, espesor_tablero,
                               distancia_trasera=20.0,
                               tiene_trasera=True,
                               amarres_intermedios=0,
-                              material_ref="melamina_standar"):
+                              material_ref=MELAMINA_ESTANDAR):
     """Calcula tiras, amarres y despiece del zócalo (sin FreeCAD).
 
     Coordenadas del tablero: X = ancho del mueble, Y = fondo del mueble.
@@ -291,7 +292,7 @@ class ZocaloFeature:
                         "Subtipo").VDO_Subtipo = "zocalo"
         obj.addProperty("App::PropertyString", "VDO_Material_Ref", "VDO",
                         "Material de las piezas"
-                        ).VDO_Material_Ref = "melamina_standar"
+                        ).VDO_Material_Ref = MELAMINA_ESTANDAR
         obj.addProperty("App::PropertyString", "VDO_Paneles_JSON", "VDO",
                         "Descripción JSON de las piezas del zócalo")
         obj.addProperty("App::PropertyString", "VDO_ResumenDespiece", "VDO",
@@ -391,7 +392,7 @@ def make_zocalo(doc, configuracion):
     obj.TieneTrasera = configuracion.get("tiene_trasera", True)
     obj.AmarresIntermedios = configuracion.get("amarres_intermedios", 0)
     obj.VDO_Material_Ref = configuracion.get(
-        "material_ref", "melamina_standar")
+        "material_ref", MELAMINA_ESTANDAR)
 
     rotacion = float(configuracion.get("rotacion", 0.0))
     obj.VDO_RotacionZ = rotacion

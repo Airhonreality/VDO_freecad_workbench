@@ -16,6 +16,7 @@ import json
 
 from freecad.vdo.core.vdo_finish import BORDES, CANTOS_VALIDOS
 from freecad.vdo.core.vdo_helpers import DIMENSION_POR_EJE
+from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 # Motor puro: no importa FreeCAD ni Part. La parte CAD vive en cad/geometria.py.
 
@@ -1184,7 +1185,7 @@ def resolver_politica_cantos(panel_base, modifier):
 
 
 def despiece_panel(nombre, largo, ancho, espesor, modifier,
-                   cantos=None, material_ref="melamina_standar",
+                   cantos=None, material_ref=MELAMINA_ESTANDAR,
                    orientacion="vertical"):
     """Devuelve las subpiezas fisicas de un panel con reengrose."""
     panel = {
@@ -1242,7 +1243,7 @@ def despiece_panel(nombre, largo, ancho, espesor, modifier,
 
 
 def despiece_caja(caja, modifier, ejes, cantos=None,
-                  material_ref="melamina_standar",
+                  material_ref=MELAMINA_ESTANDAR,
                   orientacion="vertical", cantos_bloque=None):
     """Despiece de una pieza de modulo con reengrose.
 

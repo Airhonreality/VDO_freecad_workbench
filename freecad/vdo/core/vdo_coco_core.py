@@ -14,6 +14,7 @@ from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core import vdo_module_props as VDO_MOD
 from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.core.vdo_helpers import _get_app, _get_part, rotacion_z
+from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 
 def _modificador_mapa(mapa, clave):
@@ -68,7 +69,7 @@ def _expandir_reengrose(pieza):
         subpiezas = VDO_RE.despiece_caja(
             caja, mod, ejes, cantos=pieza.get("cantos"),
             material_ref=pieza.get(
-                "material_ref", "melamina_standar"),
+                "material_ref", MELAMINA_ESTANDAR),
             orientacion=pieza.get("orientacion", "vertical"),
             cantos_bloque=cantos_bloque)
     except VDO_RE.ReengroseError as exc:
@@ -121,7 +122,7 @@ class CocoFeature:
         obj.addProperty("App::PropertyString", "VDO_Subtipo", "VDO",
                         "Subtipo (COCO, módulo, etc)").VDO_Subtipo = "COCO_4C"
         obj.addProperty("App::PropertyString", "VDO_Material_Ref", "VDO",
-                        "Material de los paneles").VDO_Material_Ref = "melamina_standar"
+                        "Material de los paneles").VDO_Material_Ref = MELAMINA_ESTANDAR
 
         # Paneles internos (propiedades de lectura para exportación)
         obj.addProperty("App::PropertyString", "VDO_Paneles_JSON", "VDO",
