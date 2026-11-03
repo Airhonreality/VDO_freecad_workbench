@@ -97,6 +97,15 @@ def _ast_dump_canonico(nodo) -> str:
     return ast.dump(nodo, annotate_fields=False, include_attributes=False)
 
 
+def _es_tabla(valor) -> bool:
+    """Contenedor literal con al menos 2 elementos."""
+    if isinstance(valor, ast.Dict):
+        return len(valor.keys) >= 2
+    if isinstance(valor, (ast.List, ast.Tuple, ast.Set)):
+        return len(valor.elts) >= 2
+    return False
+
+
 def _duplicados() -> dict:
     # 1. Tablas constantes idénticas por AST
     tablas: dict[str, list[tuple[str, str]]] = collections.defaultdict(list)
@@ -111,15 +120,16 @@ def _duplicados() -> dict:
             except SyntaxError:
                 continue
             rel = str(p.relative_to(ROOT))
-            # Tablas: asignaciones de nivel módulo cuyo valor es un literal contenedor
+            # Tablas: asignaciones de nivel módulo cuyo valor es un contenedor literal
+            # (dict, list, tuple, set) con al menos 2 elementos. Los escalares no son tablas.
             for nodo in t.body:
                 if isinstance(nodo, ast.Assign):
                     for target in nodo.targets:
-                        if isinstance(target, ast.Name) and target.id.isupper():
+                        if isinstance(target, ast.Name) and target.id.isupper() and _es_tabla(nodo.value):
                             dump = _ast_dump_canonico(nodo.value)
                             tablas[dump].append((target.id, rel))
                 elif isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name):
-                    if nodo.target.id.isupper() and nodo.value is not None:
+                    if nodo.target.id.isupper() and nodo.value is not None and _es_tabla(nodo.value):
                         dump = _ast_dump_canonico(nodo.value)
                         tablas[dump].append((nodo.target.id, rel))
             # Funciones con cuerpo idéntico (>= 2 statements, sin docstring al inicio)
