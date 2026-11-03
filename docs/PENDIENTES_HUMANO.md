@@ -4,9 +4,12 @@ Orden por urgencia. Cada entrada: qué se necesita, por qué, la opción que rec
 
 ---
 
-## P-01 — ~~¿Cuentan como N/A `guardian` y `nesting_presets` en el gate de M0?~~ **Decidido por el ejecutor: N/A**
+## P-01 — ~~¿Cuentan como N/A `guardian` y `nesting_presets` en el gate de M0?~~ **Revisado: `guardian` tiene golden; `nesting_presets` pasa a P-10**
 
-Decisión técnica, delegada por el usuario y revertible. Sin golden. Motivo: no hay cálculo que proteger. Registrado en `goldens_origen.md` y `DEUDA_TECNICA.md` (D-02). Si el usuario quiere un golden de efectos sobre el documento, se abre una tarea.
+- `guardian`: **ya no es N/A.** La decisión anterior se basó en una premisa falsa: el módulo tiene 3 funciones que reciben un documento y lo modifican. Golden de 9 entradas desde `b78de04`, verificado OK contra el código actual (ver `goldens_origen.md`, sección "Guardián").
+- `nesting_presets`: **no es N/A todavía.** Tiene 9 métodos estáticos, pero no carga en `b78de04` (`NameError` al importar). Ver P-10.
+
+El texto original sigue abajo, para historial.
 
 (Texto original, para historial:)
 
@@ -45,15 +48,17 @@ Implementado: `_serializar` representa `App.Rotation` por eje y ángulo. Golden 
 - **Recomiendo:** revisar y ejecutar cada archivo directamente. Si cae, dejar `os._exit` ahí y documentarlo. O bien reemplazar el bloque por `liberar_widgets()` de `tests/soporte/qt.py`.
 - **Bloquea:** nada del plan. Están fuera de la rama. No los commiteo.
 
-## P-05 — Revisar los goldens sustituidos (no bloquea)
+## P-05 — Aprobar los goldens sustituidos (no bloquea)
 
-- **Qué:** tres goldens cambian respecto a lo commiteado. Commit `692b76a`.
-  - `creacion_modulos.json`: sustituido. El anterior tenía otro esquema y ningún generador.
-  - `coco_spaces.json`: sustituido. El anterior tenía 3/3 entradas en error.
-  - `puerta_despiece.json`: sustituido. El anterior tenía **8/8 entradas en error**: no probaba nada.
-- **Por qué:** el plan exige aprobación humana de los cambios de golden. La procedencia (`b78de04`) está en `docs/metricas/goldens_origen.md`.
-- **Recomiendo:** aprobar. Los nuevos son generados desde `b78de04` y el código actual los reproduce con 0 diferencias.
-- **Bloquea:** nada. Las instrucciones de esta noche permiten commitear goldens generados desde `b78de04` con procedencia documentada. Queda como revisión humana, no como bloqueo.
+Tres goldens cambian respecto a lo commiteado en `692b76a^`. Cada cambio es una salida esperada distinta, así que va aquí. Detalle en `goldens_origen.md`, sección "Revisión de goldens sustituidos".
+
+- **`creacion_modulos.json`** — antes: 4 flujos, 1 entrada cada uno, esquema plano (props + volumen), sin `make_puerta`, sin generador en el repo. Ahora: 5 flujos × 3 entradas, con `caja`, `label`, `n_solidos`, `props`, `volumen`. **Volúmenes iguales** en los 4 flujos que ya existían (4320000, 28639296, 3866400, 7417634.708). **Cambia el esquema.** `make_cajon` pasa de 7417634.707993 a 7417634.708: redondeo a 3 decimales, no cambio de valor.
+- **`coco_spaces.json`** — antes: 3/3 entradas en **error** (faltaban 5 argumentos). Ahora: 3/3 entradas con **salida**. Cambia una salida esperada de error a valor.
+- **`puerta_despiece.json`** — antes: 8/8 entradas en **error**. Ahora: 9 entradas con salida. Igual que el anterior: de error a valor.
+
+- **Por qué necesita aprobación:** el golden anterior no probaba nada en dos casos, y el nuevo cambia lo que se espera. El cambio de error a valor es el único que altera un resultado esperado.
+- **Recomiendo:** aprobar. Los nuevos vienen de `b78de04` y el código actual los reproduce con 0 diferencias (verificado en `goldens_origen.md`).
+- **Bloquea:** nada. Pero los goldens nuevos siguen sin aprobación humana formal hasta que tú lo confirmes.
 
 ## P-06 — ¿Dónde vive `rotacion_z`?
 
@@ -68,6 +73,29 @@ Implementado: `_serializar` representa `App.Rotation` por eje y ángulo. Golden 
 - **Por qué no lo decido yo:** unificar sin saber si significan lo mismo puede cambiar el comportamiento de la UI sin que ningún golden lo detecte. Los goldens cubren `core`, no la UI.
 - **Recomiendo:** confirmar el significado. Si es el mismo, un solo nombre en `core/vdo_reengrose.py`. Si no, son dos conceptos y se documentan así.
 - **Bloquea:** H-04 en M2.
+
+## P-08 — ¿Cómo se rompe el ciclo core ↔ cad?
+
+- **Qué:** medido con AST (`docs/INVENTARIO_HECHOS.md`, sección "Ciclo core ↔ cad (P-08)"). Hay **4 imports de `core` a `cad`**: `forma_ref` en `vdo_coco_core`, `vdo_coco_spaces` y `vdo_panel_core`, y `add_common_props` en `vdo_module_props`. El test `test_core_no_importa_app_ui_cad` ya falla con esa lista exacta.
+- **Ciclo real:** solo uno cruza core y cad: `core/vdo_module_props` → `cad/propiedades` → (import diferido) `cad/colocacion` → `core/vdo_module_props`. Los 3 `forma_ref` son violación de capa, no ciclo.
+- **Opciones:**
+  1. (recomendada) `core` recibe la forma ya construida desde quien llama (`cad` o `app`), y `add_common_props` se llama desde `cad` en vez de desde `core/vdo_module_props`. Hay que medir antes cuántas funciones de `core` usan `forma_ref` (no lo he medido todavía; el inventario solo cuenta imports).
+  2. Mover `geometria.forma_ref` a `core` si no usa `App`. Hay que comprobarlo antes; si usa `App`, no es posible.
+- **Bloquea:** cualquier cambio en `core/vdo_module_props.py` y en los 3 módulos que importan `forma_ref`. Sin esta decisión no toco esos ficheros, según el encargo.
+
+## P-09 — Sin definir
+
+El encargo de esta sesión cita P-09 como pendiente. Ningún documento del repo ni commit de la rama lo define. **Hace falta que lo definas, o que lo retires del encargo.** No inventé su contenido.
+
+## P-10 — ¿Qué golden tiene `nesting_presets`?
+
+- **Qué:** `nesting_presets` tiene 9 métodos estáticos (`get_preset`, `save_preset`, `delete_preset`, `get_all_presets`, etc.) que leen y escriben las preferencias de FreeCAD. Pero en `b78de04` **el módulo no carga**: al importarlo, `initialize_defaults()` llama a `FreeCAD.ParamGet` sin tener `FreeCAD` en el ámbito (`NameError`, medido con `freecadcmd`). No hay comportamiento de origen que capturar.
+- **Opciones:**
+  1. (recomendada) Golden desde `b78de04` con un **shim** en el driver que define `FreeCAD` antes de importar el módulo. El golden registra el comportamiento previsto por el código, **no el de origen**, y queda marcado así en `goldens_origen.md`. Se registra aparte el fallo de carga de `b78de04` como hallazgo.
+  2. Aceptar N/A con motivo escrito, como hasta ahora, y dejar el módulo sin golden.
+  3. Generar el golden desde el código actual (HEAD). **No lo hago**: el plan lo prohíbe sin aprobación humana, porque hacerlo pasar contra el código actual no prueba nada.
+- **Procedimiento para (1):** habría que escribir un adaptador que fije la preferencia `Presets` antes de cada llamada, y que se niegue a correr fuera de un HOME temporal, para no tocar las preferencias del usuario. Ese adaptador se escribió durante esta sesión y se retiró antes de commitear, porque no había golden que generar. Hay que reescribirlo si eliges (1).
+- **Bloquea:** el gate de M0 (19 goldens). Sin esta decisión M0 queda **parcial** con 18 de 19 cubiertos.
 
 ---
 

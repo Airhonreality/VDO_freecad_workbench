@@ -115,12 +115,54 @@ Hay que elegir un solo sitio. `core/` no puede importar `App` (MN-03), así que 
 
 ---
 
+## Ciclo core ↔ cad (P-08)
+
+Medido con AST sobre `freecad/vdo/` (un `ast.parse` por fichero; no con grep). Cuenta imports de nivel superior y dentro de funciones.
+
+**Imports de `core` hacia `cad` (violan MN-03): 4**
+
+| Fichero | Línea | Import |
+|---|---|---|
+| `core/vdo_coco_core.py` | 9 | `from freecad.vdo.cad.geometria import forma_ref` |
+| `core/vdo_coco_spaces.py` | 13 | `from freecad.vdo.cad.geometria import forma_ref` |
+| `core/vdo_module_props.py` | 28 | `from freecad.vdo.cad.propiedades import add_common_props` |
+| `core/vdo_panel_core.py` | 20 | `from freecad.vdo.cad.geometria import forma_ref` |
+
+El test `tests/test_arquitectura.py::CapasTests::test_core_no_importa_app_ui_cad` ya falla con esta lista exacta (nivel 1 y nivel 2). No se añade un test nuevo, para no duplicar el fallo.
+
+**Imports de `cad` hacia `core`: 5**
+
+| Fichero | Línea | Import | ¿Dentro de un ciclo? |
+|---|---|---|---|
+| `cad/colocacion.py` | 17 | `from freecad.vdo.core.vdo_module_props import ANCLAJE_DEFAULT` | sí |
+| `cad/colocacion.py` | 52 | `from freecad.vdo.core.vdo_helpers import _get_app` | no (dentro de función) |
+| `cad/propiedades.py` | 16 | `from freecad.vdo.core import vdo_frames` | no |
+| `cad/vdo_guardian.py` | 14 | `from freecad.vdo.core import vdo_defaults` | no |
+| `cad/vdo_guardian.py` | 15 | `from freecad.vdo.core import vdo_manifest` | no |
+
+**Ciclos de importación reales** (componentes fuertemente conexos, Tarjan): 4 componentes. Solo uno cruza core y cad, y es `{cad/colocacion, cad/propiedades, core/vdo_module_props}`:
+
+- `core/vdo_module_props` → `cad/propiedades` (línea 28, nivel superior).
+- `cad/propiedades` → `cad/colocacion` (línea 72, **diferida**, dentro de una función).
+- `cad/colocacion` → `core/vdo_module_props` (línea 17, nivel superior) y → `cad/propiedades` (línea 16, nivel superior).
+
+Los otros 3 componentes están solo en `ui/` (`vdo_inspector_dock`↔`vdo_universal_inspector`; `vdo_coco_unified_task`↔`vdo_drag_handles`↔`vdo_view_providers`; `vdo_cutting_list_preview`↔`vdo_export_cutting_list`). No pertenecen al ciclo core↔cad.
+
+**Lo que esto implica:**
+
+- Los 3 `forma_ref` no forman ciclo: `geometria` no importa de `core`. Son violaciones de capa, no ciclos.
+- El ciclo real es `module_props ↔ colocacion`. El import diferido de `propiedades` no lo rompe a nivel de módulo; para romperlo hay que mover `ANCLAJE_DEFAULT` o `rotacion_z`.
+- `rotacion_z` (P-06) y `add_common_props` (P-08) están en el mismo nudo.
+
+**Pendiente:** P-08 (decisión humana). Bloquea cambios en `core/vdo_module_props.py` y en los 3 módulos que importan `forma_ref`.
+
 ## Decisiones pendientes que bloquean destinos
 
 | Pendiente | Hechos afectados | Qué hay que decidir |
 |---|---|---|
 | **P-06** | H-60 a H-62 | Ubicación única de `rotacion_z`: `cad/` (natural, pero hay usos desde `core/`) o `core/` sin `App` (imposible). |
 | **P-07** | H-04 | `ESQUINAS` (reengrose) y `TIPOS_ENCUENTRO` (UI) tienen el mismo contenido. ¿Son el mismo concepto? |
+| **P-08** | ciclo core ↔ cad | Ver sección "Ciclo core ↔ cad (P-08)" arriba. Bloquea cualquier cambio en `core/vdo_module_props.py` y en los módulos que importan `forma_ref`. |
 
 Ver `docs/PENDIENTES_HUMANO.md`.
 
