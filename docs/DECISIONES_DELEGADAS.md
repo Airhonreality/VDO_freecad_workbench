@@ -257,3 +257,131 @@ Si `verificar.py` o `minimalismo.py` cuentan estas constantes como estado mutabl
 ### Regla de consulta
 
 Solo se consulta al usuario ante: borrar datos de usuario, cambiar archivos fuera de este repo, o conflicto con otra sesión activa. Lo demás se decide, se registra y se avisa en el informe final.
+
+---
+
+## Registro de ejecución de D-13 a D-18 (sesión del 2026-11-03, cuarta)
+
+**Por qué aquí y no en PROGRESO_MINIMALISMO.md:** al inicio de la sesión había tres procesos `claude` con cwd en este repo (PIDs 36672, 143086 y 264170). El encargo pide confirmar que no hay conflicto antes de escribir en `PROGRESO_MINIMALISMO.md` o `PENDIENTES_HUMANO.md`. No se pudo confirmar. **Pendiente: volcar este registro en PROGRESO cuando se confirme que no hay conflicto.**
+
+### 1. Segfault con código 139 (prioridad máxima)
+
+- **Causa medida:** con `VDO_TEST_OUT` apuntando a un directorio, o a una ruta cuyo padre no existe, la escritura del resumen en `tools/run_tests.py` lanzaba `IsADirectoryError` / `FileNotFoundError` al final. La excepción salía de `main()` sin llamar a `liberar_widgets()`, y freecadcmd terminaba con abort (134) o SIGSEGV (139).
+- **Medido antes del fix, 5 ejecuciones por variante:** directorio existente: 134, 139, 134, 1, 134. Padre inexistente: 139, 139, 134, 139, 134. Ruta válida (control): 1 en las 5.
+- **Corrección** (`0521803`): validación temprana de `VDO_TEST_OUT` con código 2 y mensaje en stderr; `liberar_widgets()` en `finally`.
+- **Medido después:** directorio: 2, 2, 2, 2, 2. Padre inexistente: 2, 2, 2, 2, 2. Control: 1 en las 5.
+- **Prueba:** `tests/test_runner_salida.py`, lanza el runner en un subproceso `python3`.
+- **No diagnosticado:** el mecanismo exacto del abort/SIGSEGV durante el cierre de freecadcmd. Lo que sí está medido es que el disparador es la excepción que escapa de `main()`, y que evitarla elimina el crash en todas las ejecuciones medidas.
+- **Ruido no relacionado:** en todas las ejecuciones aparece `AttributeError: module 'FreeCADGui' has no attribute 'Control'` desde `ui/vdo_view_providers.py:244`. Se captura en el código y no provoca el crash. Queda fuera de este registro.
+
+### 2. D-13: escritura numérica en `cad/vdo_guardian.py` (`1984d9e`)
+
+- `_celda_numerica` usa `Fraction(repr(round(valor, 10)))`. Si numerador o denominador superan 2^53, lanza `ParametroInvalido` de `core/errores.py`.
+- **Premisa no cumplida tal cual:** tras redondear a 10 decimales, el denominador nunca supera 10^10, muy por debajo de 2^53. La rama de error se dispara por el **numerador**. La guarda del denominador se mantiene. La prueba usa `_celda_numerica(1e16)`.
+- **Lista de valores** obtenida con comando sobre el manifiesto (`parametros_globales` y `parametros_locales`): 10 valores, todos numéricos (`/tmp/vdo_seg2/valores_guardian.txt`). La prueba de nivel 2 los lee del manifiesto.
+- **Lectura de vuelta, FreeCAD real, LC_NUMERIC del entorno = locale probado:**
+  ```
+  LOCALE=es_CO.UTF-8 RESULTADO=TODOS_IGUALES n=10
+  LOCALE=C RESULTADO=TODOS_IGUALES n=10
+  ```
+  Valor a valor: `canto_fino` manifiesto 0.4 → celda `'=2 / 5'` → leído 0.4 (IGUAL). `fondo_umbral_delgado` manifiesto 8.0 → celda `'8'` → leído 8 (IGUAL). Las 10 filas son IGUAL en ambos locales.
+
+### 3. D-14: regeneración de `guardian.json` (`d7e5737`)
+
+- Regenerado con `golden.py`, función `regenerar("guardian")`, desde el código de D-13.
+- **Diff comparado campo a campo: 6 cambios, todos en `Params_Melamina!B5` (`canto_fino`):**
+  ```
+  -                "contenido": "0.4",
+  +                "contenido": "=2 / 5",
+  ```
+  (6 entradas: `asegurar_hoja_global[0..2]` y `vdo_guard[0..2]`). Ningún otro campo cambia.
+- `verificar(guardian)` = True. `test_goldens.test_guardian` pasa.
+
+### 4. D-15: documentos guardados con `0` (deuda U-04)
+
+- Búsqueda de solo lectura en este equipo: **23 `.FCStd`**, **7 con hoja de cálculo**, **0 con el alias `canto_fino`**. Ningún documento local afectado.
+- La otra máquina no se ha revisado. Está registrado en `docs/DEUDA_TECNICA.md` (U-04, responsable usuario).
+
+### 5. D-16: literales de dominio (`datos/valores.py`)
+
+- Se crea `freecad/vdo/datos/valores.py` (`MELAMINA_ESTANDAR`, `BLUM_TANDEM`, `OCULTA`, `TIRADOR`) y `freecad/vdo/datos/__init__.py`.
+- **Un commit por grupo:** `9504456` melamina_standar (23), `556d5f8` blum_tandem (14), `570302f` oculta (8), `e66f014` tirador (8). Total: 53.
+- **Alcance:** también se sustituyeron los literales de `app/` (`dto.py`, `casos_uso/consultar_herrajes.py`). El encargo exige 0 fuera de `datos/` y tests, y `app/` estaba dentro de esa medición.
+- `CORREDERA_OCULTA` y `APERTURA_TIRADOR` pasan a ser alias de `OCULTA` y `TIRADOR`, como pide el encargo.
+- **Medido** con `minimalismo.py literales`: 0 fuera de `datos/`.
+- **Golden igual:** nivel 2, `test_goldens` OK en los 14 módulos tras cada grupo.
+
+### 6. D-17: `MODULE_SPECS` (`cfb9794`, `6ec9471`, `6c1c485`)
+
+- **Golden desde `b78de04`:** `git show b78de04:...` + `ast.literal_eval`. 7 módulos, orden de claves original. Se guarda en `tests/golden/module_specs.json`. Procedencia en `goldens_origen.md`.
+- **Condición comprobada antes de mover:** el valor de `MODULE_SPECS` en HEAD (con constantes resueltas) es igual al de `b78de04`. `IGUALES (valor, nombres resueltos): True`.
+- **Movido** a `freecad/vdo/datos/modulos.json`. `core/vdo_module_specs.py` pasa de 196 a 41 líneas y conserva las funciones.
+- **Error mío registrado:** `cfb9794` se commiteó con una prueba que comparaba tuplas con listas. Fallaba en el nivel 1. Se corrigió en `6ec9471` normalizando ambos lados por JSON. El golden no cambió. El fallo se detectó tras el commit, no antes.
+- **Diferencia de representación:** las tuplas de `factory` son listas en JSON. `_resolver` las desempaqueta igual.
+
+### 7. D-18: estado de solo lectura (`89a1677`)
+
+- `VDO_MANIFEST` (`core/vdo_manifest.py`) y `_MANIFEST` (`core/vdo_cajon_despiece.py`) son `MappingProxyType`. Asignar lanza `TypeError`. Prueba: `tests/test_estado_solo_lectura.py`.
+- **Límite:** la inmutabilidad es superficial, como decide D-18. Los sub-dicts siguen siendo dicts. Ningún código los muta (verificado con grep).
+- **`_CATALOGO`: no existe en el código.** No se aplica. No hay ninguna variable con ese nombre (buscado en `freecad/`, `tools/` y `tests/`). La premisa no se cumple.
+- **Regla R5 de `verificar.py`: no se cambia.** `"_MANIFEST".isupper()` es `True` en Python, así que R5 nunca lo contó. Ejecutada sobre todo `freecad/vdo/`: **0 hallazgos**.
+
+### 8. Ciclos dentro de `ui/` (punto 7 del encargo)
+
+- Tres componentes. Ninguno se rompe moviendo constantes o datos. Las aristas son funciones o clases, y las constantes `PAGE_*` no rompen el ciclo porque el dock también necesita la clase.
+- Requieren mover lógica entre módulos de UI, así que quedan en `docs/DEUDA_TECNICA.md` como **U-01, U-02 y U-03** (responsable ejecutor, fecha M5).
+
+### 9. M2 y M3
+
+- **M2 cierra** según el gate del encargo: literales fuera de `datos/` = 0; `MODULE_SPECS` en `datos/` con golden igual; tablas idénticas = 0.
+- **Reserva:** el plan (§6, M2) también pide reducir las líneas de `core/vdo_hardware_hub.py`. No se cumple: 301 → 303 líneas (+2 por el import de `CATALOGO_PATH` y el de `valores`). Se declara aquí; no cambia el gate del encargo.
+- **M3 empieza y se cierra** (`e88ce23`, `602f686`). Tabla única en `core/aperturas.py`:
+  - Verificado: `LEGADO_A_CONTRATO` (11 claves), `DESCUENTO_ALTO` y el orden del selector son iguales a HEAD.
+  - **Único cambio de salida:** el orden de `SISTEMAS_APERTURA_VALIDOS` (solo aparece en el texto del error de validación).
+  - Goldens `cajon_despiece`, `puerta_despiece` y `facade_contract`: OK, sin cambio. Snapshots de despiece: **13/13 OK**.
+  - Gate "una sola definición de cada sistema": verificado con grep. Ninguna definición de `APERTURA_*`, `necesita_*`, `APERTURA_LABELS`, `APERTURA_LEGADO`, `APERTURA_DESCUENTO`, `_normalizar` ni `SISTEMAS_APERTURA =` queda fuera de `core/aperturas.py`. `minimalismo.py` no tiene subcomando para reglas de apertura, así que el gate usa grep.
+  - Los motores de cajón y puerta no se unifican (MN-06).
+  - El `except ImportError` del cajón desaparece: ya no se traga ningún error de import.
+
+### Medición final (salidas literales resumidas)
+
+```
+$ VDO_TEST_DIR=tests VDO_TEST_OUT=... python3 -I tools/run_tests.py       # nivel 1
+RESUMEN ejecutados=291 fallos=3 errores=0 skip=114 no_ejecutado=0
+  FALLO test_arquitectura (3, los de siempre)
+
+$ VDO_TEST_DIR=tests VDO_TEST_OUT=... freecadcmd tools/run_tests.py       # nivel 2, 3 ejecuciones
+RUN 1 EXIT=1 SIGSEGV=0 RESUMEN ejecutados=289 fallos=3 errores=0 skip=26 no_ejecutado=0
+RUN 2 EXIT=1 SIGSEGV=0 RESUMEN ejecutados=289 fallos=3 errores=0 skip=26 no_ejecutado=0
+RUN 3 EXIT=1 SIGSEGV=0 RESUMEN ejecutados=289 fallos=3 errores=0 skip=26 no_ejecutado=0
+
+$ python3 -I tools/auditoria/ciclos.py
+CICLOS: 3 componentes (todos en ui/)
+
+$ .venv/bin/ruff check . --no-cache --statistics
+Found 294 errors.
+
+$ python3 -I tools/auditoria/minimalismo.py resumen
+capa | archivos | lineas | funciones | api_publica
+core | 27 | 8506 | 304 | 245
+ui   | 33 | 13472 | 513 | 301
+cad  |  5 |  398 |  18 |  13
+app  | 21 |  944 |  42 |  50
+TOTAL | 86 | 23320 | 877 | -
+
+$ minimalismo.py duplicados -> tablas constantes idénticas: 0 ; funciones con cuerpo idéntico: 3
+$ minimalismo.py literales  -> literales vigilados fuera de datos/: 0
+$ minimalismo.py ramas      -> funciones con 4+ ramas if/elif: 12
+$ minimalismo.py tamano     -> archivos > 400 líneas: 17 ; funciones > 60 líneas: 68
+$ minimalismo.py excepciones-> except que tragan errores: 89
+$ minimalismo.py fachadas   -> 0
+```
+
+### Abierto (con causa)
+
+- **M4 a M11:** no iniciadas. El encargo cubre hasta M3.
+- **`test_arquitectura`: 3 fallos**, hasta M5 (decisión del encargo).
+- **Ciclos en `ui/`:** U-01 a U-03 (requieren mover lógica).
+- **Documentos con `0` en la otra máquina:** U-04.
+- **Registro en `PROGRESO_MINIMALISMO.md` y `PENDIENTES_HUMANO.md`:** pendiente, por conflicto potencial con otras sesiones activas.
+- **Ruff 294:** el desglose por carpeta no se ha vuelto a medir en esta sesión. `F821` en `tests/test_single_dock_convergence.py:218` pertenece a P-04, de la otra sesión.
