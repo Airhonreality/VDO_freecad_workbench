@@ -108,6 +108,33 @@ Total: 131 entradas en 15 ficheros (medido con un script sobre `tests/golden/*.j
 |---|---|---|---|
 | `rotacion_z` | `core/vdo_module_props.py` | `core/vdo_helpers.py` **y** `cad/propiedades.py` (dos copias) | El golden se verifica contra `vdo_helpers`. Cuando el módulo original no tiene la función, `golden.py` usa `RELOCALIZADAS`. Comportamiento igual: 0 diferencias. Duplicado registrado en `DEUDA_TECNICA.md` (D-09). |
 
+## Revisión de goldens sustituidos (P-05)
+
+Anterior = `692b76a^` (lo que había commiteado). Ahora = `692b76a`. Pendiente de aprobación humana (`PENDIENTES_HUMANO.md`, P-05).
+
+### `creacion_modulos.json`
+
+- **Antes:** 4 flujos (`crear_pieza`, `make_coco`, `make_zocalo`, `make_cajon`), 1 entrada plana por flujo (nombre, props y volumen). Sin `make_puerta`. No había script que lo generara en el repo.
+- **Por qué estaba mal:** no se podía regenerar ni auditar (sin generador), no cubría `make_puerta` y tenía 1 entrada por flujo, por debajo del mínimo de 3 del plan.
+- **Ahora:** 5 flujos × 3 entradas, con `caja`, `label`, `n_solidos`, `props`, `volumen`. Lo genera `tools/auditoria/golden_creacion.py` (con `GOLDEN_MODO=regenerar`).
+- **¿Altera una salida esperada?** Parcialmente. Los volúmenes de los 4 flujos antiguos son iguales: `crear_pieza` 4320000, `make_coco` 28639296, `make_zocalo` 3866400. `make_cajon` pasa de `7417634.707993` a `7417634.708`: el nuevo golden redondea a 3 decimales; el valor no cambia. **El esquema cambia**, así que el golden no es comparable campo a campo con el anterior.
+
+### `coco_spaces.json`
+
+- **Antes:** 3 entradas, **3 de 3 en error** (`generar_divisiones_matriz() missing 5 required positional arguments`). La llamada usaba la firma equivocada.
+- **Por qué estaba mal:** no probaba nada: todas las entradas eran errores de llamada.
+- **Ahora:** 3 entradas con salida, con la firma de `b78de04` (`divisiones_json`, `ancho_cavidad`, `alto_cavidad`, `fondo`, `espesor`, …). 0 errores.
+- **¿Altera una salida esperada?** **Sí.** Una salida esperada pasa de error a valor. Por eso va a P-05.
+
+### `puerta_despiece.json`
+
+- **Antes:** 8 entradas en 3 funciones, **8 de 8 en error** (argumentos mal nombrados: `ancho`/`alto`/`montaje` en vez de `W_neto`/`H_neto`/`tipo_montaje`).
+- **Por qué estaba mal:** igual que el anterior: no probaba nada.
+- **Ahora:** 9 entradas (3 por función) con las firmas de `b78de04`. 0 errores.
+- **¿Altera una salida esperada?** **Sí.** De error a valor. Va a P-05.
+
+Sin cambios en salidas: los 12 goldens de dominio restantes (incluido `module_props`, con la reubicación de `rotacion_z`) y `guardian`, que es nuevo.
+
 ## Lo que no está verificado
 
 - Los goldens de creación y de geometría se generaron con FreeCAD 1.1.4 en esta
