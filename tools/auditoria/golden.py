@@ -28,6 +28,12 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 GOLDEN_DIR = ROOT / "tests" / "golden"
 
 # Módulos de dominio y sus funciones públicas a cubrir (>= 3 entradas cada una).
+
+def _fixture(nombre: str) -> str:
+    """Texto de un fixture de entrada (tests/fixtures/). Falla si falta."""
+    return (ROOT / "tests" / "fixtures" / nombre).read_text(encoding="utf-8").strip()
+
+
 MODULOS_FUNCIONES: dict[str, list[str]] = {
     "facade_contract": [
         "calcular_fachada_base",
@@ -80,15 +86,24 @@ MODULOS_FUNCIONES: dict[str, list[str]] = {
     # Los siguientes dependen de FreeCAD; se verifican en nivel 2.
     "module_props": [],
     "guardian": [],
-    "zocalo_core": [],
+    "zocalo_core": [
+        "calcular_geometria_zocalo",
+    ],
     "panel_core": [],
     "cajon_core": [],
     "puerta_core": [],
     "coco_core": [],
-    "layout": [],
-    "optimizer_core": [],
+    "layout": [
+        "cavidad_interior",
+    ],
+    "optimizer_core": [
+        "expand_pieces",
+        "optimize",
+    ],
     "nesting_presets": [],
-    "spaces": [],
+    "spaces": [
+        "calcular_espacio_libre",
+    ],
 }
 
 
@@ -100,17 +115,29 @@ def _ruta_golden_py(modulo: str) -> Path:
     return GOLDEN_DIR / f"{modulo}.py"
 
 
-def _serializar(obj):
-    """Serializa un valor a JSON, convirtiendo tuples a listas y sets a listas."""
+_PROFUNDIDAD_MAX = 8
+
+
+def _serializar(obj, _prof=0):
+    """Serializa un valor a JSON, convirtiendo tuples a listas y sets a listas.
+
+    Los objetos de dominio (sin tipo JSON) se representan por sus atributos públicos,
+    con profundidad acotada para no entrar en ciclos.
+    """
     if isinstance(obj, dict):
-        return {k: _serializar(v) for k, v in obj.items()}
+        return {str(k): _serializar(v, _prof + 1) for k, v in obj.items()}
     if isinstance(obj, (list, tuple)):
-        return [_serializar(v) for v in obj]
+        return [_serializar(v, _prof + 1) for v in obj]
     if isinstance(obj, set):
-        return sorted(_serializar(v) for v in obj)
+        return sorted(_serializar(v, _prof + 1) for v in obj)
     if isinstance(obj, float):
         return round(obj, 6)
-    return obj
+    if obj is None or isinstance(obj, (int, str, bool)):
+        return obj
+    if hasattr(obj, "__dict__") and _prof < _PROFUNDIDAD_MAX:
+        atributos = {k: v for k, v in vars(obj).items() if not k.startswith("_")}
+        return {type(obj).__name__: _serializar(atributos, _prof + 1)}
+    return type(obj).__name__
 
 
 def _normalizar(salida):
@@ -283,26 +310,35 @@ def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
         ]
 
     elif modulo == "puerta_despiece":
+        # Firmas de b78de04: calcular_dimensiones_batiente(W_neto, H_neto, tipo_montaje, ...),
+        # cantidad_bisagras(H), posiciones_cazoleta(H, n_bisagras=None, ...).
         entradas["calcular_dimensiones_batiente"] = [
-            {"ancho": 600, "alto": 800, "montaje": "parche"},
-            {"ancho": 600, "alto": 800, "montaje": "semiparche"},
-            {"ancho": 600, "alto": 800, "montaje": "embebida"},
+            {"W_neto": 600, "H_neto": 800, "tipo_montaje": "parche"},
+            {"W_neto": 600, "H_neto": 800, "tipo_montaje": "semiparche"},
+            {"W_neto": 600, "H_neto": 800, "tipo_montaje": "embebida"},
         ]
         entradas["cantidad_bisagras"] = [
-            {"alto": 900},
-            {"alto": 1000},
-            {"alto": 1500},
+            {"H": 900},
+            {"H": 1000},
+            {"H": 1500},
         ]
         entradas["posiciones_cazoleta"] = [
-            {"alto": 800, "n_bisagras": 2},
-            {"alto": 1200, "n_bisagras": 3},
+            {"H": 800, "n_bisagras": 2},
+            {"H": 1200, "n_bisagras": 3},
+            {"H": 1500},
         ]
 
     elif modulo == "coco_spaces":
+        # Firma de b78de04: generar_divisiones_matriz(divisiones_json, ancho_cavidad,
+        # alto_cavidad, fondo, espesor, ..., espacios_x, espacios_y). Con divisiones_json
+        # vacío usa el camino legado (espacios_x/espacios_y).
         entradas["generar_divisiones_matriz"] = [
-            {"ancho": 600.0, "alto": 700.0, "n_divisiones": 3},
-            {"ancho": 1000.0, "alto": 2000.0, "n_divisiones": 4},
-            {"ancho": 400.0, "alto": 500.0, "n_divisiones": 2},
+            {"divisiones_json": _fixture("layout_2x2.json"), "ancho_cavidad": 600.0,
+             "alto_cavidad": 700.0, "fondo": 580.0, "espesor": 18.0},
+            {"divisiones_json": _fixture("layout_3x1.json"), "ancho_cavidad": 1000.0,
+             "alto_cavidad": 2000.0, "fondo": 560.0, "espesor": 18.0},
+            {"divisiones_json": _fixture("layout_1x2.json"), "ancho_cavidad": 400.0,
+             "alto_cavidad": 500.0, "fondo": 580.0, "espesor": 16.0},
         ]
 
     elif modulo == "hardware_hub":
@@ -322,6 +358,61 @@ def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
         entradas["calculate_sliding_doors"] = [
             {"inner_w": 1000.0, "inner_h": 2000.0, "sku": "DUC-KIT-D52", "n_hojas": 2},
             {"inner_w": 1200.0, "inner_h": 2200.0, "sku": "DUC-AL-1535-MAD", "n_hojas": 3},
+        ]
+
+    elif modulo == "zocalo_core":
+        entradas["calcular_geometria_zocalo"] = [
+            {"ancho": 600.0, "fondo": 580.0, "alto_zocalo": 100.0, "espesor_tablero": 18.0},
+            {"ancho": 900.0, "fondo": 560.0, "alto_zocalo": 80.0, "espesor_tablero": 18.0,
+             "tiene_trasera": False},
+            {"ancho": 450.0, "fondo": 580.0, "alto_zocalo": 100.0, "espesor_tablero": 16.0,
+             "amarres_intermedios": 2},
+        ]
+
+    elif modulo == "layout":
+        entradas["cavidad_interior"] = [
+            {"alto": 720.0, "ancho": 600.0, "espesor": 18.0},
+            {"alto": 2100.0, "ancho": 900.0, "espesor": 18.0},
+            {"alto": 500.0, "ancho": 400.0, "espesor": 16.0},
+        ]
+
+    elif modulo == "spaces":
+        entradas["calcular_espacio_libre"] = [
+            {"espacios_json": "", "espacio_total": 600.0, "espesor": 18.0},
+            {"espacios_json": "", "espacio_total": 1000.0, "espesor": 16.0},
+            {"espacios_json": "", "espacio_total": 300.0, "espesor": 18.0},
+        ]
+
+    elif modulo == "optimizer_core":
+        piezas_a = [{"name": "A", "w": 600.0, "h": 700.0, "thickness": 18.0,
+                     "material": "melamina_standar", "cantos": {}}]
+        piezas_b = [
+            {"name": "Lateral", "w": 580.0, "h": 720.0, "thickness": 18.0,
+             "material": "melamina_standar", "cantos": {}},
+            {"name": "Estante #1", "w": 560.0, "h": 600.0, "thickness": 18.0,
+             "material": "melamina_standar", "cantos": {"frente": "FX"}},
+            {"name": "Estante #2", "w": 560.0, "h": 600.0, "thickness": 18.0,
+             "material": "melamina_standar", "cantos": {"frente": "FX"}},
+            {"name": "Fondo", "w": 600.0, "h": 700.0, "thickness": 6.0,
+             "material": "fondo_mdf", "cantos": {}},
+        ]
+        # Pieza mayor que el tablero: debe quedar sin colocar, no excepción.
+        piezas_c = [{"name": "Grande", "w": 2500.0, "h": 1900.0, "thickness": 18.0,
+                     "material": "melamina_standar", "cantos": {}}]
+        entradas["expand_pieces"] = [
+            [{"name": "Lateral", "qty": 2, "width": 580.0, "length": 720.0,
+              "thickness": 18.0, "material": "melamina_standar"}],
+            [{"name": "Estante", "qty": 3, "width": 560.0, "length": 600.0,
+              "thickness": 18.0, "material": "melamina_standar", "cantos": {"frente": "FX"}},
+             {"name": "Tapa", "qty": 1, "width": 600.0, "length": 600.0,
+              "thickness": 18.0, "material": "melamina_standar"}],
+            [{"name": "Fondo", "qty": 1, "width": 600.0, "length": 700.0,
+              "thickness": 6.0, "material": "fondo_mdf"}],
+        ]
+        entradas["optimize"] = [
+            {"pieces": piezas_a, "board_w": 2440.0, "board_h": 1830.0},
+            {"pieces": piezas_b, "board_w": 2440.0, "board_h": 1830.0},
+            {"pieces": piezas_c, "board_w": 2440.0, "board_h": 1830.0},
         ]
 
     return entradas
@@ -352,7 +443,7 @@ def regenerar(modulo: str):
         salidas = []
         for entrada in entradas:
             try:
-                salida = _ejecutar_funcion(mod, fn_name, entrada)
+                salida = _serializar(_ejecutar_funcion(mod, fn_name, entrada))
                 salidas.append({"entrada": entrada, "salida": salida})
             except Exception as exc:
                 salidas.append({"entrada": entrada, "error": str(exc)})
@@ -366,12 +457,13 @@ def regenerar(modulo: str):
 def verificar(modulo: str | None = None) -> bool:
     """Verifica que los golden actuales coincidan con la salida del código."""
     modulos = [modulo] if modulo else list(MODULOS_FUNCIONES.keys())
-    todo_ok = True
+    resultado_global = True
     for mod_name in modulos:
+        todo_ok = True  # estado de ESTE módulo; un fallo previo no debe silenciar el siguiente
         path = _ruta_golden_json(mod_name)
         if not path.exists():
             print(f"FALTA golden: {path}")
-            todo_ok = False
+            resultado_global = False
             continue
         esperado = json.loads(path.read_text(encoding="utf-8"))
         mod = _cargar_modulo(mod_name)
@@ -402,7 +494,9 @@ def verificar(modulo: str | None = None) -> bool:
                     todo_ok = False
         if todo_ok:
             print(f"OK golden: {mod_name}")
-    return todo_ok
+        else:
+            resultado_global = False
+    return resultado_global
 
 
 def main():
