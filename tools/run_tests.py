@@ -96,6 +96,10 @@ def main():
             f.write("{} {}{}\n".format(estado, tid, (" :: " + detalle[:300]) if detalle else ""))
         f.write(f"\nRESUMEN ejecutados={n_ok + n_fail + n_error + n_skip} fallos={n_fail} errores={n_error} skip={n_skip} no_ejecutado={n_no_exec}\n")
     print(f"RESUMEN ejecutados={n_ok + n_fail + n_error + n_skip} fallos={n_fail} errores={n_error} skip={n_skip} no_ejecutado={n_no_exec} -> {salida}")
+    # Código de salida honesto: cualquier FALLO o ERROR devuelve 1 (F19-D1).
+    # Antes el runner salía con 0 aunque hubiera fallos.
+    return 1 if (n_fail or n_error or n_no_exec) else 0
 
 
-main()
+# Sin guard __name__: freecadcmd ejecuta el script con otro __name__ y no entraría.
+sys.exit(main())

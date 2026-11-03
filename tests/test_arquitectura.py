@@ -15,7 +15,10 @@ import ast
 import unittest
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+# tests/test_arquitectura.py -> tests/ -> raíz del repo (dos niveles, no tres).
+# Con tres niveles ROOT era el directorio padre del repo: los escaneos no
+# encontraban archivos y los tests pasaban en vacío (F19.2-ter).
+ROOT = Path(__file__).resolve().parent.parent
 FREECAD = ROOT / "freecad"
 UI = FREECAD / "vdo" / "ui"
 CORE = FREECAD / "vdo" / "core"
@@ -24,9 +27,14 @@ APP = FREECAD / "vdo" / "app"
 
 
 def _py_files(base: Path):
-    if not base.exists():
-        return []
-    return sorted(p for p in base.rglob("*.py") if "__pycache__" not in p.parts)
+    # Un escaneo vacío no es un "cumple": si la carpeta no existe o no tiene
+    # archivos, el test debe fallar y no pasar en vacío.
+    if not base.is_dir():
+        raise AssertionError(f"Carpeta de capa inexistente: {base}")
+    archivos = sorted(p for p in base.rglob("*.py") if "__pycache__" not in p.parts)
+    if not archivos:
+        raise AssertionError(f"Sin archivos .py en la capa: {base}")
+    return archivos
 
 
 def _texto(p: Path) -> str:
