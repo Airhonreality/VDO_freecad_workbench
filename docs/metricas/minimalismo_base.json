@@ -1,0 +1,1945 @@
+{
+  "fase": "M0",
+  "estado": "medido",
+  "commit": "31785b2",
+  "fecha": "2026-11-02T22:08:42",
+  "herramienta": "tools/auditoria/minimalismo.py",
+  "metricas": {
+    "resumen": {
+      "exit": 0,
+      "resultado": {
+        "capas": {
+          "core": {
+            "archivos": 26,
+            "lineas": 8780,
+            "funciones": 308,
+            "api_publica": 249
+          },
+          "ui": {
+            "archivos": 33,
+            "lineas": 13507,
+            "funciones": 513,
+            "api_publica": 301
+          },
+          "cad": {
+            "archivos": 5,
+            "lineas": 380,
+            "funciones": 17,
+            "api_publica": 13
+          },
+          "app": {
+            "archivos": 21,
+            "lineas": 941,
+            "funciones": 42,
+            "api_publica": 50
+          }
+        },
+        "total_archivos": 85,
+        "total_funciones": 880,
+        "total_lineas": 23608,
+        "api_publica": {
+          "core": [
+            "freecad/vdo/core/vdo_cajon_core.py.CajonFeature.execute",
+            "freecad/vdo/core/vdo_cajon_core.py.CajonFeature.dumps",
+            "freecad/vdo/core/vdo_cajon_core.py.CajonFeature.loads",
+            "freecad/vdo/core/vdo_cajon_core.py.make_cajon",
+            "freecad/vdo/core/vdo_cajon_core.py.execute",
+            "freecad/vdo/core/vdo_cajon_core.py.dumps",
+            "freecad/vdo/core/vdo_cajon_core.py.loads",
+            "freecad/vdo/core/vdo_cajon_despiece.py.obtener_marca",
+            "freecad/vdo/core/vdo_cajon_despiece.py.listar_marcas",
+            "freecad/vdo/core/vdo_cajon_despiece.py.seleccionar_guia",
+            "freecad/vdo/core/vdo_cajon_despiece.py.calcular_despiece",
+            "freecad/vdo/core/vdo_cajon_despiece.py.calcular_fachada_base",
+            "freecad/vdo/core/vdo_cajon_despiece.py.aplicar_sistema_apertura",
+            "freecad/vdo/core/vdo_cajon_despiece.py.cantos_por_sistema_apertura",
+            "freecad/vdo/core/vdo_cajon_despiece.py.necesita_descuento_gola",
+            "freecad/vdo/core/vdo_cajon_despiece.py.necesita_bisel_45",
+            "freecad/vdo/core/vdo_coco_core.py.CocoFeature.execute",
+            "freecad/vdo/core/vdo_coco_core.py.CocoFeature.dumps",
+            "freecad/vdo/core/vdo_coco_core.py.CocoFeature.loads",
+            "freecad/vdo/core/vdo_coco_core.py.make_coco",
+            "freecad/vdo/core/vdo_coco_core.py.execute",
+            "freecad/vdo/core/vdo_coco_core.py.dumps",
+            "freecad/vdo/core/vdo_coco_core.py.loads",
+            "freecad/vdo/core/vdo_coco_spaces.py.resolver_tiras",
+            "freecad/vdo/core/vdo_coco_spaces.py.generar_divisiones_matriz",
+            "freecad/vdo/core/vdo_defaults.py.get_param",
+            "freecad/vdo/core/vdo_defaults.py.obtener_mapeo_orientacion",
+            "freecad/vdo/core/vdo_facade_contract.py.calcular_fachada_base",
+            "freecad/vdo/core/vdo_facade_contract.py.aplicar_sistema_apertura",
+            "freecad/vdo/core/vdo_facade_contract.py.necesita_descuento_gola",
+            "freecad/vdo/core/vdo_facade_contract.py.necesita_bisel_45",
+            "freecad/vdo/core/vdo_facade_contract.py.necesita_cantos_45",
+            "freecad/vdo/core/vdo_facade_contract.py.necesita_expulsor_magnetico",
+            "freecad/vdo/core/vdo_facade_contract.py.cantos_por_sistema_apertura",
+            "freecad/vdo/core/vdo_finish.py.cantos_para_rol",
+            "freecad/vdo/core/vdo_finish.py.aplicar_cantos",
+            "freecad/vdo/core/vdo_frames.py.normal",
+            "freecad/vdo/core/vdo_frames.py.opuesto",
+            "freecad/vdo/core/vdo_frames.py.rotar_z",
+            "freecad/vdo/core/vdo_frames.py.normal_global",
+            "freecad/vdo/core/vdo_frames.py.interpretar_lados",
+            "freecad/vdo/core/vdo_frames.py.serializar_lados",
+            "freecad/vdo/core/vdo_frames.py.cargar_exposicion",
+            "freecad/vdo/core/vdo_frames.py.guardar_exposicion",
+            "freecad/vdo/core/vdo_hardware_hub.py.get_hardware",
+            "freecad/vdo/core/vdo_hardware_hub.py.get_family",
+            "freecad/vdo/core/vdo_hardware_hub.py.query_family",
+            "freecad/vdo/core/vdo_hardware_hub.py.resolve_hinge",
+            "freecad/vdo/core/vdo_hardware_hub.py.resolve_sliding",
+            "freecad/vdo/core/vdo_hardware_hub.py.resolve_drawer_slide",
+            "freecad/vdo/core/vdo_hardware_hub.py.calculate_sliding_doors",
+            "freecad/vdo/core/vdo_helpers.py.rotacion_z",
+            "freecad/vdo/core/vdo_layout.py.cavidad_interior",
+            "freecad/vdo/core/vdo_layout.py.Track.to_dict",
+            "freecad/vdo/core/vdo_layout.py.Track.from_dict",
+            "freecad/vdo/core/vdo_layout.py.Track.copy",
+            "freecad/vdo/core/vdo_layout.py.Cell.label",
+            "freecad/vdo/core/vdo_layout.py.Cell.to_dict",
+            "freecad/vdo/core/vdo_layout.py.Cell.from_dict",
+            "freecad/vdo/core/vdo_layout.py.Cell.copy",
+            "freecad/vdo/core/vdo_layout.py.Layout.key",
+            "freecad/vdo/core/vdo_layout.py.Layout.to_dict",
+            "freecad/vdo/core/vdo_layout.py.Layout.dumps",
+            "freecad/vdo/core/vdo_layout.py.Layout.from_dict",
+            "freecad/vdo/core/vdo_layout.py.Layout.loads",
+            "freecad/vdo/core/vdo_layout.py.Layout.copy",
+            "freecad/vdo/core/vdo_layout.py.Layout.add_column",
+            "freecad/vdo/core/vdo_layout.py.Layout.remove_column",
+            "freecad/vdo/core/vdo_layout.py.Layout.add_row",
+            "freecad/vdo/core/vdo_layout.py.Layout.remove_row",
+            "freecad/vdo/core/vdo_layout.py.Layout.set_column_fixed",
+            "freecad/vdo/core/vdo_layout.py.Layout.set_row_fixed",
+            "freecad/vdo/core/vdo_layout.py.Layout.get_cell",
+            "freecad/vdo/core/vdo_layout.py.Layout.column_has_subtree",
+            "freecad/vdo/core/vdo_layout.py.Layout.row_has_subtree",
+            "freecad/vdo/core/vdo_layout.py.Layout.set_split",
+            "freecad/vdo/core/vdo_layout.py.Layout.disable_split",
+            "freecad/vdo/core/vdo_layout.py.Layout.set_cell_fixed",
+            "freecad/vdo/core/vdo_layout.py.Layout.iter_all",
+            "freecad/vdo/core/vdo_layout.py.Layout.find_label",
+            "freecad/vdo/core/vdo_layout.py.Layout.from_legacy",
+            "freecad/vdo/core/vdo_layout.py.ResolvedTrack.end",
+            "freecad/vdo/core/vdo_layout.py.ResolvedTrack.clear_end",
+            "freecad/vdo/core/vdo_layout.py.ResolvedTrack.nominal_start",
+            "freecad/vdo/core/vdo_layout.py.ResolvedTrack.nominal_size",
+            "freecad/vdo/core/vdo_layout.py.ResolvedCell.label",
+            "freecad/vdo/core/vdo_layout.py.ResolvedCell.rect",
+            "freecad/vdo/core/vdo_layout.py.ResolvedCell.nominal_rect",
+            "freecad/vdo/core/vdo_layout.py.ResolvedCell.walk",
+            "freecad/vdo/core/vdo_layout.py.ResolvedLayout.walk_cells",
+            "freecad/vdo/core/vdo_layout.py.ResolvedLayout.total_panels",
+            "freecad/vdo/core/vdo_layout.py.ResolvedLayout.summary",
+            "freecad/vdo/core/vdo_layout.py.resolve_layout",
+            "freecad/vdo/core/vdo_layout.py.to_dict",
+            "freecad/vdo/core/vdo_layout.py.from_dict",
+            "freecad/vdo/core/vdo_layout.py.copy",
+            "freecad/vdo/core/vdo_layout.py.label",
+            "freecad/vdo/core/vdo_layout.py.to_dict",
+            "freecad/vdo/core/vdo_layout.py.from_dict",
+            "freecad/vdo/core/vdo_layout.py.copy",
+            "freecad/vdo/core/vdo_layout.py.key",
+            "freecad/vdo/core/vdo_layout.py.to_dict",
+            "freecad/vdo/core/vdo_layout.py.dumps",
+            "freecad/vdo/core/vdo_layout.py.from_dict",
+            "freecad/vdo/core/vdo_layout.py.loads",
+            "freecad/vdo/core/vdo_layout.py.copy",
+            "freecad/vdo/core/vdo_layout.py.add_column",
+            "freecad/vdo/core/vdo_layout.py.remove_column",
+            "freecad/vdo/core/vdo_layout.py.add_row",
+            "freecad/vdo/core/vdo_layout.py.remove_row",
+            "freecad/vdo/core/vdo_layout.py.set_column_fixed",
+            "freecad/vdo/core/vdo_layout.py.set_row_fixed",
+            "freecad/vdo/core/vdo_layout.py.get_cell",
+            "freecad/vdo/core/vdo_layout.py.column_has_subtree",
+            "freecad/vdo/core/vdo_layout.py.row_has_subtree",
+            "freecad/vdo/core/vdo_layout.py.set_split",
+            "freecad/vdo/core/vdo_layout.py.disable_split",
+            "freecad/vdo/core/vdo_layout.py.set_cell_fixed",
+            "freecad/vdo/core/vdo_layout.py.iter_all",
+            "freecad/vdo/core/vdo_layout.py.find_label",
+            "freecad/vdo/core/vdo_layout.py.from_legacy",
+            "freecad/vdo/core/vdo_layout.py.end",
+            "freecad/vdo/core/vdo_layout.py.clear_end",
+            "freecad/vdo/core/vdo_layout.py.nominal_start",
+            "freecad/vdo/core/vdo_layout.py.nominal_size",
+            "freecad/vdo/core/vdo_layout.py.label",
+            "freecad/vdo/core/vdo_layout.py.rect",
+            "freecad/vdo/core/vdo_layout.py.nominal_rect",
+            "freecad/vdo/core/vdo_layout.py.walk",
+            "freecad/vdo/core/vdo_layout.py.walk_cells",
+            "freecad/vdo/core/vdo_layout.py.total_panels",
+            "freecad/vdo/core/vdo_layout.py.summary",
+            "freecad/vdo/core/vdo_manifest.py.get_material",
+            "freecad/vdo/core/vdo_manifest.py.get_hardware",
+            "freecad/vdo/core/vdo_manifest.py.calcular_costo_material",
+            "freecad/vdo/core/vdo_manifest.py.get_loader",
+            "freecad/vdo/core/vdo_module_specs.py.resolver_panel",
+            "freecad/vdo/core/vdo_module_specs.py.get_spec",
+            "freecad/vdo/core/vdo_nesting_presets.py.NestingPresetManager.get_prefs",
+            "freecad/vdo/core/vdo_nesting_presets.py.NestingPresetManager.initialize_defaults",
+            "freecad/vdo/core/vdo_nesting_presets.py.NestingPresetManager.get_all_presets",
+            "freecad/vdo/core/vdo_nesting_presets.py.NestingPresetManager.get_preset",
+            "freecad/vdo/core/vdo_nesting_presets.py.NestingPresetManager.save_preset",
+            "freecad/vdo/core/vdo_nesting_presets.py.NestingPresetManager.delete_preset",
+            "freecad/vdo/core/vdo_nesting_presets.py.NestingPresetManager.get_preset_names",
+            "freecad/vdo/core/vdo_nesting_presets.py.NestingPresetManager.export_presets_to_json",
+            "freecad/vdo/core/vdo_nesting_presets.py.NestingPresetManager.import_presets_from_json",
+            "freecad/vdo/core/vdo_nesting_presets.py.get_prefs",
+            "freecad/vdo/core/vdo_nesting_presets.py.initialize_defaults",
+            "freecad/vdo/core/vdo_nesting_presets.py.get_all_presets",
+            "freecad/vdo/core/vdo_nesting_presets.py.get_preset",
+            "freecad/vdo/core/vdo_nesting_presets.py.save_preset",
+            "freecad/vdo/core/vdo_nesting_presets.py.delete_preset",
+            "freecad/vdo/core/vdo_nesting_presets.py.get_preset_names",
+            "freecad/vdo/core/vdo_nesting_presets.py.export_presets_to_json",
+            "freecad/vdo/core/vdo_nesting_presets.py.import_presets_from_json",
+            "freecad/vdo/core/vdo_optimizer_core.py.read_cutting_csv",
+            "freecad/vdo/core/vdo_optimizer_core.py.expand_pieces",
+            "freecad/vdo/core/vdo_optimizer_core.py.optimize",
+            "freecad/vdo/core/vdo_optimizer_core.py.optimize_by_group",
+            "freecad/vdo/core/vdo_optimizer_core.py.resumen_global",
+            "freecad/vdo/core/vdo_optimizer_core.py.resumen",
+            "freecad/vdo/core/vdo_optimizer_core.py.inflate",
+            "freecad/vdo/core/vdo_panel_core.py.add_reengrose_props",
+            "freecad/vdo/core/vdo_panel_core.py.aplicar_mapeo_orientacion",
+            "freecad/vdo/core/vdo_panel_core.py.PanelFeature.execute",
+            "freecad/vdo/core/vdo_panel_core.py.PanelFeature.dumps",
+            "freecad/vdo/core/vdo_panel_core.py.PanelFeature.loads",
+            "freecad/vdo/core/vdo_panel_core.py.crear_pieza",
+            "freecad/vdo/core/vdo_panel_core.py.execute",
+            "freecad/vdo/core/vdo_panel_core.py.dumps",
+            "freecad/vdo/core/vdo_panel_core.py.loads",
+            "freecad/vdo/core/vdo_paths.py.ruta_icono",
+            "freecad/vdo/core/vdo_puerta_core.py.PuertaFeature.execute",
+            "freecad/vdo/core/vdo_puerta_core.py.make_puerta",
+            "freecad/vdo/core/vdo_puerta_core.py.execute",
+            "freecad/vdo/core/vdo_puerta_despiece.py.calcular_dimensiones_batiente",
+            "freecad/vdo/core/vdo_puerta_despiece.py.cantidad_bisagras",
+            "freecad/vdo/core/vdo_puerta_despiece.py.posiciones_cazoleta",
+            "freecad/vdo/core/vdo_puerta_despiece.py.cazoleta_tecnica",
+            "freecad/vdo/core/vdo_puerta_despiece.py.bisagras_para_puerta",
+            "freecad/vdo/core/vdo_puerta_despiece.py.masa_puerta",
+            "freecad/vdo/core/vdo_puerta_despiece.py.fuerza_piston_teorica",
+            "freecad/vdo/core/vdo_puerta_despiece.py.piston_recomendado",
+            "freecad/vdo/core/vdo_puerta_despiece.py.descripcion_piston",
+            "freecad/vdo/core/vdo_puerta_despiece.py.calcular_corrediza",
+            "freecad/vdo/core/vdo_puerta_despiece.py.ajuste_altura_apertura",
+            "freecad/vdo/core/vdo_reengrose.py.BordeConfig.offset_borde",
+            "freecad/vdo/core/vdo_reengrose.py.BordeConfig.offset_borde",
+            "freecad/vdo/core/vdo_reengrose.py.BordeConfig.to_dict",
+            "freecad/vdo/core/vdo_reengrose.py.BordeConfig.from_dict",
+            "freecad/vdo/core/vdo_reengrose.py.ReengroseDTO.to_dict",
+            "freecad/vdo/core/vdo_reengrose.py.ReengroseModifier.to_dict",
+            "freecad/vdo/core/vdo_reengrose.py.ReengroseModifier.to_json",
+            "freecad/vdo/core/vdo_reengrose.py.ReengroseModifier.from_dict",
+            "freecad/vdo/core/vdo_reengrose.py.ReengroseModifier.from_json",
+            "freecad/vdo/core/vdo_reengrose.py.normalizar_modificador",
+            "freecad/vdo/core/vdo_reengrose.py.espesor_efectivo",
+            "freecad/vdo/core/vdo_reengrose.py.generar_tiras_perimetrales",
+            "freecad/vdo/core/vdo_reengrose.py.generar_geometria_tiras_perimetrales",
+            "freecad/vdo/core/vdo_reengrose.py.calcular_geometria_reengrose",
+            "freecad/vdo/core/vdo_reengrose.py.calcular_geometria_caja",
+            "freecad/vdo/core/vdo_reengrose.py.extras_por_cara",
+            "freecad/vdo/core/vdo_reengrose.py.resolver_politica_cantos",
+            "freecad/vdo/core/vdo_reengrose.py.despiece_panel",
+            "freecad/vdo/core/vdo_reengrose.py.despiece_caja",
+            "freecad/vdo/core/vdo_reengrose.py.detectar_colision",
+            "freecad/vdo/core/vdo_reengrose.py.calcular_vano_neto_con_reengrose",
+            "freecad/vdo/core/vdo_reengrose.py.orientacion_tira",
+            "freecad/vdo/core/vdo_reengrose.py.vector_anclaje_y",
+            "freecad/vdo/core/vdo_reengrose.py.recortar_tira_contra_tira",
+            "freecad/vdo/core/vdo_reengrose.py.resolver_encuentro_tiras",
+            "freecad/vdo/core/vdo_reengrose.py.resolver_choque_tira_panel",
+            "freecad/vdo/core/vdo_reengrose.py.generar_mocheo_repisa",
+            "freecad/vdo/core/vdo_reengrose.py.desde_objeto",
+            "freecad/vdo/core/vdo_reengrose.py.aplicar_a_objeto",
+            "freecad/vdo/core/vdo_reengrose.py.leer_reengroses",
+            "freecad/vdo/core/vdo_reengrose.py.offset_borde",
+            "freecad/vdo/core/vdo_reengrose.py.offset_borde",
+            "freecad/vdo/core/vdo_reengrose.py.to_dict",
+            "freecad/vdo/core/vdo_reengrose.py.from_dict",
+            "freecad/vdo/core/vdo_reengrose.py.to_dict",
+            "freecad/vdo/core/vdo_reengrose.py.to_dict",
+            "freecad/vdo/core/vdo_reengrose.py.to_json",
+            "freecad/vdo/core/vdo_reengrose.py.from_dict",
+            "freecad/vdo/core/vdo_reengrose.py.from_json",
+            "freecad/vdo/core/vdo_reengrose.py.long_range",
+            "freecad/vdo/core/vdo_reengrose.py.short_range",
+            "freecad/vdo/core/vdo_reengrose.py.wd",
+            "freecad/vdo/core/vdo_reengrose.py.sane",
+            "freecad/vdo/core/vdo_reengrose.py.medidas",
+            "freecad/vdo/core/vdo_spaces.py.SpaceNode.to_dict",
+            "freecad/vdo/core/vdo_spaces.py.SpaceNode.from_dict",
+            "freecad/vdo/core/vdo_spaces.py.serializar_espacios",
+            "freecad/vdo/core/vdo_spaces.py.deserializar_espacios",
+            "freecad/vdo/core/vdo_spaces.py.resolver_espacios_eje",
+            "freecad/vdo/core/vdo_spaces.py.generar_texto_resumen",
+            "freecad/vdo/core/vdo_spaces.py.calcular_espacio_libre",
+            "freecad/vdo/core/vdo_spaces.py.to_dict",
+            "freecad/vdo/core/vdo_spaces.py.from_dict",
+            "freecad/vdo/core/vdo_view_base.py.diagnostico_viewprovider",
+            "freecad/vdo/core/vdo_zocalo_core.py.calcular_geometria_zocalo",
+            "freecad/vdo/core/vdo_zocalo_core.py.ZocaloFeature.execute",
+            "freecad/vdo/core/vdo_zocalo_core.py.ZocaloFeature.dumps",
+            "freecad/vdo/core/vdo_zocalo_core.py.ZocaloFeature.loads",
+            "freecad/vdo/core/vdo_zocalo_core.py.make_zocalo",
+            "freecad/vdo/core/vdo_zocalo_core.py.execute",
+            "freecad/vdo/core/vdo_zocalo_core.py.dumps",
+            "freecad/vdo/core/vdo_zocalo_core.py.loads"
+          ],
+          "ui": [
+            "freecad/vdo/ui/tema.py.estilo_boton",
+            "freecad/vdo/ui/tema.py.get_svg_icon",
+            "freecad/vdo/ui/vdo_bim_bridge.py.ManipuladorBIM.modifyMenuBar",
+            "freecad/vdo/ui/vdo_bim_bridge.py.registrar_integracion_bim",
+            "freecad/vdo/ui/vdo_bim_bridge.py.modifyMenuBar",
+            "freecad/vdo/ui/vdo_box_controller.py.obtener_svg_icon",
+            "freecad/vdo/ui/vdo_box_controller.py._VDOConcentricCenterCanvas.actualizar",
+            "freecad/vdo/ui/vdo_box_controller.py._VDOConcentricCenterCanvas.mousePressEvent",
+            "freecad/vdo/ui/vdo_box_controller.py._VDOConcentricCenterCanvas.paintEvent",
+            "freecad/vdo/ui/vdo_box_controller.py.VDOBoxControllerWidget.resizeEvent",
+            "freecad/vdo/ui/vdo_box_controller.py.VDOBoxControllerWidget.setConfig",
+            "freecad/vdo/ui/vdo_box_controller.py.VDOBoxControllerWidget.getConfig",
+            "freecad/vdo/ui/vdo_box_controller.py.VDOBoxControllerWidget.cargar",
+            "freecad/vdo/ui/vdo_box_controller.py.VDOBoxControllerWidget.leer_modificador",
+            "freecad/vdo/ui/vdo_box_controller.py.VDOBoxControllerWidget.set_dimensiones_panel",
+            "freecad/vdo/ui/vdo_box_controller.py.actualizar",
+            "freecad/vdo/ui/vdo_box_controller.py.mousePressEvent",
+            "freecad/vdo/ui/vdo_box_controller.py.paintEvent",
+            "freecad/vdo/ui/vdo_box_controller.py.resizeEvent",
+            "freecad/vdo/ui/vdo_box_controller.py.setConfig",
+            "freecad/vdo/ui/vdo_box_controller.py.getConfig",
+            "freecad/vdo/ui/vdo_box_controller.py.cargar",
+            "freecad/vdo/ui/vdo_box_controller.py.leer_modificador",
+            "freecad/vdo/ui/vdo_box_controller.py.set_dimensiones_panel",
+            "freecad/vdo/ui/vdo_box_controller.py.on_change",
+            "freecad/vdo/ui/vdo_box_controller.py.calc_gap",
+            "freecad/vdo/ui/vdo_cajon_task.py.PanelHeaderWidget.actualizar",
+            "freecad/vdo/ui/vdo_cajon_task.py.CajonTaskPanel.accept",
+            "freecad/vdo/ui/vdo_cajon_task.py.actualizar",
+            "freecad/vdo/ui/vdo_cajon_task.py.accept",
+            "freecad/vdo/ui/vdo_chassis_widget.py.obtener_svg_icon",
+            "freecad/vdo/ui/vdo_chassis_widget.py._VDOChassisCrossSectionCanvas.update_state",
+            "freecad/vdo/ui/vdo_chassis_widget.py._VDOChassisCrossSectionCanvas.paintEvent",
+            "freecad/vdo/ui/vdo_chassis_widget.py._VDOChassisCrossSectionCanvas.mousePressEvent",
+            "freecad/vdo/ui/vdo_chassis_widget.py.VDOChassisControllerWidget.setChassisConfig",
+            "freecad/vdo/ui/vdo_chassis_widget.py.VDOChassisControllerWidget.getChassisConfig",
+            "freecad/vdo/ui/vdo_chassis_widget.py.update_state",
+            "freecad/vdo/ui/vdo_chassis_widget.py.paintEvent",
+            "freecad/vdo/ui/vdo_chassis_widget.py.mousePressEvent",
+            "freecad/vdo/ui/vdo_chassis_widget.py.setChassisConfig",
+            "freecad/vdo/ui/vdo_chassis_widget.py.getChassisConfig",
+            "freecad/vdo/ui/vdo_chassis_widget.py.on_change",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.CocoPreview2D.set_layout",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.CocoPreview2D.set_selected",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.CocoPreview2D.set_selected_entity",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.CocoPreview2D.set_selected_panel",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.CocoPreview2D.set_selected_reengrose",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.CocoPreview2D.selected",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.CocoPreview2D.mousePressEvent",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.CocoPreview2D.resizeEvent",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.set_layout",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.set_selected",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.set_selected_entity",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.set_selected_panel",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.set_selected_reengrose",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.selected",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.mousePressEvent",
+            "freecad/vdo/ui/vdo_coco_preview2d.py.resizeEvent",
+            "freecad/vdo/ui/vdo_coco_unified_task.py.SpacesTableWidget.dropEvent",
+            "freecad/vdo/ui/vdo_coco_unified_task.py.CocoUnifiedTaskPanel.accept",
+            "freecad/vdo/ui/vdo_coco_unified_task.py.dropEvent",
+            "freecad/vdo/ui/vdo_coco_unified_task.py.accept",
+            "freecad/vdo/ui/vdo_cutting_list_menu.py.mostrar_menu",
+            "freecad/vdo/ui/vdo_cutting_list_menu.py.abrir_lista_corte",
+            "freecad/vdo/ui/vdo_cutting_list_preview.py.CuttingListPreviewPanel.colorear_piezas",
+            "freecad/vdo/ui/vdo_cutting_list_preview.py.CuttingListPreviewPanel.aceptar",
+            "freecad/vdo/ui/vdo_cutting_list_preview.py.CuttingListPreviewPanel.cancelar",
+            "freecad/vdo/ui/vdo_cutting_list_preview.py.mostrar_preview",
+            "freecad/vdo/ui/vdo_cutting_list_preview.py.main",
+            "freecad/vdo/ui/vdo_cutting_list_preview.py.colorear_piezas",
+            "freecad/vdo/ui/vdo_cutting_list_preview.py.aceptar",
+            "freecad/vdo/ui/vdo_cutting_list_preview.py.cancelar",
+            "freecad/vdo/ui/vdo_drag_handles.py.DragableViewProvider.get_panel_class",
+            "freecad/vdo/ui/vdo_drag_handles.py.DragableViewProvider.setEdit",
+            "freecad/vdo/ui/vdo_drag_handles.py.DragableViewProvider.unsetEdit",
+            "freecad/vdo/ui/vdo_drag_handles.py.DragableViewProvider.onChanged",
+            "freecad/vdo/ui/vdo_drag_handles.py.DragableViewProvider.getDisplayModes",
+            "freecad/vdo/ui/vdo_drag_handles.py.DragableViewProvider.getDefaultDisplayMode",
+            "freecad/vdo/ui/vdo_drag_handles.py.get_panel_class",
+            "freecad/vdo/ui/vdo_drag_handles.py.setEdit",
+            "freecad/vdo/ui/vdo_drag_handles.py.unsetEdit",
+            "freecad/vdo/ui/vdo_drag_handles.py.onChanged",
+            "freecad/vdo/ui/vdo_drag_handles.py.getDisplayModes",
+            "freecad/vdo/ui/vdo_drag_handles.py.getDefaultDisplayMode",
+            "freecad/vdo/ui/vdo_export_cutting_list.py.extraer_piezas_panel",
+            "freecad/vdo/ui/vdo_export_cutting_list.py.extraer_piezas_del_documento",
+            "freecad/vdo/ui/vdo_export_cutting_list.py.generar_csv_opencutlist",
+            "freecad/vdo/ui/vdo_export_cutting_list.py.main",
+            "freecad/vdo/ui/vdo_form_builder.py.FormField.crear_widget",
+            "freecad/vdo/ui/vdo_form_builder.py.FormField.valor",
+            "freecad/vdo/ui/vdo_form_builder.py.FormField.set_valor",
+            "freecad/vdo/ui/vdo_form_builder.py.FormBuilder.agregar",
+            "freecad/vdo/ui/vdo_form_builder.py.FormBuilder.widget",
+            "freecad/vdo/ui/vdo_form_builder.py.FormBuilder.valor",
+            "freecad/vdo/ui/vdo_form_builder.py.FormBuilder.set_valor",
+            "freecad/vdo/ui/vdo_form_builder.py.FormBuilder.valores",
+            "freecad/vdo/ui/vdo_form_builder.py.FormBuilder.set_valores",
+            "freecad/vdo/ui/vdo_form_builder.py.FormBuilder.campos_decl",
+            "freecad/vdo/ui/vdo_form_builder.py.crear_widget",
+            "freecad/vdo/ui/vdo_form_builder.py.valor",
+            "freecad/vdo/ui/vdo_form_builder.py.set_valor",
+            "freecad/vdo/ui/vdo_form_builder.py.agregar",
+            "freecad/vdo/ui/vdo_form_builder.py.widget",
+            "freecad/vdo/ui/vdo_form_builder.py.valor",
+            "freecad/vdo/ui/vdo_form_builder.py.set_valor",
+            "freecad/vdo/ui/vdo_form_builder.py.valores",
+            "freecad/vdo/ui/vdo_form_builder.py.set_valores",
+            "freecad/vdo/ui/vdo_form_builder.py.campos_decl",
+            "freecad/vdo/ui/vdo_inspector_dock.py.VDOInspectorDockWidget.closeEvent",
+            "freecad/vdo/ui/vdo_inspector_dock.py.obtener_o_crear_dock_inspector",
+            "freecad/vdo/ui/vdo_inspector_dock.py.closeEvent",
+            "freecad/vdo/ui/vdo_interfaz.py.abrir_panel",
+            "freecad/vdo/ui/vdo_interfaz.py.colocar",
+            "freecad/vdo/ui/vdo_nesting_workflow.py.NestingDialog.init_ui",
+            "freecad/vdo/ui/vdo_nesting_workflow.py.NestingDialog.execute_nesting",
+            "freecad/vdo/ui/vdo_nesting_workflow.py.NestingDialog.execute_nesting_async",
+            "freecad/vdo/ui/vdo_nesting_workflow.py.main",
+            "freecad/vdo/ui/vdo_nesting_workflow.py.init_ui",
+            "freecad/vdo/ui/vdo_nesting_workflow.py.execute_nesting",
+            "freecad/vdo/ui/vdo_nesting_workflow.py.execute_nesting_async",
+            "freecad/vdo/ui/vdo_optimizer_dialog.py.abrir_optimizador",
+            "freecad/vdo/ui/vdo_optimizer_preview.py.render_svg",
+            "freecad/vdo/ui/vdo_optimizer_view.py.BoardView.set_groups",
+            "freecad/vdo/ui/vdo_optimizer_view.py.BoardView.sizeHint",
+            "freecad/vdo/ui/vdo_optimizer_view.py.BoardView.minimumSizeHint",
+            "freecad/vdo/ui/vdo_optimizer_view.py.BoardView.paintEvent",
+            "freecad/vdo/ui/vdo_optimizer_view.py.set_groups",
+            "freecad/vdo/ui/vdo_optimizer_view.py.sizeHint",
+            "freecad/vdo/ui/vdo_optimizer_view.py.minimumSizeHint",
+            "freecad/vdo/ui/vdo_optimizer_view.py.paintEvent",
+            "freecad/vdo/ui/vdo_panel_task.py.PanelTaskPanel.accept",
+            "freecad/vdo/ui/vdo_panel_task.py.accept",
+            "freecad/vdo/ui/vdo_placement.py.ColocadorModulo.iniciar",
+            "freecad/vdo/ui/vdo_placement.py.iniciar_colocacion",
+            "freecad/vdo/ui/vdo_placement.py.iniciar",
+            "freecad/vdo/ui/vdo_plano_cero.py.mostrar_plano_cero",
+            "freecad/vdo/ui/vdo_puerta_task.py.PanelHeaderWidget.set_pieza",
+            "freecad/vdo/ui/vdo_puerta_task.py.PanelHeaderWidget.clear",
+            "freecad/vdo/ui/vdo_puerta_task.py.PuertaTaskPanel.accept",
+            "freecad/vdo/ui/vdo_puerta_task.py.set_pieza",
+            "freecad/vdo/ui/vdo_puerta_task.py.clear",
+            "freecad/vdo/ui/vdo_puerta_task.py.accept",
+            "freecad/vdo/ui/vdo_qt.py.VDO_DoubleSpinBox.validate",
+            "freecad/vdo/ui/vdo_qt.py.VDO_DoubleSpinBox.valueFromText",
+            "freecad/vdo/ui/vdo_qt.py.VDO_DoubleSpinBox.fixup",
+            "freecad/vdo/ui/vdo_qt.py.VDO_ExpressionInput.setText",
+            "freecad/vdo/ui/vdo_qt.py.VDO_ExpressionInput.text",
+            "freecad/vdo/ui/vdo_qt.py.VDO_ExpressionInput.setValue",
+            "freecad/vdo/ui/vdo_qt.py.VDO_ExpressionInput.value",
+            "freecad/vdo/ui/vdo_qt.py.VDO_ExpressionInput.value_float",
+            "freecad/vdo/ui/vdo_qt.py.VDO_ExpressionInput.setEnabled",
+            "freecad/vdo/ui/vdo_qt.py.VDO_ExpressionInput.isEnabled",
+            "freecad/vdo/ui/vdo_qt.py.VDO_ExpressionInput.setReadOnly",
+            "freecad/vdo/ui/vdo_qt.py.validate",
+            "freecad/vdo/ui/vdo_qt.py.valueFromText",
+            "freecad/vdo/ui/vdo_qt.py.fixup",
+            "freecad/vdo/ui/vdo_qt.py.setText",
+            "freecad/vdo/ui/vdo_qt.py.text",
+            "freecad/vdo/ui/vdo_qt.py.setValue",
+            "freecad/vdo/ui/vdo_qt.py.value",
+            "freecad/vdo/ui/vdo_qt.py.value_float",
+            "freecad/vdo/ui/vdo_qt.py.setEnabled",
+            "freecad/vdo/ui/vdo_qt.py.isEnabled",
+            "freecad/vdo/ui/vdo_qt.py.setReadOnly",
+            "freecad/vdo/ui/vdo_reengrose_ui.py.VDOBoardPreview.set_estado",
+            "freecad/vdo/ui/vdo_reengrose_ui.py.VDOBoardPreview.paintEvent",
+            "freecad/vdo/ui/vdo_reengrose_ui.py.ReengroseBorderEditor.cargar",
+            "freecad/vdo/ui/vdo_reengrose_ui.py.ReengroseBorderEditor.leer_modificador",
+            "freecad/vdo/ui/vdo_reengrose_ui.py.ReengroseBorderEditor.set_activar_si_vacio",
+            "freecad/vdo/ui/vdo_reengrose_ui.py.set_estado",
+            "freecad/vdo/ui/vdo_reengrose_ui.py.paintEvent",
+            "freecad/vdo/ui/vdo_reengrose_ui.py.cargar",
+            "freecad/vdo/ui/vdo_reengrose_ui.py.leer_modificador",
+            "freecad/vdo/ui/vdo_reengrose_ui.py.set_activar_si_vacio",
+            "freecad/vdo/ui/vdo_reengrose_ui.py.color_borde",
+            "freecad/vdo/ui/vdo_registro.py.registrar_piezas",
+            "freecad/vdo/ui/vdo_selection_bridge.py.VDOSelectionBridge.attach",
+            "freecad/vdo/ui/vdo_selection_bridge.py.VDOSelectionBridge.detach",
+            "freecad/vdo/ui/vdo_selection_bridge.py.VDOSelectionBridge.classify_object",
+            "freecad/vdo/ui/vdo_selection_bridge.py.VDOSelectionBridge.addSelection",
+            "freecad/vdo/ui/vdo_selection_bridge.py.VDOSelectionBridge.clearSelection",
+            "freecad/vdo/ui/vdo_selection_bridge.py.VDOSelectionBridge.ultimo_objeto",
+            "freecad/vdo/ui/vdo_selection_bridge.py.VDOSelectionBridge.ultimo_tipo",
+            "freecad/vdo/ui/vdo_selection_bridge.py.VDOSelectionBridge.esta_activo",
+            "freecad/vdo/ui/vdo_selection_bridge.py.attach",
+            "freecad/vdo/ui/vdo_selection_bridge.py.detach",
+            "freecad/vdo/ui/vdo_selection_bridge.py.classify_object",
+            "freecad/vdo/ui/vdo_selection_bridge.py.addSelection",
+            "freecad/vdo/ui/vdo_selection_bridge.py.clearSelection",
+            "freecad/vdo/ui/vdo_selection_bridge.py.ultimo_objeto",
+            "freecad/vdo/ui/vdo_selection_bridge.py.ultimo_tipo",
+            "freecad/vdo/ui/vdo_selection_bridge.py.esta_activo",
+            "freecad/vdo/ui/vdo_task_base.py.cerrar_dialogo",
+            "freecad/vdo/ui/vdo_task_base.py.VDOTransactionMixin.reject",
+            "freecad/vdo/ui/vdo_task_base.py.VDOTransactionMixin.clicked",
+            "freecad/vdo/ui/vdo_task_base.py.VDOTransactionMixin.getStandardButtons",
+            "freecad/vdo/ui/vdo_task_base.py.VDOTransactionMixin.helpRequested",
+            "freecad/vdo/ui/vdo_task_base.py.reject",
+            "freecad/vdo/ui/vdo_task_base.py.clicked",
+            "freecad/vdo/ui/vdo_task_base.py.getStandardButtons",
+            "freecad/vdo/ui/vdo_task_base.py.helpRequested",
+            "freecad/vdo/ui/vdo_universal_inspector.py._BreadcrumbBar.set_ruta",
+            "freecad/vdo/ui/vdo_universal_inspector.py._BreadcrumbBar.limpiar",
+            "freecad/vdo/ui/vdo_universal_inspector.py._MicroHeaderWidget.cargar_dimensiones",
+            "freecad/vdo/ui/vdo_universal_inspector.py.PaginaChasis.cargar_coco",
+            "freecad/vdo/ui/vdo_universal_inspector.py.PaginaVano.get_habitante_config",
+            "freecad/vdo/ui/vdo_universal_inspector.py.PaginaVano.cargar_vano",
+            "freecad/vdo/ui/vdo_universal_inspector.py.PaginaVano.cargar_vano_cell",
+            "freecad/vdo/ui/vdo_universal_inspector.py.PaginaPieza.cargar_panel",
+            "freecad/vdo/ui/vdo_universal_inspector.py.PaginaPieza.cargar_pieza_dict",
+            "freecad/vdo/ui/vdo_universal_inspector.py.PaginaCierre.cargar_cierre",
+            "freecad/vdo/ui/vdo_universal_inspector.py.PaginaCierre.cargar_cierre_desde_config",
+            "freecad/vdo/ui/vdo_universal_inspector.py.VDOUniversalInspectorWidget.cargar_coco",
+            "freecad/vdo/ui/vdo_universal_inspector.py.VDOUniversalInspectorWidget.pagina_actual",
+            "freecad/vdo/ui/vdo_universal_inspector.py.VDOUniversalInspectorWidget.tipo_actual",
+            "freecad/vdo/ui/vdo_universal_inspector.py.VDOUniversalInspectorWidget.objeto_actual",
+            "freecad/vdo/ui/vdo_universal_inspector.py.VDOUniversalInspectorWidget.puente",
+            "freecad/vdo/ui/vdo_universal_inspector.py.VDOUniversalInspectorWidget.cerrar_inspector",
+            "freecad/vdo/ui/vdo_universal_inspector.py.VDOUniversalInspectorWidget.closeEvent",
+            "freecad/vdo/ui/vdo_universal_inspector.py.VDOUniversalInspectorWidget.mostrar_en_freecad",
+            "freecad/vdo/ui/vdo_universal_inspector.py.set_ruta",
+            "freecad/vdo/ui/vdo_universal_inspector.py.limpiar",
+            "freecad/vdo/ui/vdo_universal_inspector.py.cargar_dimensiones",
+            "freecad/vdo/ui/vdo_universal_inspector.py.cargar_coco",
+            "freecad/vdo/ui/vdo_universal_inspector.py.get_habitante_config",
+            "freecad/vdo/ui/vdo_universal_inspector.py.cargar_vano",
+            "freecad/vdo/ui/vdo_universal_inspector.py.cargar_vano_cell",
+            "freecad/vdo/ui/vdo_universal_inspector.py.cargar_panel",
+            "freecad/vdo/ui/vdo_universal_inspector.py.cargar_pieza_dict",
+            "freecad/vdo/ui/vdo_universal_inspector.py.cargar_cierre",
+            "freecad/vdo/ui/vdo_universal_inspector.py.cargar_cierre_desde_config",
+            "freecad/vdo/ui/vdo_universal_inspector.py.cargar_coco",
+            "freecad/vdo/ui/vdo_universal_inspector.py.pagina_actual",
+            "freecad/vdo/ui/vdo_universal_inspector.py.tipo_actual",
+            "freecad/vdo/ui/vdo_universal_inspector.py.objeto_actual",
+            "freecad/vdo/ui/vdo_universal_inspector.py.puente",
+            "freecad/vdo/ui/vdo_universal_inspector.py.cerrar_inspector",
+            "freecad/vdo/ui/vdo_universal_inspector.py.closeEvent",
+            "freecad/vdo/ui/vdo_universal_inspector.py.mostrar_en_freecad",
+            "freecad/vdo/ui/vdo_view_providers.py.VDOViewProviderBase.attach",
+            "freecad/vdo/ui/vdo_view_providers.py.VDOViewProviderBase.getIcon",
+            "freecad/vdo/ui/vdo_view_providers.py.VDOViewProviderBase.get_panel_class",
+            "freecad/vdo/ui/vdo_view_providers.py.VDOViewProviderBase.setupContextMenu",
+            "freecad/vdo/ui/vdo_view_providers.py.VDOViewProviderBase.doubleClicked",
+            "freecad/vdo/ui/vdo_view_providers.py.VDOViewProviderBase.setEdit",
+            "freecad/vdo/ui/vdo_view_providers.py.VDOViewProviderBase.unsetEdit",
+            "freecad/vdo/ui/vdo_view_providers.py.VDOViewProviderBase.claimChildren",
+            "freecad/vdo/ui/vdo_view_providers.py.VDOViewProviderBase.dumps",
+            "freecad/vdo/ui/vdo_view_providers.py.VDOViewProviderBase.loads",
+            "freecad/vdo/ui/vdo_view_providers.py.reparar_viewprovider",
+            "freecad/vdo/ui/vdo_view_providers.py.enfocar_inspector_universal",
+            "freecad/vdo/ui/vdo_view_providers.py.abrir_panel_objeto",
+            "freecad/vdo/ui/vdo_view_providers.py.ViewProviderCoco.get_panel_class",
+            "freecad/vdo/ui/vdo_view_providers.py.ViewProviderCoco.setEdit",
+            "freecad/vdo/ui/vdo_view_providers.py.ViewProviderCoco.doubleClicked",
+            "freecad/vdo/ui/vdo_view_providers.py.ViewProviderCajon.get_panel_class",
+            "freecad/vdo/ui/vdo_view_providers.py.ViewProviderZocalo.get_panel_class",
+            "freecad/vdo/ui/vdo_view_providers.py.ViewProviderPanel.get_panel_class",
+            "freecad/vdo/ui/vdo_view_providers.py.ViewProviderPuerta.get_panel_class",
+            "freecad/vdo/ui/vdo_view_providers.py.attach",
+            "freecad/vdo/ui/vdo_view_providers.py.getIcon",
+            "freecad/vdo/ui/vdo_view_providers.py.get_panel_class",
+            "freecad/vdo/ui/vdo_view_providers.py.setupContextMenu",
+            "freecad/vdo/ui/vdo_view_providers.py.doubleClicked",
+            "freecad/vdo/ui/vdo_view_providers.py.setEdit",
+            "freecad/vdo/ui/vdo_view_providers.py.unsetEdit",
+            "freecad/vdo/ui/vdo_view_providers.py.claimChildren",
+            "freecad/vdo/ui/vdo_view_providers.py.dumps",
+            "freecad/vdo/ui/vdo_view_providers.py.loads",
+            "freecad/vdo/ui/vdo_view_providers.py.get_panel_class",
+            "freecad/vdo/ui/vdo_view_providers.py.setEdit",
+            "freecad/vdo/ui/vdo_view_providers.py.doubleClicked",
+            "freecad/vdo/ui/vdo_view_providers.py.get_panel_class",
+            "freecad/vdo/ui/vdo_view_providers.py.get_panel_class",
+            "freecad/vdo/ui/vdo_view_providers.py.get_panel_class",
+            "freecad/vdo/ui/vdo_view_providers.py.get_panel_class",
+            "freecad/vdo/ui/vdo_widgets_coco.py.PanelHeaderWidget.set_panel",
+            "freecad/vdo/ui/vdo_widgets_coco.py.PanelHeaderWidget.set_strip",
+            "freecad/vdo/ui/vdo_widgets_coco.py.PanelHeaderWidget.clear",
+            "freecad/vdo/ui/vdo_widgets_coco.py.PanelHeaderWidget.cantos_texto",
+            "freecad/vdo/ui/vdo_widgets_coco.py.DivisionesEditor.set_dimensions",
+            "freecad/vdo/ui/vdo_widgets_coco.py.DivisionesEditor.cargar_desde_objeto",
+            "freecad/vdo/ui/vdo_widgets_coco.py.DivisionesEditor.dumps",
+            "freecad/vdo/ui/vdo_widgets_coco.py.DivisionesEditor.dumps_reengroses",
+            "freecad/vdo/ui/vdo_widgets_coco.py.DivisionesEditor.dumps_contenido",
+            "freecad/vdo/ui/vdo_widgets_coco.py.DivisionesEditor.resumen",
+            "freecad/vdo/ui/vdo_widgets_coco.py.DivisionesEditor.tiene_overflow",
+            "freecad/vdo/ui/vdo_widgets_coco.py.set_panel",
+            "freecad/vdo/ui/vdo_widgets_coco.py.set_strip",
+            "freecad/vdo/ui/vdo_widgets_coco.py.clear",
+            "freecad/vdo/ui/vdo_widgets_coco.py.cantos_texto",
+            "freecad/vdo/ui/vdo_widgets_coco.py.set_dimensions",
+            "freecad/vdo/ui/vdo_widgets_coco.py.cargar_desde_objeto",
+            "freecad/vdo/ui/vdo_widgets_coco.py.dumps",
+            "freecad/vdo/ui/vdo_widgets_coco.py.dumps_reengroses",
+            "freecad/vdo/ui/vdo_widgets_coco.py.dumps_contenido",
+            "freecad/vdo/ui/vdo_widgets_coco.py.resumen",
+            "freecad/vdo/ui/vdo_widgets_coco.py.tiene_overflow",
+            "freecad/vdo/ui/vdo_widgets_coco.py.agregar",
+            "freecad/vdo/ui/vdo_zocalo_task.py.ZocaloTaskPanel.accept",
+            "freecad/vdo/ui/vdo_zocalo_task.py.accept"
+          ],
+          "cad": [
+            "freecad/vdo/cad/colocacion.py.leer_rotacion",
+            "freecad/vdo/cad/colocacion.py.ancla_local",
+            "freecad/vdo/cad/colocacion.py.preparar_colocacion",
+            "freecad/vdo/cad/colocacion.py.aplicar_colocacion",
+            "freecad/vdo/cad/geometria.py.forma_ref",
+            "freecad/vdo/cad/propiedades.py.add_common_props",
+            "freecad/vdo/cad/propiedades.py.rotacion_z",
+            "freecad/vdo/cad/propiedades.py.aplicar_rotacion",
+            "freecad/vdo/cad/propiedades.py.ocultar_vista",
+            "freecad/vdo/cad/vdo_guardian.py.asegurar_hoja_global",
+            "freecad/vdo/cad/vdo_guardian.py.asegurar_params_local",
+            "freecad/vdo/cad/vdo_guardian.py.asegurar_documento",
+            "freecad/vdo/cad/vdo_guardian.py.vdo_guard"
+          ],
+          "app": [
+            "freecad/vdo/app/casos_uso/colocar_modulo.py.colocar_modulo",
+            "freecad/vdo/app/casos_uso/colocar_modulo.py.preparar_colocacion",
+            "freecad/vdo/app/casos_uso/colocar_modulo.py.colocar_en_punto",
+            "freecad/vdo/app/casos_uso/consultar_herrajes.py.consultar_herrajes",
+            "freecad/vdo/app/casos_uso/crear_cajon.py.crear_cajon",
+            "freecad/vdo/app/casos_uso/crear_coco.py.crear_coco",
+            "freecad/vdo/app/casos_uso/crear_hoja.py.crear_hoja",
+            "freecad/vdo/app/casos_uso/crear_panel.py.crear_panel",
+            "freecad/vdo/app/casos_uso/crear_puerta.py.crear_puerta",
+            "freecad/vdo/app/casos_uso/crear_zocalo.py.crear_zocalo",
+            "freecad/vdo/app/casos_uso/editar_modulo.py.editar_modulo",
+            "freecad/vdo/app/casos_uso/exportar_lista_corte.py.exportar_lista_corte",
+            "freecad/vdo/app/casos_uso/nesting.py.nesting",
+            "freecad/vdo/app/casos_uso/optimizar_corte.py.optimizar_corte",
+            "freecad/vdo/app/casos_uso/recargar_catalogo.py.recargar_catalogo",
+            "freecad/vdo/app/composicion.py.Contexto.manifiesto",
+            "freecad/vdo/app/composicion.py.Contexto.catalogo",
+            "freecad/vdo/app/composicion.py.contexto",
+            "freecad/vdo/app/composicion.py.manifiesto",
+            "freecad/vdo/app/composicion.py.catalogo",
+            "freecad/vdo/app/puertos.py.Documento.addObject",
+            "freecad/vdo/app/puertos.py.Documento.getObject",
+            "freecad/vdo/app/puertos.py.Documento.removeObject",
+            "freecad/vdo/app/puertos.py.Documento.openTransaction",
+            "freecad/vdo/app/puertos.py.Documento.commitTransaction",
+            "freecad/vdo/app/puertos.py.Documento.abortTransaction",
+            "freecad/vdo/app/puertos.py.Documento.HasPendingTransaction",
+            "freecad/vdo/app/puertos.py.Documento.recompute",
+            "freecad/vdo/app/puertos.py.Documento.ActiveDocument",
+            "freecad/vdo/app/puertos.py.Documento.Name",
+            "freecad/vdo/app/puertos.py.crear_documento",
+            "freecad/vdo/app/puertos.py.addObject",
+            "freecad/vdo/app/puertos.py.getObject",
+            "freecad/vdo/app/puertos.py.removeObject",
+            "freecad/vdo/app/puertos.py.openTransaction",
+            "freecad/vdo/app/puertos.py.commitTransaction",
+            "freecad/vdo/app/puertos.py.abortTransaction",
+            "freecad/vdo/app/puertos.py.HasPendingTransaction",
+            "freecad/vdo/app/puertos.py.recompute",
+            "freecad/vdo/app/puertos.py.ActiveDocument",
+            "freecad/vdo/app/puertos.py.Name",
+            "freecad/vdo/app/registro.py.info",
+            "freecad/vdo/app/registro.py.warning",
+            "freecad/vdo/app/registro.py.error",
+            "freecad/vdo/app/rutas.py.ruta_recursos",
+            "freecad/vdo/app/vdo_creacion.py.crear_modulo_interactivo",
+            "freecad/vdo/app/vdo_creacion.py.cancelar",
+            "freecad/vdo/app/vdo_creacion.py.confirmar",
+            "freecad/vdo/app/vdo_creacion.py.on_accept",
+            "freecad/vdo/app/vdo_creacion.py.on_cancel"
+          ]
+        }
+      }
+    },
+    "duplicados": {
+      "exit": 0,
+      "resultado": {
+        "tablas_identicas": 9,
+        "detalle_tablas": {
+          "Tuple([Constant('norte'), Constant('sur'), Constant('este'), Constant('oeste')], Load())": [
+            [
+              "CANTOS",
+              "freecad/vdo/core/vdo_facade_contract.py"
+            ],
+            [
+              "BORDES",
+              "freecad/vdo/core/vdo_finish.py"
+            ],
+            [
+              "BORDES",
+              "freecad/vdo/core/vdo_reengrose.py"
+            ],
+            [
+              "BORDES",
+              "freecad/vdo/ui/vdo_widgets_coco.py"
+            ]
+          ],
+          "Tuple([Constant('RIG'), Constant('FX'), Constant('SMRG')], Load())": [
+            [
+              "CANTOS_VALIDOS",
+              "freecad/vdo/core/vdo_finish.py"
+            ],
+            [
+              "CANTOS_VALIDOS",
+              "freecad/vdo/core/vdo_panel_core.py"
+            ],
+            [
+              "CANTOS_VALIDOS",
+              "freecad/vdo/core/vdo_reengrose.py"
+            ]
+          ],
+          "List([Constant('inferior_izquierda_frente'), Constant('inferior_derecha_frente'), Constant('inferior_izquierda_fondo'), Constant('inferior_derecha_fondo'), Constant('superior_izquierda_frente'), Constant('superior_derecha_frente'), Constant('superior_izquierda_fondo'), Constant('superior_derecha_fondo'), Constant('centro_inferior')], Load())": [
+            [
+              "ANCLAJES",
+              "freecad/vdo/core/vdo_module_props.py"
+            ],
+            [
+              "ANCLAJES",
+              "freecad/vdo/cad/propiedades.py"
+            ]
+          ],
+          "Dict([Constant('inferior_izquierda_frente'), Constant('inferior_derecha_frente'), Constant('inferior_izquierda_fondo'), Constant('inferior_derecha_fondo'), Constant('superior_izquierda_frente'), Constant('superior_derecha_frente'), Constant('superior_izquierda_fondo'), Constant('superior_derecha_fondo'), Constant('centro_inferior')], [Constant('Inferior izquierda (frente)'), Constant('Inferior derecha (frente)'), Constant('Inferior izquierda (fondo)'), Constant('Inferior derecha (fondo)'), Constant('Superior izquierda (frente)'), Constant('Superior derecha (frente)'), Constant('Superior izquierda (fondo)'), Constant('Superior derecha (fondo)'), Constant('Centro inferior')])": [
+            [
+              "ANCLAJE_LABELS",
+              "freecad/vdo/core/vdo_module_props.py"
+            ],
+            [
+              "ANCLAJE_LABELS",
+              "freecad/vdo/cad/propiedades.py"
+            ]
+          ],
+          "Tuple([Constant('retroceso'), Constant('mocheo'), Constant('interrumpir_tira')], Load())": [
+            [
+              "MODOS_CHOQUE_NUCLEO",
+              "freecad/vdo/core/vdo_reengrose.py"
+            ],
+            [
+              "CHOQUES_NUCLEO",
+              "freecad/vdo/core/vdo_reengrose.py"
+            ]
+          ],
+          "Tuple([Constant('frente'), Constant('fondo'), Constant('izquierda'), Constant('derecha')], Load())": [
+            [
+              "BORDES_2D",
+              "freecad/vdo/core/vdo_reengrose.py"
+            ],
+            [
+              "BORDES",
+              "freecad/vdo/ui/vdo_box_controller.py"
+            ]
+          ],
+          "Tuple([Constant('frente_izquierda'), Constant('frente_derecha'), Constant('fondo_izquierda'), Constant('fondo_derecha')], Load())": [
+            [
+              "ESQUINAS_2D",
+              "freecad/vdo/core/vdo_reengrose.py"
+            ],
+            [
+              "ESQUINAS",
+              "freecad/vdo/ui/vdo_box_controller.py"
+            ]
+          ],
+          "Tuple([Constant('vertical_domina'), Constant('horizontal_domina'), Constant('inglete_45'), Constant('marco_interior')], Load())": [
+            [
+              "ESQUINAS",
+              "freecad/vdo/core/vdo_reengrose.py"
+            ],
+            [
+              "TIPOS_ENCUENTRO",
+              "freecad/vdo/ui/vdo_box_controller.py"
+            ]
+          ],
+          "Dict([Constant('x'), Constant('y'), Constant('z')], [Constant('w'), Constant('h'), Constant('d')])": [
+            [
+              "_DIM",
+              "freecad/vdo/core/vdo_reengrose.py"
+            ],
+            [
+              "_DIM_SOL",
+              "freecad/vdo/cad/geometria.py"
+            ]
+          ]
+        },
+        "cuerpos_identicos": 3,
+        "detalle_cuerpos": {
+          "Assign([Name('idx', Store())], Call(Attribute(Name('combo', Load()), 'findData', Load()), [Name('valor', Load())]))\nIf(Compare(Name('idx', Load()), [GtE()], [Constant(0)]), [Expr(Call(Attribute(Name('combo', Load()), 'setCurrentIndex', Load()), [Name('idx', Load())]))])": [
+            [
+              "_set_combo_data",
+              "freecad/vdo/ui/vdo_box_controller.py",
+              966
+            ],
+            [
+              "_set_combo_data",
+              "freecad/vdo/ui/vdo_panel_task.py",
+              254
+            ],
+            [
+              "_set_combo_data",
+              "freecad/vdo/ui/vdo_reengrose_ui.py",
+              651
+            ],
+            [
+              "_set_combo_data",
+              "freecad/vdo/ui/vdo_widgets_coco.py",
+              1667
+            ]
+          ],
+          "Expr(Call(Attribute(Name('self', Load()), 'reject', Load())))\nExpr(Call(Name('cerrar_dialogo', Load())))": [
+            [
+              "_on_cancel",
+              "freecad/vdo/ui/vdo_cajon_task.py",
+              514
+            ],
+            [
+              "_on_cancel",
+              "freecad/vdo/ui/vdo_coco_unified_task.py",
+              1024
+            ],
+            [
+              "_on_cancel",
+              "freecad/vdo/ui/vdo_panel_task.py",
+              280
+            ],
+            [
+              "_on_cancel",
+              "freecad/vdo/ui/vdo_puerta_task.py",
+              462
+            ],
+            [
+              "_on_cancel",
+              "freecad/vdo/ui/vdo_zocalo_task.py",
+              258
+            ]
+          ],
+          "ImportFrom('freecad.vdo.ui.vdo_coco_unified_task', [alias('CocoUnifiedTaskPanel')], 0)\nReturn(Name('CocoUnifiedTaskPanel', Load()))": [
+            [
+              "get_panel_class",
+              "freecad/vdo/ui/vdo_drag_handles.py",
+              198
+            ],
+            [
+              "get_panel_class",
+              "freecad/vdo/ui/vdo_view_providers.py",
+              260
+            ]
+          ]
+        }
+      }
+    },
+    "literales": {
+      "exit": 0,
+      "resultado": {
+        "vigilados": [
+          "melamina_standar",
+          "blum_tandem",
+          "oculta",
+          "tirador"
+        ],
+        "hallazgos": {
+          "melamina_standar": [
+            "freecad/vdo/core/vdo_cajon_core.py:223",
+            "freecad/vdo/core/vdo_cajon_despiece.py:305",
+            "freecad/vdo/core/vdo_coco_core.py:123",
+            "freecad/vdo/core/vdo_coco_core.py:70",
+            "freecad/vdo/core/vdo_module_specs.py:75",
+            "freecad/vdo/core/vdo_module_specs.py:97",
+            "freecad/vdo/core/vdo_module_specs.py:119",
+            "freecad/vdo/core/vdo_module_specs.py:165",
+            "freecad/vdo/core/vdo_panel_core.py:196",
+            "freecad/vdo/core/vdo_panel_core.py:274",
+            "freecad/vdo/core/vdo_reengrose.py:1187",
+            "freecad/vdo/core/vdo_reengrose.py:1245",
+            "freecad/vdo/core/vdo_zocalo_core.py:70",
+            "freecad/vdo/core/vdo_zocalo_core.py:293",
+            "freecad/vdo/core/vdo_zocalo_core.py:393",
+            "freecad/vdo/ui/vdo_cajon_task.py:499",
+            "freecad/vdo/ui/vdo_export_cutting_list.py:57",
+            "freecad/vdo/ui/vdo_export_cutting_list.py:64",
+            "freecad/vdo/ui/vdo_panel_task.py:219",
+            "freecad/vdo/app/dto.py:22",
+            "freecad/vdo/app/dto.py:69",
+            "freecad/vdo/app/dto.py:97",
+            "freecad/vdo/app/dto.py:116"
+          ],
+          "blum_tandem": [
+            "freecad/vdo/core/vdo_cajon_core.py:462",
+            "freecad/vdo/core/vdo_cajon_core.py:183",
+            "freecad/vdo/core/vdo_cajon_core.py:183",
+            "freecad/vdo/core/vdo_cajon_despiece.py:269",
+            "freecad/vdo/core/vdo_cajon_despiece.py:579",
+            "freecad/vdo/core/vdo_hardware_hub.py:131",
+            "freecad/vdo/core/vdo_hardware_hub.py:263",
+            "freecad/vdo/core/vdo_module_specs.py:52",
+            "freecad/vdo/ui/vdo_cajon_task.py:389",
+            "freecad/vdo/ui/vdo_coco_unified_task.py:1202",
+            "freecad/vdo/ui/vdo_universal_inspector.py:987",
+            "freecad/vdo/ui/vdo_universal_inspector.py:661",
+            "freecad/vdo/ui/vdo_universal_inspector.py:953",
+            "freecad/vdo/app/dto.py:91"
+          ],
+          "oculta": [
+            "freecad/vdo/core/vdo_cajon_despiece.py:22",
+            "freecad/vdo/core/vdo_cajon_despiece.py:123",
+            "freecad/vdo/core/vdo_hardware_hub.py:263",
+            "freecad/vdo/core/vdo_hardware_hub.py:322",
+            "freecad/vdo/ui/vdo_universal_inspector.py:987",
+            "freecad/vdo/ui/vdo_universal_inspector.py:661",
+            "freecad/vdo/ui/vdo_universal_inspector.py:954",
+            "freecad/vdo/app/dto.py:94"
+          ],
+          "tirador": [
+            "freecad/vdo/core/vdo_cajon_despiece.py:53",
+            "freecad/vdo/core/vdo_facade_contract.py:14",
+            "freecad/vdo/core/vdo_puerta_despiece.py:304",
+            "freecad/vdo/ui/vdo_widgets_coco.py:698",
+            "freecad/vdo/app/casos_uso/consultar_herrajes.py:13",
+            "freecad/vdo/app/casos_uso/consultar_herrajes.py:14",
+            "freecad/vdo/app/dto.py:95",
+            "freecad/vdo/app/dto.py:115"
+          ]
+        },
+        "total": 53
+      }
+    },
+    "ramas": {
+      "exit": 0,
+      "resultado": {
+        "funciones_con_ramas": 12,
+        "detalle": {
+          "freecad/vdo/core/vdo_reengrose.py": [
+            {
+              "funcion": "_inglete_clip",
+              "ramas": 4,
+              "linea": 605
+            },
+            {
+              "funcion": "calcular_vano_neto_con_reengrose",
+              "ramas": 4,
+              "linea": 1342
+            }
+          ],
+          "freecad/vdo/ui/vdo_box_controller.py": [
+            {
+              "funcion": "paintEvent",
+              "ramas": 4,
+              "linea": 279
+            },
+            {
+              "funcion": "_actualizar_canvas_concentrico",
+              "ramas": 4,
+              "linea": 867
+            }
+          ],
+          "freecad/vdo/ui/vdo_chassis_widget.py": [
+            {
+              "funcion": "_on_arquetipo_clicked",
+              "ramas": 4,
+              "linea": 902
+            }
+          ],
+          "freecad/vdo/ui/vdo_form_builder.py": [
+            {
+              "funcion": "crear_widget",
+              "ramas": 5,
+              "linea": 45
+            },
+            {
+              "funcion": "set_valor",
+              "ramas": 4,
+              "linea": 97
+            }
+          ],
+          "freecad/vdo/ui/vdo_universal_inspector.py": [
+            {
+              "funcion": "_ir_a_nivel",
+              "ramas": 4,
+              "linea": 1117
+            },
+            {
+              "funcion": "_on_breadcrumb_clicked",
+              "ramas": 4,
+              "linea": 1145
+            },
+            {
+              "funcion": "_on_tree_item_clicked",
+              "ramas": 5,
+              "linea": 1352
+            },
+            {
+              "funcion": "_on_selection_changed",
+              "ramas": 4,
+              "linea": 1508
+            }
+          ],
+          "freecad/vdo/ui/vdo_view_providers.py": [
+            {
+              "funcion": "abrir_panel_objeto",
+              "ramas": 4,
+              "linea": 213
+            }
+          ]
+        }
+      }
+    },
+    "fachadas": {
+      "exit": 0,
+      "resultado": {
+        "fachadas": 0,
+        "detalle": []
+      }
+    },
+    "tamano": {
+      "exit": 0,
+      "resultado": {
+        "archivos_grandes": [
+          {
+            "archivo": "freecad/vdo/core/vdo_cajon_core.py",
+            "lineas": 492
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_cajon_despiece.py",
+            "lineas": 629
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_coco_core.py",
+            "lineas": 624
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_coco_spaces.py",
+            "lineas": 543
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_layout.py",
+            "lineas": 872
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_optimizer_core.py",
+            "lineas": 456
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_reengrose.py",
+            "lineas": 1847
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_zocalo_core.py",
+            "lineas": 409
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_box_controller.py",
+            "lineas": 1232
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_cajon_task.py",
+            "lineas": 570
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_chassis_widget.py",
+            "lineas": 1152
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_unified_task.py",
+            "lineas": 1315
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_hardware_manager.py",
+            "lineas": 422
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_puerta_task.py",
+            "lineas": 508
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_reengrose_ui.py",
+            "lineas": 695
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "lineas": 1605
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_widgets_coco.py",
+            "lineas": 1720
+          }
+        ],
+        "funciones_largas": [
+          {
+            "archivo": "freecad/vdo/core/vdo_cajon_core.py",
+            "funcion": "__init__",
+            "lineas": 93,
+            "linea_inicio": 149
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_cajon_core.py",
+            "funcion": "execute",
+            "lineas": 152,
+            "linea_inicio": 277
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_cajon_despiece.py",
+            "funcion": "obtener_marca",
+            "lineas": 88,
+            "linea_inicio": 107
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_cajon_despiece.py",
+            "funcion": "calcular_despiece",
+            "lineas": 323,
+            "linea_inicio": 239
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_coco_core.py",
+            "funcion": "execute",
+            "lineas": 420,
+            "linea_inicio": 138
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_coco_spaces.py",
+            "funcion": "generar_divisiones_matriz",
+            "lineas": 195,
+            "linea_inicio": 348
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_hardware_hub.py",
+            "funcion": "resolve_drawer_slide",
+            "lineas": 74,
+            "linea_inicio": 263
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_layout.py",
+            "funcion": "_resolver_track",
+            "lineas": 83,
+            "linea_inicio": 625
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_layout.py",
+            "funcion": "_resolver_celda",
+            "lineas": 73,
+            "linea_inicio": 710
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_layout.py",
+            "funcion": "resolve_layout",
+            "lineas": 87,
+            "linea_inicio": 785
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_optimizer_core.py",
+            "funcion": "optimize",
+            "lineas": 87,
+            "linea_inicio": 286
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_panel_core.py",
+            "funcion": "add_reengrose_props",
+            "lineas": 89,
+            "linea_inicio": 29
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_panel_core.py",
+            "funcion": "crear_pieza",
+            "lineas": 101,
+            "linea_inicio": 244
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_puerta_core.py",
+            "funcion": "execute",
+            "lineas": 138,
+            "linea_inicio": 106
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_reengrose.py",
+            "funcion": "normalizar_modificador",
+            "lineas": 102,
+            "linea_inicio": 393
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_reengrose.py",
+            "funcion": "generar_tiras_perimetrales",
+            "lineas": 220,
+            "linea_inicio": 631
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_reengrose.py",
+            "funcion": "calcular_geometria_reengrose",
+            "lineas": 92,
+            "linea_inicio": 904
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_reengrose.py",
+            "funcion": "calcular_geometria_caja",
+            "lineas": 98,
+            "linea_inicio": 1046
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_reengrose.py",
+            "funcion": "despiece_caja",
+            "lineas": 71,
+            "linea_inicio": 1244
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_reengrose.py",
+            "funcion": "resolver_encuentro_tiras",
+            "lineas": 66,
+            "linea_inicio": 1523
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_reengrose.py",
+            "funcion": "resolver_choque_tira_panel",
+            "lineas": 66,
+            "linea_inicio": 1647
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_spaces.py",
+            "funcion": "resolver_espacios_eje",
+            "lineas": 122,
+            "linea_inicio": 100
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_spaces.py",
+            "funcion": "_resolver_subespacios",
+            "lineas": 83,
+            "linea_inicio": 224
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_zocalo_core.py",
+            "funcion": "calcular_geometria_zocalo",
+            "lineas": 189,
+            "linea_inicio": 64
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_box_controller.py",
+            "funcion": "paintEvent",
+            "lineas": 105,
+            "linea_inicio": 279
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_box_controller.py",
+            "funcion": "_construir_ui",
+            "lineas": 232,
+            "linea_inicio": 436
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_box_controller.py",
+            "funcion": "setConfig",
+            "lineas": 95,
+            "linea_inicio": 1027
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_cajon_task.py",
+            "funcion": "_crear_widget",
+            "lineas": 209,
+            "linea_inicio": 151
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_cajon_task.py",
+            "funcion": "_cargar_valores",
+            "lineas": 62,
+            "linea_inicio": 405
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_chassis_widget.py",
+            "funcion": "paintEvent",
+            "lineas": 210,
+            "linea_inicio": 190
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_chassis_widget.py",
+            "funcion": "_init_ui",
+            "lineas": 238,
+            "linea_inicio": 477
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_chassis_widget.py",
+            "funcion": "_aplicar_estilos",
+            "lineas": 112,
+            "linea_inicio": 716
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_chassis_widget.py",
+            "funcion": "_on_arquetipo_clicked",
+            "lineas": 77,
+            "linea_inicio": 902
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_preview2d.py",
+            "funcion": "_construir",
+            "lineas": 93,
+            "linea_inicio": 125
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_unified_task.py",
+            "funcion": "_crear_widget",
+            "lineas": 172,
+            "linea_inicio": 194
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_unified_task.py",
+            "funcion": "_crear_grupo_hijos",
+            "lineas": 73,
+            "linea_inicio": 473
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_unified_task.py",
+            "funcion": "_cargar_valores",
+            "lineas": 73,
+            "linea_inicio": 550
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_unified_task.py",
+            "funcion": "_construir_insertos",
+            "lineas": 73,
+            "linea_inicio": 1031
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_unified_task.py",
+            "funcion": "_construir_cajones",
+            "lineas": 65,
+            "linea_inicio": 1150
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_unified_task.py",
+            "funcion": "accept",
+            "lineas": 97,
+            "linea_inicio": 1216
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_cutting_list_menu.py",
+            "funcion": "mostrar_menu",
+            "lineas": 74,
+            "linea_inicio": 13
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_cutting_list_preview.py",
+            "funcion": "__init__",
+            "lineas": 93,
+            "linea_inicio": 31
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_drag_handles.py",
+            "funcion": "_crear_handles_visuales",
+            "lineas": 83,
+            "linea_inicio": 48
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_export_cutting_list.py",
+            "funcion": "extraer_piezas_del_documento",
+            "lineas": 67,
+            "linea_inicio": 72
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_export_cutting_list.py",
+            "funcion": "generar_csv_opencutlist",
+            "lineas": 87,
+            "linea_inicio": 141
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_hardware_manager.py",
+            "funcion": "_construir_ui",
+            "lineas": 74,
+            "linea_inicio": 108
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_nesting_workflow.py",
+            "funcion": "init_ui",
+            "lineas": 92,
+            "linea_inicio": 40
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_nesting_workflow.py",
+            "funcion": "execute_nesting_async",
+            "lineas": 100,
+            "linea_inicio": 182
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_optimizer_dialog.py",
+            "funcion": "_build_ui",
+            "lineas": 92,
+            "linea_inicio": 30
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_optimizer_preview.py",
+            "funcion": "render_svg",
+            "lineas": 93,
+            "linea_inicio": 38
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_panel_task.py",
+            "funcion": "_crear_widget",
+            "lineas": 126,
+            "linea_inicio": 43
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_panel_task.py",
+            "funcion": "accept",
+            "lineas": 68,
+            "linea_inicio": 284
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_puerta_task.py",
+            "funcion": "_crear_widget",
+            "lineas": 169,
+            "linea_inicio": 141
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_reengrose_ui.py",
+            "funcion": "_construir",
+            "lineas": 139,
+            "linea_inicio": 136
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_reengrose_ui.py",
+            "funcion": "cargar",
+            "lineas": 75,
+            "linea_inicio": 574
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_selection_bridge.py",
+            "funcion": "classify_object",
+            "lineas": 63,
+            "linea_inicio": 89
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "__init__",
+            "lineas": 89,
+            "linea_inicio": 169
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "__init__",
+            "lineas": 207,
+            "linea_inicio": 439
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "_construir_ui",
+            "lineas": 88,
+            "linea_inicio": 1028
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "_actualizar_vista_completa",
+            "lineas": 110,
+            "linea_inicio": 1175
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "_regenerar_arbol_maestro",
+            "lineas": 65,
+            "linea_inicio": 1286
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_widgets_coco.py",
+            "funcion": "_crear_widget",
+            "lineas": 247,
+            "linea_inicio": 144
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_widgets_coco.py",
+            "funcion": "_crear_grupo_reengrose",
+            "lineas": 87,
+            "linea_inicio": 417
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_widgets_coco.py",
+            "funcion": "_pintar_vanos",
+            "lineas": 75,
+            "linea_inicio": 660
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_widgets_coco.py",
+            "funcion": "_piezas_fisicas",
+            "lineas": 93,
+            "linea_inicio": 825
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_widgets_coco.py",
+            "funcion": "_actualizar_inspector",
+            "lineas": 222,
+            "linea_inicio": 1105
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_zocalo_task.py",
+            "funcion": "_crear_widget",
+            "lineas": 123,
+            "linea_inicio": 46
+          },
+          {
+            "archivo": "freecad/vdo/app/vdo_creacion.py",
+            "funcion": "crear_modulo_interactivo",
+            "lineas": 82,
+            "linea_inicio": 46
+          }
+        ]
+      }
+    },
+    "excepciones": {
+      "exit": 0,
+      "resultado": {
+        "excepciones_tragadas": 90,
+        "detalle": [
+          {
+            "archivo": "freecad/vdo/core/vdo_cajon_despiece.py",
+            "funcion": "<modulo>",
+            "linea": 27
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_cajon_despiece.py",
+            "funcion": "<modulo>",
+            "linea": 613
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_cajon_despiece.py",
+            "funcion": "<modulo>",
+            "linea": 124
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_cajon_despiece.py",
+            "funcion": "<modulo>",
+            "linea": 188
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_cajon_despiece.py",
+            "funcion": "<modulo>",
+            "linea": 210
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_cajon_despiece.py",
+            "funcion": "<modulo>",
+            "linea": 168
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_coco_core.py",
+            "funcion": "<modulo>",
+            "linea": 24
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_coco_core.py",
+            "funcion": "<modulo>",
+            "linea": 35
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_coco_core.py",
+            "funcion": "<modulo>",
+            "linea": 44
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_coco_spaces.py",
+            "funcion": "<modulo>",
+            "linea": 30
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_coco_spaces.py",
+            "funcion": "<modulo>",
+            "linea": 177
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_coco_spaces.py",
+            "funcion": "<modulo>",
+            "linea": 294
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_coco_spaces.py",
+            "funcion": "<modulo>",
+            "linea": 332
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_hardware_hub.py",
+            "funcion": "<modulo>",
+            "linea": 15
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_hardware_hub.py",
+            "funcion": "<modulo>",
+            "linea": 148
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_hardware_hub.py",
+            "funcion": "<modulo>",
+            "linea": 291
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_hardware_hub.py",
+            "funcion": "<modulo>",
+            "linea": 325
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_hardware_hub.py",
+            "funcion": "<modulo>",
+            "linea": 235
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_hardware_hub.py",
+            "funcion": "<modulo>",
+            "linea": 303
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_hardware_hub.py",
+            "funcion": "<modulo>",
+            "linea": 315
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_layout.py",
+            "funcion": "<modulo>",
+            "linea": 45
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_layout.py",
+            "funcion": "<modulo>",
+            "linea": 267
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_layout.py",
+            "funcion": "<modulo>",
+            "linea": 431
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_optimizer_core.py",
+            "funcion": "<modulo>",
+            "linea": 84
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_reengrose.py",
+            "funcion": "<modulo>",
+            "linea": 1843
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_reengrose.py",
+            "funcion": "<modulo>",
+            "linea": 1759
+          },
+          {
+            "archivo": "freecad/vdo/core/vdo_spaces.py",
+            "funcion": "<modulo>",
+            "linea": 96
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_bim_bridge.py",
+            "funcion": "<modulo>",
+            "linea": 54
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_cajon_task.py",
+            "funcion": "<modulo>",
+            "linea": 378
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_preview2d.py",
+            "funcion": "<modulo>",
+            "linea": 230
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_preview2d.py",
+            "funcion": "<modulo>",
+            "linea": 303
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_unified_task.py",
+            "funcion": "<modulo>",
+            "linea": 660
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_unified_task.py",
+            "funcion": "<modulo>",
+            "linea": 758
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_unified_task.py",
+            "funcion": "<modulo>",
+            "linea": 1045
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_unified_task.py",
+            "funcion": "<modulo>",
+            "linea": 1053
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_coco_unified_task.py",
+            "funcion": "<modulo>",
+            "linea": 565
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_cutting_list_preview.py",
+            "funcion": "<modulo>",
+            "linea": 165
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_drag_handles.py",
+            "funcion": "<modulo>",
+            "linea": 158
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_export_cutting_list.py",
+            "funcion": "<modulo>",
+            "linea": 52
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_hardware_manager.py",
+            "funcion": "<modulo>",
+            "linea": 95
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_hardware_manager.py",
+            "funcion": "<modulo>",
+            "linea": 371
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_inspector_dock.py",
+            "funcion": "<modulo>",
+            "linea": 15
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_inspector_dock.py",
+            "funcion": "<modulo>",
+            "linea": 61
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_optimizer_dialog.py",
+            "funcion": "<modulo>",
+            "linea": 144
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_optimizer_dialog.py",
+            "funcion": "<modulo>",
+            "linea": 185
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_panel_task.py",
+            "funcion": "<modulo>",
+            "linea": 213
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_placement.py",
+            "funcion": "<modulo>",
+            "linea": 22
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_placement.py",
+            "funcion": "<modulo>",
+            "linea": 27
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_placement.py",
+            "funcion": "<modulo>",
+            "linea": 108
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_placement.py",
+            "funcion": "<modulo>",
+            "linea": 143
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_placement.py",
+            "funcion": "<modulo>",
+            "linea": 180
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_placement.py",
+            "funcion": "<modulo>",
+            "linea": 186
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_placement.py",
+            "funcion": "<modulo>",
+            "linea": 196
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_plano_cero.py",
+            "funcion": "<modulo>",
+            "linea": 36
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_puerta_task.py",
+            "funcion": "<modulo>",
+            "linea": 349
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_puerta_task.py",
+            "funcion": "<modulo>",
+            "linea": 411
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_puerta_task.py",
+            "funcion": "<modulo>",
+            "linea": 438
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_puerta_task.py",
+            "funcion": "<modulo>",
+            "linea": 452
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_qt.py",
+            "funcion": "<modulo>",
+            "linea": 33
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_qt.py",
+            "funcion": "<modulo>",
+            "linea": 39
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_qt.py",
+            "funcion": "<modulo>",
+            "linea": 100
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_selection_bridge.py",
+            "funcion": "<modulo>",
+            "linea": 17
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_selection_bridge.py",
+            "funcion": "<modulo>",
+            "linea": 60
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_selection_bridge.py",
+            "funcion": "<modulo>",
+            "linea": 75
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_selection_bridge.py",
+            "funcion": "<modulo>",
+            "linea": 86
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "<modulo>",
+            "linea": 29
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "<modulo>",
+            "linea": 36
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "<modulo>",
+            "linea": 41
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "<modulo>",
+            "linea": 46
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "<modulo>",
+            "linea": 51
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "<modulo>",
+            "linea": 82
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "<modulo>",
+            "linea": 91
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "<modulo>",
+            "linea": 1189
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "<modulo>",
+            "linea": 1195
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "<modulo>",
+            "linea": 1470
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "<modulo>",
+            "linea": 1591
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_universal_inspector.py",
+            "funcion": "<modulo>",
+            "linea": 1437
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_view_providers.py",
+            "funcion": "<modulo>",
+            "linea": 25
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_view_providers.py",
+            "funcion": "<modulo>",
+            "linea": 161
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_view_providers.py",
+            "funcion": "<modulo>",
+            "linea": 174
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_widgets_coco.py",
+            "funcion": "<modulo>",
+            "linea": 564
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_widgets_coco.py",
+            "funcion": "<modulo>",
+            "linea": 809
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_widgets_coco.py",
+            "funcion": "<modulo>",
+            "linea": 1350
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_widgets_coco.py",
+            "funcion": "<modulo>",
+            "linea": 1636
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_widgets_coco.py",
+            "funcion": "<modulo>",
+            "linea": 942
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_widgets_coco.py",
+            "funcion": "<modulo>",
+            "linea": 411
+          },
+          {
+            "archivo": "freecad/vdo/ui/vdo_widgets_coco.py",
+            "funcion": "<modulo>",
+            "linea": 1156
+          },
+          {
+            "archivo": "freecad/vdo/cad/colocacion.py",
+            "funcion": "<modulo>",
+            "linea": 24
+          },
+          {
+            "archivo": "freecad/vdo/cad/geometria.py",
+            "funcion": "<modulo>",
+            "linea": 73
+          },
+          {
+            "archivo": "freecad/vdo/app/registro.py",
+            "funcion": "<modulo>",
+            "linea": 24
+          }
+        ]
+      }
+    }
+  }
+}
