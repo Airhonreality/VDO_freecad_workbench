@@ -36,12 +36,40 @@ class _Registro(unittest.TestResult):
         super().startTest(test)
 
 
+def _problema_salida(salida):
+    """Motivo por el que no se puede escribir el resumen en ``salida``, o None.
+
+    Se comprueba antes de ejecutar la suite. Si no se comprueba, la escritura falla
+    al final con una excepción que sale del script sin liberar los widgets Qt (causa
+    del SIGSEGV/abort al cerrar, medida con VDO_TEST_OUT apuntando a un directorio).
+    """
+    if os.path.isdir(salida):
+        return "es un directorio; hace falta una ruta de fichero"
+    if not os.path.isdir(os.path.dirname(salida) or "."):
+        return "el directorio padre no existe"
+    return None
+
+
 def main():
     raiz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     directorio = os.path.join(raiz, os.environ["VDO_TEST_DIR"])
     salida = os.path.join(raiz, os.environ["VDO_TEST_OUT"])
+    problema = _problema_salida(salida)
+    if problema:
+        print(f"VDO_TEST_OUT inválido ({salida}): {problema}", file=sys.stderr)
+        return 2
     sys.path.insert(0, raiz)
     sys.path.insert(0, directorio)
+    # Sin guard __name__: freecadcmd ejecuta el script con otro __name__.
+    # Los widgets Qt se liberan en finally: también si la suite lanza una excepción.
+    from tests.soporte.qt import liberar_widgets
+    try:
+        return _ejecutar(directorio, salida)
+    finally:
+        liberar_widgets()
+
+
+def _ejecutar(directorio, salida):
 
     # FreeCADCmd no define FreeCAD.__spec__; importlib.util.find_spec() falla sin él y
     # tumba varios módulos de prueba al importarse. Se define aquí, una vez, para todos.
@@ -102,12 +130,8 @@ def main():
 
 
 # Sin guard __name__: freecadcmd ejecuta el script con otro __name__ y no entraría.
-# Antes de salir se liberan los widgets Qt con Python vivo (ADR-005). No se usa atexit:
-# bajo freecadcmd no se ejecuta.
+# No se usa atexit: bajo freecadcmd no se ejecuta.
 _codigo_salida = main()
-from tests.soporte.qt import liberar_widgets  # noqa: E402 (requiere raiz en sys.path, puesto por main)
-
-liberar_widgets()
 sys.stdout.flush()
 sys.stderr.flush()
 sys.exit(_codigo_salida)
