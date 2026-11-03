@@ -9,7 +9,7 @@ import json
 import FreeCAD as App
 import FreeCADGui as Gui
 
-from freecad.vdo.cad.propiedades import aplicar_rotacion
+from freecad.vdo.cad.colocacion import aplicar_rotacion
 from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core import vdo_module_props
 from freecad.vdo.core.vdo_cajon_core import make_cajon

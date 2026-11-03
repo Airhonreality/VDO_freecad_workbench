@@ -6,7 +6,7 @@
 import FreeCAD as App
 import FreeCADGui as Gui
 
-from freecad.vdo.cad.propiedades import aplicar_rotacion
+from freecad.vdo.cad.colocacion import aplicar_rotacion
 from freecad.vdo.core import vdo_hardware_hub, vdo_module_props
 from freecad.vdo.core.vdo_cajon_despiece import (
     CAJA_METALICA,

@@ -5,7 +5,7 @@
 
 import FreeCAD as App
 
-from freecad.vdo.cad.propiedades import aplicar_rotacion
+from freecad.vdo.cad.colocacion import aplicar_rotacion
 from freecad.vdo.core import vdo_module_props
 from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_DEFAULT,

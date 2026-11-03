@@ -67,18 +67,6 @@ def rotacion_z(grados):
     return App.Rotation(App.Vector(0.0, 0.0, 1.0), float(grados))
 
 
-def aplicar_rotacion(obj, grados):
-    """Aplica rotación Z alrededor del anclaje, manteniéndolo fijo."""
-    from freecad.vdo.cad.colocacion import ancla_local
-    ancla = ancla_local(obj)
-    p = obj.Placement
-    ancla_global = p.multVec(ancla)
-    rot = rotacion_z(grados)
-    base = ancla_global - rot.multVec(ancla)
-    obj.Placement = App.Placement(base, rot)
-    if hasattr(obj, "VDO_RotacionZ"):
-        obj.VDO_RotacionZ = float(grados)
-
 
 
 def ocultar_vista(obj: Any) -> None:

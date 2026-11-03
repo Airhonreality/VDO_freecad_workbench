@@ -60,6 +60,22 @@ def ancla_local(obj: Any, anclaje: str | None = None) -> Any:
     )
 
 
+def aplicar_rotacion(obj: Any, grados: float) -> None:
+    """Aplica rotación Z alrededor del anclaje, manteniéndolo fijo.
+
+    Vive aquí y no en cad/propiedades.py: necesita ancla_local, y propiedades
+    no puede importar colocacion sin crear un ciclo (D-12).
+    """
+    ancla = ancla_local(obj)
+    p = obj.Placement
+    ancla_global = p.multVec(ancla)
+    rot = rotacion_z(grados)
+    base = ancla_global - rot.multVec(ancla)
+    obj.Placement = App.Placement(base, rot)
+    if hasattr(obj, "VDO_RotacionZ"):
+        obj.VDO_RotacionZ = float(grados)
+
+
 @dataclass(frozen=True)
 class PlanColocacion:
     """Rotación y anclaje de un módulo fijados antes de empezar a colocarlo."""
