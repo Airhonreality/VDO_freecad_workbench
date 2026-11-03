@@ -56,6 +56,7 @@ freecadcmd tools/auditoria/golden_creacion.py
 | `reengrose.json` | 18 | 0 | sin cambio |
 | `cajon_despiece.json` | 3 | 0 | sin cambio |
 | `hardware_hub.json` | 9 | 0 | sin cambio |
+| `guardian.json` | 9 (3 funciones × 3 escenarios) | 0 | nuevo, desde `b78de04` (ver sección "Guardián") |
 | `puerta_despiece.json` | 9 | 0 | **cambiado**: el anterior tenía 8 de 8 entradas en error |
 | `coco_spaces.json` | 3 | 0 | **cambiado**: el anterior tenía 3 de 3 entradas en error (firma incorrecta) |
 | `creacion_modulos.json` | 15 (5 flujos × 3) | 0 | **sustituido**: el anterior tenía otro esquema y no tenía generador en el repo |
@@ -65,7 +66,7 @@ freecadcmd tools/auditoria/golden_creacion.py
 | `spaces.json` | 3 | 0 | nuevo |
 | `optimizer_core.json` | 6 | 0 | nuevo |
 
-Total: 122 entradas en 14 ficheros.
+Total: 131 entradas en 15 ficheros (medido con un script sobre `tests/golden/*.json`, 1 entrada en error: `frames.interpretar_lados`).
 
 ## Verificación contra el código actual
 
@@ -80,9 +81,26 @@ Total: 122 entradas en 14 ficheros.
 | Módulo | Motivo |
 |---|---|
 | `panel_core`, `cajon_core`, `puerta_core`, `coco_core` | Son flujos de creación. Cubiertos por `creacion_modulos.json`. |
-| `guardian` | Sin función de cálculo: solo asegura parámetros en el documento. |
-| `nesting_presets` | Sin funciones públicas (solo datos). |
+| `nesting_presets` | **No cubierto. Decisión humana pendiente (P-10).** En `b78de04` el módulo no se puede importar dentro de FreeCAD: `initialize_defaults()` se ejecuta al cargar y llama a `FreeCAD.ParamGet` sin tener `FreeCAD` en el ámbito (`NameError`, medido con `freecadcmd`). No hay comportamiento de origen que capturar. Tiene 9 métodos estáticos (`get_preset`, `save_preset`, etc.); no es "solo datos", como decía la versión anterior de este documento. |
 | — | `module_props` ya tiene golden (ver tabla). |
+
+## Guardián (`guardian.json`)
+
+- **Origen:** `freecad/vdo/core/vdo_guardian.py` en `b78de04`. En el código actual está en
+  `freecad/vdo/cad/vdo_guardian.py`. `golden.py` lo importa desde la primera ubicación que
+  exista (`UBICACIONES`). La lógica es la misma: las diferencias son docstrings y formato de
+  mensajes.
+- **Funciones:** `asegurar_hoja_global`, `asegurar_params_local`, `vdo_guard`.
+  `asegurar_documento` no se cubre: usa `App.ActiveDocument` y no recibe documento.
+- **Escenarios** (3 por función): estado del documento antes de la llamada. Se crea un
+  documento nuevo por entrada y se vuelcan las celdas A1:D60 de cada hoja, con contenido y
+  alias. Los estados "editada" fijan un valor propio (`B2=1234` en `Params_Melamina`,
+  `A1=999` en `Params`) con alias, para comprobar que el guardián no lo sobrescribe.
+- **Procedencia:** generado desde `b78de04` con `gold_drv.py` (fuera del repo, en
+  `/tmp/vdo_m0/scripts/`) y `HOME=/tmp/vdo_home_noche`.
+- **Verificación contra el código actual:** `freecadcmd` con el `HOME` real del usuario,
+  `OK golden: guardian`, 0 diferencias.
+- **Limitación:** el golden solo cubre estos escenarios. No hay entradas con error.
 
 ## Reubicación de funciones
 

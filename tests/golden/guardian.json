@@ -1,0 +1,790 @@
+{
+  "asegurar_hoja_global": [
+    {
+      "entrada": {
+        "preexistente": "vacio"
+      },
+      "salida": {
+        "retorno": "Params_Melamina",
+        "hojas": {
+          "Params_Melamina": {
+            "label": "Params_Melamina",
+            "celdas": {
+              "A1": {
+                "contenido": "'Parametro",
+                "alias": null
+              },
+              "B1": {
+                "contenido": "'Valor",
+                "alias": null
+              },
+              "C1": {
+                "contenido": "'Descripcion",
+                "alias": null
+              },
+              "A2": {
+                "contenido": "'espesor_default",
+                "alias": null
+              },
+              "B2": {
+                "contenido": "18",
+                "alias": "espesor_default"
+              },
+              "A3": {
+                "contenido": "'canto_grueso",
+                "alias": null
+              },
+              "B3": {
+                "contenido": "2",
+                "alias": "canto_grueso"
+              },
+              "C3": {
+                "contenido": "'Espesor de cinta de canto rígida (RIG)",
+                "alias": null
+              },
+              "A4": {
+                "contenido": "'canto_medio",
+                "alias": null
+              },
+              "B4": {
+                "contenido": "1",
+                "alias": "canto_medio"
+              },
+              "C4": {
+                "contenido": "'Espesor de cinta de canto semirrígida (SMRG)",
+                "alias": null
+              },
+              "A5": {
+                "contenido": "'canto_fino",
+                "alias": null
+              },
+              "B5": {
+                "contenido": "0.4",
+                "alias": "canto_fino"
+              },
+              "C5": {
+                "contenido": "'Espesor de cinta de canto fina (referencia)",
+                "alias": null
+              },
+              "A6": {
+                "contenido": "'ranura_fondo",
+                "alias": null
+              },
+              "B6": {
+                "contenido": "3",
+                "alias": "ranura_fondo"
+              },
+              "C6": {
+                "contenido": "'Profundidad de ranura para trasera",
+                "alias": null
+              },
+              "A7": {
+                "contenido": "'fondo_umbral_delgado",
+                "alias": null
+              },
+              "B7": {
+                "contenido": "8",
+                "alias": "fondo_umbral_delgado"
+              },
+              "C7": {
+                "contenido": "'Calibre máximo de fondo delgado (se ranura); por encima se atornilla",
+                "alias": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "entrada": {
+        "preexistente": "hoja_global_vacia"
+      },
+      "salida": {
+        "retorno": "Params_Melamina",
+        "hojas": {
+          "Params_Melamina": {
+            "label": "Params_Melamina",
+            "celdas": {
+              "A1": {
+                "contenido": "'Parametro",
+                "alias": null
+              },
+              "B1": {
+                "contenido": "'Valor",
+                "alias": null
+              },
+              "C1": {
+                "contenido": "'Descripcion",
+                "alias": null
+              },
+              "A2": {
+                "contenido": "'espesor_default",
+                "alias": null
+              },
+              "B2": {
+                "contenido": "18",
+                "alias": "espesor_default"
+              },
+              "A3": {
+                "contenido": "'canto_grueso",
+                "alias": null
+              },
+              "B3": {
+                "contenido": "2",
+                "alias": "canto_grueso"
+              },
+              "C3": {
+                "contenido": "'Espesor de cinta de canto rígida (RIG)",
+                "alias": null
+              },
+              "A4": {
+                "contenido": "'canto_medio",
+                "alias": null
+              },
+              "B4": {
+                "contenido": "1",
+                "alias": "canto_medio"
+              },
+              "C4": {
+                "contenido": "'Espesor de cinta de canto semirrígida (SMRG)",
+                "alias": null
+              },
+              "A5": {
+                "contenido": "'canto_fino",
+                "alias": null
+              },
+              "B5": {
+                "contenido": "0.4",
+                "alias": "canto_fino"
+              },
+              "C5": {
+                "contenido": "'Espesor de cinta de canto fina (referencia)",
+                "alias": null
+              },
+              "A6": {
+                "contenido": "'ranura_fondo",
+                "alias": null
+              },
+              "B6": {
+                "contenido": "3",
+                "alias": "ranura_fondo"
+              },
+              "C6": {
+                "contenido": "'Profundidad de ranura para trasera",
+                "alias": null
+              },
+              "A7": {
+                "contenido": "'fondo_umbral_delgado",
+                "alias": null
+              },
+              "B7": {
+                "contenido": "8",
+                "alias": "fondo_umbral_delgado"
+              },
+              "C7": {
+                "contenido": "'Calibre máximo de fondo delgado (se ranura); por encima se atornilla",
+                "alias": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "entrada": {
+        "preexistente": "hoja_global_editada"
+      },
+      "salida": {
+        "retorno": "Params_Melamina",
+        "hojas": {
+          "Params_Melamina": {
+            "label": "Params_Melamina",
+            "celdas": {
+              "A1": {
+                "contenido": "'Parametro",
+                "alias": null
+              },
+              "B1": {
+                "contenido": "'Valor",
+                "alias": null
+              },
+              "C1": {
+                "contenido": "'Descripcion",
+                "alias": null
+              },
+              "B2": {
+                "contenido": "1234",
+                "alias": "espesor_default"
+              },
+              "A3": {
+                "contenido": "'canto_grueso",
+                "alias": null
+              },
+              "B3": {
+                "contenido": "2",
+                "alias": "canto_grueso"
+              },
+              "C3": {
+                "contenido": "'Espesor de cinta de canto rígida (RIG)",
+                "alias": null
+              },
+              "A4": {
+                "contenido": "'canto_medio",
+                "alias": null
+              },
+              "B4": {
+                "contenido": "1",
+                "alias": "canto_medio"
+              },
+              "C4": {
+                "contenido": "'Espesor de cinta de canto semirrígida (SMRG)",
+                "alias": null
+              },
+              "A5": {
+                "contenido": "'canto_fino",
+                "alias": null
+              },
+              "B5": {
+                "contenido": "0.4",
+                "alias": "canto_fino"
+              },
+              "C5": {
+                "contenido": "'Espesor de cinta de canto fina (referencia)",
+                "alias": null
+              },
+              "A6": {
+                "contenido": "'ranura_fondo",
+                "alias": null
+              },
+              "B6": {
+                "contenido": "3",
+                "alias": "ranura_fondo"
+              },
+              "C6": {
+                "contenido": "'Profundidad de ranura para trasera",
+                "alias": null
+              },
+              "A7": {
+                "contenido": "'fondo_umbral_delgado",
+                "alias": null
+              },
+              "B7": {
+                "contenido": "8",
+                "alias": "fondo_umbral_delgado"
+              },
+              "C7": {
+                "contenido": "'Calibre máximo de fondo delgado (se ranura); por encima se atornilla",
+                "alias": null
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "asegurar_params_local": [
+    {
+      "entrada": {
+        "preexistente": "vacio"
+      },
+      "salida": {
+        "retorno": "Params",
+        "hojas": {
+          "Params": {
+            "label": "Params",
+            "celdas": {
+              "A1": {
+                "contenido": "720",
+                "alias": "alto"
+              },
+              "B1": {
+                "contenido": "'Alto total del módulo",
+                "alias": null
+              },
+              "A2": {
+                "contenido": "600",
+                "alias": "ancho"
+              },
+              "B2": {
+                "contenido": "'Ancho total del módulo",
+                "alias": null
+              },
+              "A3": {
+                "contenido": "580",
+                "alias": "fondo"
+              },
+              "B3": {
+                "contenido": "'Profundidad total del módulo",
+                "alias": null
+              },
+              "A4": {
+                "contenido": "18",
+                "alias": "espesor"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "entrada": {
+        "preexistente": "hoja_local_vacia"
+      },
+      "salida": {
+        "retorno": "Params",
+        "hojas": {
+          "Params": {
+            "label": "Params",
+            "celdas": {
+              "A1": {
+                "contenido": "720",
+                "alias": "alto"
+              },
+              "B1": {
+                "contenido": "'Alto total del módulo",
+                "alias": null
+              },
+              "A2": {
+                "contenido": "600",
+                "alias": "ancho"
+              },
+              "B2": {
+                "contenido": "'Ancho total del módulo",
+                "alias": null
+              },
+              "A3": {
+                "contenido": "580",
+                "alias": "fondo"
+              },
+              "B3": {
+                "contenido": "'Profundidad total del módulo",
+                "alias": null
+              },
+              "A4": {
+                "contenido": "18",
+                "alias": "espesor"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "entrada": {
+        "preexistente": "hoja_local_editada"
+      },
+      "salida": {
+        "retorno": "Params",
+        "hojas": {
+          "Params": {
+            "label": "Params",
+            "celdas": {
+              "A1": {
+                "contenido": "999",
+                "alias": "alto"
+              },
+              "A2": {
+                "contenido": "600",
+                "alias": "ancho"
+              },
+              "B2": {
+                "contenido": "'Ancho total del módulo",
+                "alias": null
+              },
+              "A3": {
+                "contenido": "580",
+                "alias": "fondo"
+              },
+              "B3": {
+                "contenido": "'Profundidad total del módulo",
+                "alias": null
+              },
+              "A4": {
+                "contenido": "18",
+                "alias": "espesor"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "vdo_guard": [
+    {
+      "entrada": {
+        "preexistente": "vacio"
+      },
+      "salida": {
+        "retorno": "VDO_GUARDIAN_GOLDEN",
+        "hojas": {
+          "Params_Melamina": {
+            "label": "Params_Melamina",
+            "celdas": {
+              "A1": {
+                "contenido": "'Parametro",
+                "alias": null
+              },
+              "B1": {
+                "contenido": "'Valor",
+                "alias": null
+              },
+              "C1": {
+                "contenido": "'Descripcion",
+                "alias": null
+              },
+              "A2": {
+                "contenido": "'espesor_default",
+                "alias": null
+              },
+              "B2": {
+                "contenido": "18",
+                "alias": "espesor_default"
+              },
+              "A3": {
+                "contenido": "'canto_grueso",
+                "alias": null
+              },
+              "B3": {
+                "contenido": "2",
+                "alias": "canto_grueso"
+              },
+              "C3": {
+                "contenido": "'Espesor de cinta de canto rígida (RIG)",
+                "alias": null
+              },
+              "A4": {
+                "contenido": "'canto_medio",
+                "alias": null
+              },
+              "B4": {
+                "contenido": "1",
+                "alias": "canto_medio"
+              },
+              "C4": {
+                "contenido": "'Espesor de cinta de canto semirrígida (SMRG)",
+                "alias": null
+              },
+              "A5": {
+                "contenido": "'canto_fino",
+                "alias": null
+              },
+              "B5": {
+                "contenido": "0.4",
+                "alias": "canto_fino"
+              },
+              "C5": {
+                "contenido": "'Espesor de cinta de canto fina (referencia)",
+                "alias": null
+              },
+              "A6": {
+                "contenido": "'ranura_fondo",
+                "alias": null
+              },
+              "B6": {
+                "contenido": "3",
+                "alias": "ranura_fondo"
+              },
+              "C6": {
+                "contenido": "'Profundidad de ranura para trasera",
+                "alias": null
+              },
+              "A7": {
+                "contenido": "'fondo_umbral_delgado",
+                "alias": null
+              },
+              "B7": {
+                "contenido": "8",
+                "alias": "fondo_umbral_delgado"
+              },
+              "C7": {
+                "contenido": "'Calibre máximo de fondo delgado (se ranura); por encima se atornilla",
+                "alias": null
+              }
+            }
+          },
+          "Params": {
+            "label": "Params",
+            "celdas": {
+              "A1": {
+                "contenido": "720",
+                "alias": "alto"
+              },
+              "B1": {
+                "contenido": "'Alto total del módulo",
+                "alias": null
+              },
+              "A2": {
+                "contenido": "600",
+                "alias": "ancho"
+              },
+              "B2": {
+                "contenido": "'Ancho total del módulo",
+                "alias": null
+              },
+              "A3": {
+                "contenido": "580",
+                "alias": "fondo"
+              },
+              "B3": {
+                "contenido": "'Profundidad total del módulo",
+                "alias": null
+              },
+              "A4": {
+                "contenido": "18",
+                "alias": "espesor"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "entrada": {
+        "preexistente": "hoja_global_vacia"
+      },
+      "salida": {
+        "retorno": "VDO_GUARDIAN_GOLDEN",
+        "hojas": {
+          "Params_Melamina": {
+            "label": "Params_Melamina",
+            "celdas": {
+              "A1": {
+                "contenido": "'Parametro",
+                "alias": null
+              },
+              "B1": {
+                "contenido": "'Valor",
+                "alias": null
+              },
+              "C1": {
+                "contenido": "'Descripcion",
+                "alias": null
+              },
+              "A2": {
+                "contenido": "'espesor_default",
+                "alias": null
+              },
+              "B2": {
+                "contenido": "18",
+                "alias": "espesor_default"
+              },
+              "A3": {
+                "contenido": "'canto_grueso",
+                "alias": null
+              },
+              "B3": {
+                "contenido": "2",
+                "alias": "canto_grueso"
+              },
+              "C3": {
+                "contenido": "'Espesor de cinta de canto rígida (RIG)",
+                "alias": null
+              },
+              "A4": {
+                "contenido": "'canto_medio",
+                "alias": null
+              },
+              "B4": {
+                "contenido": "1",
+                "alias": "canto_medio"
+              },
+              "C4": {
+                "contenido": "'Espesor de cinta de canto semirrígida (SMRG)",
+                "alias": null
+              },
+              "A5": {
+                "contenido": "'canto_fino",
+                "alias": null
+              },
+              "B5": {
+                "contenido": "0.4",
+                "alias": "canto_fino"
+              },
+              "C5": {
+                "contenido": "'Espesor de cinta de canto fina (referencia)",
+                "alias": null
+              },
+              "A6": {
+                "contenido": "'ranura_fondo",
+                "alias": null
+              },
+              "B6": {
+                "contenido": "3",
+                "alias": "ranura_fondo"
+              },
+              "C6": {
+                "contenido": "'Profundidad de ranura para trasera",
+                "alias": null
+              },
+              "A7": {
+                "contenido": "'fondo_umbral_delgado",
+                "alias": null
+              },
+              "B7": {
+                "contenido": "8",
+                "alias": "fondo_umbral_delgado"
+              },
+              "C7": {
+                "contenido": "'Calibre máximo de fondo delgado (se ranura); por encima se atornilla",
+                "alias": null
+              }
+            }
+          },
+          "Params": {
+            "label": "Params",
+            "celdas": {
+              "A1": {
+                "contenido": "720",
+                "alias": "alto"
+              },
+              "B1": {
+                "contenido": "'Alto total del módulo",
+                "alias": null
+              },
+              "A2": {
+                "contenido": "600",
+                "alias": "ancho"
+              },
+              "B2": {
+                "contenido": "'Ancho total del módulo",
+                "alias": null
+              },
+              "A3": {
+                "contenido": "580",
+                "alias": "fondo"
+              },
+              "B3": {
+                "contenido": "'Profundidad total del módulo",
+                "alias": null
+              },
+              "A4": {
+                "contenido": "18",
+                "alias": "espesor"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "entrada": {
+        "preexistente": "ambas_editadas"
+      },
+      "salida": {
+        "retorno": "VDO_GUARDIAN_GOLDEN",
+        "hojas": {
+          "Params_Melamina": {
+            "label": "Params_Melamina",
+            "celdas": {
+              "A1": {
+                "contenido": "'Parametro",
+                "alias": null
+              },
+              "B1": {
+                "contenido": "'Valor",
+                "alias": null
+              },
+              "C1": {
+                "contenido": "'Descripcion",
+                "alias": null
+              },
+              "B2": {
+                "contenido": "1234",
+                "alias": "espesor_default"
+              },
+              "A3": {
+                "contenido": "'canto_grueso",
+                "alias": null
+              },
+              "B3": {
+                "contenido": "2",
+                "alias": "canto_grueso"
+              },
+              "C3": {
+                "contenido": "'Espesor de cinta de canto rígida (RIG)",
+                "alias": null
+              },
+              "A4": {
+                "contenido": "'canto_medio",
+                "alias": null
+              },
+              "B4": {
+                "contenido": "1",
+                "alias": "canto_medio"
+              },
+              "C4": {
+                "contenido": "'Espesor de cinta de canto semirrígida (SMRG)",
+                "alias": null
+              },
+              "A5": {
+                "contenido": "'canto_fino",
+                "alias": null
+              },
+              "B5": {
+                "contenido": "0.4",
+                "alias": "canto_fino"
+              },
+              "C5": {
+                "contenido": "'Espesor de cinta de canto fina (referencia)",
+                "alias": null
+              },
+              "A6": {
+                "contenido": "'ranura_fondo",
+                "alias": null
+              },
+              "B6": {
+                "contenido": "3",
+                "alias": "ranura_fondo"
+              },
+              "C6": {
+                "contenido": "'Profundidad de ranura para trasera",
+                "alias": null
+              },
+              "A7": {
+                "contenido": "'fondo_umbral_delgado",
+                "alias": null
+              },
+              "B7": {
+                "contenido": "8",
+                "alias": "fondo_umbral_delgado"
+              },
+              "C7": {
+                "contenido": "'Calibre máximo de fondo delgado (se ranura); por encima se atornilla",
+                "alias": null
+              }
+            }
+          },
+          "Params": {
+            "label": "Params",
+            "celdas": {
+              "A1": {
+                "contenido": "999",
+                "alias": "alto"
+              },
+              "A2": {
+                "contenido": "600",
+                "alias": "ancho"
+              },
+              "B2": {
+                "contenido": "'Ancho total del módulo",
+                "alias": null
+              },
+              "A3": {
+                "contenido": "580",
+                "alias": "fondo"
+              },
+              "B3": {
+                "contenido": "'Profundidad total del módulo",
+                "alias": null
+              },
+              "A4": {
+                "contenido": "18",
+                "alias": "espesor"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

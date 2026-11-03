@@ -87,7 +87,11 @@ MODULOS_FUNCIONES: dict[str, list[str]] = {
     "module_props": [
         "rotacion_z",
     ],
-    "guardian": [],
+    "guardian": [
+        "asegurar_hoja_global",
+        "asegurar_params_local",
+        "vdo_guard",
+    ],
     "zocalo_core": [
         "calcular_geometria_zocalo",
     ],
@@ -115,6 +119,17 @@ MODULOS_FUNCIONES: dict[str, list[str]] = {
 RELOCALIZADAS: dict[tuple[str, str], str] = {
     ("module_props", "rotacion_z"): "freecad.vdo.core.vdo_helpers",
 }
+
+# Módulos que cambiaron de capa después de b78de04. Se importa el primero que exista.
+UBICACIONES: dict[str, tuple[str, ...]] = {
+    "guardian": ("freecad.vdo.core.vdo_guardian", "freecad.vdo.cad.vdo_guardian"),
+}
+
+# Hoja y celdas que los escenarios "editada" del guardián modifican (fuera de la lógica probada).
+_GUARDIAN_HOJA_GLOBAL = "Params_Melamina"
+_GUARDIAN_HOJA_LOCAL = "Params"
+_GUARDIAN_CELDA_GLOBAL = ("B2", "espesor_default", "1234")
+_GUARDIAN_CELDA_LOCAL = ("A1", "alto", "999")
 
 
 def _modulo_para_funcion(modulo: str, mod, nombre_func: str):
@@ -171,9 +186,22 @@ def _normalizar(salida):
 
 
 def _cargar_modulo(modulo: str):
-    """Importa el módulo de dominio freecad.vdo.core.vdo_<modulo>."""
-    nombre = f"freecad.vdo.core.vdo_{modulo}"
-    return importlib.import_module(nombre)
+    """Importa el módulo de dominio freecad.vdo.core.vdo_<modulo> (o su ubicación conocida).
+
+    """
+    if modulo in UBICACIONES:
+        ultimo_error: Exception | None = None
+        mod = None
+        for nombre in UBICACIONES[modulo]:
+            try:
+                mod = importlib.import_module(nombre)
+                break
+            except ModuleNotFoundError as exc:
+                ultimo_error = exc
+        if mod is None:
+            raise ultimo_error  # type: ignore[misc]
+        return mod
+    return importlib.import_module(f"freecad.vdo.core.vdo_{modulo}")
 
 
 def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
@@ -447,11 +475,90 @@ def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
             {"pieces": piezas_c, "board_w": 2440.0, "board_h": 1830.0},
         ]
 
+    elif modulo == "guardian":
+        # Escenario = estado del documento antes de llamar (ver _ejecutar_guardian).
+        entradas["asegurar_hoja_global"] = [
+            {"preexistente": "vacio"},
+            {"preexistente": "hoja_global_vacia"},
+            {"preexistente": "hoja_global_editada"},
+        ]
+        entradas["asegurar_params_local"] = [
+            {"preexistente": "vacio"},
+            {"preexistente": "hoja_local_vacia"},
+            {"preexistente": "hoja_local_editada"},
+        ]
+        entradas["vdo_guard"] = [
+            {"preexistente": "vacio"},
+            {"preexistente": "hoja_global_vacia"},
+            {"preexistente": "ambas_editadas"},
+        ]
+
     return entradas
+
+
+def _preparar_guardian(doc, estado: str) -> None:
+    """Estado previo del documento. Las ediciones se hacen con la API de FreeCAD, no con el guardián."""
+    if estado == "vacio":
+        return
+    crear_global = estado in ("hoja_global_vacia", "hoja_global_editada", "ambas_editadas")
+    crear_local = estado in ("hoja_local_vacia", "hoja_local_editada", "ambas_editadas")
+    editar_global = estado in ("hoja_global_editada", "ambas_editadas")
+    editar_local = estado in ("hoja_local_editada", "ambas_editadas")
+    if crear_global:
+        hoja = doc.addObject("Spreadsheet::Sheet", _GUARDIAN_HOJA_GLOBAL)
+        hoja.Label = _GUARDIAN_HOJA_GLOBAL
+        if editar_global:
+            celda, alias, valor = _GUARDIAN_CELDA_GLOBAL
+            hoja.set(celda, valor)
+            hoja.setAlias(celda, alias)
+    if crear_local:
+        hoja = doc.addObject("Spreadsheet::Sheet", _GUARDIAN_HOJA_LOCAL)
+        hoja.Label = _GUARDIAN_HOJA_LOCAL
+        if editar_local:
+            celda, alias, valor = _GUARDIAN_CELDA_LOCAL
+            hoja.set(celda, valor)
+            hoja.setAlias(celda, alias)
+
+
+def _volcar_hojas(doc) -> dict:
+    """Contenido y alias de las celdas A1:D60 de cada hoja del documento."""
+    salida = {}
+    for obj in doc.Objects:
+        if obj.TypeId != "Spreadsheet::Sheet":
+            continue
+        celdas = {}
+        for fila in range(1, 61):
+            for columna in "ABCD":
+                ref = f"{columna}{fila}"
+                contenido = obj.getContents(ref)
+                alias = obj.getAlias(ref)
+                if contenido or alias:
+                    celdas[ref] = {"contenido": contenido, "alias": alias}
+        salida[obj.Name] = {"label": obj.Label, "celdas": celdas}
+    return salida
+
+
+def _ejecutar_guardian(mod, nombre_func: str, entrada: dict):
+    """Crea un documento con el estado previo, llama a la función y vuelca las hojas."""
+    import FreeCAD as App
+
+    doc = App.newDocument("VDO_GUARDIAN_GOLDEN")
+    nombre_doc = doc.Name
+    try:
+        _preparar_guardian(doc, entrada["preexistente"])
+        retorno = getattr(mod, nombre_func)(doc)
+        return {
+            "retorno": getattr(retorno, "Name", None) or str(retorno),
+            "hojas": _volcar_hojas(doc),
+        }
+    finally:
+        App.closeDocument(nombre_doc)
 
 
 def _ejecutar_funcion(mod, nombre_func: str, entrada: dict):
     """Ejecuta una función de dominio con una entrada y devuelve la salida."""
+    if mod.__name__.endswith("vdo_guardian"):
+        return _ejecutar_guardian(mod, nombre_func, entrada)
     fn = getattr(mod, nombre_func)
     try:
         return fn(**entrada)
