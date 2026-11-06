@@ -60,6 +60,37 @@ def _leer_entradas(config):
             _tipo_corredera_result)
 
 
+def _leer_defectos(config):
+    """Lee los valores por defecto del manifest y las opciones de montaje."""
+    # --- Defaults desde manifest (parametros_cajon) ---
+    pc = _MANIFEST.get("parametros_cajon", {})
+
+    def _p(clave, fallback):
+        return float(pc.get(clave, {}).get("valor", fallback))
+
+    alto_caja = float(config.get("alto_caja") or _p("alto_caja", 120))
+    g_caja = float(config.get("grosor_caja") or _p("grosor_caja", 16))
+    g_fondo = float(config.get("grosor_fondo") or _p("grosor_fondo", 6))
+    g_fachada = float(config.get("grosor_fachada") or _p("grosor_fachada", 18))
+    pen_ranura = float(config.get("penetracion_ranura")
+                        or _p("penetracion_ranura_piso", 10))
+    eje_ranura = float(config.get("eje_ranura")
+                       or _p("eje_ranura_piso", 11.5))
+    holg_lat = float(config.get("holgura_lateral_fachada")
+                     or _p("holgura_lateral_fachada", 2))
+    holg_sup = float(config.get("holgura_superior_fachada")
+                     or _p("holgura_superior_fachada", 2))
+    holg_inf = float(config.get("holgura_inferior_fachada")
+                     or _p("holgura_inferior_fachada", 2))
+    montaje = config.get("montaje_trasera", "entre_laterales")
+    material_ref = config.get("material_ref", MELAMINA_ESTANDAR)
+    tipo_montaje_fachada = str(
+        config.get("tipo_montaje_fachada", MONTAJE_PARCHE)).strip().lower()
+    return (alto_caja, g_caja, g_fondo, g_fachada, pen_ranura, eje_ranura,
+            holg_lat, holg_sup, holg_inf, montaje, material_ref,
+            tipo_montaje_fachada)
+
+
 def calcular_despiece(config):
     """Calcula el despiece completo del cajón con corredera oculta.
 
@@ -89,30 +120,9 @@ def calcular_despiece(config):
     (li, prof_int, alto_frente, marca_id, marca, delta, mecanizado,
      _tipo_corredera_result) = _leer_entradas(config)
 
-    # --- Defaults desde manifest (parametros_cajon) ---
-    pc = _MANIFEST.get("parametros_cajon", {})
-
-    def _p(clave, fallback):
-        return float(pc.get(clave, {}).get("valor", fallback))
-
-    alto_caja = float(config.get("alto_caja") or _p("alto_caja", 120))
-    g_caja = float(config.get("grosor_caja") or _p("grosor_caja", 16))
-    g_fondo = float(config.get("grosor_fondo") or _p("grosor_fondo", 6))
-    g_fachada = float(config.get("grosor_fachada") or _p("grosor_fachada", 18))
-    pen_ranura = float(config.get("penetracion_ranura")
-                        or _p("penetracion_ranura_piso", 10))
-    eje_ranura = float(config.get("eje_ranura")
-                       or _p("eje_ranura_piso", 11.5))
-    holg_lat = float(config.get("holgura_lateral_fachada")
-                     or _p("holgura_lateral_fachada", 2))
-    holg_sup = float(config.get("holgura_superior_fachada")
-                     or _p("holgura_superior_fachada", 2))
-    holg_inf = float(config.get("holgura_inferior_fachada")
-                     or _p("holgura_inferior_fachada", 2))
-    montaje = config.get("montaje_trasera", "entre_laterales")
-    material_ref = config.get("material_ref", MELAMINA_ESTANDAR)
-    tipo_montaje_fachada = str(
-        config.get("tipo_montaje_fachada", MONTAJE_PARCHE)).strip().lower()
+    (alto_caja, g_caja, g_fondo, g_fachada, pen_ranura, eje_ranura,
+     holg_lat, holg_sup, holg_inf, montaje, material_ref,
+     tipo_montaje_fachada) = _leer_defectos(config)
 
     avisos = []
 
