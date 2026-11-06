@@ -258,20 +258,8 @@ class CocoUnifiedTaskPanel(
                     ViewProviderCajon(existente.ViewObject)
 
             # Propiedades del cajón
-            asignar_propiedades(existente, {"AnchoLibre": w})
-            asignar_propiedades(existente, {"ProfLibre": float(getattr(coco_obj, "FondoModulo", 580.0))})
-            asignar_propiedades(existente, {"AnchoModulo": w})
-            asignar_propiedades(existente, {"AltoFrente": h_frente})
-            # default 90mm
-            asignar_propiedades(existente, {"AltoCaja": float(getattr(coco_obj, "Espesor", 18)) * 5})
-            asignar_propiedades(existente, {"GrosorCaja": 16.0})
-            asignar_propiedades(existente, {"GrosorFondo": 6.0})
-            asignar_propiedades(existente, {"GrosorFachada": 18.0})
-            asignar_propiedades(existente, {"MarcaCorredera": BLUM_TANDEM})
-            asignar_propiedades(existente, {"LongitudGuia": 0.0})
-            asignar_propiedades(existente, {"MontajeTrasera": "entre_laterales"})
-            asignar_propiedades(existente, {"TipoCorredera": tipo_corredera})
-            asignar_propiedades(existente, {"SistemaApertura": sistema_apertura})
+            self._asignar_propiedades_cajon(
+                existente, w, coco_obj, h_frente, tipo_corredera, sistema_apertura)
 
             # Vínculo padre-hijo con z escalonado
             z_local = z + i * (h_frente + CALLE_ENTRE_FRENTES_DEFAULT)
@@ -280,6 +268,24 @@ class CocoUnifiedTaskPanel(
                 App.Vector(x, 0.0, z_local), App.Rotation()))
 
             hijos_nuevos.append(existente)
+
+    def _asignar_propiedades_cajon(self, existente, w, coco_obj, h_frente,
+                                   tipo_corredera, sistema_apertura):
+        # Propiedades de fabricación por defecto del cajón.
+        asignar_propiedades(existente, {"AnchoLibre": w})
+        asignar_propiedades(existente, {"ProfLibre": float(getattr(coco_obj, "FondoModulo", 580.0))})
+        asignar_propiedades(existente, {"AnchoModulo": w})
+        asignar_propiedades(existente, {"AltoFrente": h_frente})
+        # default 90mm
+        asignar_propiedades(existente, {"AltoCaja": float(getattr(coco_obj, "Espesor", 18)) * 5})
+        asignar_propiedades(existente, {"GrosorCaja": 16.0})
+        asignar_propiedades(existente, {"GrosorFondo": 6.0})
+        asignar_propiedades(existente, {"GrosorFachada": 18.0})
+        asignar_propiedades(existente, {"MarcaCorredera": BLUM_TANDEM})
+        asignar_propiedades(existente, {"LongitudGuia": 0.0})
+        asignar_propiedades(existente, {"MontajeTrasera": "entre_laterales"})
+        asignar_propiedades(existente, {"TipoCorredera": tipo_corredera})
+        asignar_propiedades(existente, {"SistemaApertura": sistema_apertura})
 
     def accept(self):
         if not self.obj:
