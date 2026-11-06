@@ -199,6 +199,96 @@ def _refuerzos_bordes_caja(base, ejes, largo, ancho, espesor,
     return refuerzos, tiras
 
 
+_CLAVE_DIMENSION = {"x": "w", "y": "h", "z": "d"}
+
+
+def _validar_ejes(ejes):
+    """Normaliza a minusculas y valida los ejes largo, ancho y espesor."""
+    for clave in ("largo", "ancho", "espesor"):
+        eje = str(ejes.get(clave, "")).lower()
+        if eje not in ("x", "y", "z"):
+            raise ReengroseError(f"Eje invalido para '{clave}': {eje!r}.")
+        ejes[clave] = eje
+    if len(set(ejes.values())) != 3:
+        raise ReengroseError("Los ejes largo/ancho/espesor deben ser distintos.")
+    return ejes
+
+
+def _dimensiones_caja(base, ejes):
+    """Devuelve largo, ancho y espesor de la caja segun los ejes."""
+    dims = {eje: base[_CLAVE_DIMENSION[eje]] for eje in ("x", "y", "z")}
+    largo = dims[ejes["largo"]]
+    ancho = dims[ejes["ancho"]]
+    espesor = dims[ejes["espesor"]]
+    if largo <= 0 or ancho <= 0 or espesor <= 0:
+        raise ReengroseError("La caja base debe tener dimensiones positivas.")
+    return largo, ancho, espesor
+
+
+def _intervalos_cara(mod, ejes, largo, ancho):
+    """Intervalos (inicio, tamano) en largo y ancho del refuerzo de una cara."""
+    intervalos = {}
+    if mod["modo_fabricacion"] == "pacha" and mod["alcance"] == "total":
+        intervalos[ejes["largo"]] = (0.0, largo)
+        intervalos[ejes["ancho"]] = (0.0, ancho)
+    elif mod["orientacion"] == "paralela":
+        if mod["ancho"] > ancho + 1e-6:
+            raise ReengroseError(
+                "El ancho del reengrose paralelo no cabe en la pieza.")
+        intervalos[ejes["largo"]] = (0.0, largo)
+        intervalos[ejes["ancho"]] = (
+            _inicio_alineado(
+                ancho, mod["ancho"], mod["alineacion_profundidad"]),
+            mod["ancho"])
+    else:
+        if mod["ancho"] > largo + 1e-6:
+            raise ReengroseError(
+                "El ancho del reengrose transversal no cabe en la pieza.")
+        intervalos[ejes["largo"]] = (
+            (largo - mod["ancho"]) / 2.0, mod["ancho"])
+        intervalos[ejes["ancho"]] = (0.0, ancho)
+    return intervalos
+
+
+def _intervalo_espesor(cara, espesor, esp_ref):
+    """Intervalo del espesor del refuerzo y sufijo de nombre de la cara."""
+    if cara == "cara_a":
+        return (espesor, esp_ref), "_A"
+    return (-esp_ref, esp_ref), "_B"
+
+
+def _refuerzo_cara(base, nombre, mod, intervalos, cara, sufijo):
+    """Construye la pieza de refuerzo de una cara."""
+    ref = dict(base)
+    for eje, (inicio, tamano) in intervalos.items():
+        ref[eje] = base[eje] + inicio
+        ref[_CLAVE_DIMENSION[eje]] = tamano
+    ref["nombre"] = (
+        f"{nombre}_Pacha{sufijo}"
+        if mod["modo_fabricacion"] == "pacha"
+        and mod["alcance"] == "total"
+        else f"{nombre}_Reengrose{sufijo}")
+    ref["rol"] = "refuerzo"
+    ref["cara"] = cara
+    return ref
+
+
+def _refuerzos_caras(base, ejes, largo, ancho, espesor, nombre, mod):
+    """Refuerzos del modo sin bordes: una pieza por cara activa."""
+    esp_ref = float(mod["espesor"] or espesor)
+    caras = ["cara_a", "cara_b"] if mod["cara"] == "ambos" else [mod["cara"]]
+    refuerzos = []
+    for cara in caras:
+        intervalos = _intervalos_cara(mod, ejes, largo, ancho)
+        intervalo_espesor, sufijo = _intervalo_espesor(cara, espesor, esp_ref)
+        intervalos[ejes["espesor"]] = intervalo_espesor
+        if len(caras) == 1:
+            sufijo = ""
+        refuerzos.append(
+            _refuerzo_cara(base, nombre, mod, intervalos, cara, sufijo))
+    return refuerzos
+
+
 def calcular_geometria_caja(caja, modifier, ejes=None):
     """Calcula refuerzos de una pieza en coordenadas de modulo.
 
@@ -212,15 +302,8 @@ def calcular_geometria_caja(caja, modifier, ejes=None):
     base = {clave: float(caja.get(clave, 0.0))
             for clave in ("x", "y", "z", "w", "h", "d")}
     nombre = str(caja.get("nombre", "Pieza"))
-    ejes = dict(ejes or {"largo": "x", "ancho": "y", "espesor": "z"})
-    for clave in ("largo", "ancho", "espesor"):
-        eje = str(ejes.get(clave, "")).lower()
-        if eje not in ("x", "y", "z"):
-            raise ReengroseError(f"Eje invalido para '{clave}': {eje!r}.")
-        ejes[clave] = eje
-    if len(set(ejes.values())) != 3:
-        raise ReengroseError("Los ejes largo/ancho/espesor deben ser distintos.")
-
+    ejes = _validar_ejes(
+        dict(ejes or {"largo": "x", "ancho": "y", "espesor": "z"}))
     resultado = {
         "base": dict(base),
         "refuerzos": [],
@@ -230,14 +313,7 @@ def calcular_geometria_caja(caja, modifier, ejes=None):
     if not mod["activo"]:
         return resultado
 
-    dim_key = {"x": "w", "y": "h", "z": "d"}
-    dims = {eje: base[dim_key[eje]] for eje in ("x", "y", "z")}
-    largo = dims[ejes["largo"]]
-    ancho = dims[ejes["ancho"]]
-    espesor = dims[ejes["espesor"]]
-    if largo <= 0 or ancho <= 0 or espesor <= 0:
-        raise ReengroseError("La caja base debe tener dimensiones positivas.")
-
+    largo, ancho, espesor = _dimensiones_caja(base, ejes)
     if mod["usa_bordes"]:
         refuerzos, tiras = _refuerzos_bordes_caja(
             base, ejes, largo, ancho, espesor, nombre, mod)
@@ -247,53 +323,8 @@ def calcular_geometria_caja(caja, modifier, ejes=None):
             resultado["grupo_pacha"] = f"Pacha_{nombre}"
         return resultado
 
-    esp_ref = float(mod["espesor"] or espesor)
-    caras = ["cara_a", "cara_b"] if mod["cara"] == "ambos" else [mod["cara"]]
-
-    for cara in caras:
-        intervalos = {}
-        if mod["modo_fabricacion"] == "pacha" and mod["alcance"] == "total":
-            intervalos[ejes["largo"]] = (0.0, largo)
-            intervalos[ejes["ancho"]] = (0.0, ancho)
-        elif mod["orientacion"] == "paralela":
-            if mod["ancho"] > ancho + 1e-6:
-                raise ReengroseError(
-                    "El ancho del reengrose paralelo no cabe en la pieza.")
-            intervalos[ejes["largo"]] = (0.0, largo)
-            intervalos[ejes["ancho"]] = (
-                _inicio_alineado(
-                    ancho, mod["ancho"], mod["alineacion_profundidad"]),
-                mod["ancho"])
-        else:
-            if mod["ancho"] > largo + 1e-6:
-                raise ReengroseError(
-                    "El ancho del reengrose transversal no cabe en la pieza.")
-            intervalos[ejes["largo"]] = (
-                (largo - mod["ancho"]) / 2.0, mod["ancho"])
-            intervalos[ejes["ancho"]] = (0.0, ancho)
-
-        if cara == "cara_a":
-            intervalos[ejes["espesor"]] = (espesor, esp_ref)
-            sufijo = "_A"
-        else:
-            intervalos[ejes["espesor"]] = (-esp_ref, esp_ref)
-            sufijo = "_B"
-        if len(caras) == 1:
-            sufijo = ""
-
-        ref = dict(base)
-        for eje, (inicio, tamano) in intervalos.items():
-            ref[eje] = base[eje] + inicio
-            ref[dim_key[eje]] = tamano
-        ref["nombre"] = (
-            f"{nombre}_Pacha{sufijo}"
-            if mod["modo_fabricacion"] == "pacha"
-            and mod["alcance"] == "total"
-            else f"{nombre}_Reengrose{sufijo}")
-        ref["rol"] = "refuerzo"
-        ref["cara"] = cara
-        resultado["refuerzos"].append(ref)
-
+    resultado["refuerzos"] = _refuerzos_caras(
+        base, ejes, largo, ancho, espesor, nombre, mod)
     if mod["modo_fabricacion"] == "pacha":
         resultado["grupo_pacha"] = f"Pacha_{nombre}"
     return resultado
