@@ -2,6 +2,7 @@
 
 import csv
 import logging
+from typing import Any
 
 from freecad.vdo.core import defaults as _VDO_D
 
@@ -87,7 +88,7 @@ def _espesor_canto(cantos, borde):
     return _CANTO_ESPESOR.get(codigo, 0.0)
 
 
-def _medidas_corte(pieza, descontar_cantos):
+def _medidas_corte(pieza: dict[str, Any], descontar_cantos: bool) -> tuple[float, float]:
     """Cotas de corte antes del kerf.
 
     Norte/Sur descuentan sobre el ancho (``w``) y Este/Oeste sobre el

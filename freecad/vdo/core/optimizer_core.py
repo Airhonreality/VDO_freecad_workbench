@@ -34,6 +34,9 @@ Uso programático:
         allow_rotation=True, descontar_cantos=False)
 """
 
+from collections.abc import Callable
+from typing import Any
+
 from freecad.vdo.core.optimizer_lista_corte import _medidas_corte
 
 # ----------------------------------------------------------------------
@@ -54,25 +57,25 @@ MARGIN_DEFAULT = 10.0   # recorte/rebaba perimetral (mm)
 # ----------------------------------------------------------------------
 # 2. Motor MaxRects (BSSF)
 # ----------------------------------------------------------------------
-def _area(r):
+def _area(r: list[float]) -> float:
     return r[2] * r[3]
 
 
-def _intersects(a, b):
+def _intersects(a: list[float], b: list[float]) -> bool:
     return not (b[0] >= a[0] + a[2] or b[0] + b[2] <= a[0] or
                 b[1] >= a[1] + a[3] or b[1] + b[3] <= a[1])
 
 
-def _contains(outer, inner):
+def _contains(outer: list[float], inner: list[float]) -> bool:
     return (inner[0] >= outer[0] and inner[1] >= outer[1] and
             inner[0] + inner[2] <= outer[0] + outer[2] + 1e-9 and
             inner[1] + inner[3] <= outer[1] + outer[3] + 1e-9)
 
 
-def _prune(rects):
+def _prune(rects: list[list[float]]) -> list[list[float]]:
     """Elimina rectángulos libres contenidos en otro (MaxRects prune)."""
     rects = [r for r in rects if r[2] > 1e-6 and r[3] > 1e-6]
-    keep = []
+    keep: list[list[float]] = []
     for i, r in enumerate(rects):
         contained = False
         for j, s in enumerate(rects):
@@ -88,9 +91,9 @@ def _prune(rects):
     return keep
 
 
-def _split_free(free, used):
+def _split_free(free: list[list[float]], used: list[float]) -> list[list[float]]:
     """Divide los rectángulos libres alrededor de la pieza colocada."""
-    new = []
+    new: list[list[float]] = []
     for fr in free:
         if not _intersects(fr, used):
             new.append(fr)
@@ -131,14 +134,17 @@ _SORTERS = {
 }
 
 
-def _pack_bin(bin_w, bin_h, items, allow_rotation, score_func):
+def _pack_bin(bin_w: float, bin_h: float, items: list[dict[str, Any]], allow_rotation: bool,
+              score_func: Callable[[float, float, float, float], tuple[float, float]],
+              ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[list[float]]]:
     """Empaqueta lo que quepa en un tablero. Devuelve (placed, remaining)."""
-    free = [[0.0, 0.0, float(bin_w), float(bin_h)]]
-    placed = []
-    remaining = []
+    free: list[list[float]] = [[0.0, 0.0, float(bin_w), float(bin_h)]]
+    placed: list[dict[str, Any]] = []
+    remaining: list[dict[str, Any]] = []
 
     for it in items:
-        best = None  # (score, x, y, w, h, rotated)
+        # (score, x, y, w, h, rotated)
+        best: tuple[tuple[float, float], float, float, float, float, bool] | None = None
         for fr in free:
             candidates = [(it["w"], it["h"], False)]
             if allow_rotation:
@@ -163,14 +169,17 @@ def _pack_bin(bin_w, bin_h, items, allow_rotation, score_func):
     return placed, remaining, free
 
 
-def _pack_all(usable_w, usable_h, items, allow_rotation, score_func):
+def _pack_all(usable_w: float, usable_h: float, items: list[dict[str, Any]],
+              allow_rotation: bool,
+              score_func: Callable[[float, float, float, float], tuple[float, float]],
+              ) -> tuple[list[list[dict[str, Any]]], list[dict[str, Any]], list[list[list[float]]]]:
     """Empaqueta en tantos tableros como haga falta con una estrategia.
 
     Devuelve (lista_de_tableros, pendientes). Cada tablero es una lista de
     placements crudos {"item", "x", "y", "w", "h", "rotated"}.
     """
-    boards = []
-    frees = []
+    boards: list[list[dict[str, Any]]] = []
+    frees: list[list[list[float]]] = []
     pending = items
     while pending:
         placed, remaining, free = _pack_bin(usable_w, usable_h, pending,
@@ -186,7 +195,7 @@ def _pack_all(usable_w, usable_h, items, allow_rotation, score_func):
 # ----------------------------------------------------------------------
 # 3. Optimización completa (múltiples tableros)
 # ----------------------------------------------------------------------
-def _validar_tablero(board_w, board_h, margin):
+def _validar_tablero(board_w: float, board_h: float, margin: float) -> tuple[float, float]:
     """Devuelve las dimensiones utiles del tablero; rechaza margen excesivo."""
     usable_w = board_w - 2 * margin
     usable_h = board_h - 2 * margin
@@ -195,9 +204,10 @@ def _validar_tablero(board_w, board_h, margin):
     return usable_w, usable_h
 
 
-def _inflar_piezas(pieces, kerf, descontar_cantos):
+def _inflar_piezas(pieces: list[dict[str, Any]], kerf: float,
+                   descontar_cantos: bool) -> list[dict[str, Any]]:
     """Infla cada pieza por el kerf: garantiza separacion de corte."""
-    inflated = []
+    inflated: list[dict[str, Any]] = []
     for p in pieces:
         w, h = _medidas_corte(p, descontar_cantos)
         inflated.append({"name": p["name"], "material": p["material"],
@@ -206,9 +216,13 @@ def _inflar_piezas(pieces, kerf, descontar_cantos):
     return inflated
 
 
-def _mejor_empaquetado(usable_w, usable_h, inflated, allow_rotation):
+def _mejor_empaquetado(usable_w: float, usable_h: float, inflated: list[dict[str, Any]],
+                       allow_rotation: bool,
+                       ) -> tuple[list[list[dict[str, Any]]], list[dict[str, Any]],
+           list[list[list[float]]]]:
     """Prueba heuristica x orden y devuelve (boards, pending, frees) del mejor."""
-    best = None
+    best: tuple[tuple[int, float], list[list[dict[str, Any]]], list[dict[str, Any]],
+                list[list[list[float]]]] | None = None
     for _hname, score_func in _HEURISTICS.items():
         for _sname, skey in _SORTERS.items():
             ordered = sorted(inflated, key=skey, reverse=True)
@@ -218,12 +232,14 @@ def _mejor_empaquetado(usable_w, usable_h, inflated, allow_rotation):
             key = (len(boards) if boards else 10 ** 9, -placed_area)
             if best is None or key < best[0]:
                 best = (key, boards, pending, frees)
+    assert best is not None  # _HEURISTICS y _SORTERS no vacíos: el bucle siempre asigna
     return best[1], best[2], best[3]
 
 
-def _placements_tablero(placed, margin, kerf):
+def _placements_tablero(placed: list[dict[str, Any]], margin: float,
+                        kerf: float) -> list[dict[str, Any]]:
     """Piezas colocadas en un tablero, con coordenadas reales del tablero."""
-    placements = []
+    placements: list[dict[str, Any]] = []
     for pl in placed:
         it = pl["item"]
         placements.append({
@@ -239,9 +255,9 @@ def _placements_tablero(placed, margin, kerf):
     return placements
 
 
-def _retales_tablero(frees, margin):
+def _retales_tablero(frees: list[list[float]], margin: float) -> list[dict[str, Any]]:
     """Rectangulos libres del tablero (sobrante reutilizable) en mm reales."""
-    offcuts = []
+    offcuts: list[dict[str, Any]] = []
     for fr in frees:
         if fr[2] > 1e-6 and fr[3] > 1e-6:
             offcuts.append({
@@ -253,7 +269,9 @@ def _retales_tablero(frees, margin):
     return offcuts
 
 
-def _hoja_tablero(idx, board_w, board_h, placements, offcuts):
+def _hoja_tablero(idx: int, board_w: float, board_h: float,
+                  placements: list[dict[str, Any]],
+                  offcuts: list[dict[str, Any]]) -> dict[str, Any]:
     """Dict de salida de un tablero con su eficiencia."""
     board_area = board_w * board_h
     used = sum(pl["w"] * pl["h"] for pl in placements)
@@ -268,9 +286,11 @@ def _hoja_tablero(idx, board_w, board_h, placements, offcuts):
     }
 
 
-def optimize(pieces, board_w, board_h,
-             kerf=KERF_DEFAULT, margin=MARGIN_DEFAULT,
-             allow_rotation=True, descontar_cantos=False):
+def optimize(pieces: list[dict[str, Any]], board_w: float, board_h: float,
+             kerf: float = KERF_DEFAULT, margin: float = MARGIN_DEFAULT,
+             allow_rotation: bool = True,
+             descontar_cantos: bool = False,
+             ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Acomoda las piezas en tantos tableros como haga falta.
 
     Args:
@@ -288,14 +308,14 @@ def optimize(pieces, board_w, board_h,
     boards, pending, frees = _mejor_empaquetado(
         usable_w, usable_h, inflated, allow_rotation)
 
-    sheets = []
+    sheets: list[dict[str, Any]] = []
     for idx, placed in enumerate(boards):
         placements = _placements_tablero(placed, margin, kerf)
         offcuts = _retales_tablero(frees[idx], margin)
         sheets.append(_hoja_tablero(
             idx, board_w, board_h, placements, offcuts))
 
-    unplaced = [{"name": p["name"], "w": p["w"] - kerf, "h": p["h"] - kerf,
+    unplaced: list[dict[str, Any]] = [{"name": p["name"], "w": p["w"] - kerf, "h": p["h"] - kerf,
                 "material": p["material"]} for p in pending]
     return sheets, unplaced
 
@@ -303,9 +323,10 @@ def optimize(pieces, board_w, board_h,
 MIN_OFFCUT = 80.0  # lado mínimo (mm) para considerar un sobrante reutilizable
 
 
-def optimize_by_group(pieces, board_w, board_h,
-                      kerf=KERF_DEFAULT, margin=MARGIN_DEFAULT,
-                      allow_rotation=True, descontar_cantos=False):
+def optimize_by_group(pieces: list[dict[str, Any]], board_w: float, board_h: float,
+                      kerf: float = KERF_DEFAULT, margin: float = MARGIN_DEFAULT,
+                      allow_rotation: bool = True,
+                      descontar_cantos: bool = False) -> list[dict[str, Any]]:
     """Optimiza agrupando por (material, espesor).
 
     Args:
@@ -315,12 +336,12 @@ def optimize_by_group(pieces, board_w, board_h,
         lista de grupos:
         {"material", "thickness", "label", "sheets", "unplaced", "n_pieces"}
     """
-    groups = {}
+    groups: dict[tuple[str, float], list[dict[str, Any]]] = {}
     for p in pieces:
         key = (p.get("material", "") or "", float(p.get("thickness", 0) or 0))
         groups.setdefault(key, []).append(p)
 
-    result = []
+    result: list[dict[str, Any]] = []
     for (material, thickness), items in sorted(groups.items()):
         sheets, unplaced = optimize(items, board_w, board_h,
                                     kerf=kerf, margin=margin,
@@ -337,12 +358,14 @@ def optimize_by_group(pieces, board_w, board_h,
     return result
 
 
-def _retal_area(sheet, min_side=MIN_OFFCUT):
-    return sum(o["w"] * o["h"] for o in sheet.get("offcuts", [])
+def _retal_area(sheet: dict[str, Any], min_side: float = MIN_OFFCUT) -> float:
+    total: float = sum(o["w"] * o["h"] for o in sheet.get("offcuts", [])
                if min(o["w"], o["h"]) >= min_side)
+    return total
 
 
-def resumen_global(groups, board_w, board_h):
+def resumen_global(groups: list[dict[str, Any]], board_w: float,
+                   board_h: float) -> dict[str, Any]:
     """Totales agregados de todos los grupos (para la barra de estado)."""
     n_total = sum(g["n_pieces"] for g in groups)
     n_unplaced = sum(len(g["unplaced"]) for g in groups)
@@ -367,9 +390,9 @@ def resumen_global(groups, board_w, board_h):
     }
 
 
-def resumen(sheets, unplaced):
+def resumen(sheets: list[dict[str, Any]], unplaced: list[dict[str, Any]]) -> str:
     """Devuelve un texto-resumen legible del resultado."""
-    lines = []
+    lines: list[str] = []
     n_piezas = sum(len(s["placements"]) for s in sheets)
     lines.append(f"Tableros usados: {len(sheets)}")
     lines.append(f"Piezas colocadas: {n_piezas}")
