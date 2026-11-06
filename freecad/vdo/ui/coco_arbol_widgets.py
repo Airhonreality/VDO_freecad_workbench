@@ -299,6 +299,11 @@ class ArbolDivisionesMixin:
                 "cantos": self._cantos_pieza(rol, clave, False),
             })
 
+        self._piezas_estructura(agregar, t, fondo, inner_w, inner_h, lat_h, base_len, techo_len)
+        self._piezas_divisiones(agregar, fondo, t)
+        return piezas
+
+    def _piezas_estructura(self, agregar, t, fondo, inner_w, inner_h, lat_h, base_len, techo_len):
         agregar(
             "base", "Base", "horizontal", "base",
             base_len, fondo, t,
@@ -332,6 +337,7 @@ class ArbolDivisionesMixin:
                  "z": 0.0, "w": inner_w, "h": t, "d": inner_h},
                 {"largo": "x", "ancho": "z", "espesor": "y"})
 
+    def _piezas_divisiones(self, agregar, fondo, t):
         h_seq = 0
         v_seq = 0
         for pieza in (self._resolved.pieces if self._resolved else []):
@@ -356,7 +362,6 @@ class ArbolDivisionesMixin:
                     {"nombre": pieza.nombre, "x": pieza.x, "y": 0.0,
                      "z": pieza.z, "w": t, "h": fondo, "d": pieza.h},
                     {"largo": "z", "ancho": "y", "espesor": "x"})
-        return piezas
 
     def _pieza_por_clave(self, clave):
         for pieza in self._piezas_fisicas():
