@@ -15,8 +15,11 @@ from freecad.vdo.core.coco_core import _modificador_mapa
 from freecad.vdo.core.helpers import _get_app
 
 
-def _aplicar_shell(boxes, shell_info, shell_tiras, shell_refs, obstaculos,
-                   reengroses, clave, caja, ejes):
+def _aplicar_shell(boxes: list[Any], shell_info: dict[str, dict[str, Any]],
+                   shell_tiras: list[dict[str, Any]],
+                   shell_refs: list[dict[str, Any]], obstaculos: list[Any],
+                   reengroses: dict[str, Any], clave: str, caja: dict[str, Any],
+                   ejes: dict[str, str]) -> None:
     """Registra una caja de carcasa y, si tiene reengrose, añade sus tiras.
     Modifica boxes, shell_info, shell_tiras, shell_refs y obstaculos in situ."""
     mod = _modificador_mapa(reengroses, clave)
@@ -56,7 +59,7 @@ def _aplicar_shell(boxes, shell_info, shell_tiras, shell_refs, obstaculos,
             None if prioridad
             == VDO_RE_MODELO.DEFAULTS["prioridad_encuentro_tiras"]
             else prioridad)
-        segmento = {
+        segmento: dict[str, Any] = {
             "x": float(ref["x"]), "y": float(ref["y"]),
             "z": float(ref["z"]), "w": float(ref["w"]),
             "h": float(ref["h"]), "d": float(ref["d"]),
@@ -84,10 +87,10 @@ def preparar_carcasa(
     """Lee los reengroses de carcasa y prepara las listas y el mapa de
     núcleos de la carcasa."""
     reengroses = VDO_RE_MODIFICADOR.leer_reengroses(fp)
-    obstaculos = []
-    shell_tiras = []
-    shell_info = {}
-    shell_refs = []
+    obstaculos: list[Any] = []
+    shell_tiras: list[dict[str, Any]] = []
+    shell_info: dict[str, dict[str, Any]] = {}
+    shell_refs: list[dict[str, Any]] = []
     shell_cores = {
         "lateral_izquierdo": lat_izq,
         "lateral_derecho": lat_der,
