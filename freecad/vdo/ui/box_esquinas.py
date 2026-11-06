@@ -5,6 +5,7 @@ from freecad.vdo.ui.box_constantes import (
     ESQUINAS,
     TIPOS_ENCUENTRO,
 )
+from freecad.vdo.ui.qt import seleccionar_por_dato
 from freecad.vdo.ui.tema import obtener_svg_icon
 
 
@@ -24,9 +25,7 @@ class BoxEsquinasMixin:
 
         self._cargando = True
         self.combo_esquina[esquina].blockSignals(True)
-        idx_c = self.combo_esquina[esquina].findData(nuevo_tipo)
-        if idx_c >= 0:
-            self.combo_esquina[esquina].setCurrentIndex(idx_c)
+        seleccionar_por_dato(self.combo_esquina[esquina], nuevo_tipo)
         self.combo_esquina[esquina].blockSignals(False)
         self._cargando = False
 

@@ -5,6 +5,7 @@ import logging
 
 from freecad.vdo.core import frames as VDO_FR
 from freecad.vdo.core.module_props import ANCLAJE_DEFAULT
+from freecad.vdo.ui.qt import seleccionar_por_dato
 from freecad.vdo.ui.task_base import cerrar_dialogo
 
 _LOG = logging.getLogger(__name__)
@@ -80,9 +81,7 @@ class CocoUnifiedValoresMixin:
                 estado = "visto"
             elif lado in apoyados:
                 estado = "apoyado"
-            idx = combo.findData(estado)
-            if idx >= 0:
-                combo.setCurrentIndex(idx)
+            seleccionar_por_dato(combo, estado)
 
     def _cargar_divisiones(self, obj):
         self._rows_x = []
