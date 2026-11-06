@@ -679,3 +679,9 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-87
 
 - **D-87:** primer defecto preexistente corregido. Cambio de comportamiento intencional: antes el accept fallaba con la opción por defecto. Prueba: test_cajon_montaje_defecto. Revertir: git revert del commit (b).
+
+## D-88
+
+- **D-88: F2 guardado atómico en accept de zócalo, panel, puerta, cajón y coco.** Cambio de comportamiento intencional solo en el camino de error. Prueba: tests/test_accept_atomico.py. Revertir: git revert de (b).
+  - Mecanismo único: `freecad/vdo/cad/transaccion.py` (`foto_propiedades` antes de escribir, `restaurar_propiedades` en el camino de error: quita las propiedades añadidas y restaura los valores cambiados). Los cinco accept lo usan; el camino de éxito no cambia.
+  - Límite: en panel y coco, validaciones que dependen de valores ya escritos (reengrose, desbordamiento de divisiones) siguen tras la escritura; se cubren con la restauración, no se reordenan. Insertos y objetos hijos creados durante el accept no se restauran.
