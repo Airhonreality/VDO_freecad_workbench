@@ -74,6 +74,15 @@ _TARGET_TO_PAGE = {
     VDOSelectionBridge.TARGET_ZOCALO: PAGE_CIERRE,
 }
 
+# clave del breadcrumb -> (pagina, tipo de destino) para _ir_a_nivel
+_CLAVE_BREADCRUMB_A_NIVEL = {
+    "mueble": (PAGE_CHASIS, VDOSelectionBridge.TARGET_COCO),
+    "chasis": (PAGE_CHASIS, VDOSelectionBridge.TARGET_COCO),
+    "vano": (PAGE_VANO, getattr(VDOSelectionBridge, "TARGET_VANO", "VANO")),
+    "pieza": (PAGE_PIEZA, VDOSelectionBridge.TARGET_PANEL),
+    "cierre": (PAGE_CIERRE, VDOSelectionBridge.TARGET_CAJON),
+}
+
 
 def _float_seguro(valor, default=0.0):
     try:
@@ -1144,14 +1153,9 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
         self.sigNivelCambiado.emit(page_index, target_type)
 
     def _on_breadcrumb_clicked(self, clave):
-        if clave in ("mueble", "chasis"):
-            self._ir_a_nivel(PAGE_CHASIS, VDOSelectionBridge.TARGET_COCO)
-        elif clave == "vano":
-            self._ir_a_nivel(PAGE_VANO, getattr(VDOSelectionBridge, "TARGET_VANO", "VANO"))
-        elif clave == "pieza":
-            self._ir_a_nivel(PAGE_PIEZA, VDOSelectionBridge.TARGET_PANEL)
-        elif clave == "cierre":
-            self._ir_a_nivel(PAGE_CIERRE, VDOSelectionBridge.TARGET_CAJON)
+        destino = _CLAVE_BREADCRUMB_A_NIVEL.get(clave)
+        if destino is not None:
+            self._ir_a_nivel(*destino)
 
     # ------------------------------------------------------------------
     # Sincronización del Árbol Maestro y Preview 2D
