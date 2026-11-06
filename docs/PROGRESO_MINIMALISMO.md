@@ -390,3 +390,61 @@ Estado de cada decisión de `DECISIONES_DELEGADAS.md` (fuente vigente; `PENDIENT
 - **P-09**: retirado (no hay definición). Lo registra el documento de decisiones.
 - **P-10**: N/A con motivo y deuda antes de M5 (`goldens_origen.md`).
 - Los planes anteriores siguen sin archivar (MN-13, M11).
+
+
+---
+
+## M11 — documentación
+
+**Fase cerrada en lo que el plan pide, con excepciones.** Se escribieron los documentos del paso 1 al 4 y del 6, y se archivaron los planes del paso 5. Los pasos 5 y 7 de la lista de §6 quedan parciales: ver abajo. M11 documenta el estado real; no cierra las metas de M2 a M10 (ver la tabla de metas).
+
+### Qué se documentó y dónde
+
+| Paso (§6 M11) | Documento | Commit |
+|---|---|---|
+| 1 | `docs/ARQUITECTURA.md`: capas, reglas MN-02 y MN-03, verificación, plantilla P5 y su aplicación medida, excepciones, mapa de archivos | `4e153b3` |
+| 2 | `docs/GLOSARIO.md`: términos del código con su fuente; lo no confirmado queda "por confirmar" | `07ef3be` |
+| 3 | `docs/adr/`: ADR-MN01, MN02, MN03, MN04, MN05, MN06, MN09 e índice `README.md` | `360432d` |
+| 4 | `docs/DEUDA_TECNICA.md`: registro único con responsable y fecha propuesta por ítem. Fusiona `DEUDA_TECNICA_VDO.md` | `5233d78`, `37baa37` |
+| 5 | Archivo de planes anteriores (MN-13): `PLAN_MAESTRO_VDO.md` y `PLAN_CORRECCIONES_F19.md`, con `git mv` y la línea "Sustituido por docs/PLAN_MINIMALISMO_VDO.md" | `5e7dfac` |
+| 6 | `docs/PENDIENTES_HUMANO.md`: siete puntos para el usuario y el historial P-01 a P-10 con su estado | `6223be4` |
+| 7 | Esta sección | (este commit) |
+
+Archivado en `docs/archivo/` con `git mv` (no se borró nada): `ARQUITECTURA_anterior.md`, `GLOSARIO_anterior.md`, `DEUDA_TECNICA_VDO_anterior.md`, `PLAN_MAESTRO_VDO.md`, `PLAN_CORRECCIONES_F19.md`.
+
+**Pendiente del paso 5 (MN-13):** siguen en `docs/` los planes y registros anteriores (`PLAN_REFACTOR_VDO.md`, `PROGRESO_REFACTOR.md`, `PROGRESO_VDO.md`, `PROGRESO_VDO.yaml`, `REVISION_ARQUITECTURA_CAPAS.md`, `CONTEXTO_TECNICO_VDO.md`, `INVENTARIO_APP_M5.md`, `MANIFIESTO_DISENO_INTERFAZ_VDO.md`) y los ADR `ADR-000`, `001`, `004` y `005`. Es decisión humana (`docs/PENDIENTES_HUMANO.md`, punto 7).
+
+### Decisiones del asistente en M11 (revertibles con `git revert`)
+
+- `ARQUITECTURA.md` y `GLOSARIO.md` ya existían con contenido del plan anterior. No se sobrescribieron a ciegas: la versión anterior se archivó primero.
+- Los ADR nuevos llevan el prefijo `ADR-MN` para no mezclarse con `ADR-000` a `005` del plan maestro.
+- MN-06 no tiene D-xx propio; su ADR cita el registro de M2 y M3.
+- Las fechas de `DEUDA_TECNICA.md` y `PENDIENTES_HUMANO.md` son propuestas, sin aprobar.
+- Dos cifras del encargo se corrigieron con la medición: los `noqa` son **168** códigos (E402 108, RUF001 47, C901 13), no 166; y `setStyleSheet` fuera de `ui/tema.py` es **0**, porque las dos coincidencias del grep de M10 están en `tema.py` (una es docstring).
+- Los defectos B2 (accept que escribe antes de un error) y B3 (zócalo con volumen 0.0) vienen del encargo de M11 y **no se encontraron en el registro**. Quedan como "reportado", sin reproducir.
+
+### Estado de las metas de §6
+
+Estados según la medición de M10 (`docs/metricas/minimalismo_final.json`) y las comprobaciones de M11. "Cumplida" significa que la meta se cumple tal como está escrita.
+
+| Fase | Meta (§6) | Estado | Motivo |
+|---|---|---|---|
+| M0 | Base y goldens existen; nivel 2 sin fallos o fallos documentados | Parcial | 18 goldens y base. `nesting_presets` sin golden (P-10). Nivel 2 con 0 fallos (M10). |
+| M1 | Inventario completo; cada duplicado con destino único | Parcial | Inventario en `INVENTARIO_HECHOS.md`. Sin destino confirmado para H-60 a H-62 (P-06) y H-04 (P-07). |
+| M2 | `duplicados` 0; `literales` 0; líneas de `hardware_hub` y `module_specs` reducidas | Parcial | `literales` 0 y `module_specs` de 162 a 43 líneas. Queda 1 grupo de tablas idénticas. `hardware_hub` sube de 301 a 303 líneas. |
+| M3 | Sin reglas de apertura repetidas; una sola definición por sistema | Cumplida | `aperturas`: 5 sitios a 1. Grep verificado en M10. |
+| M4 | `ramas` → 0 | No cumplida | 3 funciones de `ui/` con 4 o más ramas (12 en la base según el JSON). |
+| M5 | Sin `app/`; `test_arquitectura` verde; escritura solo en `cad/`; colocación probada en nivel 2 | Parcial | `app/` eliminado; 7 pruebas de capas OK en nivel 1 de M11; `core->cad` = 0; nivel 2 con 0 fallos. Sin evidencia en el registro de que la escritura esté solo en `cad/`. |
+| M6 | `accept` ≤ 10 líneas; `setStyleSheet` fuera de tema = 0; widgets reducidos; `ui` reducido | Parcial | `setStyleSheet` fuera de tema = 0 (revisado en M11; M10 lo marcaba como parcial). `QLabel(` 171 a 123 y `addWidget` 401 a 286. `accept` de 10 líneas medido en coco (D-75), no en los 5 paneles. `ui` sube de 13.507 a 14.374 líneas. Verificación visual pendiente. |
+| M7 | ≤ 400 líneas por archivo y ≤ 60 por función; `fachadas` 0; módulos reducidos | Parcial | `tamano` 0 y `fachadas` 0. Los módulos suben de 85 a 145, al revés de la meta. |
+| M8 | Ningún archivo de `freecad/vdo/` empieza con `vdo_` (excepciones enumeradas) | Parcial | Todos los `.py` renombrados. Quedan `core/vdo_manifest.json` y `core/vdo_hardware_catalog.json`, sin enumerar como excepción. |
+| M9 | `excepciones` 0; `ruff` 0; `mypy` 0 en alcance | Parcial | `excepciones` 1 (justificada, D-79). `ruff` 0 en `freecad/vdo/`, pero 8 en `ruff check .` (incluye `verificar.py`, vetado). `mypy` 0 en `core/` y `cad/`. 168 `noqa` pendientes de revisión humana. |
+| M10 | Cada cifra de §1 cumple su meta, o tiene justificación aprobada por el humano | No cumplida | Según M10 y el ajuste de `setStyleSheet`: 9 cifras cumplen, 1 parcial (capas) y 6 no cumplen. Las justificaciones no están aprobadas. Nivel 3 pendiente. |
+| M11 | Documentación (pasos 1 a 5 de §6) | Parcial | Pasos 1, 2, 3, 4 y 6 hechos. Paso 5: planes y registros anteriores siguen en `docs/`. |
+
+### Verificación final de M11
+
+- Nivel 1 (`python3 -I tools/run_tests.py`, salida en `/tmp/ola80_n1/log.txt`): `RESUMEN ejecutados=291 fallos=0 errores=0 skip=113 no_ejecutado=0`. Los 113 SKIP son por entorno (sin FreeCAD real), como en M10.
+- Pruebas de capas en nivel 1: las 5 de `test_arquitectura.CapasTests` y las 2 de `test_capas_arquitectura.CapasTests`, todas OK.
+- `python3 -I tools/auditoria/ciclos.py`: `ARISTAS core->cad: 0`; 3 componentes en `ui/` (U-01 a U-03), sin cambio.
+- Nivel 3 (GUI): pendiente del usuario. Ver `docs/PENDIENTES_HUMANO.md`, punto 3.

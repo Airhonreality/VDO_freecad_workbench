@@ -119,7 +119,7 @@ Fecha objetivo original "M5": ya pasó y los ciclos siguen.
 |---|---|
 | D-01 (golden de `rotacion_z`) | Resuelto (P-02). |
 | D-02 (golden de `guardian`) | `guardian` resuelto (golden de 9 entradas). `nesting_presets` sigue abierto como B4. |
-| D-05 (3 FALLO en `test_arquitectura.py`) | El nivel 1 de M10 dio `fallos=0`. Confirmar con el log final de M11 (ver `docs/PROGRESO_MINIMALISMO.md`). |
+| D-05 (3 FALLO en `test_arquitectura.py`) | Resuelto. Nivel 1 de M11: las 5 pruebas de `test_arquitectura.CapasTests` y las 2 de `test_capas_arquitectura` pasan (`docs/PROGRESO_MINIMALISMO.md`, M11). |
 | D-06 (`os._exit` en tests de otra sesión) | Ya no aparece en el código: hay `sys.exit` en `tests/test_gui_wiring.py` y `tests/test_single_dock_convergence.py`. |
 | D-07 (golden de `frames` con una entrada en error) | Se conserva como caso de error a propósito. |
 | D-11 (locale numérico del guardián) | Resuelto (D-13 y D-14). Ver G1 para los documentos ya guardados. |
