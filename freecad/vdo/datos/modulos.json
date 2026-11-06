@@ -37,7 +37,7 @@
     "menu": "Propiedades del Cajón",
     "icon": "vdo_cajon.svg",
     "factory": [
-      "freecad.vdo.core.vdo_cajon_core",
+      "freecad.vdo.cad.cajon",
       "make_cajon"
     ],
     "panel": "panel.cajon",

@@ -44,7 +44,7 @@ except ImportError:
 import contextlib
 
 from freecad.vdo.core import vdo_hardware_hub as HH
-from freecad.vdo.core.vdo_cajon_core import CajonFeature
+from freecad.vdo.cad.cajon import CajonFeature
 from freecad.vdo.core.vdo_coco_core import CocoFeature
 from freecad.vdo.core.vdo_panel_core import PanelFeature
 from freecad.vdo.core.vdo_puerta_core import PuertaFeature

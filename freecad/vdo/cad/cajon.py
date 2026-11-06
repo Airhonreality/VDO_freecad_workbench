@@ -1,5 +1,5 @@
 # =====================================================================
-# vdo_cajon_core.py
+# cajon.py
 # Motor del cajón con corredera oculta VDO (FeaturePython).
 # Trinidad de Cajones v2: geometría paramétrica pura con booleanos.
 #

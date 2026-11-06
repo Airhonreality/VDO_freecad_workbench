@@ -12,7 +12,7 @@ from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_finish as VDO_FIN
 from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core import vdo_reengrose as VDO_RE
-from freecad.vdo.core.vdo_cajon_core import make_cajon
+from freecad.vdo.cad.cajon import make_cajon
 from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,

@@ -29,7 +29,7 @@ import FreeCAD as App
 import Part
 
 from freecad.vdo.cad.geometria import forma_ref as VRS
-from freecad.vdo.core import vdo_cajon_core as VCJ
+from freecad.vdo.cad import cajon as VCJ
 from freecad.vdo.core import vdo_cajon_despiece as VCD
 from freecad.vdo.core import vdo_coco_core as VCC
 from freecad.vdo.core import vdo_coco_spaces as VCS
@@ -144,8 +144,8 @@ REQUIRED_API = [
     ("freecad.vdo.core.vdo_layout", "Track"),
     ("freecad.vdo.core.vdo_coco_spaces", "generar_divisiones_matriz"),
     ("freecad.vdo.core.vdo_coco_core", "make_coco"),
-    ("freecad.vdo.core.vdo_cajon_core", "make_cajon"),
-    ("freecad.vdo.core.vdo_cajon_core", "CajonFeature"),
+    ("freecad.vdo.cad.cajon", "make_cajon"),
+    ("freecad.vdo.cad.cajon", "CajonFeature"),
     ("freecad.vdo.core.vdo_cajon_despiece", "calcular_despiece"),
     ("freecad.vdo.core.vdo_cajon_despiece", "CORREDERA_OCULTA"),
     ("freecad.vdo.core.vdo_cajon_despiece", "CORREDERA_TELESCOPICA"),
