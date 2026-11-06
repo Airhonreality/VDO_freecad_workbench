@@ -20,15 +20,17 @@ except NameError:
 _RAIZ = os.path.dirname(_AQUI)
 
 from freecad.vdo.core import vdo_puerta_despiece as D
-from freecad.vdo.core.vdo_cajon_despiece import (
+from freecad.vdo.core.vdo_cajon_correderas import (
+    CAJA_METALICA,
+    CORREDERA_OCULTA,
+    CORREDERA_TELESCOPICA,
+)
+from freecad.vdo.core.vdo_cajon_despiece import calcular_despiece
+from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
-    CAJA_METALICA,
-    CORREDERA_OCULTA,
-    CORREDERA_TELESCOPICA,
-    calcular_despiece,
 )
 
 FIXTURES = os.path.join(_RAIZ, "tests", "fixtures")

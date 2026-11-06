@@ -1171,7 +1171,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
         if h_frente <= 0:
             h_frente = max(10.0, h / max(cantidad, 1))
 
-        from freecad.vdo.core.vdo_cajon_despiece import (
+        from freecad.vdo.core.vdo_cajon_correderas import (
             CORREDERA_OCULTA,
             CORREDERA_TELESCOPICA,
         )

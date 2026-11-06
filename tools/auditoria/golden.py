@@ -132,6 +132,9 @@ AGREGADOS: dict[str, tuple[str, ...]] = {
     "layout": tuple(
         f"freecad.vdo.core.vdo_layout_{parte}"
         for parte in ("modelo", "matriz", "resuelto", "resolucion")),
+    "cajon_despiece": tuple(
+        f"freecad.vdo.core.vdo_cajon_{parte}"
+        for parte in ("correderas", "despiece")),
     "reengrose": tuple(
         f"freecad.vdo.core.vdo_reengrose_{parte}"
         for parte in ("modelo", "modificador", "tiras", "geometria",
@@ -400,7 +403,9 @@ def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
         entradas["calcular_despiece"] = [
             dict(base),
             dict(base, tipo_corredera=mod.CORREDERA_TELESCOPICA),
-            dict(base, tipo_corredera=mod.CAJA_METALICA, sistema_apertura=mod.APERTURA_GOLA),
+            dict(base, tipo_corredera=mod.CAJA_METALICA,
+                 sistema_apertura=importlib.import_module(
+                     "freecad.vdo.core.vdo_facade_contract").APERTURA_GOLA),
         ]
 
     elif modulo == "puerta_despiece":

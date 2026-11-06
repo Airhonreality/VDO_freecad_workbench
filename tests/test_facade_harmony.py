@@ -216,24 +216,19 @@ class TestImportacionYEnums(unittest.TestCase):
         self.assertEqual(D_PUERTA.APERTURA_PUSH_OPEN, APERTURA_PUSH_OPEN)
 
     def test_cajon_consume_contrato(self):
-        """vdo_cajon_despiece importa los enums del contrato."""
-        self.assertEqual(D_CAJON.APERTURA_TIRADOR, APERTURA_TIRADOR)
-        self.assertEqual(D_CAJON.APERTURA_GOLA, APERTURA_GOLA)
-        self.assertEqual(D_CAJON.APERTURA_45_GRADOS, APERTURA_45_GRADOS)
-        self.assertEqual(D_CAJON.APERTURA_PUSH_OPEN, APERTURA_PUSH_OPEN)
+        """vdo_cajon_despiece usa las funciones del contrato (sin reexportarlas, D-36)."""
+        from freecad.vdo.core import vdo_facade_contract as contrato
+        self.assertIs(D_CAJON.aplicar_sistema_apertura, contrato.aplicar_sistema_apertura)
+        self.assertIs(D_CAJON.calcular_fachada_base, contrato.calcular_fachada_base)
 
     def test_no_discrepancias_strings(self):
         """No hay discrepancias de strings entre puerta y cajón."""
         for attr in ("APERTURA_TIRADOR", "APERTURA_GOLA",
                       "APERTURA_45_GRADOS", "APERTURA_PUSH_OPEN"):
             v_puerta = getattr(D_PUERTA, attr)
-            v_cajon = getattr(D_CAJON, attr)
             v_contrato = getattr(__import__("freecad.vdo.core.vdo_facade_contract", fromlist=["_"]), attr)
             self.assertEqual(v_puerta, v_contrato,
                              f"Discrepancia en {attr}: puerta={v_puerta}, "
-                             f"contrato={v_contrato}")
-            self.assertEqual(v_cajon, v_contrato,
-                             f"Discrepancia en {attr}: cajón={v_cajon}, "
                              f"contrato={v_contrato}")
 
 

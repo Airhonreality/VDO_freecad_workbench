@@ -49,17 +49,19 @@ from freecad.vdo.cad.cajon import (
     _corte_pin_trasero,
     _corte_ranura_piso,
 )
-from freecad.vdo.core.vdo_cajon_despiece import (
+from freecad.vdo.core.vdo_cajon_correderas import (
+    CAJA_METALICA,
+    CORREDERA_OCULTA,
+    CORREDERA_TELESCOPICA,
+    listar_marcas,
+    obtener_marca,
+)
+from freecad.vdo.core.vdo_cajon_despiece import calcular_despiece
+from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
-    CAJA_METALICA,
-    CORREDERA_OCULTA,
-    CORREDERA_TELESCOPICA,
-    calcular_despiece,
-    listar_marcas,
-    obtener_marca,
 )
 from tests.soporte.freecad_falso import instalado
 

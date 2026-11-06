@@ -20,19 +20,19 @@ import json
 from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
-from freecad.vdo.core.vdo_cajon_despiece import (
+from freecad.vdo.core.vdo_cajon_correderas import (
+    CAJA_METALICA,
+    CORREDERA_OCULTA,
+    CORREDERA_TELESCOPICA,
+    listar_marcas,
+)
+from freecad.vdo.core.vdo_cajon_despiece import calcular_despiece
+from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
-    CAJA_METALICA,
-    CORREDERA_OCULTA,
-    CORREDERA_TELESCOPICA,
-    calcular_despiece,
-    listar_marcas,
     necesita_bisel_45,
-)
-from freecad.vdo.core.vdo_facade_contract import (
     BISEL_45_ANGULO_DEFAULT,
     MONTAJE_EMBEBIDA,
     MONTAJE_PARCHE,

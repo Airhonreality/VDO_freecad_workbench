@@ -10,15 +10,15 @@ from freecad.vdo.cad.colocacion import aplicar_rotacion
 from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import vdo_hardware_hub, vdo_module_props
-from freecad.vdo.core.vdo_cajon_despiece import (
+from freecad.vdo.core.vdo_cajon_correderas import (
     CAJA_METALICA,
     CORREDERA_OCULTA,
     CORREDERA_TELESCOPICA,
     listar_marcas,
-    necesita_bisel_45,
-    necesita_descuento_gola,
 )
 from freecad.vdo.core.vdo_facade_contract import (
+    necesita_bisel_45,
+    necesita_descuento_gola,
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,

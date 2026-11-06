@@ -30,7 +30,8 @@ import Part
 
 from freecad.vdo.cad.geometria import forma_ref as VRS
 from freecad.vdo.cad import cajon as VCJ
-from freecad.vdo.core import vdo_cajon_despiece as VCD
+from freecad.vdo.core import vdo_cajon_correderas as VCD
+from freecad.vdo.core import vdo_facade_contract as VFC
 from freecad.vdo.cad import coco as VCC
 from freecad.vdo.core import vdo_coco_spaces as VCS
 from freecad.vdo.core import vdo_defaults as VD
@@ -148,8 +149,8 @@ REQUIRED_API = [
     ("freecad.vdo.cad.cajon", "make_cajon"),
     ("freecad.vdo.cad.cajon", "CajonFeature"),
     ("freecad.vdo.core.vdo_cajon_despiece", "calcular_despiece"),
-    ("freecad.vdo.core.vdo_cajon_despiece", "CORREDERA_OCULTA"),
-    ("freecad.vdo.core.vdo_cajon_despiece", "CORREDERA_TELESCOPICA"),
+    ("freecad.vdo.core.vdo_cajon_correderas", "CORREDERA_OCULTA"),
+    ("freecad.vdo.core.vdo_cajon_correderas", "CORREDERA_TELESCOPICA"),
     ("freecad.vdo.core.vdo_hardware_hub", "resolve_drawer_slide"),
     ("freecad.vdo.cad.panel", "crear_pieza"),
     ("freecad.vdo.cad.panel", "PanelFeature"),
@@ -261,7 +262,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
                     "grosor_fachada": VD.CAJON_FACHADA_DEFAULT,
                     "marca": "blum_tandem",
                     "tipo_corredera": VCD.CORREDERA_OCULTA,
-                    "sistema_apertura": VCD.APERTURA_TIRADOR,
+                    "sistema_apertura": VFC.APERTURA_TIRADOR,
                     "material_ref": "melamina_standar",
                 }
                 obj = VCJ.make_cajon(self.doc, cfg)
