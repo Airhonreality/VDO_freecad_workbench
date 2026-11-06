@@ -78,3 +78,8 @@ def ocultar_vista(obj: Any) -> None:
     vista = getattr(obj, "ViewObject", None)
     if vista is not None:
         vista.Visibility = False
+
+
+def anadir_propiedad_texto(obj, nombre: str, grupo: str, descripcion: str) -> None:
+    """Añade una propiedad de texto (App::PropertyString) a un objeto FreeCAD (D-31)."""
+    obj.addProperty("App::PropertyString", nombre, grupo, descripcion)

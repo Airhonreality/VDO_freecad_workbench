@@ -53,6 +53,8 @@ except ImportError:  # pragma: no cover
     resolve_layout = None
     cavidad_interior = None
 
+from freecad.vdo.cad.documento import recalcular
+from freecad.vdo.cad.propiedades import anadir_propiedad_texto
 from freecad.vdo.core import vdo_hardware_hub as HH
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
@@ -442,8 +444,8 @@ class PaginaChasis(_PaginaBase):
                 obj.VDO_Chassis_JSON = json.dumps(cfg)
             elif hasattr(obj, "addProperty"):
                 try:
-                    obj.addProperty("App::PropertyString", "VDO_Chassis_JSON", "VDO",
-                                    "Configuración semiótica de Capa 1")
+                    anadir_propiedad_texto(obj, "VDO_Chassis_JSON", "VDO",
+                                           "Configuración semiótica de Capa 1")
                     obj.VDO_Chassis_JSON = json.dumps(cfg)
                 except Exception:
                     App.Console.PrintWarning(
@@ -451,7 +453,7 @@ class PaginaChasis(_PaginaBase):
 
             doc = getattr(obj, "Document", None)
             if doc is not None:
-                doc.recompute()
+                recalcular(doc)
         except Exception:
             App.Console.PrintWarning(
                 "[VDO] No se pudo persistir la configuración del chasis")
@@ -894,14 +896,14 @@ class PaginaPieza(_PaginaBase):
                 obj.VDO_Reengrose_JSON = json.dumps(cfg)
             elif hasattr(obj, "addProperty"):
                 try:
-                    obj.addProperty("App::PropertyString", "VDO_Reengrose_JSON", "VDO", "Regrueso JSON")
+                    anadir_propiedad_texto(obj, "VDO_Reengrose_JSON", "VDO", "Regrueso JSON")
                     obj.VDO_Reengrose_JSON = json.dumps(cfg)
                 except Exception:
                     App.Console.PrintWarning(
                         "[VDO] No se pudo añadir propiedad VDO_Reengrose_JSON")
             doc = getattr(obj, "Document", None)
             if doc is not None:
-                doc.recompute()
+                recalcular(doc)
         except Exception:
             App.Console.PrintWarning(
                 "[VDO] No se pudo persistir VDO_Reengrose_JSON")
@@ -1447,7 +1449,7 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
                         obj.Espesor = round(e)
                 doc = getattr(obj, "Document", None)
                 if doc is not None:
-                    doc.recompute()
+                    recalcular(doc)
             except Exception:
                 App.Console.PrintWarning(
                     "[VDO] No se pudieron actualizar las dimensiones del header")
