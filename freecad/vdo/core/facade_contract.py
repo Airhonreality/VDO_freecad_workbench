@@ -94,7 +94,8 @@ def calcular_fachada_base(w_vano: float,
 
 def aplicar_sistema_apertura(h_fachada: float,
                              sistema_apertura: str,
-                             descuento_gola: float = GOLA_DESCUENTO_ALTURA_DEFAULT) -> tuple:
+                             descuento_gola: float = GOLA_DESCUENTO_ALTURA_DEFAULT,
+                             ) -> tuple[float, str]:
     """Ajusta la altura de la fachada segun el sistema de apertura y devuelve
     la operacion de mecanizado superior para el despiece y el PanelHeaderWidget.
 
@@ -130,7 +131,7 @@ CANTO_ESTADOS = ("FX", "RIG", "SMRG", "NONE")
 def cantos_por_sistema_apertura(sistema_apertura: str,
                                 canto_superior: str = "FX",
                                 cantos_laterales: str = "FX",
-                                canto_inferior: str = "FX") -> dict:
+                                canto_inferior: str = "FX") -> dict[str, str]:
     """Devuelve el estado de los 4 cantos segun el sistema de apertura.
 
     Convenio: Norte = arriba, Sur = abajo, Oeste = izquierda, Este = derecha.
