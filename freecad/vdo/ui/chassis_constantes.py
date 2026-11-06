@@ -10,8 +10,6 @@ from freecad.vdo.ui.tema import get_svg_icon as _svg_icon
 _ICON_CACHE = {}
 
 
-
-
 def obtener_svg_icon(name, size=22):
     return _svg_icon(name, size, icons_map=LUCIDE_ICONS, cache=_ICON_CACHE)
 
@@ -42,8 +40,6 @@ TIPOS_FONDO = [
     ("atornillado", "Atornillado 15/18 mm", "atornillado", "Fondo estructural grueso de arriostramiento atornillado a tope."),
     ("abierto", "Abierto / Sin fondo", "abierto", "Mueble pasante sin trasera (estantería o mueble de paso)."),
 ]
-
-ESTRATEGIAS_BASE = ("zocalo", "suspendido", "patas")
 
 # nombre del arquetipo -> configuracion del chasis que aplica
 _ARQUETIPOS = {

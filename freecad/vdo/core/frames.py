@@ -22,8 +22,6 @@ SUPERIOR = "superior"
 INFERIOR = "inferior"
 
 LADOS: Final = (FRENTE, FONDO, IZQUIERDA, DERECHA, SUPERIOR, INFERIOR)
-LADOS_VERTICALES: Final = (FRENTE, FONDO, IZQUIERDA, DERECHA)
-LADOS_HORIZONTALES: Final = (SUPERIOR, INFERIOR)
 
 NORMALES: Final[Mapping[str, tuple[float, float, float]]] = {
     FRENTE: (0.0, -1.0, 0.0),
@@ -41,13 +39,6 @@ OPUESTOS: Final[Mapping[str, str]] = {
     DERECHA: IZQUIERDA,
     SUPERIOR: INFERIOR,
     INFERIOR: SUPERIOR,
-}
-
-MARCO_LOCAL: Final[Mapping[str, str]] = {
-    "X+": DERECHA,
-    "Y+": FONDO,
-    "Z+": SUPERIOR,
-    "frente": FRENTE,
 }
 
 ETIQUETA_FRENTE = "FRENTE (Y\u2212)"

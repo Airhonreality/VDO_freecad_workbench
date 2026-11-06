@@ -37,13 +37,6 @@ ENCUENTRO_LABELS = {
 
 ESQUINAS = VDO_RE_MODELO.ESQUINAS_2D
 
-BORDE_NOMBRES = {
-    "frente": "Frente (Sur)",
-    "fondo": "Fondo (Norte)",
-    "izquierda": "Izquierda (Oeste)",
-    "derecha": "Derecha (Este)",
-}
-
 
 # borde -> plantilla del texto del boton (w: ancho en mm, t: texto del offset)
 _TEXTO_BOTON_BORDE = {

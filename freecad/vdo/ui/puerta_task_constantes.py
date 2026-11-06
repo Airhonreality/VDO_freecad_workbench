@@ -18,6 +18,4 @@ from freecad.vdo.datos.formularios import (
 
 # Colores del Manifiesto de UI VDO (tema oscuro)
 COLOR_FONDO = "#1e1e1e"
-COLOR_ACENTO = "#007acc"
 COLOR_TEXTO = "#e0e0e0"
-COLOR_BORDE = "#4a4a4a"

@@ -49,11 +49,8 @@ FONDO_DEFAULT = get_param("parametros_locales.fondo.valor", 580)
 ESPESOR_DEFAULT = get_param("parametros_locales.espesor.valor", 18)
 
 # === DIMENSIONES GLOBALES (Params_Melamina) ===
-ESPESOR_MELAMINA_DEFAULT = get_param("parametros_globales.espesor_default.valor", 18)
 CANTO_GRUESO_DEFAULT = get_param("parametros_globales.canto_grueso.valor", 2)
 CANTO_MEDIO_DEFAULT = get_param("parametros_globales.canto_medio.valor", 1)
-CANTO_FINO_DEFAULT = get_param("parametros_globales.canto_fino.valor", 0.4)
-RANURA_FONDO_DEFAULT = get_param("parametros_globales.ranura_fondo.valor", 3)
 
 # === CONFIGURACIÓN DEL FONDO (valores por defecto sensatos) ===
 FONDO_HABILITADO = True

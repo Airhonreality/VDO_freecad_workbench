@@ -15,16 +15,6 @@ CANTOS_VALIDOS = ("RIG", "FX", "SMRG")
 
 BORDES = ("norte", "sur", "este", "oeste")
 
-ROLES = (
-    "lateral_izquierdo",
-    "lateral_derecho",
-    "base",
-    "techo",
-    "fondo",
-    "division_x",
-    "division_y",
-)
-
 
 def _mapa(rol: str, tapa: str, base: str) -> dict[str, str | None]:
     if rol in ("lateral_izquierdo", "lateral_derecho"):

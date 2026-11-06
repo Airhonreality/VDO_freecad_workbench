@@ -56,7 +56,6 @@ SISTEMAS_APERTURA_VALIDOS = SISTEMAS_APERTURA
 ETIQUETAS = {k: v["etiqueta"] for k, v in SISTEMAS.items()}
 SISTEMA_POR_ETIQUETA = {v: k for k, v in ETIQUETAS.items()}
 LEGADO_A_CONTRATO = {n: k for k, v in SISTEMAS.items() for n in v["legado"]}
-DESCUENTO_ALTO = {k: v["descuento_alto"] for k, v in SISTEMAS.items()}
 
 # 3. CÁLCULO (predicados puros) ----------------------------------------
 
