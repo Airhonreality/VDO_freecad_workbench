@@ -2,6 +2,7 @@
 
 import csv
 import logging
+import os
 from typing import Any
 
 from freecad.vdo.core import defaults as _VDO_D
@@ -18,7 +19,7 @@ _CANTO_ESPESOR = {
 # ----------------------------------------------------------------------
 # 1. Lectura de la lista de corte (CSV de vdo_cutting_list)
 # ----------------------------------------------------------------------
-def read_cutting_csv(path):
+def read_cutting_csv(path: str | os.PathLike[str]) -> list[dict[str, Any]]:
     """Lee el CSV de lista de corte y devuelve una lista de piezas.
 
     Formato esperado (OpenCutList / vdo_cutting_list):
@@ -26,7 +27,7 @@ def read_cutting_csv(path):
 
     Es tolerante: ignora filas vacías y filas no numéricas (p.ej. el TOTAL).
     """
-    parts = []
+    parts: list[dict[str, Any]] = []
     with open(path, newline="", encoding="utf-8") as f:
         reader = csv.reader(f)
         next(reader, None)  # header
@@ -45,7 +46,7 @@ def read_cutting_csv(path):
             material = row[4] if len(row) > 4 else ""
             name = (row[5] if len(row) > 5 else "").strip() or "pieza"
 
-            cantos = {}
+            cantos: dict[str, str] = {}
             for borde, indice in (("norte", 8), ("sur", 9),
                                   ("este", 10), ("oeste", 11)):
                 valor = row[indice].strip().upper() if len(row) > indice else ""
@@ -63,12 +64,12 @@ def read_cutting_csv(path):
     return parts
 
 
-def expand_pieces(parts):
+def expand_pieces(parts: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Expande cada pieza según su cantidad a unidades individuales.
 
     Cada unidad lleva un sufijo (#n) para poder identificarla en el preview.
     """
-    pieces = []
+    pieces: list[dict[str, Any]] = []
     for p in parts:
         for i in range(p["qty"]):
             label = p["name"] if p["qty"] == 1 else f"{p['name']} #{i + 1}"
@@ -83,7 +84,7 @@ def expand_pieces(parts):
     return pieces
 
 
-def _espesor_canto(cantos, borde):
+def _espesor_canto(cantos: dict[str, str] | None, borde: str) -> float:
     codigo = str((cantos or {}).get(borde, "FX")).upper()
     return _CANTO_ESPESOR.get(codigo, 0.0)
 
