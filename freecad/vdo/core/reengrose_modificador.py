@@ -7,12 +7,31 @@ _LOG = logging.getLogger(__name__)
 import json
 
 from freecad.vdo.core.reengrose_modelo import (
-    ALCANCES, ALINEACIONES, BORDES_2D, BordeConfig, CARAS, DEFAULTS,
-    DISTANCIA_AL_CANTO_DEFAULT, ENCUENTROS_ESQUINAS,
-    ENCUENTRO_ESQUINAS_DEFAULT, ESQUINAS_2D, FABRICACIONES, LARGOS_TIRA,
-    LARGO_TIRA_DEFAULT, MODOS, ORIENTACIONES, PRIORIDADES_ENCUENTRO, PROPS,
-    ReengroseDTO, ReengroseError, _MAPA_MODO_LEGACY, _a_bool, _a_float,
-    _normalizar_modo_choque, _validar_enum)
+    _MAPA_MODO_LEGACY,
+    ALCANCES,
+    ALINEACIONES,
+    BORDES_2D,
+    CARAS,
+    DEFAULTS,
+    DISTANCIA_AL_CANTO_DEFAULT,
+    ENCUENTRO_ESQUINAS_DEFAULT,
+    ENCUENTROS_ESQUINAS,
+    ESQUINAS_2D,
+    FABRICACIONES,
+    LARGO_TIRA_DEFAULT,
+    LARGOS_TIRA,
+    MODOS,
+    ORIENTACIONES,
+    PRIORIDADES_ENCUENTRO,
+    PROPS,
+    BordeConfig,
+    ReengroseDTO,
+    ReengroseError,
+    _a_bool,
+    _a_float,
+    _normalizar_modo_choque,
+    _validar_enum,
+)
 
 
 class ReengroseModifier:

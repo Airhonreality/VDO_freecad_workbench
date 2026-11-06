@@ -16,7 +16,6 @@ from freecad.vdo.core.helpers import _get_app
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 
-
 def _modificador_mapa(mapa, clave):
     datos = (mapa or {}).get(clave)
     if not datos:

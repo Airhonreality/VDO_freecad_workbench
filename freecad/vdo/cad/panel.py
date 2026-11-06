@@ -19,7 +19,6 @@ from freecad.vdo.core.panel_core import (
 )
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
-
 # (nombre, tipo, descripción, valor por defecto, opciones o None)
 _PROPS_REENGROSE = (
     ("VDO_Reengrose_Activo", "App::PropertyBool",

@@ -17,7 +17,6 @@ import logging
 import sys
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtSvg, QtWidgets
-
 from freecad.vdo.ui.chassis_config import ChassisConfigMixin
 from freecad.vdo.ui.chassis_construccion import ChassisConstruccionMixin
 from freecad.vdo.ui.chassis_estado import ChassisEstadoMixin

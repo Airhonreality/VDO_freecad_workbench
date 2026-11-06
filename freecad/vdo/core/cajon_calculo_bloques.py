@@ -1,9 +1,9 @@
 """Bloques de cálculo del despiece del cajón: entradas, geometría y piezas intermedias."""
 
 from freecad.vdo.core.cajon_correderas import (
+    _MANIFEST,
     CORREDERA_OCULTA,
     CORREDERA_TELESCOPICA,
-    _MANIFEST,
     obtener_marca,
     seleccionar_guia,
 )

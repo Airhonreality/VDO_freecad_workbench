@@ -26,8 +26,7 @@ except ImportError:
 
 from freecad.vdo.core import manifest
 from freecad.vdo.qt_compat import QtCore, QtWidgets
-from freecad.vdo.ui import export_cutting_list
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import export_cutting_list, tema
 
 
 class CuttingListPreviewPanel:

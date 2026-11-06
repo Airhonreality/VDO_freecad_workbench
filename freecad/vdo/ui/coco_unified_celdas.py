@@ -11,9 +11,9 @@ from freecad.vdo.ui.coco_unified_tabla import (
     COL_RESUMEN,
     COL_TIPO,
     COL_VALOR,
-    EspacioRow,
     ROLE_NODE_ID,
     TIPOS_LABELS,
+    EspacioRow,
 )
 
 

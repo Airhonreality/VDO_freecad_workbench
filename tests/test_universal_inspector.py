@@ -22,7 +22,6 @@ import sys
 import unittest
 
 from tests.soporte.qt import qapplication
-
 from tests.soporte.requisitos import requiere_freecad, requiere_qt
 
 # Forzar plataforma offscreen para entornos sin display (freecadcmd / CI).

@@ -10,9 +10,17 @@ import FreeCAD as App
 
 from freecad.vdo.core import (
     finish as VDO_FIN,
+)
+from freecad.vdo.core import (
     frames as VDO_FR,
+)
+from freecad.vdo.core import (
     reengrose_despiece as VDO_RE_DESPIECE,
+)
+from freecad.vdo.core import (
     reengrose_geometria as VDO_RE_GEOMETRIA,
+)
+from freecad.vdo.core import (
     reengrose_modificador as VDO_RE_MODIFICADOR,
 )
 from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y

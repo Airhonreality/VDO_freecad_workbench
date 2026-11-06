@@ -11,13 +11,13 @@
 
 
 from freecad.vdo.core import reengrose_encuentros as VDO_RE_ENCUENTROS
-from freecad.vdo.core.espacios_cajas import _caja_dict
 from freecad.vdo.core.coco_spaces_bloques import (
     _cajas_y_piezas,
     _crear_entradas,
     _iterar_punto_fijo,
     _regenerar_tiras,
 )
+from freecad.vdo.core.espacios_cajas import _caja_dict
 
 
 def _cortar_segmentos(segmentos, ganadora):

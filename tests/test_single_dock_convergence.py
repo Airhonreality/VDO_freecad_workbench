@@ -12,7 +12,6 @@ import os
 import unittest
 
 from tests.soporte.qt import qapplication
-
 from tests.soporte.requisitos import requiere_freecad, requiere_qt
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")

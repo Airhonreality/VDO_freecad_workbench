@@ -2,10 +2,10 @@
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.qt_compat import QtCore, QtWidgets
+from freecad.vdo.ui import tema
+from freecad.vdo.ui.qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.reengrose_ui_constantes import LABEL_BORDE, LABEL_ESQUINA, OPCIONES_ESQUINA
 from freecad.vdo.ui.reengrose_ui_preview import VDOBoardPreview
-from freecad.vdo.ui.qt import VDO_DoubleSpinBox
-from freecad.vdo.ui import tema
 
 
 class ReengroseConstruccionMixin:

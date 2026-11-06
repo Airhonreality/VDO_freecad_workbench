@@ -5,7 +5,9 @@ import logging
 _LOG = logging.getLogger(__name__)
 
 import json
+
 import FreeCAD as App
+
 try:
     from freecad.vdo.core.layout_matriz import Layout
     from freecad.vdo.core.layout_modelo import cavidad_interior

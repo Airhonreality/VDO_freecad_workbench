@@ -8,6 +8,15 @@
 
 import json
 
+from freecad.vdo.cad.coco_carcasa import (
+    caja_fondo,
+    cajas_carcasa,
+    leer_parametros,
+)
+from freecad.vdo.cad.coco_cortes import (
+    cortar_shells_contra_nucleos,
+    resolver_tiras_divisiones,
+)
 from freecad.vdo.cad.coco_divisiones import aplicar_divisiones
 from freecad.vdo.cad.coco_propiedades import (
     anadir_fondo_y_divisiones,
@@ -19,15 +28,6 @@ from freecad.vdo.cad.coco_propiedades import (
 from freecad.vdo.cad.coco_shell import (
     aplicar_carcasa,
     preparar_carcasa,
-)
-from freecad.vdo.cad.coco_carcasa import (
-    caja_fondo,
-    cajas_carcasa,
-    leer_parametros,
-)
-from freecad.vdo.cad.coco_cortes import (
-    cortar_shells_contra_nucleos,
-    resolver_tiras_divisiones,
 )
 from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import defaults as VDO_D

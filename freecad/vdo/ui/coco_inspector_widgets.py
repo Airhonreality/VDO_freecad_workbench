@@ -8,7 +8,11 @@ _LOG = logging.getLogger(__name__)
 
 from freecad.vdo.core import (
     finish as VDO_FIN,
+)
+from freecad.vdo.core import (
     reengrose_geometria as VDO_RE_GEOMETRIA,
+)
+from freecad.vdo.core import (
     reengrose_modificador as VDO_RE_MODIFICADOR,
 )
 from freecad.vdo.core.facade_contract import (
@@ -20,7 +24,6 @@ from freecad.vdo.core.facade_contract import (
 from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui import tema
-
 
 BORDE_LABELS = {
     "norte": "Norte", "sur": "Sur", "este": "Este", "oeste": "Oeste"}

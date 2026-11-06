@@ -7,13 +7,13 @@
 import FreeCAD as App
 
 from freecad.vdo.cad.colocacion import aplicar_rotacion
-from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.cad.documento import recalcular_activo
+from freecad.vdo.cad.panel import add_reengrose_props
+from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
 from freecad.vdo.core.module_props import ANCLAJE_DEFAULT
-from freecad.vdo.cad.panel import add_reengrose_props
 from freecad.vdo.datos.formularios import PANEL_GRUPOS_ANTES, PANEL_GRUPOS_DESPUES
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 from freecad.vdo.qt_compat import QtWidgets

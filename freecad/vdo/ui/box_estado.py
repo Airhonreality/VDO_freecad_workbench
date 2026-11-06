@@ -1,8 +1,7 @@
 """Estado, canvas y resumen. Parte de ui/box_controller.py (M7, D-44)."""
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
-
-from freecad.vdo.ui.box_constantes import ENCUENTRO_LABELS, _TEXTO_BOTON_BORDE
+from freecad.vdo.ui.box_constantes import _TEXTO_BOTON_BORDE, ENCUENTRO_LABELS
 
 
 class BoxEstadoMixin:

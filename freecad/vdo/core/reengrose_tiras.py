@@ -3,10 +3,16 @@
 import operator
 
 from freecad.vdo.core.reengrose_modelo import (
-    BORDES_2D, ENCUENTRO_ESQUINAS_DEFAULT, ESQUINAS_2D, SUFIJOS_BORDE)
-
+    BORDES_2D,
+    ENCUENTRO_ESQUINAS_DEFAULT,
+    ESQUINAS_2D,
+    SUFIJOS_BORDE,
+)
 from freecad.vdo.core.reengrose_modificador import (
-    _normalizar_borde_config, _normalizar_encuentro, normalizar_modificador)
+    _normalizar_borde_config,
+    _normalizar_encuentro,
+    normalizar_modificador,
+)
 
 
 def _poligono_rect(x0, y0, x1, y1):

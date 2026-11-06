@@ -5,8 +5,11 @@ import logging
 _LOG = logging.getLogger(__name__)
 
 import json
+
 import FreeCAD as App
+
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+
 try:
     from freecad.vdo.ui.box_controller import VDOBoxControllerWidget
 except ImportError as exc:  # pragma: no cover
@@ -14,8 +17,8 @@ except ImportError as exc:  # pragma: no cover
     VDOBoxControllerWidget = None
 from freecad.vdo.cad.documento import recalcular
 from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades
-from freecad.vdo.ui.inspector_paginas import _PaginaBase, _float_seguro, _str_seguro
 from freecad.vdo.ui import tema
+from freecad.vdo.ui.inspector_paginas import _float_seguro, _PaginaBase, _str_seguro
 
 
 # ----------------------------------------------------------------------

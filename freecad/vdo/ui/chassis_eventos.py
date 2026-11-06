@@ -2,8 +2,8 @@
 
 
 from freecad.vdo.ui.chassis_constantes import (
-    TIPOS_ENCUENTRO,
     _ARQUETIPOS,
+    TIPOS_ENCUENTRO,
 )
 
 

@@ -20,12 +20,12 @@ except NameError:
 _RAIZ = os.path.dirname(_AQUI)
 
 from freecad.vdo.core import puerta_despiece as D
+from freecad.vdo.core.cajon_calculo import calcular_despiece
 from freecad.vdo.core.cajon_correderas import (
     CAJA_METALICA,
     CORREDERA_OCULTA,
     CORREDERA_TELESCOPICA,
 )
-from freecad.vdo.core.cajon_calculo import calcular_despiece
 from freecad.vdo.core.facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,

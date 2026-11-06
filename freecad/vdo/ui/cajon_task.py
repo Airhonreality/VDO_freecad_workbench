@@ -16,8 +16,6 @@ from freecad.vdo.core.cajon_correderas import (
     CORREDERA_TELESCOPICA,
 )
 from freecad.vdo.core.facade_contract import (
-    necesita_bisel_45,
-    necesita_descuento_gola,
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
@@ -29,7 +27,9 @@ from freecad.vdo.core.facade_contract import (
     OPERACION_CANTO_ESTANDAR,
     OPERACION_CANTO_GOLA,
     cantos_por_sistema_apertura,
+    necesita_bisel_45,
     necesita_cantos_45,
+    necesita_descuento_gola,
     necesita_expulsor_magnetico,
 )
 from freecad.vdo.core.facade_contract import (

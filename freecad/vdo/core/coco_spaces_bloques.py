@@ -15,6 +15,7 @@ from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
 from freecad.vdo.core import reengrose_interferencias as VDO_RE_INTERFERENCIAS
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.core.espacios_cajas import (
+    _agregar_interrupcion,
     _caja_dict,
     _caja_pieza,
     _clave_pieza,
@@ -24,7 +25,6 @@ from freecad.vdo.core.espacios_cajas import (
     _huella_caja,
     _modificador,
     _modo_efectivo,
-    _agregar_interrupcion,
 )
 
 

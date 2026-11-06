@@ -6,16 +6,16 @@
 import FreeCAD as App
 
 from freecad.vdo.cad.colocacion import aplicar_rotacion
+from freecad.vdo.cad.documento import recalcular_activo
+from freecad.vdo.cad.propiedades import add_common_props, asignar_propiedades
 from freecad.vdo.core import module_props
 from freecad.vdo.core.module_props import ANCLAJE_DEFAULT
-from freecad.vdo.cad.propiedades import add_common_props, asignar_propiedades
-from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.core.zocalo_core import ZocaloError, calcular_geometria_zocalo
 from freecad.vdo.datos.formularios import PROPIEDAD_ZOCALO, ZOCALO_GRUPOS
 from freecad.vdo.qt_compat import QtGui, QtWidgets
+from freecad.vdo.ui.coco_inspector_widgets import PanelHeaderWidget
 from freecad.vdo.ui.form_builder import FormBuilder
 from freecad.vdo.ui.task_base import VDOTransactionMixin, cerrar_dialogo
-from freecad.vdo.ui.coco_inspector_widgets import PanelHeaderWidget
 
 CANTOS_FRENTE = {
     "norte": "RIG", "sur": "RIG", "este": "RIG", "oeste": "RIG"}

@@ -14,10 +14,10 @@ import os
 
 from freecad.vdo.core import hardware_hub as H
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui import tema
 from freecad.vdo.ui.hardware_constantes import CLAVES_BOOL, ETIQUETAS, FAMILIAS
 from freecad.vdo.ui.hardware_resumen import _resumen_cotas
 from freecad.vdo.ui.qt import VDO_DoubleSpinBox
-from freecad.vdo.ui import tema
 
 
 class VDOHardwareManagerDialog(QtWidgets.QDialog):

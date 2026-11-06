@@ -8,7 +8,6 @@ from freecad.vdo.core.spaces import (
 )
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 
-
 COL_TIPO = 0
 COL_VALOR = 1
 COL_RESUMEN = 2

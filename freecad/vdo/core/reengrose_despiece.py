@@ -1,15 +1,13 @@
 """Despiece de paneles y cajas con reengrose: politica de cantos y subpiezas fisicas."""
 
 from freecad.vdo.core.finish import BORDES, CANTOS_VALIDOS
-
-from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
-
 from freecad.vdo.core.reengrose_geometria import (
-    calcular_geometria_caja, calcular_geometria_reengrose)
-
+    calcular_geometria_caja,
+    calcular_geometria_reengrose,
+)
 from freecad.vdo.core.reengrose_modelo import CANTO_OCULTO, CANTO_VISTO
-
 from freecad.vdo.core.reengrose_modificador import normalizar_modificador
+from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 
 def _cantos_completos(tipo=CANTO_VISTO):

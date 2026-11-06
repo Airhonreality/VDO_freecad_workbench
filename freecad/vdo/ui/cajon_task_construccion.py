@@ -8,9 +8,9 @@
 from freecad.vdo.core.cajon_correderas import listar_marcas
 from freecad.vdo.datos.formularios import cajon_bloques
 from freecad.vdo.qt_compat import QtWidgets
+from freecad.vdo.ui import tema
 from freecad.vdo.ui.cajon_task_cabecera import PanelHeaderWidget
 from freecad.vdo.ui.form_builder import FormBuilder
-from freecad.vdo.ui import tema
 
 
 class CajonTaskConstruccionMixin:

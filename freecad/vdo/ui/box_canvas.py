@@ -2,8 +2,7 @@
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-
-from freecad.vdo.ui.box_constantes import ESQUINAS, _SEGMENTO_MARGEN_SEL
+from freecad.vdo.ui.box_constantes import _SEGMENTO_MARGEN_SEL, ESQUINAS
 
 
 # ----------------------------------------------------------------------

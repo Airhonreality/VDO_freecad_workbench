@@ -31,8 +31,8 @@
 # =====================================================================
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui.qt import VDO_DoubleSpinBox, VDO_ExpressionInput
 from freecad.vdo.ui import tema
+from freecad.vdo.ui.qt import VDO_DoubleSpinBox, VDO_ExpressionInput
 
 # tipos cuyo widget es numerico (value(), interpretText())
 _TIPOS_NUMERICOS = ("double_spin", "vdo_double_spin", "spin")

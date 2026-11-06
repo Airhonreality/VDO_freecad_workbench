@@ -1,12 +1,8 @@
 """Geometria de refuerzos de reengrose sobre paneles y cajas de modulo."""
 
-from freecad.vdo.core.reengrose_modelo import ReengroseError, _EJES
-
-from freecad.vdo.core.reengrose_modificador import (
-    espesor_efectivo, normalizar_modificador)
-
-from freecad.vdo.core.reengrose_tiras import (
-    generar_geometria_tiras_perimetrales)
+from freecad.vdo.core.reengrose_modelo import _EJES, ReengroseError
+from freecad.vdo.core.reengrose_modificador import espesor_efectivo, normalizar_modificador
+from freecad.vdo.core.reengrose_tiras import generar_geometria_tiras_perimetrales
 
 
 def _inicio_alineado(total, tamano, alineacion):

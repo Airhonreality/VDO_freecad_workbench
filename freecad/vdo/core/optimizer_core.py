@@ -36,7 +36,6 @@ Uso programático:
 
 from freecad.vdo.core.optimizer_lista_corte import _medidas_corte
 
-
 # ----------------------------------------------------------------------
 # Presets de tablero (mm) — estándar de taller
 # ----------------------------------------------------------------------

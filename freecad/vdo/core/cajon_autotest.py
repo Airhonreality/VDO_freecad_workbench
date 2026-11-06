@@ -10,7 +10,6 @@ _LOG = logging.getLogger(__name__)
 from freecad.vdo.core.cajon_calculo import calcular_despiece
 from freecad.vdo.datos.valores import BLUM_TANDEM
 
-
 # =====================================================================
 # SELF-TEST (desde la raíz del repo: python3 -m freecad.vdo.core.cajon_autotest)
 # =====================================================================

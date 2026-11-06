@@ -1,7 +1,6 @@
 """Margenes de borde y chips de offset. Parte de ui/box_controller.py (M7, D-44)."""
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
-
 from freecad.vdo.ui.box_constantes import obtener_svg_icon
 
 

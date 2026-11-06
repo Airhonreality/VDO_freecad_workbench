@@ -5,7 +5,7 @@
 # =====================================================================
 
 # Las opciones de familia y sentido viven en la especificacion de datos (M6, D-72).
-from freecad.vdo.datos.formularios import (  # noqa: F401 (reexportacion)
+from freecad.vdo.datos.formularios import (
     FAMILIAS,
     SENTIDOS_BASCULANTE,
     SENTIDOS_BATIENTE,

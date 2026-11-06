@@ -3,7 +3,6 @@
 from freecad.vdo.ui.tema import LUCIDE_ICONS
 from freecad.vdo.ui.tema import get_svg_icon as _svg_icon
 
-
 # ----------------------------------------------------------------------
 # Iconografía Vectorial Lucide Embebida (SVG)
 # ----------------------------------------------------------------------

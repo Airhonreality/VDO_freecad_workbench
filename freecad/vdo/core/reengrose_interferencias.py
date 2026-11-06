@@ -1,14 +1,22 @@
 """Interferencias del reengrose con piezas vecinas: vano neto, choque tira-panel y mocheo de repisa."""
 
 from freecad.vdo.core.helpers import DIMENSION_POR_EJE
-
 from freecad.vdo.core.reengrose_encuentros import (
-    _aabb, _aabb_dict, _eje_mayor, _eje_menor, _eje_restante,
-    _interseccion_aabb, detectar_colision, recortar_tira_contra_tira)
-
+    _aabb,
+    _aabb_dict,
+    _eje_mayor,
+    _eje_menor,
+    _eje_restante,
+    _interseccion_aabb,
+    detectar_colision,
+    recortar_tira_contra_tira,
+)
 from freecad.vdo.core.reengrose_modelo import (
-    POLITICAS_REPISA, _EJES, _normalizar_modo_choque, _validar_enum)
-
+    _EJES,
+    POLITICAS_REPISA,
+    _normalizar_modo_choque,
+    _validar_enum,
+)
 
 #: Lado invadido -> (dimension que se reduce, desplazamiento que se aplica).
 #: Un lado fuera de la tabla no cambia el vano.

@@ -8,9 +8,9 @@ import os
 import sys
 import unittest
 
-from tests.soporte.qt import qapplication
-
 import FreeCAD as App
+
+from tests.soporte.qt import qapplication
 
 try:
     import FreeCADGui as Gui
@@ -47,7 +47,6 @@ except BaseException:
 import contextlib
 
 from tests.soporte.requisitos import requiere_gui
-
 
 
 @requiere_gui

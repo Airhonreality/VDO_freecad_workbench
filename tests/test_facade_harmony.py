@@ -216,8 +216,8 @@ class TestImportacionYEnums(unittest.TestCase):
 
     def test_cajon_consume_contrato(self):
         """Los bloques de cálculo del cajón usan las funciones del contrato (sin reexportarlas, D-36)."""
-        from freecad.vdo.core import facade_contract as contrato
         from freecad.vdo.core import cajon_calculo_bloques as D_BLOQUES
+        from freecad.vdo.core import facade_contract as contrato
         self.assertIs(D_BLOQUES.aplicar_sistema_apertura, contrato.aplicar_sistema_apertura)
         self.assertIs(D_BLOQUES.calcular_fachada_base, contrato.calcular_fachada_base)
 

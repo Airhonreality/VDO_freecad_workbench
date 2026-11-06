@@ -1,6 +1,7 @@
 """Construccion de la interfaz del panel COCO."""
 
 import json
+
 import FreeCAD as App
 
 from freecad.vdo.cad.documento import recalcular
@@ -17,10 +18,10 @@ from freecad.vdo.datos.formularios import (
     COCO_ROTACION_PASOS,
 )
 from freecad.vdo.qt_compat import QtWidgets
-from freecad.vdo.ui.chassis_widget import VDOChassisControllerWidget
-from freecad.vdo.ui.form_builder import FormBuilder
-from freecad.vdo.ui.coco_construccion_widgets import DivisionesEditor
 from freecad.vdo.ui import tema
+from freecad.vdo.ui.chassis_widget import VDOChassisControllerWidget
+from freecad.vdo.ui.coco_construccion_widgets import DivisionesEditor
+from freecad.vdo.ui.form_builder import FormBuilder
 
 
 class CocoUnifiedConstruccionMixin:

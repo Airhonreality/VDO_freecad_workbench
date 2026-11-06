@@ -1,9 +1,12 @@
 """Geometria AABB 3D y encuentro de tiras: colision, orientacion, recorte en T/L y bisel."""
 
 from freecad.vdo.core.helpers import DIMENSION_POR_EJE
-
 from freecad.vdo.core.reengrose_modelo import (
-    PRIORIDADES_ENCUENTRO, ReengroseError, _EJES, _validar_enum)
+    _EJES,
+    PRIORIDADES_ENCUENTRO,
+    ReengroseError,
+    _validar_enum,
+)
 
 
 def _aabb(valor):

@@ -640,3 +640,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-79
 
 - **D-79: M9 resto de excepciones registradas. core/ usa logging de la biblioteca estandar (sin FreeCAD, P4). Flujo intacto (P7).** Modulos sin `import FreeCAD as App` (y core/) registran con `logging` (`_LOG = logging.getLogger(__name__)`); modulos con `App` registran con `App.Console`. Guardas de import opcional y rutas de evento, arrastre o validador usan `_LOG.debug`. Mismo return, mismo estado, misma propagacion. Excepcion justificada: `ui/coco_unified_task.py:297` ya registra en `_fallar_accept` (App.Console.PrintError); el conteo de `minimalismo.py excepciones` lo cuenta por el handler, no por la funcion. Revertir: git revert de los commits D-79.
+
+## D-80
+
+- **D-80: ruff a cero en alcance. os._exit -> sys.exit en los tests __main__ (cambios pendientes de sesion anterior, confirmados por el usuario que no hay otra sesion).** Alcance: freecad/, tests/, tools/. Paso 1: fixes seguros de ruff (sin --unsafe-fixes). `os._exit` salta la limpieza de Python; `sys.exit` la ejecuta. Revertir: git revert de los commits D-80.

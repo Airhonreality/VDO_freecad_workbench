@@ -31,8 +31,6 @@ from tests.soporte.freecad_falso import instalado
 _instalado_ctx = instalado()
 _instalado_ctx.__enter__()
 
-from freecad.vdo.core import facade_contract as FC
-from freecad.vdo.core import hardware_hub as H
 from freecad.vdo.cad.cajon import (
     CAJA_METALICA as CC_MET,
 )
@@ -49,6 +47,9 @@ from freecad.vdo.cad.cajon_geometria import (
     _corte_pin_trasero,
     _corte_ranura_piso,
 )
+from freecad.vdo.core import facade_contract as FC
+from freecad.vdo.core import hardware_hub as H
+from freecad.vdo.core.cajon_calculo import calcular_despiece
 from freecad.vdo.core.cajon_correderas import (
     CAJA_METALICA,
     CORREDERA_OCULTA,
@@ -56,7 +57,6 @@ from freecad.vdo.core.cajon_correderas import (
     listar_marcas,
     obtener_marca,
 )
-from freecad.vdo.core.cajon_calculo import calcular_despiece
 from freecad.vdo.core.facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,

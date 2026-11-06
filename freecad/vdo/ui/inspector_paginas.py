@@ -5,9 +5,12 @@ import logging
 _LOG = logging.getLogger(__name__)
 
 import json
+
 import FreeCAD as App
+
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
+
 try:
     from freecad.vdo.ui.chassis_widget import VDOChassisControllerWidget
 except ImportError as exc:  # pragma: no cover
@@ -18,7 +21,6 @@ from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propieda
 from freecad.vdo.core import hardware_hub as HH
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 from freecad.vdo.ui import tema
-
 
 # ----------------------------------------------------------------------
 # Constantes de navegación del QStackedWidget

@@ -7,8 +7,7 @@ de piezas de melamina antes de exportar el CSV.
 import FreeCAD as App
 
 from freecad.vdo.qt_compat import QtWidgets
-from freecad.vdo.ui import cutting_list_preview
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import cutting_list_preview, tema
 
 
 def mostrar_menu():

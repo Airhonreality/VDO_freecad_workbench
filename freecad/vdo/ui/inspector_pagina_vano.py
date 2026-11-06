@@ -1,10 +1,10 @@
 """Pagina de vano del inspector: luz neta y dock de habitantes."""
 
-from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.core import hardware_hub as HH
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
-from freecad.vdo.ui.inspector_paginas import _PaginaBase, _float_seguro
+from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui import tema
+from freecad.vdo.ui.inspector_paginas import _float_seguro, _PaginaBase
 
 
 # ----------------------------------------------------------------------

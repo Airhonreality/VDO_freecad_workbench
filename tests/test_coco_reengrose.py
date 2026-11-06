@@ -26,7 +26,6 @@ from tests.soporte.qt import qapplication
 from tests.soporte.requisitos import requiere_freecad, requiere_gui, requiere_qt
 
 
-
 def max_common(shape):
     solidos = list(shape.Solids)
     maximo = 0.0

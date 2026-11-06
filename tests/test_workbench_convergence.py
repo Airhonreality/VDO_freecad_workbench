@@ -32,7 +32,6 @@ import FreeCAD as App
 
 from tests.soporte.requisitos import requiere_gui
 
-
 try:
     from PySide6 import QtWidgets
 except ImportError:
@@ -43,18 +42,18 @@ except ImportError:
 
 import contextlib
 
-from freecad.vdo.core import hardware_hub as HH
 from freecad.vdo.cad.cajon import CajonFeature
 from freecad.vdo.cad.coco import CocoFeature
 from freecad.vdo.cad.panel import PanelFeature
 from freecad.vdo.cad.puerta import PuertaFeature
-from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
+from freecad.vdo.core import hardware_hub as HH
 from freecad.vdo.ui.inspector_paginas import (
     PAGE_CHASIS,
     PAGE_CIERRE,
     PAGE_PIEZA,
     PAGE_VANO,
 )
+from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
 from freecad.vdo.ui.universal_inspector import VDOUniversalInspectorWidget
 
 

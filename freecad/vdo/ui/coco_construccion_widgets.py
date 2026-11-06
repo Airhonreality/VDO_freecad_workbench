@@ -10,12 +10,12 @@ from freecad.vdo.core import defaults as VDO_D
 from freecad.vdo.core.layout_matriz import Layout
 from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y
 from freecad.vdo.qt_compat import QtCore, QtWidgets
+from freecad.vdo.ui import tema
 from freecad.vdo.ui.coco_arbol_widgets import ArbolDivisionesMixin
 from freecad.vdo.ui.coco_edicion_widgets import EdicionDivisionesMixin
 from freecad.vdo.ui.coco_inspector_widgets import InspectorDivisionesMixin, PanelHeaderWidget
-from freecad.vdo.ui.coco_reengrose_widgets import ReengroseDivisionesMixin
 from freecad.vdo.ui.coco_preview2d import CocoPreview2D
-from freecad.vdo.ui import tema
+from freecad.vdo.ui.coco_reengrose_widgets import ReengroseDivisionesMixin
 
 
 class DivisionesEditor(

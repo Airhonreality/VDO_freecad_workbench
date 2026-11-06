@@ -6,8 +6,8 @@
 
 import FreeCAD as App
 
-from freecad.vdo.cad.propiedades import add_common_props, asignar_propiedades
 from freecad.vdo.cad.documento import recalcular_activo
+from freecad.vdo.cad.propiedades import add_common_props, asignar_propiedades
 from freecad.vdo.core import hardware_hub as H
 from freecad.vdo.core.aperturas import ETIQUETAS, SISTEMA_POR_ETIQUETA
 from freecad.vdo.core.facade_contract import (
@@ -35,6 +35,7 @@ from freecad.vdo.ui.puerta_task_constantes import (
 )
 from freecad.vdo.ui.puerta_task_construccion import PuertaTaskConstruccionMixin
 from freecad.vdo.ui.task_base import VDOTransactionMixin, cerrar_dialogo
+
 
 # ---------------------------------------------------------------------
 # Task Panel

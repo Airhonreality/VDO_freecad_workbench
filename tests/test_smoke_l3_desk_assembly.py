@@ -28,11 +28,11 @@ _MACRO_DIR = os.environ.get(
 import FreeCAD as App
 import Part
 
-from freecad.vdo.cad.geometria import forma_ref as VRS
 from freecad.vdo.cad import cajon as VCJ
-from freecad.vdo.core import cajon_correderas as VCD
-from freecad.vdo.core import facade_contract as VFC
 from freecad.vdo.cad import coco as VCC
+from freecad.vdo.cad import panel as VP
+from freecad.vdo.cad.geometria import forma_ref as VRS
+from freecad.vdo.core import cajon_correderas as VCD
 from freecad.vdo.core import coco_spaces as VCS
 from freecad.vdo.core import defaults as VD
 from freecad.vdo.core import facade_contract as VFC
@@ -42,9 +42,9 @@ from freecad.vdo.core import layout_matriz as VL_MATRIZ
 from freecad.vdo.core import layout_modelo as VL_MODELO
 from freecad.vdo.core import layout_resolucion as VL_RESOLUCION
 from freecad.vdo.core import module_props as VMOD
-from freecad.vdo.cad import panel as VP
 from freecad.vdo.core.errores import VDOError
 from tests.soporte.requisitos import requiere_freecad
+
 try:
     from freecad.vdo.ui import export_cutting_list as VEL
 except ImportError:

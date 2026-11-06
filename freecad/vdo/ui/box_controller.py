@@ -20,7 +20,7 @@ import sys
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-
+from freecad.vdo.ui import tema
 from freecad.vdo.ui.box_config import BoxConfigMixin
 from freecad.vdo.ui.box_constantes import ESQUINAS
 from freecad.vdo.ui.box_construccion import BoxConstruccionMixin
@@ -28,7 +28,6 @@ from freecad.vdo.ui.box_esquinas import BoxEsquinasMixin
 from freecad.vdo.ui.box_estado import BoxEstadoMixin
 from freecad.vdo.ui.box_hoja_estilos import ESTILO_WIDGET
 from freecad.vdo.ui.box_margen import BoxMargenMixin
-from freecad.vdo.ui import tema
 
 _LOG = logging.getLogger(__name__)
 

@@ -11,6 +11,7 @@ except BaseException:
 
 from freecad.vdo.cad import panel as P
 from freecad.vdo.core import reengrose_modificador as R_MODIFICADOR
+
 try:
     from freecad.vdo.ui import export_cutting_list as E
 except ImportError:
@@ -23,7 +24,6 @@ except ImportError:
 
 from tests.soporte.qt import qapplication
 from tests.soporte.requisitos import requiere_freecad, requiere_gui, requiere_qt
-
 
 
 def _sin_solapes(shape):

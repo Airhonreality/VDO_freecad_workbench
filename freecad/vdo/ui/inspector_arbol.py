@@ -1,16 +1,17 @@
 """Arbol maestro del inspector y sincronizacion con la seleccion y la vista previa."""
 
 import FreeCAD as App
+
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
 from freecad.vdo.ui.inspector_paginas import (
+    _TARGET_TO_PAGE,
     PAGE_CHASIS,
     PAGE_CIERRE,
     PAGE_PIEZA,
     PAGE_VANO,
-    _TARGET_TO_PAGE,
     _float_seguro,
 )
+from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
 
 
 class ArbolInspectorMixin:

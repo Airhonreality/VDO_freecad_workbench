@@ -10,16 +10,15 @@ sin GUI, donde debe cancelar y devolver False.
 
 from __future__ import annotations
 
+import math
 import unittest
 
 import FreeCAD as App
 
-import math
-
-from freecad.vdo.creacion import crear_modulo_interactivo
 from freecad.vdo.cad.coco import make_coco
 from freecad.vdo.cad.panel import crear_pieza
 from freecad.vdo.cad.zocalo import make_zocalo
+from freecad.vdo.creacion import crear_modulo_interactivo
 from freecad.vdo.ui.placement import iniciar_colocacion
 from tests.soporte.requisitos import requiere_freecad, requiere_qt
 

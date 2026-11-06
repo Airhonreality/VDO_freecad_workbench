@@ -5,7 +5,6 @@ Extraido de coco_arbol_widgets.py (M7, D-66). Sin cambios de codigo."""
 from freecad.vdo.datos.valores import TIRADOR
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 
-
 ROLE_DATA = QtCore.Qt.UserRole + 1
 ROLE_KIND = QtCore.Qt.UserRole + 2
 ROLE_KEY = QtCore.Qt.UserRole + 3

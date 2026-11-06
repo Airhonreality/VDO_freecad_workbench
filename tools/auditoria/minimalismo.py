@@ -16,9 +16,7 @@ from __future__ import annotations
 
 import ast
 import collections
-import hashlib
 import json
-import re
 import sys
 from pathlib import Path
 

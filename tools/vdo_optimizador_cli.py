@@ -12,13 +12,13 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from freecad.vdo.core.optimizer_lista_corte import expand_pieces, read_cutting_csv
 from freecad.vdo.core.optimizer_core import (
     KERF_DEFAULT,
     MARGIN_DEFAULT,
     optimize_by_group,
     resumen_global,
 )
+from freecad.vdo.core.optimizer_lista_corte import expand_pieces, read_cutting_csv
 
 
 # ----------------------------------------------------------------------

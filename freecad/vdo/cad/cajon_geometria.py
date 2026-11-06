@@ -4,11 +4,9 @@
 # prismas y cilindros en coordenadas calculadas). Extraído de cajon.py (D-49).
 # =====================================================================
 
+from freecad.vdo.core.cajon_correderas import CAJA_METALICA, CORREDERA_OCULTA, CORREDERA_TELESCOPICA
+from freecad.vdo.core.facade_contract import BISEL_45_ANGULO_DEFAULT, necesita_bisel_45
 from freecad.vdo.core.helpers import _get_app, _get_part
-from freecad.vdo.core.cajon_correderas import (
-    CAJA_METALICA, CORREDERA_OCULTA, CORREDERA_TELESCOPICA)
-from freecad.vdo.core.facade_contract import (
-    BISEL_45_ANGULO_DEFAULT, necesita_bisel_45)
 
 
 def _box(pos):

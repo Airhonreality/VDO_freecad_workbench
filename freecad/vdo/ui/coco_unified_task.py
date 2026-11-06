@@ -9,6 +9,7 @@ import logging
 _LOG = logging.getLogger(__name__)
 
 import json
+
 import FreeCAD as App
 
 from freecad.vdo.cad.documento import (
@@ -31,15 +32,15 @@ from freecad.vdo.core.facade_contract import (
 )
 from freecad.vdo.datos.valores import BLUM_TANDEM
 from freecad.vdo.qt_compat import QtWidgets
-from freecad.vdo.ui.task_base import VDOTransactionMixin
+from freecad.vdo.ui.coco_unified_celdas import CocoUnifiedCeldasMixin
 from freecad.vdo.ui.coco_unified_construccion import (
     CocoUnifiedConstruccionMixin,
 )
+from freecad.vdo.ui.coco_unified_escritura import CocoUnifiedEscrituraMixin
+from freecad.vdo.ui.coco_unified_espacios import CocoUnifiedEspaciosMixin
 from freecad.vdo.ui.coco_unified_pestanas import CocoUnifiedPestanasMixin
 from freecad.vdo.ui.coco_unified_valores import CocoUnifiedValoresMixin
-from freecad.vdo.ui.coco_unified_celdas import CocoUnifiedCeldasMixin
-from freecad.vdo.ui.coco_unified_espacios import CocoUnifiedEspaciosMixin
-from freecad.vdo.ui.coco_unified_escritura import CocoUnifiedEscrituraMixin
+from freecad.vdo.ui.task_base import VDOTransactionMixin
 
 
 class CocoUnifiedTaskPanel(
