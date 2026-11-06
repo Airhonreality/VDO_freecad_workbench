@@ -2,6 +2,7 @@
 ResolvedLayout)."""
 
 from collections.abc import Iterable, Iterator
+from typing import Any
 
 from freecad.vdo.core.layout_modelo import EPS, Cell, Track
 
@@ -156,6 +157,7 @@ class ResolvedLayout:
     pieces: list[PanelPiece]
     warnings: list[str]
     overflow: bool
+    tiras: list[dict[str, Any]]
 
     def __init__(self, inner_w: float, inner_h: float, thickness: float,
                  columns: list[ResolvedTrack], rows: list[ResolvedTrack],
@@ -169,6 +171,8 @@ class ResolvedLayout:
         self.cells = cells
         self.pieces = pieces
         self.warnings = list(warnings)
+        # D-84: tiras de division asignadas despues por coco_spaces.py; antes no se declaraban.
+        self.tiras: list[dict[str, Any]] = []
         self.overflow = (
             any(c.overflow > EPS for c in columns)
             or any(r.overflow > EPS for r in rows)
