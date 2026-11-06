@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from freecad.vdo.core.dto import ConsultarHerrajesDTO, ConsultarHerrajesResultado
 from freecad.vdo.datos.valores import TIRADOR
 
 
-def consultar_herrajes(doc, dto: ConsultarHerrajesDTO) -> ConsultarHerrajesResultado:
+def consultar_herrajes(doc: Any,  # documento FreeCAD sin tipo
+                       dto: ConsultarHerrajesDTO) -> ConsultarHerrajesResultado:
     """Consulta herrajes disponibles por tipo."""
     if doc is None:
         raise ValueError("Documento requerido para consultar herrajes.")
