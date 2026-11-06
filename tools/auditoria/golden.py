@@ -132,6 +132,8 @@ AGREGADOS: dict[str, tuple[str, ...]] = {
     "layout": tuple(
         f"freecad.vdo.core.vdo_layout_{parte}"
         for parte in ("modelo", "matriz", "resuelto", "resolucion")),
+    "optimizer_core": ("freecad.vdo.core.vdo_optimizer_core",
+                       "freecad.vdo.core.optimizer_lista_corte"),
     "cajon_despiece": tuple(
         f"freecad.vdo.core.vdo_cajon_{parte}"
         for parte in ("correderas", "calculo")),

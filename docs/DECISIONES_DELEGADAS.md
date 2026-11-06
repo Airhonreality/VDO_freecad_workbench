@@ -499,3 +499,8 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 
 - **D-46:** M7 ui/vdo_reengrose_ui partido por concepto. Verificación visual pendiente (M10).
 - Decisión de implementación: la clase `ReengroseBorderEditor` queda como raíz en `ui/vdo_reengrose_ui.py` y hereda de mixins por concepto (`reengrose_ui_construccion`, `reengrose_ui_eventos`, `reengrose_ui_estado`, `reengrose_ui_config`), sin cambios de código. Las constantes van a `reengrose_ui_constantes` y `VDOBoardPreview` a `reengrose_ui_preview`. La señal `changed` y `__init__` quedan en la raíz. Sin reexportaciones (P6). El único consumidor (`vdo_panel_task`) importa `ReengroseBorderEditor` desde la raíz, que no cambia.
+
+## D-47
+
+- **D-47:** M7 core/vdo_optimizer_core partido por concepto, sin reexportaciones (P6).
+- Decisión de implementación: la lista de corte (lectura del CSV, expansión a piezas unitarias, cantos y medidas de corte) va a `core/optimizer_lista_corte.py`. El original queda como raíz con presets, kerf/margen, motor MaxRects, `optimize`, `optimize_by_group` y resumen (359 líneas). Sin reexportaciones: `tools/vdo_optimizador_cli.py` y `ui/vdo_optimizer_dialog.py` importan de cada módulo. `tools/auditoria/golden.py` añade `optimizer_core` a `AGREGADOS` para que el golden busque en ambos módulos; `tests/golden/` no cambia.
