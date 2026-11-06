@@ -538,3 +538,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-54
 
 - **D-54:** funciones de core > 120 líneas divididas en bloques (zocalo, tiras perimetrales, espacios eje). Mismo criterio que D-53.
+
+## D-55
+
+- **D-55:** planificar_divisiones_matriz y CajonFeature.execute divididos en bloques. Mismo criterio que D-53 y D-54.
