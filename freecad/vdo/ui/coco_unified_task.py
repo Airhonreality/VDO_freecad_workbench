@@ -20,6 +20,7 @@ from freecad.vdo.cad.propiedades import (
     asignar_placement_local,
     asignar_propiedades,
 )
+from freecad.vdo.cad.transaccion import foto_propiedades, restaurar_propiedades
 from freecad.vdo.core.facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
@@ -296,11 +297,17 @@ class CocoUnifiedTaskPanel(
     def accept(self):
         if not self.obj:
             return True
+        foto = foto_propiedades(self.obj)
         try:
             self._vdo_begin()
-            return self._escribir_coco() and self._confirmar()
+            if self._escribir_coco() and self._confirmar():
+                return True
         except Exception as exc:
-            return self._fallar_accept(exc)
+            resultado = self._fallar_accept(exc)
+            restaurar_propiedades(self.obj, foto)
+            return resultado
+        restaurar_propiedades(self.obj, foto)
+        return False
 
     def _escribir_coco(self):
         self._asignar_dimensiones()
