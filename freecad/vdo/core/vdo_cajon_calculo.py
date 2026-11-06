@@ -218,6 +218,30 @@ def _posiciones(ancho_ext, g_caja, lg, alto_lateral, ancho_contra, montaje, y_tr
     return posiciones
 
 
+def _cotas_mecanizado(mecanizado, marca_id, z_piso, g_fondo):
+    """Cotas de mecanizado de la ficha técnica y su resumen."""
+    # --- 8. Mecanizados (cotas de la ficha técnica) ---
+    diam_t = float(mecanizado.get("diam_taladro", 6))
+    prof_t = float(mecanizado.get("prof_taladro", 12))
+    dist_t_tras = float(mecanizado.get("dist_taladro_borde_trasero", 8))
+    prof_ranura = float(mecanizado.get("prof_ranura_lateral", 4))
+    notch_ancho = float(mecanizado.get("notch_ancho", 25))
+    notch_alto = float(mecanizado.get("notch_alto", 20))
+
+    mecanizados_resumen = {
+        "marca": marca_id,
+        "diam_taladro": diam_t,
+        "prof_taladro": prof_t,
+        "dist_taladro_borde_trasero": dist_t_tras,
+        "prof_ranura_lateral": prof_ranura,
+        "notch_ancho": notch_ancho,
+        "notch_alto": notch_alto,
+        "eje_ranura": z_piso,
+        "grosor_fondo": g_fondo,
+    }
+    return mecanizados_resumen, diam_t, prof_t, dist_t_tras, prof_ranura, notch_ancho, notch_alto
+
+
 def calcular_despiece(config):
     """Calcula el despiece completo del cajón con corredera oculta.
 
@@ -276,25 +300,9 @@ def calcular_despiece(config):
         z_piso, g_fondo, alto_contra, alto_frente_int, pen_ranura, ancho_piso,
         largo_piso, g_fachada, ancho_fachada, alto_fachada)
 
-    # --- 8. Mecanizados (cotas de la ficha técnica) ---
-    diam_t = float(mecanizado.get("diam_taladro", 6))
-    prof_t = float(mecanizado.get("prof_taladro", 12))
-    dist_t_tras = float(mecanizado.get("dist_taladro_borde_trasero", 8))
-    prof_ranura = float(mecanizado.get("prof_ranura_lateral", 4))
-    notch_ancho = float(mecanizado.get("notch_ancho", 25))
-    notch_alto = float(mecanizado.get("notch_alto", 20))
-
-    mecanizados_resumen = {
-        "marca": marca_id,
-        "diam_taladro": diam_t,
-        "prof_taladro": prof_t,
-        "dist_taladro_borde_trasero": dist_t_tras,
-        "prof_ranura_lateral": prof_ranura,
-        "notch_ancho": notch_ancho,
-        "notch_alto": notch_alto,
-        "eje_ranura": z_piso,
-        "grosor_fondo": g_fondo,
-    }
+    (mecanizados_resumen, diam_t, prof_t, dist_t_tras, prof_ranura,
+     notch_ancho, notch_alto) = _cotas_mecanizado(mecanizado, marca_id,
+     z_piso, g_fondo)
 
     # --- 9. Piezas para cutting list (VDO_Paneles_JSON) ---
     piezas = [
