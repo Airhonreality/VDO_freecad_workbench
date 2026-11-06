@@ -8,9 +8,6 @@
 from __future__ import annotations
 
 from freecad.vdo.core.aperturas import (
-    DESCUENTO_ALTO as APERTURA_DESCUENTO_ALTO,
-)
-from freecad.vdo.core.aperturas import (
     SISTEMAS_APERTURA,
     normalizar_apertura,
 )
@@ -312,7 +309,6 @@ def ajuste_altura_apertura(tipo_apertura, H):
 
 __all__ = [
     "APERTURA_45_GRADOS",
-    "APERTURA_DESCUENTO_ALTO",
     "APERTURA_GOLA",
     "APERTURA_PUSH_OPEN",
     # Contrato de fachadas (reexportados)
