@@ -3,7 +3,11 @@
 from typing import Any
 
 from freecad.vdo.core.reengrose_modelo import _EJES, ReengroseError
-from freecad.vdo.core.reengrose_modificador import espesor_efectivo, normalizar_modificador
+from freecad.vdo.core.reengrose_modificador import (
+    ReengroseModifier,
+    espesor_efectivo,
+    normalizar_modificador,
+)
 from freecad.vdo.core.reengrose_tiras import generar_geometria_tiras_perimetrales
 
 
@@ -289,7 +293,8 @@ def _refuerzos_caras(base, ejes, largo, ancho, espesor, nombre, mod):
     return refuerzos
 
 
-def calcular_geometria_caja(caja, modifier, ejes=None):
+def calcular_geometria_caja(caja: dict[str, Any], modifier: ReengroseModifier,
+                            ejes: dict[str, str] | None = None) -> dict[str, Any]:
     """Calcula refuerzos de una pieza en coordenadas de modulo.
 
     ``caja`` usa x/y/z como origen y w/h/d como dimensiones (w=X, h=Y, d=Z).

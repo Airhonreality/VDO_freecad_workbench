@@ -133,7 +133,8 @@ def _caja_interseccion(inter):
     })
 
 
-def resolver_choque_tira_panel(tira, panel_perpendicular, modo="retroceso"):
+def resolver_choque_tira_panel(tira: dict[str, Any], panel_perpendicular: dict[str, Any],
+                               modo: str = "retroceso") -> dict[str, Any] | None:
     """Resuelve el choque entre una tira y un panel perpendicular.
 
     Es simetrico: sirve tanto para una repisa contra un montante como para
@@ -153,7 +154,7 @@ def resolver_choque_tira_panel(tira, panel_perpendicular, modo="retroceso"):
     eje_corto = _eje_menor(tira_t)
     eje_ancho = _eje_restante(tira_t, {eje_largo, eje_corto})
     eje_normal_panel = _eje_menor(panel_t)
-    plan = {
+    plan: dict[str, Any] = {
         "colision": True,
         "modo": modo,
         "panel": _aabb_dict(panel_perpendicular),

@@ -7,6 +7,7 @@
 
 
 import logging
+from typing import Any
 
 from freecad.vdo.core import reengrose_encuentros as VDO_RE_ENCUENTROS
 from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
@@ -24,18 +25,20 @@ from freecad.vdo.core.espacios_cajas import (
     _modificador,
     _modo_efectivo,
 )
+from freecad.vdo.core.layout_resuelto import ResolvedLayout
 
 _LOG = logging.getLogger(__name__)
 
 
-def _aplicar_choques(caja, obstaculos, es_vertical):
+def _aplicar_choques(caja: dict[str, Any], obstaculos: list[dict[str, Any]],
+                     es_vertical: bool) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Ajusta el núcleo de un panel contra tiras perpendiculares.
 
     Devuelve ``(caja_ajustada, cortes)``. El modo se toma de la tira
     invasora, de modo que el mismo helper sirve para repisas y montantes.
     """
     ajustada = dict(caja)
-    cortes = []
+    cortes: list[dict[str, Any]] = []
     clave_host = caja.get("clave")
     for obstaculo in obstaculos:
         if clave_host and obstaculo.get("host") == clave_host:
@@ -55,7 +58,8 @@ def _aplicar_choques(caja, obstaculos, es_vertical):
     return ajustada, cortes
 
 
-def _preparar_tira(refuerzo, entry, indice):
+def _preparar_tira(refuerzo: dict[str, Any], entry: dict[str, Any],
+                   indice: int) -> dict[str, Any]:
     pieza = entry["pieza"]
     tira = dict(refuerzo)
     tira["clave"] = (
@@ -78,7 +82,7 @@ def _preparar_tira(refuerzo, entry, indice):
     return tira
 
 
-def _crear_refuerzos(entry):
+def _crear_refuerzos(entry: dict[str, Any]) -> list[dict[str, Any]]:
     mod = entry["mod"]
     if not mod.activo:
         return []
@@ -88,12 +92,14 @@ def _crear_refuerzos(entry):
     except VDO_RE_MODELO.ReengroseError as exc:
         _LOG.warning("coco_spaces_bloques: reengrose invalido, sin refuerzos: %s", exc)
         return []
-    return geo["refuerzos"]
+    refuerzos: list[dict[str, Any]] = geo["refuerzos"]
+    return refuerzos
 
 
-def _crear_entradas(resuelto, reengroses, fondo, espesor, x0, z0):
+def _crear_entradas(resuelto: ResolvedLayout, reengroses: dict[str, Any], fondo: float,
+                    espesor: float, x0: float, z0: float) -> list[dict[str, Any]]:
     """Una entrada de trabajo por pieza resuelta, con su caja base."""
-    entries = []
+    entries: list[dict[str, Any]] = []
     for pieza in resuelto.pieces:
         caja = _caja_pieza(pieza, fondo, espesor, x0, z0)
         clave = _clave_pieza(pieza)
@@ -115,10 +121,10 @@ def _crear_entradas(resuelto, reengroses, fondo, espesor, x0, z0):
     return entries
 
 
-def _regenerar_tiras(entry):
+def _regenerar_tiras(entry: dict[str, Any]) -> list[dict[str, Any]]:
     """Recalcula refuerzos y anclaje desde la caja real de la pieza."""
     entry["refuerzos"] = _crear_refuerzos(entry)
-    nuevas = []
+    nuevas: list[dict[str, Any]] = []
     for i, ref in enumerate(entry["refuerzos"]):
         tira = _preparar_tira(ref, entry, i)
         tira["anclaje_y"] = VDO_RE_ENCUENTROS.vector_anclaje_y(entry["caja"])
@@ -127,18 +133,18 @@ def _regenerar_tiras(entry):
     return nuevas
 
 
-def _tiras_de(entries, axis):
+def _tiras_de(entries: list[dict[str, Any]], axis: str) -> list[dict[str, Any]]:
     return [
         tira for entry in entries if entry["pieza"].axis == axis
         for tira in entry.get("tiras", [])]
 
 
-def _frente_soportes(entries, entry):
+def _frente_soportes(entries: list[dict[str, Any]], entry: dict[str, Any]) -> float:
     """Frente maximo de los montantes que tocan los extremos de la repisa."""
     caja_base = entry["caja_base"]
     x0 = caja_base["x"]
     x1 = x0 + caja_base["w"]
-    frente = caja_base["y"]
+    frente: float = caja_base["y"]
     for otro in entries:
         if otro["pieza"].axis != "X":
             continue
@@ -153,7 +159,7 @@ def _frente_soportes(entries, entry):
     return frente
 
 
-def _ajustar_repisas(entries, obstaculos):
+def _ajustar_repisas(entries: list[dict[str, Any]], obstaculos: list[dict[str, Any]]) -> None:
     """Retranquea las repisas (eje Y) contra las tiras verticales."""
     verticales = _tiras_de(entries, "X")
     for entry in entries:
@@ -166,7 +172,7 @@ def _ajustar_repisas(entries, obstaculos):
         _regenerar_tiras(entry)
 
 
-def _ajustar_montantes(entries, obstaculos):
+def _ajustar_montantes(entries: list[dict[str, Any]], obstaculos: list[dict[str, Any]]) -> None:
     """Retranquea los montantes (eje X) contra las tiras horizontales."""
     horizontales = _tiras_de(entries, "Y")
     for entry in entries:
@@ -179,7 +185,7 @@ def _ajustar_montantes(entries, obstaculos):
         _regenerar_tiras(entry)
 
 
-def _contener_repisas(entries):
+def _contener_repisas(entries: list[dict[str, Any]]) -> None:
     """Una repisa nunca nace mas adelante que sus montantes de apoyo."""
     for entry in entries:
         if entry["pieza"].axis != "Y":
@@ -194,7 +200,7 @@ def _contener_repisas(entries):
         _regenerar_tiras(entry)
 
 
-def _iterar_punto_fijo(entries, obstaculos):
+def _iterar_punto_fijo(entries: list[dict[str, Any]], obstaculos: list[dict[str, Any]]) -> None:
     """Itera repisas, montantes y contencion hasta estabilizar las cajas."""
     for _ in range(4):
         antes = [_huella_caja(entry["caja"]) for entry in entries]
@@ -206,10 +212,11 @@ def _iterar_punto_fijo(entries, obstaculos):
             break
 
 
-def _cajas_y_piezas(entries, fondo, espesor):
+def _cajas_y_piezas(entries: list[dict[str, Any]], fondo: float,
+                    espesor: float) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Convierte las entradas resueltas en ``cajas`` y ``piezas``."""
-    cajas = []
-    piezas = []
+    cajas: list[dict[str, Any]] = []
+    piezas: list[dict[str, Any]] = []
     for entry in entries:
         pieza = entry["pieza"]
         caja = entry["caja"]
@@ -226,7 +233,7 @@ def _cajas_y_piezas(entries, fondo, espesor):
             largo = caja["w"]
             ancho = caja["h"]
 
-        datos = {
+        datos: dict[str, Any] = {
             "nombre": pieza.nombre,
             "tipo": "panel",
             "rol": "division_x" if pieza.axis == "X" else "division_y",

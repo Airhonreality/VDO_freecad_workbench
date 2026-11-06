@@ -7,20 +7,23 @@
 
 
 import logging
+from typing import Any
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
+from freecad.vdo.core.layout_resuelto import PanelPiece
 
 _LOG = logging.getLogger(__name__)
 
 
-def _clave_pieza(pieza):
+def _clave_pieza(pieza: PanelPiece) -> str:
     if pieza.axis == "X":
         return f"division_x:{pieza.path}"
     return f"division_y:{pieza.path}"
 
 
-def _modificador(reengroses, pieza):
+def _modificador(reengroses: dict[str, Any] | None,
+                 pieza: PanelPiece) -> VDO_RE_MODIFICADOR.ReengroseModifier:
     datos = (reengroses or {}).get(_clave_pieza(pieza))
     if not datos:
         return VDO_RE_MODIFICADOR.ReengroseModifier()
@@ -31,7 +34,8 @@ def _modificador(reengroses, pieza):
         return VDO_RE_MODIFICADOR.ReengroseModifier()
 
 
-def _caja_pieza(pieza, fondo, espesor, x0, z0):
+def _caja_pieza(pieza: PanelPiece, fondo: float, espesor: float, x0: float,
+                z0: float) -> dict[str, Any]:
     if pieza.axis == "X":
         return {
             "nombre": pieza.nombre,
@@ -45,13 +49,13 @@ def _caja_pieza(pieza, fondo, espesor, x0, z0):
     }
 
 
-def _ejes_pieza(pieza):
+def _ejes_pieza(pieza: PanelPiece) -> dict[str, str]:
     if pieza.axis == "X":
         return {"largo": "z", "ancho": "y", "espesor": "x"}
     return {"largo": "x", "ancho": "y", "espesor": "z"}
 
 
-def _caja_dict(caja):
+def _caja_dict(caja: dict[str, Any]) -> dict[str, Any]:
     return {
         "x": float(caja.get("x", 0.0)),
         "y": float(caja.get("y", 0.0)),
@@ -62,13 +66,13 @@ def _caja_dict(caja):
     }
 
 
-def _fusionar_caja(base, cambios):
+def _fusionar_caja(base: dict[str, Any], cambios: dict[str, Any]) -> dict[str, Any]:
     nueva = dict(base)
     nueva.update(_caja_dict(cambios))
     return nueva
 
 
-def _modo_obstaculo(obstaculo):
+def _modo_obstaculo(obstaculo: dict[str, Any]) -> str:
     return (
         obstaculo.get("modo_choque")
         or obstaculo.get("comportamiento_choque_nucleo")
@@ -77,7 +81,7 @@ def _modo_obstaculo(obstaculo):
     )
 
 
-def _corte_expandido(corte, es_vertical):
+def _corte_expandido(corte: dict[str, Any], es_vertical: bool) -> dict[str, Any]:
     corte = dict(corte)
     if es_vertical:
         corte["x"] -= 0.5
@@ -88,12 +92,12 @@ def _corte_expandido(corte, es_vertical):
     return corte
 
 
-def _huella_caja(caja):
+def _huella_caja(caja: dict[str, Any]) -> tuple[float, ...]:
     return tuple(round(float(caja.get(clave, 0.0)), 4)
                  for clave in ("x", "y", "z", "w", "h", "d"))
 
 
-def _agregar_interrupcion(obstaculo, caja):
+def _agregar_interrupcion(obstaculo: dict[str, Any], caja: dict[str, Any]) -> None:
     interrupciones = obstaculo.setdefault("_interrupciones", [])
     huella = _huella_caja(caja)
     for existente in interrupciones:
@@ -102,7 +106,7 @@ def _agregar_interrupcion(obstaculo, caja):
     interrupciones.append(_caja_dict(caja))
 
 
-def _modo_efectivo(obstaculo, es_vertical):
+def _modo_efectivo(obstaculo: dict[str, Any], es_vertical: bool) -> str:
     """Modo de choque contextual.
 
     En montantes verticales, una tira horizontal (techo/base/repisa) debe
