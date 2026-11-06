@@ -412,3 +412,9 @@ $ minimalismo.py fachadas   -> 0
 ## D-26 (ola 14)
 
 - **D-26:** el usuario confirmó que no hay documentos VDO que conservar. Verificado: el único .FCStd de usuario fuera del repo (Escritorio) no referencia VDO (0 coincidencias). Se mueven las clases Feature y make_* de core/ a cad/, sin puente de compatibilidad. Revertir: git revert de los commits de esta ola.
+
+**Resultado de la ola 14 (D-26):** bloqueado y revertido. Se movieron `vdo_puerta_core`, `vdo_zocalo_core` y `vdo_cajon_core` (`8dd5550`, `3523be7`, `216f1f6`); el nivel 2 dio fallos nuevos (`test_comandos_workbench` x5 por `AttributeError`, `test_creacion_colocacion` x1 por `ModuleNotFoundError`). Causa: las rutas `factory` de `freecad/vdo/datos/modulos.json` apuntan a esos módulos, y `tests/golden/module_specs.json` congela esas rutas (`test_valor_y_orden_de_claves_iguales_al_golden`). Cambiarlas exige tocar `datos/` y un golden, ambos fuera de alcance sin aprobación humana. Revertidos con `git revert` (`5ba4013`, `80f67a5`, `12d2a30`). Nivel 2 tras revertir: `ejecutados=289 fallos=3`.
+
+No movidos, con motivo: `vdo_coco_spaces` (`forma_ref` va dentro de `generar_divisiones_matriz`, que devuelve formas; separar cambia el contrato usado por goldens y tests); `vdo_coco_core` y `vdo_panel_core` (`tests/test_single_dock_convergence.py` importa `CocoFeature` y `PanelFeature` de `core/` a nivel de módulo; ese archivo tiene cambios ajenos y no se toca).
+
+Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `modulos.json` junto con la regeneración de `module_specs.json`, o mantener los Feature en `core/` y tratar la arista como deuda explícita.
