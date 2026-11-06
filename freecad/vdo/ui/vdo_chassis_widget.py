@@ -17,19 +17,17 @@ import logging
 import sys
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtSvg, QtWidgets
-from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 
-from freecad.vdo.ui.chassis_canvas import _VDOChassisCrossSectionCanvas
 from freecad.vdo.ui.chassis_constantes import (
     CARAS,
     ENCUENTROS,
     ENCUENTRO_LABELS,
     ENCUENTRO_TOOLTIPS,
     TIPOS_ENCUENTRO,
-    TIPOS_FONDO,
     _ARQUETIPOS,
     obtener_svg_icon,
 )
+from freecad.vdo.ui.chassis_construccion import ChassisConstruccionMixin
 
 _LOG = logging.getLogger(__name__)
 
@@ -38,7 +36,10 @@ _LOG = logging.getLogger(__name__)
 # ----------------------------------------------------------------------
 # Widget Principal: VDOChassisControllerWidget
 # ----------------------------------------------------------------------
-class VDOChassisControllerWidget(QtWidgets.QWidget):
+class VDOChassisControllerWidget(
+    ChassisConstruccionMixin,
+    QtWidgets.QWidget,
+):
     """
     Controlador semiótico 2D para la Envolvente / Chasis Paramétrico (Capa 1).
     Permite conmutar caras activas/ausentes, ciclar uniones de esquina y
@@ -75,245 +76,6 @@ class VDOChassisControllerWidget(QtWidgets.QWidget):
         self._init_ui()
         self._aplicar_estilos()
         self._actualizar_ui()
-
-    def _init_ui(self):
-        layout_raiz = QtWidgets.QVBoxLayout(self)
-        layout_raiz.setContentsMargins(8, 8, 8, 8)
-        layout_raiz.setSpacing(8)
-
-        # -------------------------------------------------------------
-        # 1. Barra Superior: Título y Arquetipos Rápidos
-        # -------------------------------------------------------------
-        barra_sup = QtWidgets.QHBoxLayout()
-        barra_sup.setSpacing(6)
-
-        lbl_titulo = QtWidgets.QLabel("🪵 <b>CHASIS PARAMÉTRICO</b>")
-        lbl_titulo.setStyleSheet("font-size: 11px; color: #e0e0e0; letter-spacing: 0.5px;")
-        barra_sup.addWidget(lbl_titulo)
-
-        barra_sup.addStretch()
-
-        lbl_arq = QtWidgets.QLabel("Arquetipos:")
-        lbl_arq.setStyleSheet("font-size: 9px; color: #888888;")
-        barra_sup.addWidget(lbl_arq)
-
-        self.btn_arquetipos = {}
-        arquetipos = [
-            ("COCO", "coco", "Carcasa estándar con 5 caras activas"),
-            ("Mesa", "escritorio", "Sin base inferior (escritorio / mesa)"),
-            ("Estante", "estanteria", "Sin tapa superior ni fondo"),
-            ("Aéreo", "aereo", "Módulo suspendido para muro"),
-        ]
-        for nombre, icono_id, tip in arquetipos:
-            b = QtWidgets.QPushButton(nombre)
-            b.setIcon(obtener_svg_icon(icono_id, 14))
-            b.setToolTip(tip)
-            b.setProperty("class", "arquetipo-chip")
-            b.setFixedHeight(22)
-            b.setCursor(QtCore.Qt.PointingHandCursor)
-            b.clicked.connect(lambda _, n=nombre: self._on_arquetipo_clicked(n))
-            barra_sup.addWidget(b)
-            self.btn_arquetipos[nombre] = b
-
-        layout_raiz.addLayout(barra_sup)
-
-        # -------------------------------------------------------------
-        # 2. Matriz 3x3 del Corte Transversal Interactivo
-        # -------------------------------------------------------------
-        frame_matriz = QtWidgets.QFrame()
-        frame_matriz.setObjectName("frameMatriz")
-        grid = QtWidgets.QGridLayout(frame_matriz)
-        grid.setContentsMargins(4, 4, 4, 4)
-        grid.setSpacing(4)
-
-        # Esquinas (4 botones interactivos con iconos de encuentro)
-        self.btn_esquina = {}
-        esquinas_spec = [
-            ("superior_izq", 0, 0, "Sup-Izq"),
-            ("superior_der", 0, 2, "Sup-Der"),
-            ("inferior_izq", 2, 0, "Inf-Izq"),
-            ("inferior_der", 2, 2, "Inf-Der"),
-        ]
-        for clave, fila, col, _tag in esquinas_spec:
-            btn = QtWidgets.QPushButton()
-            btn.setProperty("class", "btn-esquina")
-            btn.setFixedSize(28, 28)
-            btn.setCursor(QtCore.Qt.PointingHandCursor)
-            btn.setIconSize(QtCore.QSize(18, 18))
-            btn.clicked.connect(lambda _, c=clave: self._on_esquina_clicked(c))
-            grid.addWidget(btn, fila, col)
-            self.btn_esquina[clave] = btn
-
-        # Botón Tapa Superior (Borde Norte)
-        self.btn_cara_sup = QtWidgets.QPushButton("━━ TAPA SUPERIOR · Activa ━━")
-        self.btn_cara_sup.setCheckable(True)
-        self.btn_cara_sup.setChecked(True)
-        self.btn_cara_sup.setProperty("class", "btn-cara-horiz")
-        self.btn_cara_sup.setFixedHeight(24)
-        self.btn_cara_sup.setCursor(QtCore.Qt.PointingHandCursor)
-        self.btn_cara_sup.clicked.connect(lambda: self._on_cara_toggled("superior"))
-        grid.addWidget(self.btn_cara_sup, 0, 1)
-
-        # Botón Lateral Izquierdo (Borde Oeste)
-        self.btn_cara_izq = QtWidgets.QPushButton("◀ Lat Izq")
-        self.btn_cara_izq.setCheckable(True)
-        self.btn_cara_izq.setChecked(True)
-        self.btn_cara_izq.setProperty("class", "btn-cara-vert")
-        self.btn_cara_izq.setFixedWidth(64)
-        self.btn_cara_izq.setCursor(QtCore.Qt.PointingHandCursor)
-        self.btn_cara_izq.clicked.connect(lambda: self._on_cara_toggled("izquierda"))
-        grid.addWidget(self.btn_cara_izq, 1, 0)
-
-        # Centro: Canvas de Sección 2D
-        self.canvas = _VDOChassisCrossSectionCanvas()
-        self.canvas.faceClicked.connect(self._on_cara_toggled)
-        grid.addWidget(self.canvas, 1, 1)
-
-        # Botón Lateral Derecho (Borde Este)
-        self.btn_cara_der = QtWidgets.QPushButton("Lat Der ▶")
-        self.btn_cara_der.setCheckable(True)
-        self.btn_cara_der.setChecked(True)
-        self.btn_cara_der.setProperty("class", "btn-cara-vert")
-        self.btn_cara_der.setFixedWidth(64)
-        self.btn_cara_der.setCursor(QtCore.Qt.PointingHandCursor)
-        self.btn_cara_der.clicked.connect(lambda: self._on_cara_toggled("derecha"))
-        grid.addWidget(self.btn_cara_der, 1, 2)
-
-        # Botón Base Inferior (Borde Sur)
-        self.btn_cara_inf = QtWidgets.QPushButton("━━ BASE INFERIOR · Activa ━━")
-        self.btn_cara_inf.setCheckable(True)
-        self.btn_cara_inf.setChecked(True)
-        self.btn_cara_inf.setProperty("class", "btn-cara-horiz")
-        self.btn_cara_inf.setFixedHeight(24)
-        self.btn_cara_inf.setCursor(QtCore.Qt.PointingHandCursor)
-        self.btn_cara_inf.clicked.connect(lambda: self._on_cara_toggled("inferior"))
-        grid.addWidget(self.btn_cara_inf, 2, 1)
-
-        layout_raiz.addWidget(frame_matriz)
-
-        # -------------------------------------------------------------
-        # 3. Micro-Panel de Fondo Trasero
-        # -------------------------------------------------------------
-        layout_fondo = QtWidgets.QHBoxLayout()
-        layout_fondo.setSpacing(6)
-
-        lbl_fondo = QtWidgets.QLabel("Fondo Trasero:")
-        lbl_fondo.setStyleSheet("font-size: 10px; color: #aaaaaa;")
-        layout_fondo.addWidget(lbl_fondo)
-
-        self.combo_fondo = QtWidgets.QComboBox()
-        self.combo_fondo.setProperty("class", "combo-fondo")
-        for val, label, icono_id, tip in TIPOS_FONDO:
-            self.combo_fondo.addItem(obtener_svg_icon(icono_id, 16), label, val)
-        self.combo_fondo.currentIndexChanged.connect(self._on_fondo_changed)
-        layout_fondo.addWidget(self.combo_fondo, 1)
-
-        layout_raiz.addLayout(layout_fondo)
-
-        # -------------------------------------------------------------
-        # 4. Estrategia de Base / Anclaje al Piso
-        # -------------------------------------------------------------
-        grupo_base = QtWidgets.QGroupBox("ESTRATEGIA DE ANCLAJE AL PISO")
-        grupo_base.setProperty("class", "grupo-base")
-        layout_base = QtWidgets.QVBoxLayout(grupo_base)
-        layout_base.setContentsMargins(6, 6, 6, 6)
-        layout_base.setSpacing(6)
-
-        # Selector de 3 estrategias
-        fila_estrategias = QtWidgets.QHBoxLayout()
-        fila_estrategias.setSpacing(4)
-        self.btn_estrategias = {}
-
-        estrategias_spec = [
-            ("zocalo", "🪵 Zócalo Taller", "zocalo", "Tarima / zócalo frontal de taller"),
-            ("suspendido", "🧗 Suspendido", "suspendido", "Fijación a muro estructural sin apoyo en piso"),
-            ("patas", "🛞 Patas / Niveladores", "patas", "Patas plásticas regulables en altura"),
-        ]
-        for key, label, icono_id, tip in estrategias_spec:
-            btn = QtWidgets.QPushButton(label)
-            btn.setIcon(obtener_svg_icon(icono_id, 16))
-            btn.setCheckable(True)
-            btn.setToolTip(tip)
-            btn.setProperty("class", "estrategia-btn")
-            btn.setFixedHeight(28)
-            btn.setCursor(QtCore.Qt.PointingHandCursor)
-            btn.clicked.connect(lambda _, k=key: self._on_estrategia_clicked(k))
-            fila_estrategias.addWidget(btn)
-            self.btn_estrategias[key] = btn
-
-        self.btn_estrategias["zocalo"].setChecked(True)
-        layout_base.addLayout(fila_estrategias)
-
-        # Parámetros dinámicos según estrategia
-        self.stack_params = QtWidgets.QStackedWidget()
-
-        # Página Zócalo
-        page_zocalo = QtWidgets.QWidget()
-        lay_pz = QtWidgets.QHBoxLayout(page_zocalo)
-        lay_pz.setContentsMargins(0, 0, 0, 0)
-        lay_pz.setSpacing(6)
-
-        lay_pz.addWidget(QtWidgets.QLabel("Altura zócalo:"))
-        self.spin_altura_zocalo = VDO_DoubleSpinBox()
-        self.spin_altura_zocalo.setRange(20.0, 300.0)
-        self.spin_altura_zocalo.setValue(100.0)
-        self.spin_altura_zocalo.setSuffix(" mm")
-        self.spin_altura_zocalo.valueChanged.connect(self._on_param_base_changed)
-        lay_pz.addWidget(self.spin_altura_zocalo)
-
-        lay_pz.addWidget(QtWidgets.QLabel("Separación:"))
-        self.spin_offset_zocalo = VDO_DoubleSpinBox()
-        self.spin_offset_zocalo.setRange(0.0, 150.0)
-        self.spin_offset_zocalo.setValue(50.0)
-        self.spin_offset_zocalo.setSuffix(" mm")
-        self.spin_offset_zocalo.valueChanged.connect(self._on_param_base_changed)
-        lay_pz.addWidget(self.spin_offset_zocalo)
-        self.stack_params.addWidget(page_zocalo)
-
-        # Página Suspendido
-        page_susp = QtWidgets.QWidget()
-        lay_ps = QtWidgets.QHBoxLayout(page_susp)
-        lay_ps.setContentsMargins(0, 0, 0, 0)
-        lay_ps.setSpacing(6)
-
-        lay_ps.addWidget(QtWidgets.QLabel("Despegue de piso:"))
-        self.spin_despegue_piso = VDO_DoubleSpinBox()
-        self.spin_despegue_piso.setRange(50.0, 1500.0)
-        self.spin_despegue_piso.setValue(300.0)
-        self.spin_despegue_piso.setSuffix(" mm")
-        self.spin_despegue_piso.valueChanged.connect(self._on_param_base_changed)
-        lay_ps.addWidget(self.spin_despegue_piso)
-
-        lbl_camar = QtWidgets.QLabel("🧗 Herrajes Camar / Scilm")
-        lbl_camar.setStyleSheet("color: #ffaa00; font-size: 10px;")
-        lay_ps.addWidget(lbl_camar)
-        self.stack_params.addWidget(page_susp)
-
-        # Página Patas
-        page_patas = QtWidgets.QWidget()
-        lay_pp = QtWidgets.QHBoxLayout(page_patas)
-        lay_pp.setContentsMargins(0, 0, 0, 0)
-        lay_pp.setSpacing(6)
-
-        lay_pp.addWidget(QtWidgets.QLabel("Altura patas:"))
-        self.spin_altura_patas = VDO_DoubleSpinBox()
-        self.spin_altura_patas.setRange(50.0, 200.0)
-        self.spin_altura_patas.setValue(100.0)
-        self.spin_altura_patas.setSuffix(" mm")
-        self.spin_altura_patas.valueChanged.connect(self._on_param_base_changed)
-        lay_pp.addWidget(self.spin_altura_patas)
-
-        lay_pp.addWidget(QtWidgets.QLabel("Retranqueo:"))
-        self.spin_offset_patas = VDO_DoubleSpinBox()
-        self.spin_offset_patas.setRange(0.0, 100.0)
-        self.spin_offset_patas.setValue(50.0)
-        self.spin_offset_patas.setSuffix(" mm")
-        self.spin_offset_patas.valueChanged.connect(self._on_param_base_changed)
-        lay_pp.addWidget(self.spin_offset_patas)
-        self.stack_params.addWidget(page_patas)
-
-        layout_base.addWidget(self.stack_params)
-        layout_raiz.addWidget(grupo_base)
 
     def _aplicar_estilos(self):
         self.setStyleSheet("""
