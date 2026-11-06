@@ -11,13 +11,29 @@ class ReengroseConfigMixin:
     # API para paneles/editor
     # -----------------------------------------------------------------
     def cargar(self, modifier):
+        mod = self._modificador_de(modifier)
+        bordes = self._bordes_de(mod)
+        ancho, offset, largo_tira, uniforme = self._agregar_bordes(bordes, mod)
+        esquinas, uniforme_esq = self._esquinas_de(mod)
+        self._cargando = True
+        self._aplicar_bordes_ui(mod, bordes, ancho, offset, largo_tira, uniforme)
+        self._aplicar_esquinas_ui(esquinas, uniforme_esq)
+        self._set_combo_data(self.combo_fabricacion, mod.fabricacion)
+        self._set_combo_data(self.combo_choque, mod.choque_nucleo)
+        self._set_combo_data(self.combo_cara, mod.cara)
+        self._cargando = False
+        self._actualizar_estado()
+
+    def _modificador_de(self, modifier):
         if isinstance(modifier, VDO_RE_MODELO.ReengroseDTO):
             mod = VDO_RE_MODIFICADOR.ReengroseModifier(modifier)
         elif isinstance(modifier, VDO_RE_MODIFICADOR.ReengroseModifier):
             mod = modifier
         else:
             mod = VDO_RE_MODIFICADOR.ReengroseModifier(modifier)
+        return mod
 
+    def _bordes_de(self, mod):
         bordes = {}
         if getattr(mod, "usa_bordes", False):
             for borde in VDO_RE_MODELO.BORDES_2D:
@@ -40,6 +56,9 @@ class ReengroseConfigMixin:
                     offset_borde=0.0,
                     espesor=mod.espesor)
 
+        return bordes
+
+    def _agregar_bordes(self, bordes, mod):
         activos = [b for b in VDO_RE_MODELO.BORDES_2D
                    if bordes[b].activo]
         primero = bordes[activos[0]] if activos else None
@@ -55,14 +74,18 @@ class ReengroseConfigMixin:
                 and bordes[b].largo_tira == largo_tira
                 for b in activos)
 
+        return ancho, offset, largo_tira, uniforme
+
+    def _esquinas_de(self, mod):
         esquinas_raw = getattr(
             mod, "esquinas", VDO_RE_MODELO.ENCUENTRO_ESQUINAS_DEFAULT)
         if not esquinas_raw:
             esquinas_raw = VDO_RE_MODELO.ENCUENTRO_ESQUINAS_DEFAULT
         esquinas = VDO_RE_MODIFICADOR._normalizar_encuentro(esquinas_raw)
         uniforme_esq = len(set(esquinas.values())) == 1
+        return esquinas, uniforme_esq
 
-        self._cargando = True
+    def _aplicar_bordes_ui(self, mod, bordes, ancho, offset, largo_tira, uniforme):
         self.chk_activo.setChecked(bool(mod.activo))
         for borde in VDO_RE_MODELO.BORDES_2D:
             cfg = bordes[borde]
@@ -76,15 +99,12 @@ class ReengroseConfigMixin:
         self.spin_espesor.setValue(
             0.0 if mod.espesor is None else float(mod.espesor))
         self.chk_uniforme.setChecked(uniforme)
+
+    def _aplicar_esquinas_ui(self, esquinas, uniforme_esq):
         for esquina in VDO_RE_MODELO.ESQUINAS_2D:
             self._set_combo_data(
                 self.combo_esquina[esquina], esquinas[esquina])
         self.chk_sync_esquinas.setChecked(uniforme_esq)
-        self._set_combo_data(self.combo_fabricacion, mod.fabricacion)
-        self._set_combo_data(self.combo_choque, mod.choque_nucleo)
-        self._set_combo_data(self.combo_cara, mod.cara)
-        self._cargando = False
-        self._actualizar_estado()
 
     @staticmethod
     def _set_combo_data(combo, valor):

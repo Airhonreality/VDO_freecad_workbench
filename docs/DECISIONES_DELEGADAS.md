@@ -582,3 +582,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-64
 
 - **D-64:** cinco funciones más de ui/ divididas por extracción literal, verificada con AST antes de commitear.
+
+## D-65
+
+- **D-65:** cinco funciones de ui/ de 73-75 líneas divididas por extracción literal, verificada con AST antes de commitear.
