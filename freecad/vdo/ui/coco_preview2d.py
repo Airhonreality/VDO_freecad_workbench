@@ -10,17 +10,18 @@ from freecad.vdo.core import frames as VDO_FR
 from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
 from freecad.vdo.core.facade_contract import CALLE_ENTRE_FRENTES_DEFAULT
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui import tema
 
 _LOG = logging.getLogger(__name__)
 
-COLOR_FONDO = QtGui.QColor("#f7f7f5")
-COLOR_INTERIOR = QtGui.QColor("#ffffff")
-COLOR_PANEL = QtGui.QColor("#4a4a4a")
-COLOR_CELDA = QtGui.QColor("#b8b8b8")
-COLOR_SELECCION = QtGui.QColor("#e67e22")
-COLOR_TEXTO = QtGui.QColor("#303030")
-COLOR_ERROR = QtGui.QColor("#c0392b")
-COLOR_TIRA = QtGui.QColor(230, 126, 34, 150)
+COLOR_FONDO = QtGui.QColor(tema.COLOR_PAPEL_COCO)
+COLOR_INTERIOR = QtGui.QColor(tema.TEXTO_CLARO)
+COLOR_PANEL = QtGui.QColor(tema.COLOR_BORDE_GRIS)
+COLOR_CELDA = QtGui.QColor(tema.COLOR_CELDA_GRIS)
+COLOR_SELECCION = QtGui.QColor(tema.COLOR_NARANJA)
+COLOR_TEXTO = QtGui.QColor(tema.COLOR_FONDO_ELEVADO)
+COLOR_ERROR = QtGui.QColor(tema.COLOR_ROJO_ERROR)
+COLOR_TIRA = QtGui.QColor(*tema.COLOR_NARANJA_TIRA_RGBA)
 
 ROLE_KIND = int(QtCore.Qt.UserRole) + 1
 ROLE_KEY = int(QtCore.Qt.UserRole) + 2
@@ -186,7 +187,7 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
         exterior = QtCore.QRectF(
             margen, margen_sup, self._outer_w, self._outer_h)
         scene.addRect(
-            exterior, QtGui.QPen(QtGui.QColor("#7a7a7a"), 1.0),
+            exterior, QtGui.QPen(QtGui.QColor(tema.COLOR_TRAZO_GRIS), 1.0),
             QtGui.QBrush(COLOR_FONDO))
 
         t = self._resolved.thickness
@@ -194,7 +195,7 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
             margen + t, margen_sup + t,
             self._resolved.inner_w, self._resolved.inner_h)
         scene.addRect(
-            interior, QtGui.QPen(QtGui.QColor("#d0d0d0"), 1.0),
+            interior, QtGui.QPen(QtGui.QColor(tema.COLOR_TEXTO_SECUNDARIO), 1.0),
             QtGui.QBrush(COLOR_INTERIOR))
 
         return interior
@@ -253,7 +254,7 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
             h_frente = (h_util - (cantidad - 1) * calle) / cantidad
             if h_frente <= 0:
                 continue
-            pen = QtGui.QPen(QtGui.QColor("#7a7a7a"), 1.0)
+            pen = QtGui.QPen(QtGui.QColor(tema.COLOR_TRAZO_GRIS), 1.0)
             pen.setStyle(QtCore.Qt.DashLine)
             for i in range(1, cantidad):
                 z_linea = float(cell.z) + i * (h_frente + calle)
@@ -344,7 +345,7 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
             pen = QtGui.QPen(COLOR_SELECCION, 2.2)
             pen.setStyle(QtCore.Qt.SolidLine)
             item.setBrush(QtGui.QBrush(
-                QtGui.QColor(230, 126, 34, 28)))
+                QtGui.QColor(*tema.COLOR_NARANJA_HALO_RGBA)))
         else:
             pen = QtGui.QPen(COLOR_CELDA, 1.0)
             pen.setStyle(QtCore.Qt.DashLine)
@@ -359,7 +360,7 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
 
     def _aplicar_estilo_tira(self, item, seleccionada):
         if seleccionada:
-            item.setPen(QtGui.QPen(QtGui.QColor("#a04000"), 2.5))
+            item.setPen(QtGui.QPen(QtGui.QColor(tema.COLOR_NARANJA_OSCURO), 2.5))
         else:
             item.setPen(QtGui.QPen(COLOR_SELECCION, 1.0))
 

@@ -220,7 +220,7 @@ class OptimizerDialog(QtWidgets.QDialog):
                f"retal {tot['retal_m2']:.2f} m² · "
                f"desperdicio {tot['waste_m2']:.2f} m²")
         if tot["n_unplaced"]:
-            txt += f" · <span style='color:#c00'>no colocadas: {tot['n_unplaced']}</span>"
+            txt += f" · <span style='color:{tema.COLOR_ROJO_TEXTO}'>no colocadas: {tot['n_unplaced']}</span>"
         self.lbl_summary.setText(txt)
 
         App.Console.PrintMessage(

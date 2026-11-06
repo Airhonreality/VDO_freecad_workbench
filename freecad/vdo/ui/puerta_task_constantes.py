@@ -11,11 +11,12 @@ from freecad.vdo.datos.formularios import (
     SENTIDOS_BATIENTE,
     SENTIDOS_CORREDIZA,
 )
+from freecad.vdo.ui import tema
 
 # ---------------------------------------------------------------------
 # Mapeo de nombres de visualización (UI) a constantes del contrato.
 # ---------------------------------------------------------------------
 
 # Colores del Manifiesto de UI VDO (tema oscuro)
-COLOR_FONDO = "#1e1e1e"
-COLOR_TEXTO = "#e0e0e0"
+COLOR_FONDO = tema.FONDO
+COLOR_TEXTO = tema.TEXTO
