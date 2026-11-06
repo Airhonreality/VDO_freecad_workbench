@@ -178,12 +178,6 @@ class PanelTaskPanel(VDOTransactionMixin):
     def _leer_reengrose(self):
         return self.re_editor.leer_modificador()
 
-    def _actualizar_resumen_reengrose(self):
-        self.re_editor._actualizar_resumen()
-
-    def _on_reengrose_toggled(self, activo):
-        self._on_reengrose_modo_changed()
-
     def _on_reengrose_modo_changed(self, *args):
         self.re_editor._actualizar_estado()
 

@@ -180,7 +180,3 @@ class BoxConfigMixin:
     def leer_modificador(self):
         """Devuelve un objeto ReengroseModifier listo para el cálculo."""
         return VDO_RE_MODIFICADOR.ReengroseModifier(self.getConfig())
-
-    def set_dimensiones_panel(self, ancho, fondo):
-        """Referencia de medidas brutas."""
-        pass

@@ -222,15 +222,6 @@ class FormBuilder:
     def valores(self):
         return {clave: self.campos[clave].valor() for clave in self.orden}
 
-    def set_valores(self, valores):
-        for clave, valor in valores.items():
-            if clave in self.campos:
-                self.campos[clave].set_valor(valor)
-
-    def campos_decl(self):
-        """Devuelve la lista de claves declaradas (en orden)."""
-        return list(self.orden)
-
     def _crear_campo_ui(self, espec, estilos):
         """Crea el campo y su widget. Aplica ajuste de texto y estilo si la especificacion los pide."""
         campo = self.agregar(espec)

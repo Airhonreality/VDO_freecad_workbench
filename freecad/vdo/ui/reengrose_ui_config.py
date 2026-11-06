@@ -145,10 +145,3 @@ class ReengroseConfigMixin:
             "cara": self.combo_cara.currentData(),
             "usa_bordes": True,
         })
-
-    def set_activar_si_vacio(self):
-        if not self._bordes_activos():
-            self._cargando = True
-            self.btn_borde["frente"].setChecked(True)
-            self._cargando = False
-            self._actualizar_estado()

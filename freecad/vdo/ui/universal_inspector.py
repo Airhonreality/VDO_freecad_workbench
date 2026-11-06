@@ -315,8 +315,6 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
         return self.stack.currentIndex() if self.stack is not None else -1
     def tipo_actual(self):
         return self._tipo_actual
-    def objeto_actual(self):
-        return self._obj_actual
     def puente(self):
         return self._puente
     def cerrar_inspector(self):
@@ -335,25 +333,6 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
     def closeEvent(self, event):
         self.cerrar_inspector()
         super().closeEvent(event)
-    @classmethod
-    def mostrar_en_freecad(cls, parent=None):
-        """Abre el inspector en FreeCAD GUI dentro de un QDockWidget lateral."""
-        from freecad.vdo.ui.inspector_dock import obtener_o_crear_dock_inspector
-        dock = obtener_o_crear_dock_inspector()
-        if dock is not None:
-            dock.show()
-            dock.raise_()
-            return dock.widget()
-        instancia = cls(parent=parent)
-        if Gui is not None and hasattr(Gui, "Control"):
-            try:
-                Gui.Control.showDialog(instancia)
-            except Exception as exc:
-                App.Console.PrintWarning(f"[VDO] universal_inspector: showDialog fallido, se muestra con show(): {exc}\n")
-                instancia.show()
-        else:
-            instancia.show()
-        return instancia
 
 
 __all__ = [
