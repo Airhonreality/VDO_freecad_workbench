@@ -46,6 +46,27 @@ class CajonTaskConstruccionMixin:
         self.header = PanelHeaderWidget()
         main_layout.addWidget(self.header)
 
+        self._crear_grupo_espacio(main_layout)
+        self._crear_grupo_herraje(main_layout)
+        self._crear_grupo_apertura(main_layout)
+        self._crear_grupo_caja(main_layout)
+        self._crear_grupo_colocacion(main_layout)
+        main_layout.addStretch()
+
+        # --- Botones ---
+        botones = QtWidgets.QDialogButtonBox()
+        botones.addButton(
+            "Crear y colocar" if not self.auto_transaction else "Aplicar",
+            QtWidgets.QDialogButtonBox.AcceptRole)
+        botones.addButton(
+            "Cancelar", QtWidgets.QDialogButtonBox.RejectRole)
+        botones.accepted.connect(self._on_ok)
+        botones.rejected.connect(self._on_cancel)
+        main_layout.addWidget(botones)
+
+        return widget
+
+    def _crear_grupo_espacio(self, main_layout):
         # --- Grupo: Espacio interior del mueble ---
         grupo_espacio = QtWidgets.QGroupBox("Espacio interior (datos de partida)")
         grid_esp = QtWidgets.QGridLayout(grupo_espacio)
@@ -80,6 +101,7 @@ class CajonTaskConstruccionMixin:
 
         main_layout.addWidget(grupo_espacio)
 
+    def _crear_grupo_herraje(self, main_layout):
         # --- Grupo: Corredera y herraje ---
         grupo_herraje = QtWidgets.QGroupBox("Corredera y herraje")
         grid_h = QtWidgets.QGridLayout(grupo_herraje)
@@ -129,6 +151,7 @@ class CajonTaskConstruccionMixin:
 
         main_layout.addWidget(grupo_herraje)
 
+    def _crear_grupo_apertura(self, main_layout):
         # --- Grupo: Sistema de apertura (fachada) ---
         grupo_apertura = QtWidgets.QGroupBox("Sistema de apertura (fachada)")
         grid_a = QtWidgets.QGridLayout(grupo_apertura)
@@ -161,6 +184,7 @@ class CajonTaskConstruccionMixin:
 
         main_layout.addWidget(grupo_apertura)
 
+    def _crear_grupo_caja(self, main_layout):
         # --- Grupo: Caja y fachada ---
         grupo_caja = QtWidgets.QGroupBox("Caja y fachada")
         grid_caja = QtWidgets.QGridLayout(grupo_caja)
@@ -192,6 +216,7 @@ class CajonTaskConstruccionMixin:
 
         main_layout.addWidget(grupo_caja)
 
+    def _crear_grupo_colocacion(self, main_layout):
         # --- Grupo: Colocación ---
         grupo_coloc = QtWidgets.QGroupBox("Colocación")
         grid_coloc = QtWidgets.QGridLayout(grupo_coloc)
@@ -212,17 +237,3 @@ class CajonTaskConstruccionMixin:
         grid_coloc.addWidget(self.combo_anclaje, 1, 1)
 
         main_layout.addWidget(grupo_coloc)
-        main_layout.addStretch()
-
-        # --- Botones ---
-        botones = QtWidgets.QDialogButtonBox()
-        botones.addButton(
-            "Crear y colocar" if not self.auto_transaction else "Aplicar",
-            QtWidgets.QDialogButtonBox.AcceptRole)
-        botones.addButton(
-            "Cancelar", QtWidgets.QDialogButtonBox.RejectRole)
-        botones.accepted.connect(self._on_ok)
-        botones.rejected.connect(self._on_cancel)
-        main_layout.addWidget(botones)
-
-        return widget
