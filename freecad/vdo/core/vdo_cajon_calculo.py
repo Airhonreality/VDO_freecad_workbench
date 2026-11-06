@@ -282,6 +282,70 @@ def _piezas_laterales(largo_lateral, alto_lateral, g_caja, material_ref, z_piso,
     return piezas
 
 
+def _piezas_restantes(ancho_contra, alto_contra, g_caja, material_ref, notch_ancho,
+    notch_alto, alto_frente_int, ancho_piso, largo_piso, g_fondo,
+    ancho_fachada, alto_fachada, g_fachada, sistema_apertura,
+    operacion_canto, cantos_fachada):
+    """Paneles de contrafrente, frente interior, piso y fachada."""
+    piezas = [
+        {
+            "nombre": "Cajon_Contrafrente",
+            "tipo": "panel",
+            "largo": ancho_contra,
+            "ancho": alto_contra,
+            "espesor": g_caja,
+            "cantidad": 1,
+            "material_ref": material_ref,
+            "mecanizados": [
+                {"tipo": "notch_inferior", "lados": "ambos",
+                 "ancho": notch_ancho, "alto": notch_alto},
+            ],
+        },
+        {
+            "nombre": "Cajon_Frente_Interior",
+            "tipo": "panel",
+            "largo": ancho_contra,
+            "ancho": alto_frente_int,
+            "espesor": g_caja,
+            "cantidad": 1,
+            "material_ref": material_ref,
+            "mecanizados": [
+                {"tipo": "zona_locking_device", "cara": "inferior",
+                 "nota": "Gancho de acople (locking device) según ficha"},
+            ],
+        },
+        {
+            "nombre": "Cajon_Piso",
+            "tipo": "panel",
+            "largo": largo_piso,
+            "ancho": ancho_piso,
+            "espesor": g_fondo,
+            "cantidad": 1,
+            "material_ref": material_ref,
+            "mecanizados": [],
+        },
+        {
+            "nombre": "Cajon_Fachada",
+            "tipo": "panel",
+            "largo": ancho_fachada,
+            "ancho": alto_fachada,
+            "espesor": g_fachada,
+            "cantidad": 1,
+            "material_ref": material_ref,
+            "sistema_apertura": sistema_apertura,
+            "operacion_canto": operacion_canto,
+            "cantos": cantos_fachada,
+            "mecanizados": [
+                {"tipo": "canto", "caras": 4,
+                 "nota": "Fachada: 4 cantos (convención VDO)"},
+                {"tipo": operacion_canto, "cara": "superior",
+                 "nota": f"Sistema de apertura: {sistema_apertura}"},
+            ],
+        },
+    ]
+    return piezas
+
+
 def calcular_despiece(config):
     """Calcula el despiece completo del cajón con corredera oculta.
 
@@ -347,62 +411,11 @@ def calcular_despiece(config):
     # --- 9. Piezas para cutting list (VDO_Paneles_JSON) ---
     piezas = _piezas_laterales(largo_lateral, alto_lateral, g_caja,
                                material_ref, z_piso, g_fondo, lg, prof_ranura,
-                               diam_t, prof_t, dist_t_tras) + [
-        {
-            "nombre": "Cajon_Contrafrente",
-            "tipo": "panel",
-            "largo": ancho_contra,
-            "ancho": alto_contra,
-            "espesor": g_caja,
-            "cantidad": 1,
-            "material_ref": material_ref,
-            "mecanizados": [
-                {"tipo": "notch_inferior", "lados": "ambos",
-                 "ancho": notch_ancho, "alto": notch_alto},
-            ],
-        },
-        {
-            "nombre": "Cajon_Frente_Interior",
-            "tipo": "panel",
-            "largo": ancho_contra,
-            "ancho": alto_frente_int,
-            "espesor": g_caja,
-            "cantidad": 1,
-            "material_ref": material_ref,
-            "mecanizados": [
-                {"tipo": "zona_locking_device", "cara": "inferior",
-                 "nota": "Gancho de acople (locking device) según ficha"},
-            ],
-        },
-        {
-            "nombre": "Cajon_Piso",
-            "tipo": "panel",
-            "largo": largo_piso,
-            "ancho": ancho_piso,
-            "espesor": g_fondo,
-            "cantidad": 1,
-            "material_ref": material_ref,
-            "mecanizados": [],
-        },
-        {
-            "nombre": "Cajon_Fachada",
-            "tipo": "panel",
-            "largo": ancho_fachada,
-            "ancho": alto_fachada,
-            "espesor": g_fachada,
-            "cantidad": 1,
-            "material_ref": material_ref,
-            "sistema_apertura": sistema_apertura,
-            "operacion_canto": operacion_canto,
-            "cantos": cantos_fachada,
-            "mecanizados": [
-                {"tipo": "canto", "caras": 4,
-                 "nota": "Fachada: 4 cantos (convención VDO)"},
-                {"tipo": operacion_canto, "cara": "superior",
-                 "nota": f"Sistema de apertura: {sistema_apertura}"},
-            ],
-        },
-    ]
+                               diam_t, prof_t, dist_t_tras) + _piezas_restantes(
+        ancho_contra, alto_contra, g_caja, material_ref, notch_ancho,
+        notch_alto, alto_frente_int, ancho_piso, largo_piso, g_fondo,
+        ancho_fachada, alto_fachada, g_fachada, sistema_apertura,
+        operacion_canto, cantos_fachada)
 
     return {
         "guia": {"lg": lg, "delta": delta, "marca": marca_id,
