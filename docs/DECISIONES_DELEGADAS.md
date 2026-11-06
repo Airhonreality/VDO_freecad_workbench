@@ -418,3 +418,7 @@ $ minimalismo.py fachadas   -> 0
 No movidos, con motivo: `vdo_coco_spaces` (`forma_ref` va dentro de `generar_divisiones_matriz`, que devuelve formas; separar cambia el contrato usado por goldens y tests); `vdo_coco_core` y `vdo_panel_core` (`tests/test_single_dock_convergence.py` importa `CocoFeature` y `PanelFeature` de `core/` a nivel de módulo; ese archivo tiene cambios ajenos y no se toca).
 
 Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `modulos.json` junto con la regeneración de `module_specs.json`, o mantener los Feature en `core/` y tratar la arista como deuda explícita.
+
+## D-28 (ola 16)
+
+- **D-28:** opción A completa. Rutas `factory` de `freecad/vdo/datos/modulos.json` y golden `tests/golden/module_specs.json` regenerados (el usuario confirmó que no hay documentos VDO). Import de `tests/test_single_dock_convergence.py` reapuntado (2 líneas; resto del archivo intacto). Revertir: `git revert` de esta ola.
