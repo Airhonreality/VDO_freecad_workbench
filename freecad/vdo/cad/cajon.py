@@ -45,91 +45,109 @@ from freecad.vdo.cad.cajon_geometria import (
 # CajonFeature
 # =====================================================================
 
+def _props_entrada_cajon(obj):
+    """Propiedades de entrada: espacio interior del mueble."""
+    obj.addProperty("App::PropertyLength", "AnchoLibre", "Dimensiones",
+                    "Ancho libre interior del mueble LI (mm)"
+                    ).AnchoLibre = 564.0
+    obj.addProperty("App::PropertyLength", "ProfLibre", "Dimensiones",
+                    "Profundidad libre interior del mueble (mm)"
+                    ).ProfLibre = 560.0
+    obj.addProperty("App::PropertyLength", "AnchoModulo", "Dimensiones",
+                    "Ancho total del módulo (para la fachada, mm)"
+                    ).AnchoModulo = 600.0
+    obj.addProperty("App::PropertyLength", "AltoFrente", "Dimensiones",
+                    "Alto total asignado a la fachada (mm)"
+                    ).AltoFrente = 225.0
+
+
+def _props_caja_cajon(obj):
+    """Propiedades de la caja: alto y espesores del tablero."""
+    obj.addProperty("App::PropertyLength", "AltoCaja", "Caja",
+                    "Alto de los laterales de la caja (85/120/150)"
+                    ).AltoCaja = VDO_D.CAJON_ALTO_DEFAULT
+    obj.addProperty("App::PropertyLength", "GrosorCaja", "Caja",
+                    "Espesor del tablero de la caja (15/16 mm)"
+                    ).GrosorCaja = VDO_D.CAJON_GROSOR_DEFAULT
+    obj.addProperty("App::PropertyLength", "GrosorFondo", "Caja",
+                    "Espesor del piso del cajón (6/12 mm)"
+                    ).GrosorFondo = VDO_D.CAJON_FONDO_DEFAULT
+    obj.addProperty("App::PropertyLength", "GrosorFachada", "Fachada",
+                    "Espesor de la fachada decorativa (18 mm)"
+                    ).GrosorFachada = VDO_D.CAJON_FACHADA_DEFAULT
+
+
+def _props_herraje_cajon(obj):
+    """Propiedades de herraje: marca de corredera, guía y montaje de la trasera."""
+    marcas = listar_marcas()
+    obj.addProperty("App::PropertyEnumeration", "MarcaCorredera",
+                    "Herraje", "Marca de corredera oculta (delta y cotas)"
+                    ).MarcaCorredera = marcas
+    obj.MarcaCorredera = BLUM_TANDEM if BLUM_TANDEM in marcas else marcas[0]
+    obj.addProperty("App::PropertyLength", "LongitudGuia", "Herraje",
+                    "Largo nominal de la guía (0 = auto según ProfLibre)"
+                    ).LongitudGuia = 0.0
+    obj.addProperty("App::PropertyEnumeration", "MontajeTrasera",
+                    "Herraje", "Montaje de la contra-frente"
+                    ).MontajeTrasera = ["entre_laterales", "testa"]
+    obj.MontajeTrasera = "entre_laterales"
+
+
+def _props_tipologia_cajon(obj):
+    """Propiedad de tipologia de corredera."""
+    obj.addProperty("App::PropertyEnumeration", "TipoCorredera",
+                    "Herraje",
+                    "Tipo de corredera: oculta / telescópica / metálica"
+                    ).TipoCorredera = [
+                        CORREDERA_OCULTA, CORREDERA_TELESCOPICA, CAJA_METALICA]
+    obj.TipoCorredera = CORREDERA_OCULTA
+
+
+def _props_fachada_cajon(obj):
+    """Propiedades de fachada: sistema de apertura y tipo de montaje."""
+    obj.addProperty("App::PropertyEnumeration", "SistemaApertura",
+                    "Fachada",
+                    "Sistema de apertura del frente del cajón"
+                    ).SistemaApertura = [
+                        APERTURA_TIRADOR, APERTURA_GOLA,
+                        APERTURA_45_GRADOS, APERTURA_PUSH_OPEN]
+    obj.SistemaApertura = APERTURA_TIRADOR
+
+    obj.addProperty("App::PropertyEnumeration", "TipoMontaje",
+                    "Fachada",
+                    "Tipo de montaje de la fachada frente al vano"
+    ).TipoMontaje = [MONTAJE_PARCHE, MONTAJE_SEMIPARCHE, MONTAJE_EMBEBIDA]
+    obj.TipoMontaje = MONTAJE_PARCHE
+
+
+def _props_vdo_cajon(obj):
+    """Propiedades VDO de exportacion (cutting list) y de resumen del despiece."""
+    obj.addProperty("App::PropertyString", "VDO_Tipo", "VDO",
+                    "Tipo de objeto").VDO_Tipo = "contenedor"
+    obj.addProperty("App::PropertyString", "VDO_Subtipo", "VDO",
+                    "Subtipo").VDO_Subtipo = "cajon_oculta"
+    obj.addProperty("App::PropertyString", "VDO_Material_Ref", "VDO",
+                    "Material de las piezas"
+                    ).VDO_Material_Ref = MELAMINA_ESTANDAR
+    obj.addProperty("App::PropertyString", "VDO_Herraje_Ref", "VDO",
+                    "Herraje de corredera oculta"
+                    ).VDO_Herraje_Ref = obj.MarcaCorredera
+    obj.addProperty("App::PropertyString", "VDO_Paneles_JSON", "VDO",
+                    "Descripción JSON de las piezas del despiece")
+    obj.addProperty("App::PropertyString", "VDO_ResumenDespiece", "VDO",
+                    "Resumen legible del despiece (solo lectura)")
+
+
 class CajonFeature:
     """FeaturePython que genera la geometría de un cajón (Trinidad v2)."""
 
     def __init__(self, obj):
-        # === ENTRADA: espacio interior ===
-        obj.addProperty("App::PropertyLength", "AnchoLibre", "Dimensiones",
-                        "Ancho libre interior del mueble LI (mm)"
-                        ).AnchoLibre = 564.0
-        obj.addProperty("App::PropertyLength", "ProfLibre", "Dimensiones",
-                        "Profundidad libre interior del mueble (mm)"
-                        ).ProfLibre = 560.0
-        obj.addProperty("App::PropertyLength", "AnchoModulo", "Dimensiones",
-                        "Ancho total del módulo (para la fachada, mm)"
-                        ).AnchoModulo = 600.0
-        obj.addProperty("App::PropertyLength", "AltoFrente", "Dimensiones",
-                        "Alto total asignado a la fachada (mm)"
-                        ).AltoFrente = 225.0
-
-        # === CAJA ===
-        obj.addProperty("App::PropertyLength", "AltoCaja", "Caja",
-                        "Alto de los laterales de la caja (85/120/150)"
-                        ).AltoCaja = VDO_D.CAJON_ALTO_DEFAULT
-        obj.addProperty("App::PropertyLength", "GrosorCaja", "Caja",
-                        "Espesor del tablero de la caja (15/16 mm)"
-                        ).GrosorCaja = VDO_D.CAJON_GROSOR_DEFAULT
-        obj.addProperty("App::PropertyLength", "GrosorFondo", "Caja",
-                        "Espesor del piso del cajón (6/12 mm)"
-                        ).GrosorFondo = VDO_D.CAJON_FONDO_DEFAULT
-        obj.addProperty("App::PropertyLength", "GrosorFachada", "Fachada",
-                        "Espesor de la fachada decorativa (18 mm)"
-                        ).GrosorFachada = VDO_D.CAJON_FACHADA_DEFAULT
-
-        # === HERRAJE (corredera) ===
-        marcas = listar_marcas()
-        obj.addProperty("App::PropertyEnumeration", "MarcaCorredera",
-                        "Herraje", "Marca de corredera oculta (delta y cotas)"
-                        ).MarcaCorredera = marcas
-        obj.MarcaCorredera = BLUM_TANDEM if BLUM_TANDEM in marcas else marcas[0]
-        obj.addProperty("App::PropertyLength", "LongitudGuia", "Herraje",
-                        "Largo nominal de la guía (0 = auto según ProfLibre)"
-                        ).LongitudGuia = 0.0
-        obj.addProperty("App::PropertyEnumeration", "MontajeTrasera",
-                        "Herraje", "Montaje de la contra-frente"
-                        ).MontajeTrasera = ["entre_laterales", "testa"]
-        obj.MontajeTrasera = "entre_laterales"
-
-        # === TIPOLOGÍA DE CORREDERA ===
-        obj.addProperty("App::PropertyEnumeration", "TipoCorredera",
-                        "Herraje",
-                        "Tipo de corredera: oculta / telescópica / metálica"
-                        ).TipoCorredera = [
-                            CORREDERA_OCULTA, CORREDERA_TELESCOPICA, CAJA_METALICA]
-        obj.TipoCorredera = CORREDERA_OCULTA
-
-        # === SISTEMA DE APERTURA (fachada) ===
-        obj.addProperty("App::PropertyEnumeration", "SistemaApertura",
-                        "Fachada",
-                        "Sistema de apertura del frente del cajón"
-                        ).SistemaApertura = [
-                            APERTURA_TIRADOR, APERTURA_GOLA,
-                            APERTURA_45_GRADOS, APERTURA_PUSH_OPEN]
-        obj.SistemaApertura = APERTURA_TIRADOR
-
-        # === TIPO DE MONTAJE DE FACHADA (parche / semiparche / embebida) ===
-        obj.addProperty("App::PropertyEnumeration", "TipoMontaje",
-                        "Fachada",
-                        "Tipo de montaje de la fachada frente al vano"
-        ).TipoMontaje = [MONTAJE_PARCHE, MONTAJE_SEMIPARCHE, MONTAJE_EMBEBIDA]
-        obj.TipoMontaje = MONTAJE_PARCHE
-
-        # === PROPIEDADES DE EXPORTACIÓN (cutting list) ===
-        obj.addProperty("App::PropertyString", "VDO_Tipo", "VDO",
-                        "Tipo de objeto").VDO_Tipo = "contenedor"
-        obj.addProperty("App::PropertyString", "VDO_Subtipo", "VDO",
-                        "Subtipo").VDO_Subtipo = "cajon_oculta"
-        obj.addProperty("App::PropertyString", "VDO_Material_Ref", "VDO",
-                        "Material de las piezas"
-                        ).VDO_Material_Ref = MELAMINA_ESTANDAR
-        obj.addProperty("App::PropertyString", "VDO_Herraje_Ref", "VDO",
-                        "Herraje de corredera oculta"
-                        ).VDO_Herraje_Ref = obj.MarcaCorredera
-        obj.addProperty("App::PropertyString", "VDO_Paneles_JSON", "VDO",
-                        "Descripción JSON de las piezas del despiece")
-        obj.addProperty("App::PropertyString", "VDO_ResumenDespiece", "VDO",
-                        "Resumen legible del despiece (solo lectura)")
+        _props_entrada_cajon(obj)
+        _props_caja_cajon(obj)
+        _props_herraje_cajon(obj)
+        _props_tipologia_cajon(obj)
+        _props_fachada_cajon(obj)
+        _props_vdo_cajon(obj)
 
         # Pose común VDO (rotación + anclaje). No altera la geometría.
         add_common_props(obj)
