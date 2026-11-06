@@ -118,7 +118,7 @@ class ZocaloTaskPanel(VDOTransactionMixin):
                                        "trasera_habilitada", "checkbox",
                                        None, None, None,
                                        "Cierra el cajón del zócalo por "
-                                       "detrás.", fila=3, colspan=2)
+                                       "detrás.", fila_check=3, colspan=2)
 
         main_layout.addWidget(grupo_sep)
 

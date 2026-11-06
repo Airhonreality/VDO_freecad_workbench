@@ -596,3 +596,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 - **D-67:** últimas cinco funciones de ui/ de 62-66 líneas bajo 60 líneas por extracción literal, verificada con AST. Cierra M7 con classify_object resuelto en D-68 (criterio de función, P5).
 
 - **D-68:** classify_object convertido a tabla de despacho (P3), verificado por equivalencia exacta sobre tipos de proxy.
+
+## D-69
+
+- **D-69:** corrección de error preexistente: `fila=` duplicado en chk_trasera hacía imposible construir el panel de zócalo (desde 23d69a9). Intención igual (fila 3). Desviación del encargo: quitar solo el duplicado no bastaba, porque `_campo` coloca los checkbox en `fila_check` (por defecto None) y el panel seguía fallando con `addWidget(QLabel, NoneType, int)`. Por eso `fila=3` se sustituye por `fila_check=3`. Verificado: ZocaloTaskPanel se construye en offscreen. Revertir: git revert del commit.
