@@ -59,7 +59,7 @@ def calcular_fachada_base(w_vano: float,
                           h_vano: float,
                           tipo_montaje: str,
                           holgura: float = HOLGURA_PERIMETRAL_DEFAULT,
-                          solape: float = SOLAPE_PARCHE_NOMINAL) -> tuple:
+                          solape: float = SOLAPE_PARCHE_NOMINAL) -> tuple[float, float]:
     """Cálculo matemático puro y universal de las dimensiones de cualquier
     panel frontal (puerta o fachada de cajón).
 

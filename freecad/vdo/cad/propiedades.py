@@ -29,7 +29,7 @@ ANCLAJE_LABELS = dict(_DATOS_ANCLAJES["etiquetas"])
 ANCLAJE_IDS = {label: idx for idx, label in ANCLAJE_LABELS.items()}
 
 
-def add_common_props(obj):
+def add_common_props(obj: Any) -> None:
     """Añade las propiedades de colocación si no existen (idempotente)."""
     if not hasattr(obj, "VDO_RotacionZ"):
         obj.addProperty(

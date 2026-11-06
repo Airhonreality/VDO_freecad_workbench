@@ -4,7 +4,7 @@
 # y chaflanes para el submódulo de Puertas y Cierres (L2).
 # =====================================================================
 
-
+from typing import Any
 
 from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core.facade_contract import (
@@ -32,7 +32,8 @@ from freecad.vdo.core.puerta_despiece import (
 # Utilidades de geometría
 # ---------------------------------------------------------------------
 
-def _arista_borde(shape, coord_fijo, valor_fijo, coord_var, tol=1e-6):
+def _arista_borde(shape: Any, coord_fijo: int, valor_fijo: float, coord_var: int,
+                  tol: float = 1e-6) -> Any | None:
     """Arista donde todos los vértices tienen coord_fijo == valor_fijo."""
     for arista in shape.Edges:
         pts = [v.Point for v in arista.Vertexes]
@@ -41,7 +42,9 @@ def _arista_borde(shape, coord_fijo, valor_fijo, coord_var, tol=1e-6):
     return None
 
 
-def _cilindro_cazoleta(cup_x, cup_z, espesor, radio=None, profundidad=None):
+def _cilindro_cazoleta(cup_x: float, cup_z: float, espesor: float,
+                       radio: float | None = None,
+                       profundidad: float | None = None) -> Any:
     """Cilindro ciego de cazoleta taladrado desde la cara trasera (Y=espesor)."""
     radio = radio or CAZALETA_DIAMETRO / 2.0
     profundidad = profundidad or CAZALETA_PROFUNDIDAD
@@ -50,7 +53,7 @@ def _cilindro_cazoleta(cup_x, cup_z, espesor, radio=None, profundidad=None):
     return _get_part().makeCylinder(radio, profundidad, base, direccion)
 
 
-def _asignar_forma(fp, piezas, pos):
+def _asignar_forma(fp: Any, piezas: list[Any], pos: tuple[float, float, float]) -> None:
     """Fija Shape con los sólidos válidos y LocalPlacement en la pose recibida."""
     solidos = [s for s in piezas if not s.isNull() and s.Volume > 1e-9]
     fp.Shape = _get_part().makeCompound(solidos) if solidos else _get_part().Shape()
@@ -61,7 +64,8 @@ def _asignar_forma(fp, piezas, pos):
         _get_app().Vector(*pos), _get_app().Rotation())
 
 
-def _fachada_parche(dims, pos, montaje):
+def _fachada_parche(dims: tuple[float, float, float], pos: tuple[float, float, float],
+                    montaje: str) -> tuple[float, float, tuple[float, float, float]]:
     """Devuelve (w_fach, h_fach, pos) con la fachada centrada sobre el hueco."""
     W, H, t = dims
     px, py, pz = pos
@@ -86,7 +90,8 @@ _CUP_XS_POR_SENTIDO = {
 }
 
 
-def _taladrar_cazoletas(shape, sentido, dims_fach, montaje, sku):
+def _taladrar_cazoletas(shape: Any, sentido: str, dims_fach: tuple[float, float, float],
+                        montaje: str, sku: str) -> Any:
     """Resta del panel las cazoletas de bisagra (solo batiente vertical)."""
     w_fach, h_fach, t = dims_fach
     bis = bisagras_para_puerta(h_fach, montaje, prefer_sku=sku or None)
@@ -103,7 +108,9 @@ def _taladrar_cazoletas(shape, sentido, dims_fach, montaje, sku):
     return shape
 
 
-def _construir_batiente(fp, dims, pos, sistema, montaje, sentido, apertura):
+def _construir_batiente(fp: Any, dims: tuple[float, float, float],
+                        pos: tuple[float, float, float], sistema: str, montaje: str,
+                        sentido: str, apertura: str) -> None:
     """Panel de batiente (vertical o basculante) con chaflán y cazoletas."""
     t = dims[2]
     w_fach, h_fach, pos = _fachada_parche(dims, pos, montaje)
@@ -123,7 +130,7 @@ def _construir_batiente(fp, dims, pos, sistema, montaje, sentido, apertura):
     _asignar_forma(fp, [shape] if shape is not None else [], pos)
 
 
-def _avisar_intersecciones(hojas):
+def _avisar_intersecciones(hojas: list[Any]) -> None:
     """Avisa si dos hojas de corredera comparten volumen."""
     for a in range(len(hojas)):
         for b in range(a + 1, len(hojas)):
@@ -133,7 +140,9 @@ def _avisar_intersecciones(hojas):
                     f"intersectan (common > 0).\n")
 
 
-def _construir_corrediza(fp, dims, pos, sentido, apertura):
+def _construir_corrediza(fp: Any, dims: tuple[float, float, float],
+                         pos: tuple[float, float, float], sentido: str,
+                         apertura: str) -> None:
     """Hojas de puerta corredera con traslape y paso de riel."""
     W, H, t = dims
     n_hojas = 3 if sentido == "Doble" else 2
@@ -149,7 +158,7 @@ def _construir_corrediza(fp, dims, pos, sentido, apertura):
     if paso_y <= 0:
         paso_y = t + 4.0
 
-    hojas = []
+    hojas: list[Any] = []
     for i in range(n_hojas):
         hoja = _get_part().makeBox(w_hoja, t, h_hoja)
         # Desfasar en X con traslape y en Y con el paso del riel
@@ -178,7 +187,7 @@ def _construir_corrediza(fp, dims, pos, sentido, apertura):
 class PuertaFeature:
     """Proxy de PuertaFeature para Part::FeaturePython."""
 
-    def __init__(self, obj):
+    def __init__(self, obj: Any) -> None:
         obj.addProperty("App::PropertyEnumeration", "TipoSistema", "Sistema",
                         "Tipo de sistema de puerta").TipoSistema = [
             "Batiente Vertical", "Basculante Horizontal", "Corrediza"]
@@ -225,7 +234,7 @@ class PuertaFeature:
 
         obj.Proxy = self
 
-    def execute(self, fp):
+    def execute(self, fp: Any) -> None:
         """Reconstruir la geometría de la puerta."""
 
         sistema = str(fp.TipoSistema)
@@ -271,7 +280,7 @@ class PuertaFeature:
 # ---------------------------------------------------------------------
 
 
-def make_puerta(doc, configuracion):
+def make_puerta(doc: Any, configuracion: dict[str, Any]) -> Any | None:
     """Crea un PuertaFeature en el documento recibido."""
     if doc is None:
         _get_app().Console.PrintError("[VDO Puerta] No hay documento activo.\n")

@@ -78,7 +78,7 @@ def necesita_bisel_45(sistema_apertura):
     return _clave(sistema_apertura) == APERTURA_45_GRADOS
 
 
-def necesita_cantos_45(sistema_apertura):
+def necesita_cantos_45(sistema_apertura: str) -> bool:
     """Alias de `necesita_bisel_45` para el vocabulario de puertas."""
     return necesita_bisel_45(sistema_apertura)
 

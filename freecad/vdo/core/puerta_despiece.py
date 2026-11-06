@@ -7,6 +7,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from freecad.vdo.core.aperturas import (
     SISTEMAS_APERTURA,
     normalizar_apertura,
@@ -165,7 +167,8 @@ def cazoleta_tecnica():
     }
 
 
-def bisagras_para_puerta(H, tipo_montaje="parche", prefer_sku=None):
+def bisagras_para_puerta(H: float, tipo_montaje: str = "parche",
+                         prefer_sku: str | None = None) -> dict[str, Any]:
     """Resuelve las bisagras y sus posiciones para una puerta batiente.
 
     Consulta Capa H (resolve_hinge) y aplica la regla de altura de taller.
@@ -237,7 +240,7 @@ def piston_recomendado(W, H, n_pistones=NUM_PISTONES):
     return PISTONES_COMERCIALES_N[-1], F
 
 
-def descripcion_piston(W, H):
+def descripcion_piston(W: float, H: float) -> tuple[str, int, float]:
     """Texto legible para la interfaz: '80N (2 unidades)'."""
     comercial, F = piston_recomendado(W, H)
     return f"{comercial}N ({NUM_PISTONES} unidades)", comercial, F
@@ -247,8 +250,8 @@ def descripcion_piston(W, H):
 # C. Puertas Corredizas (Ducasse D-52 / AL-1535)
 # =====================================================================
 
-def calcular_corrediza(inner_w, inner_h, tipo_mueble="closet", n_hojas=2,
-                       prefer_sku=None):
+def calcular_corrediza(inner_w: float, inner_h: float, tipo_mueble: str = "closet",
+                       n_hojas: int = 2, prefer_sku: str | None = None) -> dict[str, Any]:
     """Calcula el despiece de hojas corredizas consumiendo Capa H.
 
     Args:
@@ -290,7 +293,7 @@ def calcular_corrediza(inner_w, inner_h, tipo_mueble="closet", n_hojas=2,
 # Tabla única de sistemas de apertura en core/aperturas (MN-06). Aquí solo se
 # re-exportan los nombres que usan los consumidores.
 
-def ajuste_altura_apertura(tipo_apertura, H):
+def ajuste_altura_apertura(tipo_apertura: str, H: float) -> tuple[float, float]:
     """Devuelve la altura ajustada segun el sistema de apertura.
 
     Consume `aplicar_sistema_apertura` de facade_contract.py.
