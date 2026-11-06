@@ -338,6 +338,44 @@ No iniciadas. M2 está abierta (literales, `MODULE_SPECS`, `LUCIDE_ICONS`, `_CAT
 
 ---
 
+## M10 — verificación final (medida)
+
+Fuentes: `docs/metricas/minimalismo_final.json` (salida de los 7 subcomandos de `minimalismo.py`), comandos indicados en cada fila. Línea base: `docs/metricas/minimalismo_base.json` y §1 del plan. Las cifras de §1 del plan no coinciden exactamente con la herramienta sobre la base (p. ej. plan 88 archivos / 23.920 líneas; `minimalismo_base.json` 85 / 23.608); la comparación usa la base del propio JSON cuando la herramienta la mide, y el plan cuando solo tiene la cifra.
+
+| Cifra de §1 | Línea base | Final medido | Cómo se midió | Meta | ¿Cumple? |
+|---|---|---|---|---|---|
+| Líneas Python en `freecad/vdo/` | 23.920 en 88 (plan); 23.608 en 85 (json) | **25.171 en 145** | `minimalismo.py resumen` | ≥30 % menos | **No** (+6,6 %; archivos 85 → 145 por divisiones) |
+| Líneas por capa | core 8.766 · ui 13.474 · cad 372 · app 518 | core **7.943** · ui **14.374** · cad **2.854** · app **0 (eliminado)** | `resumen` | ui a presentación; app eliminado | **Parcial**: app eliminado; ui no reducido (sube) |
+| Hechos de aperturas en sitios distintos | 5 | **1** (`core/aperturas.py`, `SISTEMAS`) | grep: `"legado"` solo en `aperturas.py`; `APERTURA_LABELS` y `_normalizar_apertura` sin definiciones | 1 | **Sí** |
+| Tablas idénticas duplicadas | 2 pares (`ANCLAJES`) según plan; 9 grupos según json | **1 grupo** (`DIMENSION_POR_EJE` / `_CLAVE_DIMENSION`, dict x/y/z → w/h/d). `ANCLAJES` ahora sale de un mismo JSON en dos asignaciones | `duplicados` | 0 | **No** |
+| `LUCIDE_ICONS` | 2 copias | **1** (`ui/tema.py:206`; `box_constantes` y `chassis_constantes` la importan) | grep | 1 | **Sí** |
+| Catálogo de herrajes duplicado (`_FALLBACK_BISAGRA`, `_FALLBACK_CORREDIZO`) | 2 | **0** definiciones | grep | 0 | **Sí** |
+| `MODULE_SPECS` como código | 162 líneas literales | `core/module_specs.py` de **43** líneas; carga `MODULE_SPECS` con `json.load` | `wc -l` y lectura | datos | **Sí** |
+| Literales de dominio repetidos | 53 usos (4 valores vigilados) | **0** hallazgos | `literales` | 0 | **Sí** |
+| Funciones con ≥ 4 ramas | 16 según plan; 12 según json | **3** (`inspector_arbol._on_tree_item_clicked` 5, `_on_selection_changed` 4; `view_providers.abrir_panel_objeto` 4) | `ramas` | 0 | **No** |
+| Módulos > 600 líneas | 10 según plan | **0** (mayor: `coco_preview2d.py`, 399) | `find`+`wc -l` (`tamano` usa umbral 400: 0) | 0 | **Sí** |
+| Bloques `__all__` de reexportación | 6 según plan | **11** ficheros (ninguno `__init__.py`) | grep `^__all__` | 0 | **No** (aumentan) |
+| `setStyleSheet` | 90 | **2** | grep `--include='*.py'` | tabla de tema | **Parcial** (90 → 2; no a cero) |
+| `QLabel(` | 171 | **123** | grep | especificación | **No** |
+| `addWidget` | 401 | **286** | grep | especificación | **No** |
+| Funciones > 100 líneas | 25 | **0** | AST sobre `freecad/vdo` (script de un solo uso en `/tmp`, no en el repo) | 0 | **Sí** |
+| `ruff check` | 260 | **0** en `freecad/vdo`; **8** en `ruff check .` (raíz completa) | `.venv/bin/ruff check` | 0 en alcance del plan | **Sí** (alcance `freecad/vdo`) |
+
+**Resultado:** las 14 filas de §1 (16 cifras, con estilo y widgets desglosados) están medidas; ninguna queda sin medir. Cumplen su meta 8 (aperturas, LUCIDE, catálogo, `MODULE_SPECS`, literales, módulos > 600, funciones > 100, ruff en `freecad/vdo`). Cumplen parcialmente 2 (capas, `setStyleSheet`). No cumplen 6 (reducción total de líneas, tablas idénticas, funciones de 4+ ramas, bloques `__all__`, `QLabel(`, `addWidget`). El plan exige que cada cifra cumpla su meta o tenga justificación aprobada por el humano: esas justificaciones quedan **pendientes de decisión humana**; esta fase no las da por aprobadas.
+
+Otros indicadores del `resumen`/subcomandos (final vs base json): excepciones tragadas 90 → **1** (`ui/coco_unified_task.py`, módulo); archivos > 400 líneas 17 → **0**; funciones > 60 líneas 68 → **0**; fachadas (módulos solo de reexport) 0 → 0; API pública (núcleo) registrada en `minimalismo_final.json`.
+
+**Pruebas (ejecutadas en esta verificación):**
+- Nivel 1 (`python3 -I tools/run_tests.py`): `RESUMEN ejecutados=291 fallos=0 errores=0 skip=113 no_ejecutado=0`
+- Nivel 2 (`freecadcmd tools/run_tests.py`): `RESUMEN ejecutados=289 fallos=0 errores=0 skip=26 no_ejecutado=0`
+- Nivel 3 (GUI visual): **pendiente** (paso 3 de M10, lo hace el usuario).
+
+**Instalación limpia:** `tools/build_zip.py` genera el zip en `<repo>/dist/` (no hay opción de destino). Se ejecutó, el zip (`VDO-1.1.0.zip`, 172 ficheros) se movió a `/tmp/ola79_build/` y se extrajo en `/tmp/ola79_home/.local/share/FreeCAD/Mod/VDO`. Con `HOME=/tmp/ola79_home freecadcmd -c "import freecad.vdo.commands; print('INSTALL_OK')"`: `INSTALL_OK`, y el módulo cargó desde la ruta temporal. El enlace real `~/.local/share/FreeCAD/Mod/VDO` no se tocó. Efecto colateral: el `dist/VDO-1.1.0.zip` anterior (de 2 de noviembre, ignorado por git) fue sustituido por el build actual.
+
+**Datos:** documentos `.FCStd` en el repo (excluido `.venv`): **0**.
+
+---
+
 ## Abierto
 
 Estado de cada decisión de `DECISIONES_DELEGADAS.md` (fuente vigente; `PENDIENTES_HUMANO.md` lo escribe otra sesión y no se ha tocado):
