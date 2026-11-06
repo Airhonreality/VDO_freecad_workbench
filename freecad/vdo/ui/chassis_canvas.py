@@ -59,11 +59,7 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
 
         # Fondo general del canvas
         rect = self.rect()
-        p.fillRect(rect, QtGui.QColor("#181818"))
-        p.setPen(QtGui.QPen(QtGui.QColor("#262626"), 1))
-        p.drawRoundedRect(rect.adjusted(1, 1, -1, -1), 6, 6)
-
-        # Dimensiones del chasis en el canvas
+        self._pintar_fondo(p, rect)
         margin_x = 20
         margin_top = 16
         margin_bottom = 26  # Espacio para zócalo/patas
@@ -77,10 +73,47 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
         x0 = margin_x
         y0 = margin_top
         T = 12  # Espesor gráfico del tablero en píxeles
+        self._pintar_cavidad(p, x0, y0, w, h, T)
+        self._pintar_base(p, x0, y0, w, h)
+        caras = self._caras
+        enc = self._encuentros
 
-        # -------------------------------------------------------------
-        # 1. Dibujar el Fondo Trasero (Cavidad Interior)
-        # -------------------------------------------------------------
+        color_activa = QtGui.QColor("#2f353d")
+        border_activa = QtGui.QColor("#007acc")
+        color_ausente = QtGui.QColor("#1c1c1c")
+        border_ausente = QtGui.QColor("#444444")
+
+        # Configuración de límites por encuentro
+        # Superior:
+        sup_x1 = x0 if enc["superior_izq"] in ("tapa_domina", "inglete_45") else x0 + T
+        sup_x2 = x0 + w if enc["superior_der"] in ("tapa_domina", "inglete_45") else x0 + w - T
+        sup_y = y0
+
+        # Inferior:
+        inf_x1 = x0 if enc["inferior_izq"] in ("tapa_domina", "inglete_45") else x0 + T
+        inf_x2 = x0 + w if enc["inferior_der"] in ("tapa_domina", "inglete_45") else x0 + w - T
+        inf_y = y0 + h - T
+
+        # Izquierda:
+        izq_y1 = y0 if enc["superior_izq"] in ("lateral_domina", "inglete_45") else y0 + T
+        izq_y2 = y0 + h if enc["inferior_izq"] in ("lateral_domina", "inglete_45") else y0 + h - T
+        izq_x = x0
+
+        # Derecha:
+        der_y1 = y0 if enc["superior_der"] in ("lateral_domina", "inglete_45") else y0 + T
+        der_y2 = y0 + h if enc["inferior_der"] in ("lateral_domina", "inglete_45") else y0 + h - T
+        der_x = x0 + w - T
+        self._pintar_caras_horizontales(p, caras, color_activa, border_activa, color_ausente, border_ausente, sup_x1, sup_x2, sup_y, inf_x1, inf_x2, inf_y, T)
+        self._pintar_caras_verticales(p, caras, color_activa, border_activa, color_ausente, border_ausente, izq_x, izq_y1, izq_y2, der_x, der_y1, der_y2, T)
+        self._pintar_inglete(p, caras, enc, x0, y0, w, h, T)
+        p.end()
+
+    def _pintar_fondo(self, p, rect):
+        p.fillRect(rect, QtGui.QColor("#181818"))
+        p.setPen(QtGui.QPen(QtGui.QColor("#262626"), 1))
+        p.drawRoundedRect(rect.adjusted(1, 1, -1, -1), 6, 6)
+
+    def _pintar_cavidad(self, p, x0, y0, w, h, T):
         cavidad_rect = QtCore.QRectF(x0 + T, y0 + T, w - (2 * T), h - (2 * T))
         p.fillRect(cavidad_rect, QtGui.QColor("#1f1f1f"))
 
@@ -115,6 +148,7 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
             p.drawLine(cavidad_rect.topLeft(), cavidad_rect.bottomRight())
             p.drawLine(cavidad_rect.bottomLeft(), cavidad_rect.topRight())
 
+    def _pintar_base(self, p, x0, y0, w, h):
         # -------------------------------------------------------------
         # 2. Dibujar Estructura de Apoyo Inferior (Base / Anclaje)
         # -------------------------------------------------------------
@@ -162,38 +196,7 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
             p.setPen(QtGui.QColor("#ffaa00"))
             p.drawText(x0 - 25, y0 + 28, "🧗")
 
-        # -------------------------------------------------------------
-        # 3. Dibujar las 4 Caras con Encuentros de Esquina Físicos
-        # -------------------------------------------------------------
-        caras = self._caras
-        enc = self._encuentros
-
-        color_activa = QtGui.QColor("#2f353d")
-        border_activa = QtGui.QColor("#007acc")
-        color_ausente = QtGui.QColor("#1c1c1c")
-        border_ausente = QtGui.QColor("#444444")
-
-        # Configuración de límites por encuentro
-        # Superior:
-        sup_x1 = x0 if enc["superior_izq"] in ("tapa_domina", "inglete_45") else x0 + T
-        sup_x2 = x0 + w if enc["superior_der"] in ("tapa_domina", "inglete_45") else x0 + w - T
-        sup_y = y0
-
-        # Inferior:
-        inf_x1 = x0 if enc["inferior_izq"] in ("tapa_domina", "inglete_45") else x0 + T
-        inf_x2 = x0 + w if enc["inferior_der"] in ("tapa_domina", "inglete_45") else x0 + w - T
-        inf_y = y0 + h - T
-
-        # Izquierda:
-        izq_y1 = y0 if enc["superior_izq"] in ("lateral_domina", "inglete_45") else y0 + T
-        izq_y2 = y0 + h if enc["inferior_izq"] in ("lateral_domina", "inglete_45") else y0 + h - T
-        izq_x = x0
-
-        # Derecha:
-        der_y1 = y0 if enc["superior_der"] in ("lateral_domina", "inglete_45") else y0 + T
-        der_y2 = y0 + h if enc["inferior_der"] in ("lateral_domina", "inglete_45") else y0 + h - T
-        der_x = x0 + w - T
-
+    def _pintar_caras_horizontales(self, p, caras, color_activa, border_activa, color_ausente, border_ausente, sup_x1, sup_x2, sup_y, inf_x1, inf_x2, inf_y, T):
         # A. Cara Superior
         rect_sup = QtCore.QRectF(sup_x1, sup_y, sup_x2 - sup_x1, T)
         if caras["superior"]["activa"]:
@@ -220,6 +223,7 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
             p.setPen(QtGui.QColor("#666666"))
             p.drawText(rect_inf, QtCore.Qt.AlignCenter, "BASE AUSENTE")
 
+    def _pintar_caras_verticales(self, p, caras, color_activa, border_activa, color_ausente, border_ausente, izq_x, izq_y1, izq_y2, der_x, der_y1, der_y2, T):
         # C. Lateral Izquierdo
         rect_izq = QtCore.QRectF(izq_x, izq_y1, T, izq_y2 - izq_y1)
         if caras["izquierda"]["activa"]:
@@ -242,6 +246,7 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
             p.setPen(QtGui.QPen(border_ausente, 1, QtCore.Qt.DashLine))
             p.drawRect(rect_der)
 
+    def _pintar_inglete(self, p, caras, enc, x0, y0, w, h, T):
         # -------------------------------------------------------------
         # 4. Líneas Diagonales de Inglete 45°
         # -------------------------------------------------------------
@@ -262,7 +267,6 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
             p.setPen(pen_inglete)
             p.drawLine(QtCore.QPointF(x0 + w, y0 + h), QtCore.QPointF(x0 + w - T, y0 + h - T))
 
-        p.end()
 
     def mousePressEvent(self, event):
         x = event.pos().x()
