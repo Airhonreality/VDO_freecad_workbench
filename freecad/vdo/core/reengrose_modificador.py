@@ -3,6 +3,8 @@ lectura/escritura en el objeto."""
 
 import json
 import logging
+from collections.abc import Mapping
+from typing import Any, cast
 
 from freecad.vdo.core.reengrose_modelo import (
     _MAPA_MODO_LEGACY,
@@ -42,7 +44,12 @@ class ReengroseModifier:
     de modificador universal.
     """
 
-    def __init__(self, datos=None):
+    bordes: dict[str, BordeConfig]
+    esquinas: dict[str, str] | str
+    fabricacion: str
+    choque_nucleo: str
+
+    def __init__(self, datos: Any = None) -> None:
         datos = normalizar_modificador(datos)
         for clave, valor in datos.items():
             if clave == "bordes":
@@ -53,7 +60,7 @@ class ReengroseModifier:
             else:
                 setattr(self, clave, valor)
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         datos = {clave: getattr(self, clave) for clave in PROPS}
         datos.update({
             "esquinas": self.esquinas,
@@ -67,22 +74,23 @@ class ReengroseModifier:
         })
         return datos
 
-    def to_json(self):
+    def to_json(self) -> str:
         return json.dumps(self.to_dict(), ensure_ascii=False)
 
     @classmethod
-    def from_dict(cls, datos):
+    def from_dict(cls, datos: Any) -> "ReengroseModifier":
         return cls(datos)
 
     @classmethod
-    def from_json(cls, texto):
+    def from_json(cls, texto: str | None) -> "ReengroseModifier":
         if not texto:
             return cls()
         return cls(json.loads(texto))
 
 
-def _normalizar_borde_config(datos, ancho_defecto=70.0,
-                             espesor_defecto=None):
+# Any: datos es un dict de JSON o de UI, o un BordeConfig.
+def _normalizar_borde_config(datos: Any, ancho_defecto: float = 70.0,
+                             espesor_defecto: float | None = None) -> dict[str, Any]:
     if isinstance(datos, BordeConfig):
         datos = datos.to_dict()
     datos = dict(datos or {})
@@ -126,7 +134,8 @@ def _normalizar_borde_config(datos, ancho_defecto=70.0,
     }
 
 
-def _normalizar_bordes(datos, ancho_defecto=70.0, espesor_defecto=None):
+def _normalizar_bordes(datos: Any, ancho_defecto: float = 70.0,
+                       espesor_defecto: float | None = None) -> dict[str, dict[str, Any]]:
     datos = datos or {}
     return {
         borde: _normalizar_borde_config(
@@ -135,10 +144,10 @@ def _normalizar_bordes(datos, ancho_defecto=70.0, espesor_defecto=None):
     }
 
 
-def _bordes_desde_legacy(datos):
+def _bordes_desde_legacy(datos: dict[str, Any]) -> dict[str, dict[str, Any]]:
     ancho = float(datos["ancho"])
     espesor = datos["espesor"]
-    bordes = {
+    bordes: dict[str, dict[str, Any]] = {
         borde: {
             "activo": False, "ancho": ancho,
             "distancia_al_canto": 0.0,
@@ -161,8 +170,9 @@ def _bordes_desde_legacy(datos):
     return bordes
 
 
-def _legacy_desde_bordes(activo, bordes, esquinas, fabricacion,
-                         choque, datos):
+def _legacy_desde_bordes(activo: bool, bordes: dict[str, dict[str, Any]],
+                         esquinas: dict[str, str] | str, fabricacion: str,
+                         choque: str, datos: dict[str, Any]) -> dict[str, Any]:
     activos = [borde for borde in BORDES_2D
                if bordes[borde]["activo"]]
     primero = bordes[activos[0]] if activos else None
@@ -200,7 +210,8 @@ def _legacy_desde_bordes(activo, bordes, esquinas, fabricacion,
     }
 
 
-def _datos_modificador(datos):
+# Any: datos puede ser DTO, objeto, dict, None o envoltorio.
+def _datos_modificador(datos: Any) -> dict[str, Any]:
     """Resuelve el dict del modificador desde DTO, objeto, None o envoltorio."""
     if isinstance(datos, ReengroseDTO):
         datos = datos.to_dict()
@@ -212,10 +223,11 @@ def _datos_modificador(datos):
         raise ReengroseError("El modificador de reengrose debe ser un dict.")
     if "modificador_reengrose" in datos:
         datos = datos["modificador_reengrose"] or {}
-    return datos
+    # cast: tras el isinstance y el envoltorio, mypy pierde el tipo (Any).
+    return cast(dict[str, Any], datos)
 
 
-def _usa_bordes(datos):
+def _usa_bordes(datos: dict[str, Any]) -> bool:
     """Decide si el modificador usa el esquema nuevo (por bordes)."""
     if "usa_bordes" in datos:
         return _a_bool(datos.get("usa_bordes"))
@@ -224,7 +236,7 @@ def _usa_bordes(datos):
         ("bordes", "esquinas", "fabricacion", "choque_nucleo"))
 
 
-def _normalizar_modificador_bordes(datos):
+def _normalizar_modificador_bordes(datos: dict[str, Any]) -> dict[str, Any]:
     """Normaliza el esquema nuevo (por bordes)."""
     activo = _a_bool(datos.get("activo", DEFAULTS["activo"]))
     esquinas = _normalizar_encuentro(
@@ -250,7 +262,7 @@ def _normalizar_modificador_bordes(datos):
     return resultado
 
 
-def _modo_nucleo_legacy(datos):
+def _modo_nucleo_legacy(datos: dict[str, Any]) -> str:
     """Resuelve el comportamiento de choque con núcleo del esquema legacy."""
     if datos.get("comportamiento_choque_nucleo") not in (None, ""):
         return _normalizar_modo_choque(
@@ -259,10 +271,11 @@ def _modo_nucleo_legacy(datos):
     if datos.get("politica_repisa") not in (None, ""):
         return _normalizar_modo_choque(
             datos.get("politica_repisa"), "politica_repisa")
-    return DEFAULTS["comportamiento_choque_nucleo"]
+    # cast: DEFAULTS es dict[str, Any]; este valor es siempre un str.
+    return cast(str, DEFAULTS["comportamiento_choque_nucleo"])
 
 
-def _normalizar_modificador_legacy(datos):
+def _normalizar_modificador_legacy(datos: dict[str, Any]) -> dict[str, Any]:
     """Normaliza el esquema legacy (campos planos)."""
     activo = _a_bool(datos.get("activo", DEFAULTS["activo"]))
     orientacion = _validar_enum(
@@ -292,7 +305,7 @@ def _normalizar_modificador_legacy(datos):
                   DEFAULTS["prioridad_encuentro_tiras"]),
         "prioridad_encuentro_tiras", PRIORIDADES_ENCUENTRO)
 
-    resultado = {
+    resultado: dict[str, Any] = {
         "activo": activo,
         "orientacion": orientacion,
         "ancho": ancho,
@@ -316,24 +329,26 @@ def _normalizar_modificador_legacy(datos):
     return resultado
 
 
-def normalizar_modificador(datos=None):
+# Any: datos es la entrada cruda de UI o JSON, sin tipo fijo.
+def normalizar_modificador(datos: Any = None) -> dict[str, Any]:
     datos = _datos_modificador(datos)
     if _usa_bordes(datos):
         return _normalizar_modificador_bordes(datos)
     return _normalizar_modificador_legacy(datos)
 
 
-def espesor_efectivo(panel_base, modifier):
+def espesor_efectivo(panel_base: Mapping[str, Any], modifier: Any) -> float:
     mod = normalizar_modificador(modifier)
     if mod["espesor"]:
         return float(mod["espesor"])
     return float(panel_base.get("espesor", 0.0))
 
 
-def _normalizar_encuentro(encuentro_esquinas):
+# Any: str global o dict por esquina, sin tipo fijo.
+def _normalizar_encuentro(encuentro_esquinas: Any) -> dict[str, str]:
     """Devuelve dict {esquina: tipo} a partir de un str global o un dict."""
     if isinstance(encuentro_esquinas, dict):
-        resultado = {}
+        resultado: dict[str, str] = {}
         for esquina in ESQUINAS_2D:
             valor = encuentro_esquinas.get(esquina, ENCUENTRO_ESQUINAS_DEFAULT)
             resultado[esquina] = _validar_enum(
@@ -345,7 +360,7 @@ def _normalizar_encuentro(encuentro_esquinas):
     return {esquina: tipo for esquina in ESQUINAS_2D}
 
 
-def _prioridad_legacy_desde_esquinas(esquinas):
+def _prioridad_legacy_desde_esquinas(esquinas: dict[str, str] | str | None) -> str:
     """Deriva el enum legacy ``prioridad_encuentro_tiras`` desde el dict."""
     if isinstance(esquinas, str):
         if esquinas in PRIORIDADES_ENCUENTRO:
@@ -365,9 +380,9 @@ def _prioridad_legacy_desde_esquinas(esquinas):
         ENCUENTRO_ESQUINAS_DEFAULT)
 
 
-def desde_objeto(obj):
+def desde_objeto(obj: Any) -> ReengroseModifier:
     texto = getattr(obj, "VDO_Reengrose_JSON", "") or ""
-    guardado = None
+    guardado: Any = None
     if texto:
         try:
             guardado = json.loads(texto)
@@ -380,7 +395,7 @@ def desde_objeto(obj):
                     ("bordes", "esquinas", "fabricacion",
                      "choque_nucleo"))):
         return ReengroseModifier(guardado)
-    datos = {}
+    datos: dict[str, Any] = {}
     for clave, prop in PROPS.items():
         datos[clave] = getattr(obj, prop, DEFAULTS[clave])
     datos["espesor"] = _a_float(datos.get("espesor"), "espesor")
@@ -389,7 +404,7 @@ def desde_objeto(obj):
     return ReengroseModifier(datos)
 
 
-def aplicar_a_objeto(obj, modifier):
+def aplicar_a_objeto(obj: Any, modifier: Any) -> ReengroseModifier:
     mod = ReengroseModifier(modifier)
     datos = mod.to_dict()
     for clave, prop in PROPS.items():
@@ -401,7 +416,7 @@ def aplicar_a_objeto(obj, modifier):
     return mod
 
 
-def leer_reengroses(obj) -> dict:
+def leer_reengroses(obj: Any) -> dict[str, Any]:
     """Lee el JSON de reengroses almacenado en un objeto (unificado F19.7).
 
     Reemplaza las copias _cargar_reengroses (core) y _leer_reengroses (ui).
