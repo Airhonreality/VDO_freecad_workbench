@@ -264,6 +264,17 @@ class FormBuilder:
         main_layout.addWidget(w)
         return w
 
+    def crear(self, espec, estilos=None):
+        """Crea el campo y devuelve su widget sin colocarlo en ningun layout."""
+        return self._crear_campo_ui(espec, estilos)[1]
+
+    def construir_celda(self, grid, fila, col, espec, estilos=None):
+        """Coloca etiqueta (columna col) y widget (columna col+1) en una rejilla existente."""
+        campo, w = self._crear_campo_ui(espec, estilos)
+        grid.addWidget(QtWidgets.QLabel(campo.etiqueta), fila, col)
+        grid.addWidget(w, fila, col + 1)
+        return campo
+
     def construir_bloques(self, main_layout, bloques, estilos=None, estilo_grupo=None):
         """Construye bloques en orden. (clave, titulo, filas) = grupo; (clave, None, filas) = campo suelto.
 

@@ -27,6 +27,7 @@ from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_TIRADOR,
     CALLE_ENTRE_FRENTES_DEFAULT,
 )
+from freecad.vdo.datos.formularios import COCO_EXPOSICION
 from freecad.vdo.datos.valores import BLUM_TANDEM
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin
@@ -326,15 +327,12 @@ class CocoUnifiedTaskPanel(
             return False
 
     def _asignar_dimensiones(self):
-        for spin in (self.spin_alto, self.spin_ancho,
-                     self.spin_fondo, self.spin_espesor,
-                     self.spin_rotacion):
-            spin.interpretText()
-
-        asignar_propiedades(self.obj, {"Alto": self.spin_alto.value()})
-        asignar_propiedades(self.obj, {"Ancho": self.spin_ancho.value()})
-        asignar_propiedades(self.obj, {"FondoModulo": self.spin_fondo.value()})
-        asignar_propiedades(self.obj, {"Espesor": self.spin_espesor.value()})
+        # Campos simples desde la especificacion COCO_MEDIDAS (D-74).
+        self.form_coco.interpretar_texto()
+        for clave, prop in (("alto", "Alto"), ("ancho", "Ancho"),
+                            ("fondo_modulo", "FondoModulo"),
+                            ("espesor", "Espesor")):
+            asignar_propiedades(self.obj, {prop: self.form_coco.valor(clave)})
 
     def _asignar_chasis(self):
         if hasattr(self, "box_chassis") and self.box_chassis is not None:
@@ -371,16 +369,16 @@ class CocoUnifiedTaskPanel(
                     "[VDO] No se pudo persistir VDO_Chassis_JSON")
 
     def _asignar_anclaje_rotacion(self):
-        anclaje = self.combo_anclaje.currentData()
+        anclaje = self.form_coco.valor("anclaje")
         if anclaje:
             asignar_propiedades(self.obj, {"VDO_Anclaje": anclaje})
-        aplicar_rotacion(self.obj, self.spin_rotacion.value())
+        aplicar_rotacion(self.obj, self.form_coco.valor("rotacion"))
 
     def _guardar_exposicion(self):
         vistos = []
         apoyados = []
-        for lado, combo in self.combos_exposicion.items():
-            estado = combo.currentData()
+        for lado, _espec in COCO_EXPOSICION:
+            estado = self.form_coco.valor(f"exp_{lado}")
             if estado == "visto":
                 vistos.append(lado)
             elif estado == "apoyado":

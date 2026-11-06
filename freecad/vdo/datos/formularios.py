@@ -5,6 +5,7 @@ FormBuilder.construir_grupo convierte en widgets. La fila de índice i ocupa la
 fila i de la rejilla del grupo.
 """
 
+from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core.aperturas import ETIQUETAS
 from freecad.vdo.core.vdo_defaults import ORIENTACIONES_VALIDAS
 from freecad.vdo.core.vdo_finish import CANTOS_VALIDOS
@@ -261,3 +262,56 @@ def cajon_bloques(marcas):
              "items": ITEMS_ANCLAJE},
         )),
     )
+
+
+# --- Panel COCO, campos simples (M6, MN-08, D-74) ---------------------------
+# Solo los campos de valor único (medidas, rotación, anclaje y exposición).
+# La matriz de espacios, la tabla de celdas, el árbol de hijos y el chasis
+# quedan fuera de la especificación (ver D-74).
+
+COCO_ESTADOS_EXPOSICION = (
+    ("Oculto", "oculto"),
+    ("Visto", "visto"),
+    ("Apoyado", "apoyado"),
+)
+
+COCO_MEDIDAS = ("Medidas Generales", (
+    {"tipo": "vdo_double_spin", "clave": "alto", "etiqueta": "Alto (mm):",
+     "valor_defecto": 1.0, "rango": (1, 3000), "decimales": 1, "sufijo": " mm",
+     "tooltip": ("Alto exterior total del mueble, de piso a techo, incluyendo "
+                 "tapa y base.")},
+    {"tipo": "vdo_double_spin", "clave": "ancho", "etiqueta": "Ancho (mm):",
+     "valor_defecto": 1.0, "rango": (1, 3000), "decimales": 1, "sufijo": " mm",
+     "tooltip": "Ancho exterior total del mueble, de lateral a lateral."},
+    {"tipo": "vdo_double_spin", "clave": "fondo_modulo", "etiqueta": "Fondo módulo (mm):",
+     "valor_defecto": 1.0, "rango": (1, 1500), "decimales": 1, "sufijo": " mm",
+     "tooltip": "Profundidad exterior del mueble, desde el frente hasta el fondo."},
+    {"tipo": "spin", "clave": "espesor", "etiqueta": "Espesor (mm):",
+     "valor_defecto": 1, "rango": (1, 50), "sufijo": " mm",
+     "tooltip": "Espesor del tablero de laterales, base, techo y divisiones."},
+))
+
+COCO_ROTACION = {
+    "tipo": "vdo_double_spin", "clave": "rotacion", "etiqueta": "Rotación Z:",
+    "valor_defecto": 0.0, "rango": (-360.0, 360.0), "decimales": 1,
+    "sufijo": " °", "wrapping": True,
+    "tooltip": "Rotación de colocación alrededor de Z. No cambia las medidas del mueble.",
+}
+
+COCO_ANCLAJE = {
+    "tipo": "combo", "clave": "anclaje", "etiqueta": "Anclaje:",
+    "items": ITEMS_ANCLAJE,
+    "tooltip": "Esquina del mueble que se apoya en el punto de colocación.",
+}
+
+COCO_EXPOSICION = tuple(
+    (lado, {"tipo": "combo", "clave": f"exp_{lado}", "etiqueta": f"{etiqueta}:",
+            "items": COCO_ESTADOS_EXPOSICION,
+            "tooltip": ("Visto: cara exterior visible. Apoyado: contra muro/piso. "
+                        "Oculto: sin exposición.")})
+    for lado, etiqueta in (
+        (VDO_FR.FRENTE, "Frente"), (VDO_FR.FONDO, "Fondo"),
+        (VDO_FR.IZQUIERDA, "Izquierda"), (VDO_FR.DERECHA, "Derecha"),
+        (VDO_FR.SUPERIOR, "Superior"), (VDO_FR.INFERIOR, "Inferior"),
+    )
+)

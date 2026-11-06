@@ -8,33 +8,23 @@ from freecad.vdo.cad.propiedades import (
     anadir_propiedad_texto,
     asignar_propiedades,
 )
-from freecad.vdo.core import vdo_frames as VDO_FR
-from freecad.vdo.core.vdo_module_props import ANCLAJE_LABELS, ANCLAJES
+from freecad.vdo.datos.formularios import (
+    COCO_ANCLAJE,
+    COCO_EXPOSICION,
+    COCO_MEDIDAS,
+    COCO_ROTACION,
+)
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
-from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
+from freecad.vdo.ui.vdo_form_builder import FormBuilder
 from freecad.vdo.ui.coco_construccion_widgets import DivisionesEditor
-
-
-LADOS_EXPOSICION = (
-    (VDO_FR.FRENTE, "Frente"),
-    (VDO_FR.FONDO, "Fondo"),
-    (VDO_FR.IZQUIERDA, "Izquierda"),
-    (VDO_FR.DERECHA, "Derecha"),
-    (VDO_FR.SUPERIOR, "Superior"),
-    (VDO_FR.INFERIOR, "Inferior"),
-)
-ESTADOS_EXPOSICION = (
-    ("oculto", "Oculto"),
-    ("visto", "Visto"),
-    ("apoyado", "Apoyado"),
-)
 
 
 class CocoUnifiedConstruccionMixin:
     """Mixin del panel COCO: Construccion de la interfaz del panel COCO."""
 
     def _crear_widget(self):
+        self.form_coco = FormBuilder(parent=self)
         widget = QtWidgets.QWidget()
         main_layout = QtWidgets.QVBoxLayout(widget)
 
@@ -86,62 +76,21 @@ class CocoUnifiedConstruccionMixin:
 
         return widget
     def _crear_grupo_medidas(self, layout_medidas):
-        grupo_medidas = QtWidgets.QGroupBox("Medidas Generales")
-        grid_medidas = QtWidgets.QGridLayout(grupo_medidas)
-
-        grid_medidas.addWidget(QtWidgets.QLabel("Alto (mm):"), 0, 0)
-        self.spin_alto = VDO_DoubleSpinBox()
-        self.spin_alto.setRange(1, 3000)
-        self.spin_alto.setSuffix(" mm")
-        self.spin_alto.setDecimals(1)
-        self.spin_alto.setToolTip(
-            "Alto exterior total del mueble, de piso a techo, incluyendo "
-            "tapa y base.")
-        grid_medidas.addWidget(self.spin_alto, 0, 1)
-
-        grid_medidas.addWidget(QtWidgets.QLabel("Ancho (mm):"), 1, 0)
-        self.spin_ancho = VDO_DoubleSpinBox()
-        self.spin_ancho.setRange(1, 3000)
-        self.spin_ancho.setSuffix(" mm")
-        self.spin_ancho.setDecimals(1)
-        self.spin_ancho.setToolTip(
-            "Ancho exterior total del mueble, de lateral a lateral.")
-        grid_medidas.addWidget(self.spin_ancho, 1, 1)
-
-        grid_medidas.addWidget(QtWidgets.QLabel("Fondo módulo (mm):"), 2, 0)
-        self.spin_fondo = VDO_DoubleSpinBox()
-        self.spin_fondo.setRange(1, 1500)
-        self.spin_fondo.setSuffix(" mm")
-        self.spin_fondo.setDecimals(1)
-        self.spin_fondo.setToolTip(
-            "Profundidad exterior del mueble, desde el frente hasta el fondo.")
-        grid_medidas.addWidget(self.spin_fondo, 2, 1)
-
-        grid_medidas.addWidget(QtWidgets.QLabel("Espesor (mm):"), 3, 0)
-        self.spin_espesor = QtWidgets.QSpinBox()
-        self.spin_espesor.setRange(1, 50)
-        self.spin_espesor.setSuffix(" mm")
-        self.spin_espesor.setToolTip(
-            "Espesor del tablero de laterales, base, techo y divisiones.")
-        grid_medidas.addWidget(self.spin_espesor, 3, 1)
-
-        layout_medidas.addWidget(grupo_medidas)
+        titulo, filas = COCO_MEDIDAS
+        self.form_coco.construir_grupo(layout_medidas, titulo, filas)
+        self.spin_alto = self.form_coco.widget("alto")
+        self.spin_ancho = self.form_coco.widget("ancho")
+        self.spin_fondo = self.form_coco.widget("fondo_modulo")
+        self.spin_espesor = self.form_coco.widget("espesor")
 
     def _crear_grupo_coloc(self, layout_medidas):
         # --- Colocación (pose, no geometría) ---
         grupo_coloc = QtWidgets.QGroupBox("Colocación")
         grid_coloc = QtWidgets.QGridLayout(grupo_coloc)
 
-        grid_coloc.addWidget(QtWidgets.QLabel("Rotación Z:"), 0, 0)
+        grid_coloc.addWidget(QtWidgets.QLabel(COCO_ROTACION["etiqueta"]), 0, 0)
         layout_rot = QtWidgets.QHBoxLayout()
-        self.spin_rotacion = VDO_DoubleSpinBox()
-        self.spin_rotacion.setRange(-360.0, 360.0)
-        self.spin_rotacion.setDecimals(1)
-        self.spin_rotacion.setSuffix(" °")
-        self.spin_rotacion.setWrapping(True)
-        self.spin_rotacion.setToolTip(
-            "Rotación de colocación alrededor de Z. No cambia las medidas "
-            "del mueble.")
+        self.spin_rotacion = self.form_coco.crear(COCO_ROTACION)
         layout_rot.addWidget(self.spin_rotacion)
         btn_rot_menos = QtWidgets.QPushButton("-90°")
         btn_rot_menos.setMaximumWidth(50)
@@ -161,14 +110,8 @@ class CocoUnifiedConstruccionMixin:
         layout_rot.addWidget(btn_rot_mas)
         grid_coloc.addLayout(layout_rot, 0, 1)
 
-        grid_coloc.addWidget(QtWidgets.QLabel("Anclaje:"), 1, 0)
-        self.combo_anclaje = QtWidgets.QComboBox()
-        for anclaje in ANCLAJES:
-            self.combo_anclaje.addItem(
-                ANCLAJE_LABELS.get(anclaje, anclaje), anclaje)
-        self.combo_anclaje.setToolTip(
-            "Esquina del mueble que se apoya en el punto de colocación.")
-        grid_coloc.addWidget(self.combo_anclaje, 1, 1)
+        self.form_coco.construir_celda(grid_coloc, 1, 0, COCO_ANCLAJE)
+        self.combo_anclaje = self.form_coco.widget("anclaje")
 
         layout_medidas.addWidget(grupo_coloc)
 
@@ -176,18 +119,11 @@ class CocoUnifiedConstruccionMixin:
         grupo_exp = QtWidgets.QGroupBox("Exposición")
         grid_exp = QtWidgets.QGridLayout(grupo_exp)
         self.combos_exposicion = {}
-        for i, (lado, label) in enumerate(LADOS_EXPOSICION):
+        for i, (lado, espec) in enumerate(COCO_EXPOSICION):
             fila = i // 2
             col = (i % 2) * 2
-            grid_exp.addWidget(QtWidgets.QLabel(f"{label}:"), fila, col)
-            combo = QtWidgets.QComboBox()
-            for codigo, texto in ESTADOS_EXPOSICION:
-                combo.addItem(texto, codigo)
-            combo.setToolTip(
-                "Visto: cara exterior visible. Apoyado: contra muro/piso. "
-                "Oculto: sin exposición.")
-            self.combos_exposicion[lado] = combo
-            grid_exp.addWidget(combo, fila, col + 1)
+            self.form_coco.construir_celda(grid_exp, fila, col, espec)
+            self.combos_exposicion[lado] = self.form_coco.widget(espec["clave"])
         layout_medidas.addWidget(grupo_exp)
 
     def _crear_contenido_estructura(self, tab_estructura):
