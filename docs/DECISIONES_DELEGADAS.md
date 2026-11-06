@@ -509,3 +509,8 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 
 - **D-48:** M7 core/vdo_coco_spaces partido por concepto, sin reexportaciones (P6). Golden de formas OCC verificado solo en nivel 2.
 - Decisión de implementación: el modelo de caja y la clave de pieza (`_clave_pieza`, `_modificador`, `_caja_pieza`, `_ejes_pieza`, `_caja_dict`, `_fusionar_caja`, `_modo_obstaculo`, `_corte_expandido`, `_huella_caja`, `_agregar_interrupcion`, `_modo_efectivo`) van a `core/espacios_cajas.py`, sin cambios de código. La raíz `core/vdo_coco_spaces.py` (379 líneas) conserva choques, tiras y `planificar_divisiones_matriz`, e importa solo los nombres que usa. Ningún consumidor externo usa esos nombres, así que no cambia ningún import; `tools/auditoria/golden.py` no necesita cambios porque el golden solo busca `generar_divisiones_matriz`, que sigue en `cad/coco_espacios.py`. Sin ciclos nuevos; `core->cad` sigue en 0. Revertir: `git revert` del commit de esta ola.
+
+## D-49
+
+- **D-49:** M7 cad/cajon partido por concepto. Verificación visual pendiente (M10).
+- Decisión de implementación: los helpers geométricos puros (`_box`, `_cilindro`, `_aplicar_corte`, `_corte_notch_lateral`, `_corte_pin_trasero`, `_corte_ranura_piso`, `_aplicar_bisel_45_fachada`) van a `cad/cajon_geometria.py`, sin cambios de código. La raíz `cad/cajon.py` (396 líneas) conserva `CajonFeature` y `make_cajon`, así que la ruta `factory` de `datos/modulos.json` y el golden de `module_specs` no cambian. Sin reexportaciones (P6): `tests/test_cajon_core.py` importa los helpers desde `cad/cajon_geometria`. Sin ciclos nuevos.

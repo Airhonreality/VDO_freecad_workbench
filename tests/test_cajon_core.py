@@ -42,7 +42,7 @@ from freecad.vdo.cad.cajon import (
 from freecad.vdo.cad.cajon import (
     CORREDERA_TELESCOPICA as CC_TEL,
 )
-from freecad.vdo.cad.cajon import (
+from freecad.vdo.cad.cajon_geometria import (
     _aplicar_bisel_45_fachada,
     _aplicar_corte,
     _corte_notch_lateral,
