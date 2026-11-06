@@ -1,0 +1,223 @@
+"""Cabecera del inspector: migas de pan y micro-cabecera de dimensiones."""
+
+import os
+if os.environ.get("QT_QPA_PLATFORM") is None:
+    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui.vdo_selection_bridge import VDOSelectionBridge
+from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
+from freecad.vdo.ui.inspector_paginas import PAGE_CHASIS, PAGE_CIERRE, PAGE_PIEZA, PAGE_VANO
+
+
+# tipo de destino -> (ruta del breadcrumb, clave activa)
+_RUTA_BREADCRUMB_DEFECTO = ((("Mueble", "mueble"),), "mueble")
+_RUTA_BREADCRUMB_POR_TARGET = {
+    VDOSelectionBridge.TARGET_COCO: (
+        (("Mueble", "mueble"), ("Chasis L2", "chasis")), "chasis"),
+    getattr(VDOSelectionBridge, "TARGET_VANO", "VANO"): (
+        (("Mueble", "mueble"), ("Vano L0", "vano")), "vano"),
+    "VANO": (
+        (("Mueble", "mueble"), ("Vano L0", "vano")), "vano"),
+    VDOSelectionBridge.TARGET_PANEL: (
+        (("Mueble", "mueble"), ("Pieza L1", "pieza")), "pieza"),
+    VDOSelectionBridge.TARGET_CAJON: (
+        (("Mueble", "mueble"), ("Cierre / Herraje", "cierre")), "cierre"),
+    VDOSelectionBridge.TARGET_PUERTA: (
+        (("Mueble", "mueble"), ("Cierre / Herraje", "cierre")), "cierre"),
+    VDOSelectionBridge.TARGET_ZOCALO: (
+        (("Mueble", "mueble"), ("Cierre / Herraje", "cierre")), "cierre"),
+}
+# clave del breadcrumb -> (pagina, tipo de destino) para _ir_a_nivel
+_CLAVE_BREADCRUMB_A_NIVEL = {
+    "mueble": (PAGE_CHASIS, VDOSelectionBridge.TARGET_COCO),
+    "chasis": (PAGE_CHASIS, VDOSelectionBridge.TARGET_COCO),
+    "vano": (PAGE_VANO, getattr(VDOSelectionBridge, "TARGET_VANO", "VANO")),
+    "pieza": (PAGE_PIEZA, VDOSelectionBridge.TARGET_PANEL),
+    "cierre": (PAGE_CIERRE, VDOSelectionBridge.TARGET_CAJON),
+}
+
+
+# ----------------------------------------------------------------------
+# Barra de Migas de Pan (Breadcrumbs)
+# ----------------------------------------------------------------------
+class _BreadcrumbBar(QtWidgets.QWidget):
+    """Barra superior con eslabones interactivos para regresar a un nivel."""
+
+    sigNivelClickeado = QtCore.Signal(str)  # emite el nombre del nivel
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setObjectName("VDOBreadcrumbBar")
+        self.setFixedHeight(30)
+        self._niveles = []
+        self._nivel_activo = None
+
+        self.layout = QtWidgets.QHBoxLayout(self)
+        self.layout.setContentsMargins(8, 2, 8, 2)
+        self.layout.setSpacing(4)
+
+        self.lbl_inicio = QtWidgets.QLabel("🏠 Mueble")
+        self.lbl_inicio.setObjectName("lblBreadcrumbRoot")
+        self.lbl_inicio.setCursor(QtCore.Qt.PointingHandCursor)
+        self.lbl_inicio.setStyleSheet(
+            "QLabel#lblBreadcrumbRoot { color: #007acc; font-weight: bold; font-size: 11px; }")
+        self.lbl_inicio.mousePressEvent = lambda _e: self.sigNivelClickeado.emit("mueble")
+        self.layout.addWidget(self.lbl_inicio)
+
+        self.layout.addStretch()
+
+    def set_ruta(self, niveles, activo=None):
+        """niveles: lista de (label, clave). Activo: clave del nivel actual."""
+        while self.layout.count() > 2:
+            item = self.layout.takeAt(1)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+
+        self._niveles = list(niveles)
+        self._nivel_activo = activo
+
+        for label, clave in niveles:
+            sep = QtWidgets.QLabel(" › ")
+            sep.setStyleSheet("color: #666666; font-size: 10px;")
+            self.layout.insertWidget(self.layout.count() - 1, sep)
+
+            lbl = QtWidgets.QLabel(label)
+            lbl.setObjectName(f"lblBreadcrumb_{clave}")
+            lbl.setCursor(QtCore.Qt.PointingHandCursor)
+            activo_es = (clave == activo)
+            lbl.setStyleSheet(
+                f"QLabel#lblBreadcrumb_{clave} {{ "
+                f"color: {'#ffffff' if activo_es else '#aaaaaa'}; "
+                f"font-weight: {'bold' if activo_es else 'normal'}; "
+                f"font-size: 10px; }}"
+            )
+            lbl.mousePressEvent = (
+                lambda _e, c=clave: self.sigNivelClickeado.emit(c))
+            self.layout.insertWidget(self.layout.count() - 1, lbl)
+
+    def limpiar(self):
+        self.set_ruta([], activo=None)
+
+
+# ----------------------------------------------------------------------
+# Micro-Header Editable de Alta Densidad
+# ----------------------------------------------------------------------
+class _MicroHeaderWidget(QtWidgets.QFrame):
+    """
+    Micro-Header editable de una sola línea según la Ley de Tufte:
+    📐 [ 600 W ] × [ 720 H ] × [ 580 D ] mm  │  Esp: [ 18 ] mm
+    """
+
+    sigDimensionesCambiadas = QtCore.Signal(float, float, float, float)  # (w, h, d, e)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setObjectName("VDOMicroHeader")
+        self.setFixedHeight(30)
+        self.setStyleSheet("""
+            QFrame#VDOMicroHeader {
+                background-color: #1e1e1e;
+                border-top: 1px solid #2d2d2d;
+                border-bottom: 1px solid #2d2d2d;
+                padding: 1px 4px;
+            }
+            QLabel {
+                color: #888888;
+                font-size: 10px;
+                font-weight: bold;
+            }
+            QDoubleSpinBox {
+                background-color: #282828;
+                color: #00d4ff;
+                border: 1px solid #3d3d3d;
+                border-radius: 3px;
+                padding: 1px 2px;
+                font-size: 10px;
+                font-weight: bold;
+            }
+            QDoubleSpinBox:focus {
+                border-color: #007acc;
+                background-color: #333333;
+            }
+        """)
+
+        layout = QtWidgets.QHBoxLayout(self)
+        layout.setContentsMargins(6, 2, 6, 2)
+        layout.setSpacing(4)
+
+        icon_lbl = QtWidgets.QLabel("📐")
+        icon_lbl.setStyleSheet("font-size: 11px;")
+        layout.addWidget(icon_lbl)
+
+        # Ancho (W)
+        self.spin_w = VDO_DoubleSpinBox()
+        self.spin_w.setDecimals(1)
+        self.spin_w.setRange(50.0, 5000.0)
+        self.spin_w.setValue(600.0)
+        self.spin_w.setSuffix(" W")
+        self.spin_w.setFixedWidth(64)
+        layout.addWidget(self.spin_w)
+
+        layout.addWidget(QtWidgets.QLabel("×"))
+
+        # Alto (H)
+        self.spin_h = VDO_DoubleSpinBox()
+        self.spin_h.setDecimals(1)
+        self.spin_h.setRange(50.0, 5000.0)
+        self.spin_h.setValue(720.0)
+        self.spin_h.setSuffix(" H")
+        self.spin_h.setFixedWidth(64)
+        layout.addWidget(self.spin_h)
+
+        layout.addWidget(QtWidgets.QLabel("×"))
+
+        # Fondo (D)
+        self.spin_d = VDO_DoubleSpinBox()
+        self.spin_d.setDecimals(1)
+        self.spin_d.setRange(50.0, 5000.0)
+        self.spin_d.setValue(580.0)
+        self.spin_d.setSuffix(" D")
+        self.spin_d.setFixedWidth(64)
+        layout.addWidget(self.spin_d)
+
+        lbl_sep = QtWidgets.QLabel("mm │ Esp:")
+        layout.addWidget(lbl_sep)
+
+        # Espesor (E)
+        self.spin_e = VDO_DoubleSpinBox()
+        self.spin_e.setDecimals(1)
+        self.spin_e.setRange(3.0, 100.0)
+        self.spin_e.setValue(18.0)
+        self.spin_e.setSuffix(" mm")
+        self.spin_e.setFixedWidth(60)
+        layout.addWidget(self.spin_e)
+
+        layout.addStretch()
+
+        self._bloqueo_signals = False
+        self.spin_w.editingFinished.connect(self._on_edited)
+        self.spin_h.editingFinished.connect(self._on_edited)
+        self.spin_d.editingFinished.connect(self._on_edited)
+        self.spin_e.editingFinished.connect(self._on_edited)
+
+    def cargar_dimensiones(self, w, h, d, e):
+        self._bloqueo_signals = True
+        if w is not None and w > 0:
+            self.spin_w.setValue(float(w))
+        if h is not None and h > 0:
+            self.spin_h.setValue(float(h))
+        if d is not None and d > 0:
+            self.spin_d.setValue(float(d))
+        if e is not None and e > 0:
+            self.spin_e.setValue(float(e))
+        self._bloqueo_signals = False
+
+    def _on_edited(self):
+        if self._bloqueo_signals:
+            return
+        w = float(self.spin_w.value())
+        h = float(self.spin_h.value())
+        d = float(self.spin_d.value())
+        e = float(self.spin_e.value())
+        self.sigDimensionesCambiadas.emit(w, h, d, e)
