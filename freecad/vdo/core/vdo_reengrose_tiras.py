@@ -137,35 +137,8 @@ _REGLAS_ESQUINA = {
 }
 
 
-def generar_tiras_perimetrales(largo_tablero, ancho_tablero, bordes,
-                               espesor_madre,
-                               encuentro_esquinas=ENCUENTRO_ESQUINAS_DEFAULT):
-    """Primitiva perimetral 2D con lenguaje limpio de taller.
-
-    Coordenadas del tablero: x = largo (0..largo_tablero),
-    y = ancho/profundidad (0..ancho_tablero).
-
-    Cada borde acepta:
-      - ``distancia_al_canto``: separacion desde el canto hacia adentro.
-      - ``largo_tira``: ``marco_interior`` o ``punta_a_punta``.
-      - ``encuentro_esquinas``: ``vertical_domina``,
-        ``horizontal_domina``, ``inglete_45`` o ``marco_interior``.
-        Puede ser un str (aplica a las 4 esquinas) o un dict por esquina.
-
-    Reglas de esquina (el tipo de esquina manda sobre el recorte final):
-      - vertical_domina: el borde vertical (izq/der) llega al canto; el
-        horizontal hace tope.
-      - horizontal_domina: el borde horizontal (frente/fondo) llega al
-        canto; el vertical hace tope.
-      - marco_interior: ninguno llega al canto exterior; hueco en la esquina.
-      - inglete_45: ambos llegan al canto con corte a 45° (miter).
-    """
-    largo = float(largo_tablero)
-    ancho = float(ancho_tablero)
-    if largo <= 0 or ancho <= 0:
-        return []
-    encuentro_por_esquina = _normalizar_encuentro(encuentro_esquinas)
-
+def _config_bordes(bordes, espesor_madre, largo, ancho):
+    """Normaliza la configuración de cada borde (activo, ancho, distancia, espesor)."""
     cfgs = {}
     for borde in BORDES_2D:
         cfg = _normalizar_borde_config(
@@ -184,24 +157,25 @@ def generar_tiras_perimetrales(largo_tablero, ancho_tablero, bordes,
             "largo_tira": cfg["largo_tira"],
             "espesor": float(esp),
         }
+    return cfgs
 
-    activos = {b for b in BORDES_2D if cfgs[b]["activo"]}
-    if not activos:
-        return []
 
-    # Caja interior definida por los bordes y su distancia al canto.
+def _caja_interior(cfgs, largo, ancho):
+    """Caja interior definida por los bordes y su distancia al canto."""
     x0_box = cfgs["izquierda"]["distancia"] if "izquierda" in cfgs else 0.0
     x1_box = largo - (cfgs["derecha"]["distancia"] if "derecha" in cfgs else 0.0)
     y0_box = cfgs["frente"]["distancia"] if "frente" in cfgs else 0.0
     y1_box = ancho - (cfgs["fondo"]["distancia"] if "fondo" in cfgs else 0.0)
+    return {"x0": x0_box, "x1": x1_box, "y0": y0_box, "y1": y1_box}
 
-    caja = {"x0": x0_box, "x1": x1_box, "y0": y0_box, "y1": y1_box}
+
+def _ancho_efectivo(cfgs, borde):
+    return max(0.0, cfgs[borde]["ancho"])
+
+
+def _largos_con_topes(cfgs, caja, activos, encuentro_por_esquina, largo, ancho):
+    """Rango largo por borde según largo_tira, con topes de esquina."""
     dimension = {"x": largo, "y": ancho}
-
-    def wd(borde):
-        return max(0.0, cfgs[borde]["ancho"])
-
-    # Rango largo base por borde segun largo_tira: [inicio, fin].
     largos = {}
     for borde in BORDES_2D:
         es_punta = cfgs[borde]["largo_tira"] == "punta_a_punta"
@@ -218,9 +192,13 @@ def generar_tiras_perimetrales(largo_tablero, ancho_tablero, bordes,
         reglas = _REGLAS_ESQUINA[esquina].get(
             encuentro_por_esquina[esquina], ())
         for borde, extremo, limite, clave, operar, borde_ancho in reglas:
-            valor = operar(caja[clave], wd(borde_ancho))
+            valor = operar(caja[clave], _ancho_efectivo(cfgs, borde_ancho))
             largos[borde][extremo] = limite(largos[borde][extremo], valor)
+    return largos
 
+
+def _rectangulos(largos, cfgs, largo, ancho):
+    """Rectángulo 2D de cada borde a partir de su rango largo y corto."""
     def sane(x0, x1):
         if x1 < x0:
             x1 = x0
@@ -230,12 +208,17 @@ def generar_tiras_perimetrales(largo_tablero, ancho_tablero, bordes,
     for borde in BORDES_2D:
         largo0, largo1 = sane(*largos[borde])
         corto0, corto1 = _RANGO_CORTO_POR_BORDE[borde](
-            cfgs[borde]["distancia"], wd(borde), largo, ancho)
+            cfgs[borde]["distancia"], _ancho_efectivo(cfgs, borde),
+            largo, ancho)
         if _EJE_RANGO_LARGO[borde] == "x":
             rects[borde] = [largo0, corto0, largo1, corto1]
         else:
             rects[borde] = [corto0, largo0, corto1, largo1]
+    return rects
 
+
+def _poligonos_bordes(rects, activos, encuentro_por_esquina, largo, ancho):
+    """Polígono de cada borde activo, con inglete 45° donde corresponde."""
     poligonos = {}
     for borde in activos:
         x0, y0, x1, y1 = rects[borde]
@@ -251,7 +234,11 @@ def generar_tiras_perimetrales(largo_tablero, ancho_tablero, bordes,
         if borde_h not in activos or borde_v not in activos:
             continue
         _inglete_clip(poligonos, rects, esquina, borde_h, borde_v, largo, ancho)
+    return poligonos
 
+
+def _tiras_desde_poligonos(poligonos, activos, encuentro_por_esquina, cfgs):
+    """Tiras (dict) a partir de los polígonos finales de cada borde."""
     tiras = []
     for borde in BORDES_2D:
         if borde not in activos:
@@ -293,6 +280,48 @@ def generar_tiras_perimetrales(largo_tablero, ancho_tablero, bordes,
             tira["esquinas"] = "inglete_45"
         tiras.append(tira)
     return tiras
+
+
+def generar_tiras_perimetrales(largo_tablero, ancho_tablero, bordes,
+                               espesor_madre,
+                               encuentro_esquinas=ENCUENTRO_ESQUINAS_DEFAULT):
+    """Primitiva perimetral 2D con lenguaje limpio de taller.
+
+    Coordenadas del tablero: x = largo (0..largo_tablero),
+    y = ancho/profundidad (0..ancho_tablero).
+
+    Cada borde acepta:
+      - ``distancia_al_canto``: separacion desde el canto hacia adentro.
+      - ``largo_tira``: ``marco_interior`` o ``punta_a_punta``.
+      - ``encuentro_esquinas``: ``vertical_domina``,
+        ``horizontal_domina``, ``inglete_45`` o ``marco_interior``.
+        Puede ser un str (aplica a las 4 esquinas) o un dict por esquina.
+
+    Reglas de esquina (el tipo de esquina manda sobre el recorte final):
+      - vertical_domina: el borde vertical (izq/der) llega al canto; el
+        horizontal hace tope.
+      - horizontal_domina: el borde horizontal (frente/fondo) llega al
+        canto; el vertical hace tope.
+      - marco_interior: ninguno llega al canto exterior; hueco en la esquina.
+      - inglete_45: ambos llegan al canto con corte a 45° (miter).
+    """
+    largo = float(largo_tablero)
+    ancho = float(ancho_tablero)
+    if largo <= 0 or ancho <= 0:
+        return []
+    encuentro_por_esquina = _normalizar_encuentro(encuentro_esquinas)
+    cfgs = _config_bordes(bordes, espesor_madre, largo, ancho)
+    activos = {b for b in BORDES_2D if cfgs[b]["activo"]}
+    if not activos:
+        return []
+    caja = _caja_interior(cfgs, largo, ancho)
+    largos = _largos_con_topes(cfgs, caja, activos, encuentro_por_esquina,
+                               largo, ancho)
+    rects = _rectangulos(largos, cfgs, largo, ancho)
+    poligonos = _poligonos_bordes(rects, activos, encuentro_por_esquina,
+                                  largo, ancho)
+    return _tiras_desde_poligonos(poligonos, activos, encuentro_por_esquina,
+                                  cfgs)
 
 
 def generar_geometria_tiras_perimetrales(ancho_tablero, largo_tablero,
