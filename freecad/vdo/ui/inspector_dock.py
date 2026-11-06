@@ -6,13 +6,18 @@
 # Inspector Universal Consolidado en el panel lateral de FreeCAD.
 # =====================================================================
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import os
 
 import FreeCAD as App
 
 try:
     import FreeCADGui as Gui
-except ImportError:  # pragma: no cover
+except ImportError as exc:  # pragma: no cover
+    _LOG.debug("inspector_dock: Gui no disponible: %s", exc)
     Gui = None
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets

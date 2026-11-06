@@ -13,23 +13,30 @@
 # Sincronización bidireccional total entre 3D, 2D, Árbol y Páginas.
 # =====================================================================
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import json
 import FreeCAD as App
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 try:
     import FreeCADGui as Gui
-except ImportError:  # pragma: no cover
+except ImportError as exc:  # pragma: no cover
+    _LOG.debug("universal_inspector: Gui no disponible: %s", exc)
     Gui = None
 from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
 try:
     from freecad.vdo.ui.coco_preview2d import CocoPreview2D
-except ImportError:  # pragma: no cover
+except ImportError as exc:  # pragma: no cover
+    _LOG.debug("universal_inspector: CocoPreview2D no disponible: %s", exc)
     CocoPreview2D = None
 try:
     from freecad.vdo.core.layout_matriz import Layout
     from freecad.vdo.core.layout_modelo import cavidad_interior
     from freecad.vdo.core.layout_resolucion import resolve_layout
-except ImportError:  # pragma: no cover
+except ImportError as exc:  # pragma: no cover
+    _LOG.debug("universal_inspector: Layout no disponible: %s", exc)
     Layout = None
     resolve_layout = None
     cavidad_interior = None

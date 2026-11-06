@@ -6,6 +6,10 @@
 # Fase 3: Mapping drag 3D → parámetros
 # =====================================================================
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import math
 
 import FreeCAD as App
@@ -162,7 +166,8 @@ class DragableViewProvider(VDOViewProviderBase):
             alto = float(fp.Alto)
             ancho = float(fp.Ancho)
             fondo = float(fp.FondoModulo)
-        except (AttributeError, TypeError):
+        except (AttributeError, TypeError) as exc:
+            _LOG.debug("drag_handles: posicion de handles no actualizada: %s", exc)
             return
 
         # Actualizar posiciones

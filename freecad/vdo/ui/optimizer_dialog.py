@@ -158,6 +158,7 @@ class OptimizerDialog(QtWidgets.QDialog):
         try:
             parts = core.read_cutting_csv(path)
         except Exception as e:
+            App.Console.PrintWarning(f"[VDO] optimizer_dialog: CSV no leido: {e}\n")
             self.lbl_csv.setText(f"✖ {e}")
             return
         if not parts:
@@ -199,6 +200,7 @@ class OptimizerDialog(QtWidgets.QDialog):
                 margin=float(self.spin_margin.value()),
                 allow_rotation=self.chk_rotate.isChecked())
         except Exception as e:
+            App.Console.PrintError(f"[VDO] optimizer_dialog: error en optimizacion: {e}\n")
             import traceback
             traceback.print_exc()
             QtWidgets.QMessageBox.critical(self, "Error", str(e))

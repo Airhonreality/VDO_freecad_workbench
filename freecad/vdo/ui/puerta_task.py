@@ -187,7 +187,8 @@ class PuertaTaskPanel(PuertaTaskConstruccionMixin, VDOTransactionMixin):
                     f"Descuento alto hoja: {tecnicos['descuento_altura_hoja']} mm  ·  "
                     f"Traslape: {tecnicos['traslape_minimo']} mm")
             self.lbl_herraje_info.setText(" · ".join(lineas))
-        except KeyError:
+        except KeyError as exc:
+            App.Console.PrintWarning(f"[VDO] puerta_task: SKU de herraje no encontrado: {exc}\n")
             self.lbl_herraje_info.setText(f"SKU {sku} no encontrado en el catálogo.")
 
     def _actualizar_piston(self):
@@ -202,6 +203,7 @@ class PuertaTaskPanel(PuertaTaskConstruccionMixin, VDOTransactionMixin):
                 f"💡 Recomendación: Pistón a Gas de {comercial}N  "
                 f"(fuerza teórica: {F:.0f} N)")
         except Exception as e:
+            App.Console.PrintWarning(f"[VDO] puerta_task: pistón no calculado: {e}\n")
             self.lbl_piston.setText(f"Error calculando pistón: {e}")
 
     # -----------------------------------------------------------------

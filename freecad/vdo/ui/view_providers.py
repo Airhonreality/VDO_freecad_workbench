@@ -4,6 +4,10 @@ Movido desde core/ (D24): un ViewProvider es código de GUI de FreeCAD. El motor
 por el registro (core/vdo_ui_registry.py) y no lo importa.
 """
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import os
 
 import FreeCAD as App
@@ -22,7 +26,8 @@ def _gui():
     try:
         import FreeCADGui
         return FreeCADGui
-    except ImportError:
+    except ImportError as exc:
+        _LOG.debug("view_providers: FreeCADGui no disponible: %s", exc)
         return None
 
 

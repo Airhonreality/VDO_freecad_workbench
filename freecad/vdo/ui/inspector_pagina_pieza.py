@@ -1,11 +1,16 @@
 """Pagina de pieza del inspector: cabecera de panel y caja."""
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import json
 import FreeCAD as App
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 try:
     from freecad.vdo.ui.box_controller import VDOBoxControllerWidget
-except ImportError:  # pragma: no cover
+except ImportError as exc:  # pragma: no cover
+    _LOG.debug("inspector_pagina_pieza: controlador no disponible: %s", exc)
     VDOBoxControllerWidget = None
 from freecad.vdo.cad.documento import recalcular
 from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades

@@ -13,6 +13,10 @@ Draft (verificados en la instalación 1.1.3) obligan a este diseño:
 Sin GUI, o sin Draft, no hace nada.
 """
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import FreeCAD as App
 
 from freecad.vdo.qt_compat import QtCore
@@ -33,7 +37,8 @@ def mostrar_plano_cero(reintentos=_REINTENTOS):
     """
     try:
         import FreeCADGui as Gui
-    except ImportError:
+    except ImportError as exc:
+        _LOG.debug("plano_cero: Gui no disponible: %s", exc)
         return False
     if not getattr(App, "GuiUp", False):
         return False

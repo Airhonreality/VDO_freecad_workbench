@@ -1,12 +1,17 @@
 """Acciones de navegacion y edicion del inspector (migas, dimensiones, habitantes)."""
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import json
 import FreeCAD as App
 try:
     from freecad.vdo.core.layout_matriz import Layout
     from freecad.vdo.core.layout_modelo import cavidad_interior
     from freecad.vdo.core.layout_resolucion import resolve_layout
-except ImportError:  # pragma: no cover
+except ImportError as exc:  # pragma: no cover
+    _LOG.debug("inspector_acciones: Layout no disponible: %s", exc)
     Layout = None
     resolve_layout = None
     cavidad_interior = None
@@ -57,7 +62,8 @@ class AccionesInspectorMixin:
                 if hasattr(obj, "Espesor"):
                     try:
                         asignar_propiedades(obj, {"Espesor": e})
-                    except TypeError:
+                    except TypeError as exc:
+                        _LOG.debug("inspector_acciones: espesor asignado con firma alternativa: %s", exc)
                         asignar_propiedades(obj, {"Espesor": round(e)})
                 doc = getattr(obj, "Document", None)
                 if doc is not None:

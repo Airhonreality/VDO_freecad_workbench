@@ -1,12 +1,17 @@
 """Paginas de detalle del inspector: constantes de pagina, base, chasis y cierre."""
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import json
 import FreeCAD as App
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
 try:
     from freecad.vdo.ui.chassis_widget import VDOChassisControllerWidget
-except ImportError:  # pragma: no cover
+except ImportError as exc:  # pragma: no cover
+    _LOG.debug("inspector_paginas: controlador de chasis no disponible: %s", exc)
     VDOChassisControllerWidget = None
 from freecad.vdo.cad.documento import recalcular
 from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades

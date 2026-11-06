@@ -10,6 +10,10 @@
 # nunca "salta" al centro del modelo. El clic deposita; Esc cancela.
 # =====================================================================
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import FreeCAD as App
 
 from freecad.vdo.cad.colocacion import (
@@ -19,12 +23,14 @@ from freecad.vdo.cad.colocacion import (
 
 try:
     import FreeCADGui as Gui
-except ImportError:  # FreeCADCmd
+except ImportError as exc:  # FreeCADCmd
+    _LOG.debug("placement: Gui no disponible (FreeCADCmd): %s", exc)
     Gui = None
 
 try:
     from pivy import coin
-except ImportError:
+except ImportError as exc:
+    _LOG.debug("placement: coin no disponible: %s", exc)
     coin = None
 
 
@@ -141,7 +147,8 @@ class ColocadorModulo:
         try:
             pos = event_cb.getEvent().getPosition()
             punto = self._punto_bajo_cursor(pos)
-        except Exception:
+        except Exception as exc:
+            _LOG.debug("placement: punto de evento no leido: %s", exc)
             return
         if punto is not None:
             self._ultimo_punto = punto

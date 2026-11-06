@@ -4,6 +4,10 @@
 # Se abre por clic derecho, doble clic o flujo de creación.
 # =====================================================================
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import json
 import FreeCAD as App
 
@@ -124,7 +128,8 @@ class CocoUnifiedTaskPanel(
             try:
                 col, row = map(int, str(k).split(","))
                 contenido_tuplas[(col, row)] = v
-            except (ValueError, TypeError):
+            except (ValueError, TypeError) as exc:
+                _LOG.debug("coco_unified_task: celda malformada, se omite: %s", exc)
                 continue
         return contenido_tuplas
 

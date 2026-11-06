@@ -10,11 +10,16 @@
 # eventos de datos.
 # =====================================================================
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import FreeCAD as App
 
 try:
     import FreeCADGui as Gui
-except ImportError:  # FreeCADCmd / entorno headless
+except ImportError as exc:  # FreeCADCmd / entorno headless
+    _LOG.debug("selection_bridge: Gui no disponible (entorno headless): %s", exc)
     Gui = None
 
 

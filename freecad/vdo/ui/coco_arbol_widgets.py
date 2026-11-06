@@ -2,6 +2,10 @@
 
 Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import FreeCAD as App
 
 from freecad.vdo.core import (
@@ -234,7 +238,8 @@ class ArbolDivisionesMixin(ArbolPintadoMixin):
                 mod = VDO_RE_MODIFICADOR.ReengroseModifier(datos)
                 geo = VDO_RE_GEOMETRIA.calcular_geometria_caja(
                     pieza["caja"], mod, pieza["ejes"])
-            except Exception:
+            except Exception as exc:
+                _LOG.debug("coco_arbol_widgets: reengrose malformado, se omite: %s", exc)
                 continue
             for ref in geo.get("refuerzos") or []:
                 rx0, rz0 = float(ref["x"]), float(ref["z"])
