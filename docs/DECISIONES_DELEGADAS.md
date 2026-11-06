@@ -449,3 +449,7 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 
 - **D-33 (decisión del director):** `_tiene_escritura_freecad` (`tests/test_arquitectura.py`) es más amplia que la regla del plan. Marca cualquier `App.\w+` o `Part.\w+`, incluidas lecturas (`App.Console.PrintMessage`, `App.ActiveDocument`) que no escriben nada. (a) Se restringe a escrituras: `.addObject(`, `.removeObject(`, `.recompute()`, `.addProperty(` y asignaciones a `Ancho`, `Alto`, `Largo`, `Espesor`, `Placement`, `LocalPlacement`. Se quita la detección genérica de `App.\w+` y `Part.\w+`. Comprobado antes de quitarla: no hay ningún `Part.` en `ui/`; los `App.` restantes son logs o lecturas. (b) `doc.removeObject(hijo.Name)` de `ui/vdo_coco_unified_task.py` (gestión de huérfanos) es escritura y pasa a `cad/documento.py::eliminar_objeto(doc, nombre)`, con el mismo orden y efecto.
 - Revertir: `git revert --no-edit` de los commits de esta ola (registro, (a) y (b)).
+
+## D-34 (ola 22)
+
+- **D-34:** M7 parte archivos por concepto; reapuntar imports, sin reexportaciones (P6).
