@@ -138,7 +138,7 @@
     "menu": "Propiedades de la Puerta",
     "icon": "vdo_puerta.svg",
     "factory": [
-      "freecad.vdo.core.vdo_puerta_core",
+      "freecad.vdo.cad.puerta",
       "make_puerta"
     ],
     "panel": "panel.puerta",

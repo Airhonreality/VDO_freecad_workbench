@@ -47,7 +47,7 @@ from freecad.vdo.core import vdo_hardware_hub as HH
 from freecad.vdo.cad.cajon import CajonFeature
 from freecad.vdo.core.vdo_coco_core import CocoFeature
 from freecad.vdo.core.vdo_panel_core import PanelFeature
-from freecad.vdo.core.vdo_puerta_core import PuertaFeature
+from freecad.vdo.cad.puerta import PuertaFeature
 from freecad.vdo.ui.vdo_selection_bridge import VDOSelectionBridge
 from freecad.vdo.ui.vdo_universal_inspector import (
     PAGE_CHASIS,

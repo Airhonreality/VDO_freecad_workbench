@@ -26,7 +26,7 @@ from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_LABELS,
     ANCLAJES,
 )
-from freecad.vdo.core.vdo_puerta_core import make_puerta
+from freecad.vdo.cad.puerta import make_puerta
 from freecad.vdo.core.vdo_spaces import (
     ESPACIO_FIJO,
     ESPACIO_IGUALES,
@@ -1115,7 +1115,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
 
         if existente is None:
             existente = doc.addObject("Part::FeaturePython", nombre)
-            from freecad.vdo.core.vdo_puerta_core import PuertaFeature
+            from freecad.vdo.cad.puerta import PuertaFeature
             PuertaFeature(existente)
             if App.GuiUp:
                 from freecad.vdo.ui.vdo_view_providers import ViewProviderPuerta
