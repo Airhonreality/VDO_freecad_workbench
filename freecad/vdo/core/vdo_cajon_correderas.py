@@ -23,6 +23,54 @@ except ImportError:
     H = None
 
 
+def _mecanizado_corredera(tecnicos):
+    """Parametros de mecanizado de una corredera oculta del catalogo."""
+    return {
+        "diam_taladro": float(
+            tecnicos.get("diametro_pin_trasero", 6.0)),
+        "prof_taladro": float(
+            tecnicos.get("profundidad_pin_trasero", 12.0)),
+        "dist_taladro_borde_trasero": float(
+            tecnicos.get("distancia_pin_borde_trasero", 8.0)),
+        "dist_taladro_sobre_ranura": 11.0,
+        "prof_ranura_lateral": float(
+            tecnicos.get("prof_ranura_lateral", 4.0)),
+        "notch_ancho": float(tecnicos.get("notch_ancho", 25.0)),
+        "notch_alto": float(tecnicos.get("notch_alto", 20.0)),
+    }
+
+
+def _marca_desde_catalogo(hw, marca_id):
+    """Forma de entrada de manifest a partir de una entrada del catalogo."""
+    tecnicos = hw["parametros_tecnicos"]
+    return {
+        "nombre": hw.get("nombre", marca_id),
+        "delta_ancho": float(tecnicos.get("delta_ancho", 45.0)),
+        "unidad_delta": "mm",
+        "descripcion": hw.get("proveedor", ""),
+        "longitudes_comerciales": [
+            float(l)
+            for l in tecnicos.get("longitudes_comerciales", [300, 350])
+        ],
+        "mecanizado": _mecanizado_corredera(tecnicos),
+        "proveedor": hw.get("proveedor", ""),
+        "precio_unitario": hw.get("precio_unitario", 0.0),
+        "moneda": hw.get("moneda", "USD"),
+    }
+
+
+def _marcas_disponibles():
+    """Marcas conocidas: catalogo de Capa H (si existe) y manifest, ordenadas."""
+    disponibles = sorted(_MANIFEST.get("correderas_ocultas", {}).keys())
+    if H is None:
+        return disponibles
+    try:
+        disponibles_h = sorted(H.get_family("corredera_oculta").keys())
+    except KeyError:
+        disponibles_h = []
+    return sorted(list(dict.fromkeys(disponibles_h + disponibles)))
+
+
 def obtener_marca(marca_id):
     """Devuelve la definición de una corredera oculta.
 
@@ -35,7 +83,6 @@ def obtener_marca(marca_id):
             nombre, delta_ancho, unidad_delta, descripcion,
             longitudes_comerciales, mecanizado, ...
     """
-    # --- Intento 1: catálogo de Capa H ---------------------------------
     if H is not None:
         hw = None
         try:
@@ -43,74 +90,14 @@ def obtener_marca(marca_id):
         except (KeyError, ValueError):
             hw = None
         if hw is not None:
-            tecnicos = hw["parametros_tecnicos"]
-            mecanizado = {
-                "diam_taladro": float(
-                    tecnicos.get("diametro_pin_trasero", 6.0)),
-                "prof_taladro": float(
-                    tecnicos.get("profundidad_pin_trasero", 12.0)),
-                "dist_taladro_borde_trasero": float(
-                    tecnicos.get("distancia_pin_borde_trasero", 8.0)),
-                "dist_taladro_sobre_ranura": 11.0,
-                "prof_ranura_lateral": float(
-                    tecnicos.get("prof_ranura_lateral", 4.0)),
-                "notch_ancho": float(tecnicos.get("notch_ancho", 25.0)),
-                "notch_alto": float(tecnicos.get("notch_alto", 20.0)),
-            }
-            return {
-                "nombre": hw.get("nombre", marca_id),
-                "delta_ancho": float(tecnicos.get("delta_ancho", 45.0)),
-                "unidad_delta": "mm",
-                "descripcion": hw.get("proveedor", ""),
-                "longitudes_comerciales": [
-                    float(l)
-                    for l in tecnicos.get("longitudes_comerciales", [300, 350])
-                ],
-                "mecanizado": mecanizado,
-                "proveedor": hw.get("proveedor", ""),
-                "precio_unitario": hw.get("precio_unitario", 0.0),
-                "moneda": hw.get("moneda", "USD"),
-            }
+            return _marca_desde_catalogo(hw, marca_id)
 
-        # --- Intento 2: fallback al manifest (archivo viejo) ---
-        marcas = _MANIFEST.get("correderas_ocultas", {})
-        if marca_id in marcas:
-            return marcas[marca_id]
-
-        disponibles = sorted(_MANIFEST.get("correderas_ocultas", {}).keys())
-        if H is not None:
-            try:
-                disponibles_h = sorted(
-                    H.get_family("corredera_oculta").keys())
-                disponibles = sorted(
-                    list(dict.fromkeys(disponibles_h + disponibles)))
-            except KeyError:
-                disponibles_h = []
-                disponibles = sorted(
-                    list(dict.fromkeys(disponibles_h + disponibles)))
-        raise ValueError(
-            f"Marca de corredera desconocida: '{marca_id}'. "
-            f"Disponibles: {', '.join(disponibles)}")
-
-    # --- Intento 2: fallback al manifest (archivo viejo) ---------------
     marcas = _MANIFEST.get("correderas_ocultas", {})
     if marca_id in marcas:
         return marcas[marca_id]
-
-    disponibles = sorted(_MANIFEST.get("correderas_ocultas", {}).keys())
-    if H is not None:
-        try:
-            disponibles_h = sorted(
-                H.get_family("corredera_oculta").keys())
-            disponibles = sorted(
-                list(dict.fromkeys(disponibles_h + disponibles)))
-        except KeyError:
-            disponibles_h = []
-            disponibles = sorted(
-                list(dict.fromkeys(disponibles_h + disponibles)))
     raise ValueError(
         f"Marca de corredera desconocida: '{marca_id}'. "
-        f"Disponibles: {', '.join(disponibles)}")
+        f"Disponibles: {', '.join(_marcas_disponibles())}")
 
 
 def listar_marcas():
