@@ -69,6 +69,14 @@ BORDE_NOMBRES = {
     "derecha": "Derecha (Este)",
 }
 
+# borde -> plantilla del texto del boton (w: ancho en mm, t: texto del offset)
+_TEXTO_BOTON_BORDE = {
+    "fondo": lambda w, t: f"▲ FONDO · {w:.0f}mm ({t})",
+    "frente": lambda w, t: f"▼ FRENTE · {w:.0f}mm ({t})",
+    "izquierda": lambda w, t: f"◄ IZQ\n{w:.0f}mm\n{t}",
+    "derecha": lambda w, t: f"DER ►\n{w:.0f}mm\n{t}",
+}
+
 
 # ----------------------------------------------------------------------
 # Hoja de estilos oscura (Figma Dark Theme)
@@ -849,14 +857,9 @@ class VDOBoxControllerWidget(QtWidgets.QWidget):
             d = self._valores_bordes[b]["offset"]
             texto_offset = "0 mm (ras)" if d == 0.0 else f"⇥ {d:.0f} mm"
 
-            if b == "fondo":
-                btn.setText(f"▲ FONDO · {w:.0f}mm ({texto_offset})")
-            elif b == "frente":
-                btn.setText(f"▼ FRENTE · {w:.0f}mm ({texto_offset})")
-            elif b == "izquierda":
-                btn.setText(f"◄ IZQ\n{w:.0f}mm\n{texto_offset}")
-            elif b == "derecha":
-                btn.setText(f"DER ►\n{w:.0f}mm\n{texto_offset}")
+            plantilla = _TEXTO_BOTON_BORDE.get(b)
+            if plantilla is not None:
+                btn.setText(plantilla(w, texto_offset))
 
     def _on_esquina_clicked(self, esquina):
         if self._cargando:
