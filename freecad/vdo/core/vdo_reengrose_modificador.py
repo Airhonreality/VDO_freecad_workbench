@@ -177,7 +177,8 @@ def _legacy_desde_bordes(activo, bordes, esquinas, fabricacion,
     }
 
 
-def normalizar_modificador(datos=None):
+def _datos_modificador(datos):
+    """Resuelve el dict del modificador desde DTO, objeto, None o envoltorio."""
     if isinstance(datos, ReengroseDTO):
         datos = datos.to_dict()
     if isinstance(datos, ReengroseModifier):
@@ -188,38 +189,58 @@ def normalizar_modificador(datos=None):
         raise ReengroseError("El modificador de reengrose debe ser un dict.")
     if "modificador_reengrose" in datos:
         datos = datos["modificador_reengrose"] or {}
+    return datos
 
+
+def _usa_bordes(datos):
+    """Decide si el modificador usa el esquema nuevo (por bordes)."""
     if "usa_bordes" in datos:
-        nuevo = _a_bool(datos.get("usa_bordes"))
-    else:
-        nuevo = any(
-            clave in datos for clave in
-            ("bordes", "esquinas", "fabricacion", "choque_nucleo"))
+        return _a_bool(datos.get("usa_bordes"))
+    return any(
+        clave in datos for clave in
+        ("bordes", "esquinas", "fabricacion", "choque_nucleo"))
 
-    if nuevo:
-        activo = _a_bool(datos.get("activo", DEFAULTS["activo"]))
-        esquinas = _normalizar_encuentro(
-            datos.get("esquinas", DEFAULTS["prioridad_encuentro_tiras"]))
-        fabricacion = _validar_enum(
-            datos.get("fabricacion", DEFAULTS["modo_fabricacion"]),
-            "fabricacion", FABRICACIONES)
-        choque = _normalizar_modo_choque(
-            datos.get("choque_nucleo",
-                      datos.get("comportamiento_choque_nucleo",
-                                DEFAULTS["comportamiento_choque_nucleo"])),
-            "choque_nucleo")
-        bordes = _normalizar_bordes(datos.get("bordes"))
-        resultado = _legacy_desde_bordes(
-            activo, bordes, esquinas, fabricacion, choque, datos)
-        resultado.update({
-            "esquinas": esquinas,
-            "fabricacion": fabricacion,
-            "choque_nucleo": choque,
-            "bordes": bordes,
-            "usa_bordes": True,
-        })
-        return resultado
 
+def _normalizar_modificador_bordes(datos):
+    """Normaliza el esquema nuevo (por bordes)."""
+    activo = _a_bool(datos.get("activo", DEFAULTS["activo"]))
+    esquinas = _normalizar_encuentro(
+        datos.get("esquinas", DEFAULTS["prioridad_encuentro_tiras"]))
+    fabricacion = _validar_enum(
+        datos.get("fabricacion", DEFAULTS["modo_fabricacion"]),
+        "fabricacion", FABRICACIONES)
+    choque = _normalizar_modo_choque(
+        datos.get("choque_nucleo",
+                  datos.get("comportamiento_choque_nucleo",
+                            DEFAULTS["comportamiento_choque_nucleo"])),
+        "choque_nucleo")
+    bordes = _normalizar_bordes(datos.get("bordes"))
+    resultado = _legacy_desde_bordes(
+        activo, bordes, esquinas, fabricacion, choque, datos)
+    resultado.update({
+        "esquinas": esquinas,
+        "fabricacion": fabricacion,
+        "choque_nucleo": choque,
+        "bordes": bordes,
+        "usa_bordes": True,
+    })
+    return resultado
+
+
+def _modo_nucleo_legacy(datos):
+    """Resuelve el comportamiento de choque con núcleo del esquema legacy."""
+    if datos.get("comportamiento_choque_nucleo") not in (None, ""):
+        return _normalizar_modo_choque(
+            datos.get("comportamiento_choque_nucleo"),
+            "comportamiento_choque_nucleo")
+    if datos.get("politica_repisa") not in (None, ""):
+        return _normalizar_modo_choque(
+            datos.get("politica_repisa"), "politica_repisa")
+    return DEFAULTS["comportamiento_choque_nucleo"]
+
+
+def _normalizar_modificador_legacy(datos):
+    """Normaliza el esquema legacy (campos planos)."""
     activo = _a_bool(datos.get("activo", DEFAULTS["activo"]))
     orientacion = _validar_enum(
         datos.get("orientacion", DEFAULTS["orientacion"]),
@@ -241,16 +262,7 @@ def normalizar_modificador(datos=None):
     alcance = _validar_enum(
         datos.get("alcance", DEFAULTS["alcance"]),
         "alcance", ALCANCES)
-    modo_nucleo = None
-    if datos.get("comportamiento_choque_nucleo") not in (None, ""):
-        modo_nucleo = _normalizar_modo_choque(
-            datos.get("comportamiento_choque_nucleo"),
-            "comportamiento_choque_nucleo")
-    elif datos.get("politica_repisa") not in (None, ""):
-        modo_nucleo = _normalizar_modo_choque(
-            datos.get("politica_repisa"), "politica_repisa")
-    else:
-        modo_nucleo = DEFAULTS["comportamiento_choque_nucleo"]
+    modo_nucleo = _modo_nucleo_legacy(datos)
     politica = _MAPA_MODO_LEGACY[modo_nucleo]
     prioridad = _validar_enum(
         datos.get("prioridad_encuentro_tiras",
@@ -279,6 +291,13 @@ def normalizar_modificador(datos=None):
         "usa_bordes": False,
     })
     return resultado
+
+
+def normalizar_modificador(datos=None):
+    datos = _datos_modificador(datos)
+    if _usa_bordes(datos):
+        return _normalizar_modificador_bordes(datos)
+    return _normalizar_modificador_legacy(datos)
 
 
 def espesor_efectivo(panel_base, modifier):
