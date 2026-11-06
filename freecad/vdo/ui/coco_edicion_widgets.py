@@ -12,7 +12,7 @@ from freecad.vdo.core.vdo_facade_contract import (
 )
 from freecad.vdo.core.vdo_layout_modelo import AXIS_X, LayoutError
 from freecad.vdo.qt_compat import QtWidgets
-from freecad.vdo.ui.coco_arbol_widgets import ROLE_DATA
+from freecad.vdo.ui.coco_arbol_pintado import ROLE_DATA
 
 
 class EdicionDivisionesMixin:

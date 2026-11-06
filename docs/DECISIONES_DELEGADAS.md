@@ -586,3 +586,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-65
 
 - **D-65:** cinco funciones de ui/ de 73-75 líneas divididas por extracción literal, verificada con AST antes de commitear.
+
+## D-66
+
+- **D-66:** _pintar_vanos y cuatro funciones de ui/ de 73-75 líneas divididas. coco_arbol_widgets.py partido para respetar P5 (400 líneas).
