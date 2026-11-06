@@ -141,6 +141,81 @@ def extraer_piezas_del_documento(modo="todo"):
     return piezas
 
 
+def _escribir_cabecera_csv(writer):
+    # Header para OpenCutList
+    writer.writerow([
+        "Length",
+        "Width",
+        "Thickness",
+        "Quantity",
+        "Material",
+        "Name",
+        "Unit Cost",
+        "Total Cost",
+        "Edge N",
+        "Edge S",
+        "Edge E",
+        "Edge W",
+        "Group",
+        "Operation"
+    ])
+
+
+def _escribir_piezas_csv(writer, piezas):
+    total_costo = 0
+    for pieza in piezas:
+        mat_id = pieza["material_ref"]
+        material = vdo_manifest.get_material(mat_id)
+
+        if not material:
+            App.Console.PrintMessage(f"⚠️  Material no encontrado: {mat_id}")
+            continue
+
+        # Construir string de material (sin hardcode)
+        # Prioriza el espesor real de la pieza (multi-espesor:
+        # cajón caja=16, fondo=6, fachada=18); fallback al
+        # primer espesor del material.
+        espesor_pieza = pieza.get("espesor") or 0
+        if espesor_pieza:
+            espesor = espesor_pieza
+        else:
+            espesor = material["espesores"][0] if material["espesores"] else 18
+        material_str = f"{espesor}mm_{material['referencia']}_{material['tipo']}"
+
+        # Calcular costo
+        area_m2 = (pieza["largo"] * pieza["ancho"]) / 1000000
+        costo_unitario = vdo_manifest.calcular_costo_material(mat_id, area_m2)
+        costo_total = costo_unitario * pieza["cantidad"]
+        total_costo += costo_total
+
+        cantos = pieza.get("cantos", {})
+        writer.writerow([
+            pieza["largo"],
+            pieza["ancho"],
+            espesor,
+            pieza["cantidad"],
+            material_str,
+            pieza["nombre"],
+            f"{costo_unitario:.2f}",
+            f"{costo_total:.2f}",
+            cantos.get("norte", "FX"),
+            cantos.get("sur", "FX"),
+            cantos.get("este", "FX"),
+            cantos.get("oeste", "FX"),
+            pieza.get("grupo", ""),
+            pieza.get("operacion", "")
+        ])
+    return total_costo
+
+
+def _escribir_fila_total_csv(writer, total_costo):
+    # Fila de total
+    writer.writerow([])
+    writer.writerow([
+        "TOTAL COSTO MATERIAL", "", "", "", "", "", "",
+        f"{total_costo:.2f}", "", "", "", "", "", ""])
+
+
 def generar_csv_opencutlist(piezas, output_path):
     """Genera CSV compatible con OpenCutList"""
 
@@ -152,74 +227,11 @@ def generar_csv_opencutlist(piezas, output_path):
         with open(output_path, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
 
-            # Header para OpenCutList
-            writer.writerow([
-                "Length",
-                "Width",
-                "Thickness",
-                "Quantity",
-                "Material",
-                "Name",
-                "Unit Cost",
-                "Total Cost",
-                "Edge N",
-                "Edge S",
-                "Edge E",
-                "Edge W",
-                "Group",
-                "Operation"
-            ])
+            _escribir_cabecera_csv(writer)
 
-            # Escribir piezas
-            total_costo = 0
-            for pieza in piezas:
-                mat_id = pieza["material_ref"]
-                material = vdo_manifest.get_material(mat_id)
+            total_costo = _escribir_piezas_csv(writer, piezas)
 
-                if not material:
-                    App.Console.PrintMessage(f"⚠️  Material no encontrado: {mat_id}")
-                    continue
-
-                # Construir string de material (sin hardcode)
-                # Prioriza el espesor real de la pieza (multi-espesor:
-                # cajón caja=16, fondo=6, fachada=18); fallback al
-                # primer espesor del material.
-                espesor_pieza = pieza.get("espesor") or 0
-                if espesor_pieza:
-                    espesor = espesor_pieza
-                else:
-                    espesor = material["espesores"][0] if material["espesores"] else 18
-                material_str = f"{espesor}mm_{material['referencia']}_{material['tipo']}"
-
-                # Calcular costo
-                area_m2 = (pieza["largo"] * pieza["ancho"]) / 1000000
-                costo_unitario = vdo_manifest.calcular_costo_material(mat_id, area_m2)
-                costo_total = costo_unitario * pieza["cantidad"]
-                total_costo += costo_total
-
-                cantos = pieza.get("cantos", {})
-                writer.writerow([
-                    pieza["largo"],
-                    pieza["ancho"],
-                    espesor,
-                    pieza["cantidad"],
-                    material_str,
-                    pieza["nombre"],
-                    f"{costo_unitario:.2f}",
-                    f"{costo_total:.2f}",
-                    cantos.get("norte", "FX"),
-                    cantos.get("sur", "FX"),
-                    cantos.get("este", "FX"),
-                    cantos.get("oeste", "FX"),
-                    pieza.get("grupo", ""),
-                    pieza.get("operacion", "")
-                ])
-
-            # Fila de total
-            writer.writerow([])
-            writer.writerow([
-                "TOTAL COSTO MATERIAL", "", "", "", "", "", "",
-                f"{total_costo:.2f}", "", "", "", "", "", ""])
+            _escribir_fila_total_csv(writer, total_costo)
 
         App.Console.PrintMessage(f"✅ Exportado: {output_path}")
         App.Console.PrintMessage(f"💰 Costo total de material: ${total_costo:.2f}")
