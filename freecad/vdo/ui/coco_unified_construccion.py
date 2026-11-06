@@ -12,6 +12,7 @@ from freecad.vdo.datos.formularios import (
     COCO_ANCLAJE,
     COCO_EXPOSICION,
     COCO_MEDIDAS,
+    COCO_PESTANAS,
     COCO_ROTACION,
     COCO_ROTACION_PASOS,
 )
@@ -31,26 +32,14 @@ class CocoUnifiedConstruccionMixin:
 
         self.tabs = QtWidgets.QTabWidget()
         main_layout.addWidget(self.tabs)
-
-        # --- Tab 1: Medidas Generales ---
-        tab_medidas = QtWidgets.QWidget()
-        layout_medidas = QtWidgets.QVBoxLayout(tab_medidas)
-
-        self._crear_grupo_medidas(layout_medidas)
-        self._crear_grupo_coloc(layout_medidas)
-        self._crear_grupo_exposicion(layout_medidas)
-
-        # --- Tab 2: Estructura / Chasis (Corte Transversal 2D Gestalt) ---
-        tab_estructura = QtWidgets.QWidget()
-        self._crear_contenido_estructura(tab_estructura)
-
-        # --- Tab 3: Divisiones (matriz de vanos + preview 2D) ---
-        tab_divisiones = QtWidgets.QWidget()
-        self._crear_contenido_divisiones(tab_divisiones)
-
-        self.tabs.addTab(tab_medidas, "Medidas")
-        self.tabs.addTab(tab_estructura, "Estructura")
-        self.tabs.addTab(tab_divisiones, "Divisiones")
+        # Pestañas en el orden y con el titulo de COCO_PESTANAS.
+        pestanas = []
+        for pestana in COCO_PESTANAS:
+            tab = QtWidgets.QWidget()
+            self._crear_contenido_pestana(pestana["clave"], tab)
+            pestanas.append((tab, pestana["titulo"]))
+        for tab, titulo in pestanas:
+            self.tabs.addTab(tab, titulo)
 
         self._crear_grupo_resumen(main_layout)
 
@@ -76,6 +65,24 @@ class CocoUnifiedConstruccionMixin:
             spin.valueChanged.connect(self._on_medida_changed)
 
         return widget
+
+    def _crear_contenido_pestana(self, clave, tab):
+        """Rellena una pestaña de COCO_PESTANAS según su clave."""
+        if clave == "medidas":
+            self._crear_pestana_medidas(tab)
+        elif clave == "estructura":
+            self._crear_contenido_estructura(tab)
+        elif clave == "divisiones":
+            self._crear_contenido_divisiones(tab)
+        else:
+            raise ValueError(f"Pestaña COCO desconocida: {clave!r}")
+
+    def _crear_pestana_medidas(self, tab_medidas):
+        layout_medidas = QtWidgets.QVBoxLayout(tab_medidas)
+        self._crear_grupo_medidas(layout_medidas)
+        self._crear_grupo_coloc(layout_medidas)
+        self._crear_grupo_exposicion(layout_medidas)
+
     def _crear_grupo_medidas(self, layout_medidas):
         titulo, filas = COCO_MEDIDAS
         self.form_coco.construir_grupo(layout_medidas, titulo, filas)

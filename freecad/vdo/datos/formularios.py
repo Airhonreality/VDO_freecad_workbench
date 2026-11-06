@@ -322,3 +322,11 @@ COCO_EXPOSICION = tuple(
         (VDO_FR.SUPERIOR, "Superior"), (VDO_FR.INFERIOR, "Inferior"),
     )
 )
+
+# Pestañas del panel: orden y titulo. El contenido de cada una lo construye
+# el panel (medidas con campos de especificacion; estructura y divisiones son widgets propios).
+COCO_PESTANAS = (
+    {"clave": "medidas", "titulo": "Medidas"},
+    {"clave": "estructura", "titulo": "Estructura"},
+    {"clave": "divisiones", "titulo": "Divisiones"},
+)
