@@ -10,7 +10,7 @@ except BaseException:
     QtWidgets = None
 
 from freecad.vdo.cad import panel as P
-from freecad.vdo.core import vdo_reengrose as R
+from freecad.vdo.core import vdo_reengrose_modificador as R_MODIFICADOR
 try:
     from freecad.vdo.ui import vdo_export_cutting_list as E
 except ImportError:
@@ -102,7 +102,7 @@ class ReengroseL1Tests(unittest.TestCase):
         obj = self.crear(
             "P_Json", modo_fabricacion="independiente",
             orientacion="transversal", ancho=55)
-        mod = R.desde_objeto(obj)
+        mod = R_MODIFICADOR.desde_objeto(obj)
         self.assertTrue(mod.activo)
         self.assertEqual(mod.orientacion, "transversal")
         self.assertEqual(mod.ancho, 55.0)

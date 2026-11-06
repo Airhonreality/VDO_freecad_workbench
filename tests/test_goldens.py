@@ -51,8 +51,9 @@ def _necesita_freecad(modulo: str) -> bool:
 
     Análisis AST de imports de nivel de módulo dentro de freecad.vdo. No ejecuta nada.
     """
-    origen = golden.UBICACIONES.get(modulo, (f"freecad.vdo.core.vdo_{modulo}",))[-1]
-    pendientes = [origen]
+    origenes = golden.AGREGADOS.get(modulo) or (
+        golden.UBICACIONES.get(modulo, (f"freecad.vdo.core.vdo_{modulo}",))[-1],)
+    pendientes = list(origenes)
     visitados: set[str] = set()
     while pendientes:
         nombre = pendientes.pop()

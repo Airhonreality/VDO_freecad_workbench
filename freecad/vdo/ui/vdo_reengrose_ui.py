@@ -1,6 +1,7 @@
 """Editor Qt del modificador universal de bordes de reengrose."""
 
-from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 
@@ -152,7 +153,7 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
             "Enciende o apaga los cuatro bordes a la vez.")
         fila.addWidget(self.btn_all)
         self.btn_borde = {}
-        for borde in VDO_RE.BORDES_2D:
+        for borde in VDO_RE_MODELO.BORDES_2D:
             btn = QtWidgets.QToolButton()
             btn.setText(LABEL_BORDE[borde])
             btn.setCheckable(True)
@@ -287,7 +288,7 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
             "fondo_derecha": (2, 1),
         }
         self.combo_esquina = {}
-        for esquina in VDO_RE.ESQUINAS_2D:
+        for esquina in VDO_RE_MODELO.ESQUINAS_2D:
             fila, col = posiciones[esquina]
             caja = QtWidgets.QVBoxLayout()
             caja.setSpacing(1)
@@ -316,7 +317,7 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
         self.spin_ancho_borde = {}
         self.spin_offset_borde = {}
         grid.addWidget(QtWidgets.QLabel(""), 0, 0)
-        for col, borde in enumerate(VDO_RE.BORDES_2D, start=1):
+        for col, borde in enumerate(VDO_RE_MODELO.BORDES_2D, start=1):
             etiqueta = QtWidgets.QLabel(LABEL_BORDE[borde])
             etiqueta.setStyleSheet(
                 "font-weight: bold; font-size: 11px;")
@@ -376,7 +377,7 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
         self.spin_espesor.valueChanged.connect(self._on_uniforme_spin)
         self.combo_largo_tira.currentIndexChanged.connect(
             self._on_uniforme_spin)
-        for borde in VDO_RE.BORDES_2D:
+        for borde in VDO_RE_MODELO.BORDES_2D:
             self.spin_ancho_borde[borde].valueChanged.connect(
                 self._on_custom_spin)
             self.spin_offset_borde[borde].valueChanged.connect(
@@ -400,7 +401,7 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
         self.changed.emit()
 
     def _bordes_activos(self):
-        return [b for b in VDO_RE.BORDES_2D
+        return [b for b in VDO_RE_MODELO.BORDES_2D
                 if self.btn_borde[b].isChecked()]
 
     def _esquinas_actuales(self):
@@ -430,13 +431,13 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
         if self._cargando:
             return
         todos = all(self.btn_borde[b].isChecked()
-                    for b in VDO_RE.BORDES_2D)
+                    for b in VDO_RE_MODELO.BORDES_2D)
         self.btn_all.blockSignals(True)
         self.btn_all.setChecked(todos)
         self.btn_all.blockSignals(False)
 
     def _on_all(self):
-        objetivo = len(self._bordes_activos()) < len(VDO_RE.BORDES_2D)
+        objetivo = len(self._bordes_activos()) < len(VDO_RE_MODELO.BORDES_2D)
         self._cargando = True
         self.btn_all.blockSignals(True)
         self.btn_all.setChecked(objetivo)
@@ -453,7 +454,7 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
             return
         if uniforme:
             self._cargando = True
-            for borde in VDO_RE.BORDES_2D:
+            for borde in VDO_RE_MODELO.BORDES_2D:
                 self.spin_ancho_borde[borde].setValue(
                     self.spin_ancho.value())
                 self.spin_offset_borde[borde].setValue(
@@ -467,7 +468,7 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
             return
         if self.chk_uniforme.isChecked():
             self._cargando = True
-            for borde in VDO_RE.BORDES_2D:
+            for borde in VDO_RE_MODELO.BORDES_2D:
                 self.spin_ancho_borde[borde].setValue(
                     self.spin_ancho.value())
                 self.spin_offset_borde[borde].setValue(
@@ -572,21 +573,21 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
     # API para paneles/editor
     # -----------------------------------------------------------------
     def cargar(self, modifier):
-        if isinstance(modifier, VDO_RE.ReengroseDTO):
-            mod = VDO_RE.ReengroseModifier(modifier)
-        elif isinstance(modifier, VDO_RE.ReengroseModifier):
+        if isinstance(modifier, VDO_RE_MODELO.ReengroseDTO):
+            mod = VDO_RE_MODIFICADOR.ReengroseModifier(modifier)
+        elif isinstance(modifier, VDO_RE_MODIFICADOR.ReengroseModifier):
             mod = modifier
         else:
-            mod = VDO_RE.ReengroseModifier(modifier)
+            mod = VDO_RE_MODIFICADOR.ReengroseModifier(modifier)
 
         bordes = {}
         if getattr(mod, "usa_bordes", False):
-            for borde in VDO_RE.BORDES_2D:
+            for borde in VDO_RE_MODELO.BORDES_2D:
                 cfg = mod.bordes.get(borde)
-                if isinstance(cfg, VDO_RE.BordeConfig):
+                if isinstance(cfg, VDO_RE_MODELO.BordeConfig):
                     bordes[borde] = cfg
                 else:
-                    bordes[borde] = VDO_RE.BordeConfig.from_dict(cfg)
+                    bordes[borde] = VDO_RE_MODELO.BordeConfig.from_dict(cfg)
         else:
             activo_legacy = None
             if mod.activo and mod.orientacion == "paralela":
@@ -594,20 +595,20 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
                     activo_legacy = mod.alineacion_profundidad
             if mod.activo and activo_legacy is None:
                 activo_legacy = "frente"
-            for borde in VDO_RE.BORDES_2D:
-                bordes[borde] = VDO_RE.BordeConfig(
+            for borde in VDO_RE_MODELO.BORDES_2D:
+                bordes[borde] = VDO_RE_MODELO.BordeConfig(
                     activo=(borde == activo_legacy),
                     ancho=mod.ancho,
                     offset_borde=0.0,
                     espesor=mod.espesor)
 
-        activos = [b for b in VDO_RE.BORDES_2D
+        activos = [b for b in VDO_RE_MODELO.BORDES_2D
                    if bordes[b].activo]
         primero = bordes[activos[0]] if activos else None
         ancho = primero.ancho if primero else mod.ancho
         offset = primero.offset_borde if primero else 0.0
         largo_tira = (primero.largo_tira if primero
-                      else VDO_RE.LARGO_TIRA_DEFAULT)
+                      else VDO_RE_MODELO.LARGO_TIRA_DEFAULT)
         uniforme = True
         if activos:
             uniforme = all(
@@ -617,15 +618,15 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
                 for b in activos)
 
         esquinas_raw = getattr(
-            mod, "esquinas", VDO_RE.ENCUENTRO_ESQUINAS_DEFAULT)
+            mod, "esquinas", VDO_RE_MODELO.ENCUENTRO_ESQUINAS_DEFAULT)
         if not esquinas_raw:
-            esquinas_raw = VDO_RE.ENCUENTRO_ESQUINAS_DEFAULT
-        esquinas = VDO_RE._normalizar_encuentro(esquinas_raw)
+            esquinas_raw = VDO_RE_MODELO.ENCUENTRO_ESQUINAS_DEFAULT
+        esquinas = VDO_RE_MODIFICADOR._normalizar_encuentro(esquinas_raw)
         uniforme_esq = len(set(esquinas.values())) == 1
 
         self._cargando = True
         self.chk_activo.setChecked(bool(mod.activo))
-        for borde in VDO_RE.BORDES_2D:
+        for borde in VDO_RE_MODELO.BORDES_2D:
             cfg = bordes[borde]
             self.btn_borde[borde].setChecked(bool(cfg.activo))
             self.spin_ancho_borde[borde].setValue(float(cfg.ancho))
@@ -637,7 +638,7 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
         self.spin_espesor.setValue(
             0.0 if mod.espesor is None else float(mod.espesor))
         self.chk_uniforme.setChecked(uniforme)
-        for esquina in VDO_RE.ESQUINAS_2D:
+        for esquina in VDO_RE_MODELO.ESQUINAS_2D:
             self._set_combo_data(
                 self.combo_esquina[esquina], esquinas[esquina])
         self.chk_sync_esquinas.setChecked(uniforme_esq)
@@ -658,7 +659,7 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
         espesor = espesor if espesor > 0 else None
         largo_tira = self.combo_largo_tira.currentData()
         bordes = {}
-        for borde in VDO_RE.BORDES_2D:
+        for borde in VDO_RE_MODELO.BORDES_2D:
             if self.chk_uniforme.isChecked():
                 ancho = self.spin_ancho.value()
                 offset = self.spin_offset.value()
@@ -676,7 +677,7 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
         return bordes
 
     def leer_modificador(self):
-        return VDO_RE.ReengroseModifier({
+        return VDO_RE_MODIFICADOR.ReengroseModifier({
             "activo": self.chk_activo.isChecked(),
             "bordes": self._datos_bordes(),
             "esquinas": self._esquinas_actuales(),

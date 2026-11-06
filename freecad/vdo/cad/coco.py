@@ -12,7 +12,10 @@ from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_finish as VDO_FINISH
 from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core import vdo_module_props as VDO_MOD
-from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.core import vdo_reengrose_encuentros as VDO_RE_ENCUENTROS
+from freecad.vdo.core import vdo_reengrose_geometria as VDO_RE_GEOMETRIA
+from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
 from freecad.vdo.core.vdo_helpers import _get_app, _get_part, rotacion_z
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 from freecad.vdo.core.vdo_coco_core import (
@@ -213,7 +216,7 @@ class CocoFeature:
             boxes.append(fondo_box)
 
         # --- Reengroses de carcasa ---
-        reengroses = VDO_RE.leer_reengroses(fp)
+        reengroses = VDO_RE_MODIFICADOR.leer_reengroses(fp)
         obstaculos = []
         shell_tiras = []
         shell_info = {}
@@ -237,8 +240,8 @@ class CocoFeature:
             if not mod.activo:
                 return
             try:
-                geo = VDO_RE.calcular_geometria_caja(caja, mod, ejes)
-            except VDO_RE.ReengroseError as exc:
+                geo = VDO_RE_GEOMETRIA.calcular_geometria_caja(caja, mod, ejes)
+            except VDO_RE_MODELO.ReengroseError as exc:
                 _get_app().Console.PrintWarning(
                     f"[VDO] Reengrose {clave} ignorado: {exc}\n")
                 return
@@ -263,7 +266,7 @@ class CocoFeature:
                     mod, "prioridad_encuentro_tiras", None)
                 tira["prioridad"] = (
                     None if prioridad
-                    == VDO_RE.DEFAULTS["prioridad_encuentro_tiras"]
+                    == VDO_RE_MODELO.DEFAULTS["prioridad_encuentro_tiras"]
                     else prioridad)
                 segmento = {
                     "x": float(ref["x"]), "y": float(ref["y"]),
@@ -363,9 +366,9 @@ class CocoFeature:
                     continue
                 nuevos = []
                 for segmento in tira.get("segmentos") or []:
-                    if VDO_RE.detectar_colision(segmento, caja):
+                    if VDO_RE_ENCUENTROS.detectar_colision(segmento, caja):
                         nuevos.extend(
-                            VDO_RE.recortar_tira_contra_tira(
+                            VDO_RE_ENCUENTROS.recortar_tira_contra_tira(
                                 segmento, caja))
                     else:
                         nuevos.append(segmento)

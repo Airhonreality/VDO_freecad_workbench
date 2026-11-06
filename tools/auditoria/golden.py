@@ -126,6 +126,28 @@ UBICACIONES: dict[str, tuple[str, ...]] = {
     "guardian": ("freecad.vdo.core.vdo_guardian", "freecad.vdo.cad.vdo_guardian"),
 }
 
+# Módulos de dominio repartidos en varios archivos (M7, D-34). Su golden sigue siendo
+# uno solo: cada función se busca en el primer módulo del grupo que la define.
+AGREGADOS: dict[str, tuple[str, ...]] = {
+    "reengrose": tuple(
+        f"freecad.vdo.core.vdo_reengrose_{parte}"
+        for parte in ("modelo", "modificador", "tiras", "geometria",
+                      "despiece", "encuentros", "interferencias")),
+}
+
+
+class _Agregado:
+    """Vista de varios módulos: ``getattr`` devuelve la primera definición encontrada."""
+
+    def __init__(self, nombres: tuple[str, ...]):
+        self._modulos = [importlib.import_module(n) for n in nombres]
+
+    def __getattr__(self, nombre: str):
+        for modulo in self._modulos:
+            if hasattr(modulo, nombre):
+                return getattr(modulo, nombre)
+        raise AttributeError(nombre)
+
 # Hoja y celdas que los escenarios "editada" del guardián modifican (fuera de la lógica probada).
 _GUARDIAN_HOJA_GLOBAL = "Params_Melamina"
 _GUARDIAN_HOJA_LOCAL = "Params"
@@ -190,6 +212,8 @@ def _cargar_modulo(modulo: str):
     """Importa el módulo de dominio freecad.vdo.core.vdo_<modulo> (o su ubicación conocida).
 
     """
+    if modulo in AGREGADOS:
+        return _Agregado(AGREGADOS[modulo])
     if modulo in UBICACIONES:
         ultimo_error: Exception | None = None
         mod = None

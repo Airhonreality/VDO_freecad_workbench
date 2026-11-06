@@ -19,7 +19,9 @@ except ImportError:
 
 # Importar loader
 from freecad.vdo.core import vdo_manifest
-from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.core import vdo_reengrose_despiece as VDO_RE_DESPIECE
+from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 
@@ -49,18 +51,18 @@ def extraer_piezas_panel(obj):
     """Extrae las subpiezas fisicas del panel (base + reengrose/pacha)."""
     largo, ancho, espesor, cantos, orientacion = _datos_panel(obj)
     try:
-        mod = VDO_RE.desde_objeto(obj)
+        mod = VDO_RE_MODIFICADOR.desde_objeto(obj)
     except Exception:
-        mod = VDO_RE.ReengroseModifier()
+        mod = VDO_RE_MODIFICADOR.ReengroseModifier()
     try:
-        piezas = VDO_RE.despiece_panel(
+        piezas = VDO_RE_DESPIECE.despiece_panel(
             obj.Label, largo, ancho, espesor, mod, cantos=cantos,
             material_ref=getattr(obj, "VDO_Material_Ref", MELAMINA_ESTANDAR),
             orientacion=orientacion)
-    except VDO_RE.ReengroseError as exc:
+    except VDO_RE_MODELO.ReengroseError as exc:
         App.Console.PrintMessage(f"⚠️  Reengrose inválido en '{obj.Label}': {exc}")
-        piezas = VDO_RE.despiece_panel(
-            obj.Label, largo, ancho, espesor, VDO_RE.ReengroseModifier(),
+        piezas = VDO_RE_DESPIECE.despiece_panel(
+            obj.Label, largo, ancho, espesor, VDO_RE_MODIFICADOR.ReengroseModifier(),
             cantos=cantos,
             material_ref=getattr(obj, "VDO_Material_Ref", MELAMINA_ESTANDAR),
             orientacion=orientacion)
