@@ -59,18 +59,11 @@ def _float_no_negativo(valor, nombre):
     return numero
 
 
-def calcular_geometria_zocalo(ancho, fondo, alto_zocalo, espesor_tablero,
-                              distancia_frente=50.0,
-                              distancia_costados=0.0,
-                              distancia_trasera=20.0,
-                              tiene_trasera=True,
-                              amarres_intermedios=0,
-                              material_ref=MELAMINA_ESTANDAR):
-    """Calcula tiras, amarres y despiece del zócalo (sin FreeCAD).
-
-    Coordenadas del tablero: X = ancho del mueble, Y = fondo del mueble.
-    Las tiras se extruyen después de Z=0 a Z=AltoZocalo.
-    """
+def _validar_parametros(ancho, fondo, alto_zocalo, espesor_tablero,
+                        distancia_frente, distancia_costados,
+                        distancia_trasera, tiene_trasera,
+                        amarres_intermedios):
+    """Convierte y valida los parámetros de entrada."""
     ancho = _float_positivo(ancho, "ancho")
     fondo = _float_positivo(fondo, "fondo")
     alto_zocalo = _float_positivo(alto_zocalo, "alto_zocalo")
@@ -89,7 +82,13 @@ def calcular_geometria_zocalo(ancho, fondo, alto_zocalo, espesor_tablero,
             f"{amarres_intermedios!r}.")
     if amarres < 0:
         raise ZocaloError("'amarres_intermedios' no puede ser negativo.")
+    return (ancho, fondo, alto_zocalo, espesor, dist_frente,
+            dist_costados, dist_trasera, tiene_trasera)
 
+
+def _validar_distancias(ancho, fondo, espesor, dist_frente, dist_costados,
+                        dist_trasera, tiene_trasera):
+    """Comprueba que las distancias dejan el zócalo dentro del mueble."""
     if dist_frente + espesor > fondo + 1e-9:
         raise ZocaloError(
             "La distancia frontal deja el zócalo fuera del fondo del mueble.")
@@ -104,7 +103,11 @@ def calcular_geometria_zocalo(ancho, fondo, alto_zocalo, espesor_tablero,
             raise ZocaloError(
                 "Las tiras frontal y trasera se solapan en el fondo.")
 
-    bordes = {
+
+def _bordes_zocalo(espesor, dist_frente, dist_costados, dist_trasera,
+                   tiene_trasera):
+    """Describe los cuatro bordes del zócalo para el generador de tiras."""
+    return {
         "frente": {
             "activo": True,
             "ancho": espesor,
@@ -135,6 +138,9 @@ def calcular_geometria_zocalo(ancho, fondo, alto_zocalo, espesor_tablero,
         },
     }
 
+
+def _tiras_zocalo(ancho, fondo, bordes, espesor):
+    """Genera las tiras y mide el hueco interior entre laterales y tiras."""
     tiras = VDO_RE_TIRAS.generar_tiras_perimetrales(
         ancho, fondo, bordes, espesor, "vertical_domina")
     por_borde = {tira["borde"]: tira for tira in tiras}
@@ -159,7 +165,12 @@ def calcular_geometria_zocalo(ancho, fondo, alto_zocalo, espesor_tablero,
     luz = interior_der - interior_izq
     if luz <= 0:
         raise ZocaloError("No hay luz interior entre los laterales.")
+    return tiras, rib_y0, rib_y1, interior_izq, interior_der
 
+
+def _amarres_intermedios(amarres_intermedios, interior_izq, interior_der,
+                         rib_y0, rib_y1, espesor):
+    """Calcula los amarres intermedios horizontales del zócalo."""
     amarres = []
     if amarres_intermedios:
         hueco_w = max(0.0, interior_der - interior_izq)
@@ -189,7 +200,11 @@ def calcular_geometria_zocalo(ancho, fondo, alto_zocalo, espesor_tablero,
                 "d": float(espesor),
                 "espesor": float(espesor),
             })
+    return amarres
 
+
+def _piezas_zocalo(tiras, amarres, alto_zocalo, espesor, material_ref):
+    """Convierte tiras y amarres en piezas de corte."""
     piezas = []
     for tira in tiras:
         borde = tira["borde"]
@@ -229,7 +244,12 @@ def calcular_geometria_zocalo(ancho, fondo, alto_zocalo, espesor_tablero,
             "largo_tira": "punta_a_punta",
             "distancia_al_canto": 0.0,
         })
+    return piezas
 
+
+def _resumen_zocalo(ancho, fondo, alto_zocalo, espesor, tiene_trasera,
+                    piezas):
+    """Texto de resumen del zócalo y sus piezas."""
     lineas = [
         f"Zócalo: {ancho:.0f} × {fondo:.0f} × {alto_zocalo:.0f} mm "
         f"(e={espesor:.0f}, trasera={'sí' if tiene_trasera else 'no'})"
@@ -240,11 +260,41 @@ def calcular_geometria_zocalo(ancho, fondo, alto_zocalo, espesor_tablero,
             f"{pieza['ancho']:.1f} × {pieza['espesor']:.0f} mm "
             f"({pieza['largo_tira']}, "
             f"canto={pieza['distancia_al_canto']:.1f})")
+    return "\n".join(lineas)
 
+
+def calcular_geometria_zocalo(ancho, fondo, alto_zocalo, espesor_tablero,
+                              distancia_frente=50.0,
+                              distancia_costados=0.0,
+                              distancia_trasera=20.0,
+                              tiene_trasera=True,
+                              amarres_intermedios=0,
+                              material_ref=MELAMINA_ESTANDAR):
+    """Calcula tiras, amarres y despiece del zócalo (sin FreeCAD).
+
+    Coordenadas del tablero: X = ancho del mueble, Y = fondo del mueble.
+    Las tiras se extruyen después de Z=0 a Z=AltoZocalo.
+    """
+    (ancho, fondo, alto_zocalo, espesor, dist_frente, dist_costados,
+     dist_trasera, tiene_trasera) = _validar_parametros(
+        ancho, fondo, alto_zocalo, espesor_tablero, distancia_frente,
+        distancia_costados, distancia_trasera, tiene_trasera,
+        amarres_intermedios)
+    _validar_distancias(ancho, fondo, espesor, dist_frente, dist_costados,
+                        dist_trasera, tiene_trasera)
+    bordes = _bordes_zocalo(espesor, dist_frente, dist_costados,
+                            dist_trasera, tiene_trasera)
+    tiras, rib_y0, rib_y1, interior_izq, interior_der = _tiras_zocalo(
+        ancho, fondo, bordes, espesor)
+    amarres = _amarres_intermedios(amarres_intermedios, interior_izq,
+                                   interior_der, rib_y0, rib_y1, espesor)
+    piezas = _piezas_zocalo(tiras, amarres, alto_zocalo, espesor,
+                            material_ref)
     return {
         "tiras": tiras,
         "amarres": amarres,
         "piezas": piezas,
-        "resumen": "\n".join(lineas),
+        "resumen": _resumen_zocalo(ancho, fondo, alto_zocalo, espesor,
+                                   tiene_trasera, piezas),
         "bordes": bordes,
     }
