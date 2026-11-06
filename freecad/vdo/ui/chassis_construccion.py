@@ -17,7 +17,41 @@ class ChassisConstruccionMixin:
         layout_raiz = QtWidgets.QVBoxLayout(self)
         layout_raiz.setContentsMargins(8, 8, 8, 8)
         layout_raiz.setSpacing(8)
+        self._construir_barra_superior(layout_raiz)
+        # -------------------------------------------------------------
+        # 2. Matriz 3x3 del Corte Transversal Interactivo
+        # -------------------------------------------------------------
+        frame_matriz = QtWidgets.QFrame()
+        frame_matriz.setObjectName("frameMatriz")
+        grid = QtWidgets.QGridLayout(frame_matriz)
+        grid.setContentsMargins(4, 4, 4, 4)
+        grid.setSpacing(4)
+        self._construir_matriz_esquinas(grid)
+        self._construir_matriz_caras(grid)
+        layout_raiz.addWidget(frame_matriz)
+        # -------------------------------------------------------------
+        # 3. Micro-Panel de Fondo Trasero
+        # -------------------------------------------------------------
+        self._construir_fondo(layout_raiz)
+        # -------------------------------------------------------------
+        # 4. Estrategia de Base / Anclaje al Piso
+        # -------------------------------------------------------------
+        grupo_base = QtWidgets.QGroupBox("ESTRATEGIA DE ANCLAJE AL PISO")
+        grupo_base.setProperty("class", "grupo-base")
+        layout_base = QtWidgets.QVBoxLayout(grupo_base)
+        layout_base.setContentsMargins(6, 6, 6, 6)
+        layout_base.setSpacing(6)
 
+        self._construir_selector_estrategias(layout_base)
+        # Parámetros dinámicos según estrategia
+        self.stack_params = QtWidgets.QStackedWidget()
+        self._construir_pagina_zocalo()
+        self._construir_pagina_suspendido()
+        self._construir_pagina_patas()
+        layout_base.addWidget(self.stack_params)
+        layout_raiz.addWidget(grupo_base)
+
+    def _construir_barra_superior(self, layout_raiz):
         # -------------------------------------------------------------
         # 1. Barra Superior: Título y Arquetipos Rápidos
         # -------------------------------------------------------------
@@ -54,15 +88,7 @@ class ChassisConstruccionMixin:
 
         layout_raiz.addLayout(barra_sup)
 
-        # -------------------------------------------------------------
-        # 2. Matriz 3x3 del Corte Transversal Interactivo
-        # -------------------------------------------------------------
-        frame_matriz = QtWidgets.QFrame()
-        frame_matriz.setObjectName("frameMatriz")
-        grid = QtWidgets.QGridLayout(frame_matriz)
-        grid.setContentsMargins(4, 4, 4, 4)
-        grid.setSpacing(4)
-
+    def _construir_matriz_esquinas(self, grid):
         # Esquinas (4 botones interactivos con iconos de encuentro)
         self.btn_esquina = {}
         esquinas_spec = [
@@ -81,6 +107,7 @@ class ChassisConstruccionMixin:
             grid.addWidget(btn, fila, col)
             self.btn_esquina[clave] = btn
 
+    def _construir_matriz_caras(self, grid):
         # Botón Tapa Superior (Borde Norte)
         self.btn_cara_sup = QtWidgets.QPushButton("━━ TAPA SUPERIOR · Activa ━━")
         self.btn_cara_sup.setCheckable(True)
@@ -126,11 +153,7 @@ class ChassisConstruccionMixin:
         self.btn_cara_inf.clicked.connect(lambda: self._on_cara_toggled("inferior"))
         grid.addWidget(self.btn_cara_inf, 2, 1)
 
-        layout_raiz.addWidget(frame_matriz)
-
-        # -------------------------------------------------------------
-        # 3. Micro-Panel de Fondo Trasero
-        # -------------------------------------------------------------
+    def _construir_fondo(self, layout_raiz):
         layout_fondo = QtWidgets.QHBoxLayout()
         layout_fondo.setSpacing(6)
 
@@ -147,15 +170,7 @@ class ChassisConstruccionMixin:
 
         layout_raiz.addLayout(layout_fondo)
 
-        # -------------------------------------------------------------
-        # 4. Estrategia de Base / Anclaje al Piso
-        # -------------------------------------------------------------
-        grupo_base = QtWidgets.QGroupBox("ESTRATEGIA DE ANCLAJE AL PISO")
-        grupo_base.setProperty("class", "grupo-base")
-        layout_base = QtWidgets.QVBoxLayout(grupo_base)
-        layout_base.setContentsMargins(6, 6, 6, 6)
-        layout_base.setSpacing(6)
-
+    def _construir_selector_estrategias(self, layout_base):
         # Selector de 3 estrategias
         fila_estrategias = QtWidgets.QHBoxLayout()
         fila_estrategias.setSpacing(4)
@@ -181,9 +196,7 @@ class ChassisConstruccionMixin:
         self.btn_estrategias["zocalo"].setChecked(True)
         layout_base.addLayout(fila_estrategias)
 
-        # Parámetros dinámicos según estrategia
-        self.stack_params = QtWidgets.QStackedWidget()
-
+    def _construir_pagina_zocalo(self):
         # Página Zócalo
         page_zocalo = QtWidgets.QWidget()
         lay_pz = QtWidgets.QHBoxLayout(page_zocalo)
@@ -207,6 +220,7 @@ class ChassisConstruccionMixin:
         lay_pz.addWidget(self.spin_offset_zocalo)
         self.stack_params.addWidget(page_zocalo)
 
+    def _construir_pagina_suspendido(self):
         # Página Suspendido
         page_susp = QtWidgets.QWidget()
         lay_ps = QtWidgets.QHBoxLayout(page_susp)
@@ -226,6 +240,7 @@ class ChassisConstruccionMixin:
         lay_ps.addWidget(lbl_camar)
         self.stack_params.addWidget(page_susp)
 
+    def _construir_pagina_patas(self):
         # Página Patas
         page_patas = QtWidgets.QWidget()
         lay_pp = QtWidgets.QHBoxLayout(page_patas)
@@ -248,6 +263,3 @@ class ChassisConstruccionMixin:
         self.spin_offset_patas.valueChanged.connect(self._on_param_base_changed)
         lay_pp.addWidget(self.spin_offset_patas)
         self.stack_params.addWidget(page_patas)
-
-        layout_base.addWidget(self.stack_params)
-        layout_raiz.addWidget(grupo_base)
