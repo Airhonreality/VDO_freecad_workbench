@@ -4,6 +4,7 @@
 # =====================================================================
 
 from freecad.vdo.qt_compat import QtWidgets
+from freecad.vdo.ui import tema
 
 
 # ---------------------------------------------------------------------
@@ -15,12 +16,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
 
     def __init__(self, parent=None):
         super().__init__("Fachada — Cotas y Cantos", parent)
-        self.setStyleSheet(
-            "QGroupBox { font-weight: bold; color: #e0e0e0; "
-            "border: 1px solid #555555; border-radius: 6px; "
-            "margin-top: 10px; padding-top: 8px; }"
-            "QGroupBox::title { subcontrol-origin: margin; left: 10px; "
-            "padding: 0 4px; }")
+        tema.aplicar_estilo(self, tema.ESTILO_GRUPO_CABECERA)
 
         self._layout = QtWidgets.QGridLayout(self)
         self._layout.setHorizontalSpacing(12)
@@ -40,9 +36,9 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
         ]
         for i, (clave, texto) in enumerate(filas):
             lbl_key = QtWidgets.QLabel(texto)
-            lbl_key.setStyleSheet("color: #b0b0b0; font-size: 11px;")
+            tema.aplicar_estilo(lbl_key, tema.ESTILO_CLAVE_11PX)
             lbl_val = QtWidgets.QLabel("-")
-            lbl_val.setStyleSheet("color: #e0e0e0; font-size: 11px;")
+            tema.aplicar_estilo(lbl_val, tema.ESTILO_VALOR_11PX)
             lbl_val.setMinimumWidth(120)
             self._layout.addWidget(lbl_key, i, 0)
             self._layout.addWidget(lbl_val, i, 1)

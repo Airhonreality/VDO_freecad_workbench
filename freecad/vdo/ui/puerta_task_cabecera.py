@@ -4,11 +4,7 @@
 # =====================================================================
 
 from freecad.vdo.qt_compat import QtWidgets
-from freecad.vdo.ui.puerta_task_constantes import (
-    COLOR_BORDE,
-    COLOR_FONDO,
-    COLOR_TEXTO,
-)
+from freecad.vdo.ui import tema
 
 
 # ---------------------------------------------------------------------
@@ -23,17 +19,13 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
 
     def __init__(self, parent=None):
         super().__init__("Cabecera de pieza", parent)
-        self.setStyleSheet(
-            f"QGroupBox {{ background: {COLOR_FONDO}; color: {COLOR_TEXTO}; "
-            f"border: 1px solid {COLOR_BORDE}; border-radius: 4px; "
-            f"margin-top: 8px; padding-top: 4px; }}"
-            f"QGroupBox::title {{ subcontrol-origin: margin; left: 8px; }}")
+        tema.aplicar_estilo(self, tema.ESTILO_PUERTA_GRUPO_CABECERA)
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(8, 4, 8, 4)
         layout.setSpacing(2)
 
         self.lbl_id = QtWidgets.QLabel("Sin selección")
-        self.lbl_id.setStyleSheet("font-weight: bold;")
+        tema.aplicar_estilo(self.lbl_id, tema.ESTILO_NEGRITA)
         self.lbl_id.setWordWrap(True)
         layout.addWidget(self.lbl_id)
 
@@ -44,9 +36,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
 
         self.lbl_cantos = QtWidgets.QLabel("")
         self.lbl_cantos.setWordWrap(True)
-        self.lbl_cantos.setStyleSheet(
-            f"QLabel {{ background: #2b2b2b; color: {COLOR_TEXTO}; "
-            f"padding: 3px; border: 1px solid {COLOR_BORDE}; }}")
+        tema.aplicar_estilo(self.lbl_cantos, tema.ESTILO_ETIQUETA_OSCURA_COMPACTA)
         layout.addWidget(self.lbl_cantos)
 
     def set_pieza(self, identificador, largo, ancho, espesor, cantos=None):

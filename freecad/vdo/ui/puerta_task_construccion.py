@@ -8,26 +8,17 @@
 from freecad.vdo.datos.formularios import PUERTA_BLOQUES
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui.puerta_task_cabecera import PanelHeaderWidget
-from freecad.vdo.ui.puerta_task_constantes import (
-    COLOR_BORDE,
-    COLOR_FONDO,
-    COLOR_TEXTO,
-)
 from freecad.vdo.ui.vdo_form_builder import FormBuilder
+from freecad.vdo.ui import tema
 
 # Estilos de presentacion referenciados por clave desde la especificacion.
 ESTILOS_PUERTA = {
-    "texto": f"color: {COLOR_TEXTO};",
-    "info": (f"QLabel {{ background: #2b2b2b; color: {COLOR_TEXTO}; "
-             f"padding: 4px; border: 1px solid {COLOR_BORDE}; }}"),
-    "piston": ("QLabel { background: #1e4a1e; color: #8fbc8f; padding: 6px; "
-               "border: 1px solid #3a7a3a; font-weight: bold; }"),
+    "texto": tema.ESTILO_PUERTA_TEXTO,
+    "info": tema.ESTILO_ETIQUETA_OSCURA,
+    "piston": tema.ESTILO_PUERTA_PISTON,
 }
 
-ESTILO_GRUPO_PUERTA = (
-    f"QGroupBox {{ color: {COLOR_TEXTO}; border: 1px solid {COLOR_BORDE}; "
-    f"border-radius: 4px; margin-top: 8px; }}"
-    f"QGroupBox::title {{ subcontrol-origin: margin; left: 8px; }}")
+ESTILO_GRUPO_PUERTA = tema.ESTILO_PUERTA_GRUPO
 
 
 class PuertaTaskConstruccionMixin:
@@ -35,8 +26,7 @@ class PuertaTaskConstruccionMixin:
 
     def _crear_widget(self):
         widget = QtWidgets.QWidget()
-        widget.setStyleSheet(f"QWidget {{ background: {COLOR_FONDO}; "
-                             f"color: {COLOR_TEXTO}; }}")
+        tema.aplicar_estilo(widget, tema.ESTILO_PUERTA_FONDO)
         main = QtWidgets.QVBoxLayout(widget)
         main.setContentsMargins(8, 8, 8, 8)
         main.setSpacing(8)

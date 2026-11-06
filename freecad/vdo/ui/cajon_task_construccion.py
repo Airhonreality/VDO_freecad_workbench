@@ -10,25 +10,7 @@ from freecad.vdo.datos.formularios import cajon_bloques
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui.cajon_task_cabecera import PanelHeaderWidget
 from freecad.vdo.ui.vdo_form_builder import FormBuilder
-
-ESTILO_CAJON = (
-    "QWidget { background-color: #2b2b2b; color: #e0e0e0; }"
-    "QGroupBox { font-weight: bold; color: #e0e0e0; "
-    "border: 1px solid #555555; border-radius: 6px; "
-    "margin-top: 10px; padding-top: 8px; }"
-    "QGroupBox::title { subcontrol-origin: margin; left: 10px; "
-    "padding: 0 4px; }"
-    "QLabel { color: #e0e0e0; }"
-    "QComboBox, QDoubleSpinBox, QSpinBox {"
-    "  background-color: #3a3a3a; color: #e0e0e0;"
-    "  border: 1px solid #555555; border-radius: 3px; padding: 3px;"
-    "}"
-    "QPushButton {"
-    "  background-color: #3a3a3a; color: #e0e0e0;"
-    "  border: 1px solid #555555; border-radius: 4px;"
-    "  padding: 6px 14px; font-weight: bold;"
-    "}"
-    "QPushButton:hover { background-color: #444444; }")
+from freecad.vdo.ui import tema
 
 
 class CajonTaskConstruccionMixin:
@@ -39,7 +21,7 @@ class CajonTaskConstruccionMixin:
     # -----------------------------------------------------------------
     def _crear_widget(self):
         widget = QtWidgets.QWidget()
-        widget.setStyleSheet(ESTILO_CAJON)
+        tema.aplicar_estilo(widget, tema.ESTILO_CAJON)
 
         main_layout = QtWidgets.QVBoxLayout(widget)
         main_layout.setContentsMargins(12, 12, 12, 12)
