@@ -715,3 +715,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
   - **Colores movidos: 249 literales, 73 valores distintos, 15 ficheros.**
   - **Verificación:** (a) equivalencia AST por fichero entre HEAD y el árbol de trabajo, normalizando `tema.X` a su valor: 15 ficheros IGUAL, y un cambio deliberado de un color se detecta (`/tmp/f8_eq/verificar_colores.py`); (b) captura en runtime de 44 atributos de módulo (hojas QSS, dicts, `QColor`) y del SVG completo de `render_svg` (1828 bytes): idénticos; (c) para los pares de la Parte A, equivalencia por script o árbol de widgets headless (`/tmp/f8_eq/eq_*.py`, `ui_botonera_f8.py`); (d) nivel 1 y nivel 2 con `fallos=0`, `ruff` limpio, `mypy --strict` sin errores, `ARISTAS core->cad: 0`.
   - **Líneas de `freecad/vdo/` (minimalismo.py resumen):** 24254 al inicio de F8; 24190 tras la Parte A; 24263 al cierre. La Parte A ahorra 64 líneas, pero las constantes de color y los imports de `tema` suman más: la métrica total sube 9 líneas. El objetivo de MN-07 se cumple en unicidad (un solo sitio por color), no en líneas.
+
+## D-95
+
+- **D-95:** medición (sin cambio de código) del ahorro posible en construcción de widgets con FormBuilder. Ver docs/METRICAS_WIDGETS.md.
