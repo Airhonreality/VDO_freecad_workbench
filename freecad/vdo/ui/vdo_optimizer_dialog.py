@@ -33,6 +33,17 @@ class OptimizerDialog(QtWidgets.QDialog):
         split = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
         root.addWidget(split, 1)
 
+        self._construir_panel_config(split)
+
+        self._construir_panel_preview(split)
+
+        self._construir_barra(root)
+
+        if self.combo.count():
+            self._on_preset(self.combo.currentText())
+        self._inspect_csv()
+
+    def _construir_panel_config(self, split):
         # ---- Panel izquierdo: configuración ----
         left = QtWidgets.QWidget()
         form = QtWidgets.QVBoxLayout(left)
@@ -98,6 +109,8 @@ class OptimizerDialog(QtWidgets.QDialog):
         left.setMaximumWidth(360)
         split.addWidget(left)
 
+
+    def _construir_panel_preview(self, split):
         # ---- Panel derecho: preview ----
         self.view = view.BoardView()
         scroll = QtWidgets.QScrollArea()
@@ -107,6 +120,8 @@ class OptimizerDialog(QtWidgets.QDialog):
         split.addWidget(scroll)
         split.setStretchFactor(1, 1)
 
+
+    def _construir_barra(self, root):
         # ---- Barra inferior: sumatoria ----
         bar = QtWidgets.QHBoxLayout()
         self.lbl_summary = QtWidgets.QLabel("Sin optimizar.")
@@ -117,9 +132,6 @@ class OptimizerDialog(QtWidgets.QDialog):
         bar.addWidget(btn_close)
         root.addLayout(bar)
 
-        if self.combo.count():
-            self._on_preset(self.combo.currentText())
-        self._inspect_csv()
 
     # ------------------------------------------------------------------
     def _on_preset(self, name):
