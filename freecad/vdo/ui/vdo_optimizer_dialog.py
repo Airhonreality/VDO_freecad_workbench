@@ -81,18 +81,7 @@ class OptimizerDialog(QtWidgets.QDialog):
         g.addWidget(self.spin_h, 1, 1)
         form.addLayout(g)
 
-        form.addSpacing(8)
-        form.addWidget(QtWidgets.QLabel("<b>Corte</b>"))
-        g2 = QtWidgets.QGridLayout()
-        g2.addWidget(QtWidgets.QLabel("Kerf sierra (mm)"), 0, 0)
-        self.spin_kerf = QtWidgets.QDoubleSpinBox(); self.spin_kerf.setRange(0, 30)
-        self.spin_kerf.setValue(core.KERF_DEFAULT)
-        g2.addWidget(self.spin_kerf, 0, 1)
-        g2.addWidget(QtWidgets.QLabel("Margen (mm)"), 1, 0)
-        self.spin_margin = QtWidgets.QDoubleSpinBox(); self.spin_margin.setRange(0, 100)
-        self.spin_margin.setValue(core.MARGIN_DEFAULT)
-        g2.addWidget(self.spin_margin, 1, 1)
-        form.addLayout(g2)
+        self._construir_bloque_corte(form)
 
         self.chk_rotate = QtWidgets.QCheckBox("Permitir rotar piezas")
         self.chk_rotate.setChecked(True)
@@ -108,6 +97,20 @@ class OptimizerDialog(QtWidgets.QDialog):
         left.setMinimumWidth(280)
         left.setMaximumWidth(360)
         split.addWidget(left)
+
+    def _construir_bloque_corte(self, form):
+        form.addSpacing(8)
+        form.addWidget(QtWidgets.QLabel("<b>Corte</b>"))
+        g2 = QtWidgets.QGridLayout()
+        g2.addWidget(QtWidgets.QLabel("Kerf sierra (mm)"), 0, 0)
+        self.spin_kerf = QtWidgets.QDoubleSpinBox(); self.spin_kerf.setRange(0, 30)
+        self.spin_kerf.setValue(core.KERF_DEFAULT)
+        g2.addWidget(self.spin_kerf, 0, 1)
+        g2.addWidget(QtWidgets.QLabel("Margen (mm)"), 1, 0)
+        self.spin_margin = QtWidgets.QDoubleSpinBox(); self.spin_margin.setRange(0, 100)
+        self.spin_margin.setValue(core.MARGIN_DEFAULT)
+        g2.addWidget(self.spin_margin, 1, 1)
+        form.addLayout(g2)
 
 
     def _construir_panel_preview(self, split):
