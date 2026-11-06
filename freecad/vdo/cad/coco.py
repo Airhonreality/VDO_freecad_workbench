@@ -54,9 +54,11 @@ class CocoFeature:
         obj.addProperty("App::PropertyInteger", "CalibreFondo", "Estructura",
                         "Espesor del fondo (mm)").CalibreFondo = VDO_D.FONDO_CALIBRE
         obj.addProperty("App::PropertyFloat", "ProfundidadRanura", "Estructura",
-                        "Profundidad de ranura para fondo (mm)").ProfundidadRanura = VDO_D.FONDO_PROFUNDIDAD_RANURA
+                        "Profundidad de ranura para fondo (mm)").ProfundidadRanura = (
+                            VDO_D.FONDO_PROFUNDIDAD_RANURA)
         obj.addProperty("App::PropertyFloat", "DistanciaBorde", "Estructura",
-                        "Distancia del borde para fondo grueso (mm)").DistanciaBorde = VDO_D.FONDO_DISTANCIA_BORDE
+                        "Distancia del borde para fondo grueso (mm)").DistanciaBorde = (
+                            VDO_D.FONDO_DISTANCIA_BORDE)
         obj.addProperty("App::PropertyEnumeration", "Tapa", "Estructura",
                         "Configuración de la tapa").Tapa = ["externo", "interno"]
         obj.addProperty("App::PropertyEnumeration", "Base", "Estructura",

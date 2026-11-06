@@ -197,7 +197,8 @@ class PuertaFeature:
         obj.addProperty("App::PropertyString", "VDO_Vano_ID", "Vinculación",
                         "Identificador del vano vinculado (ej. '(x1,y1)')").VDO_Vano_ID = ""
         obj.addProperty("App::PropertyString", "FuerzaPistonRecomendada",
-                        "Físico", "Fuerza de pistón recomendada (solo lectura)").FuerzaPistonRecomendada = ""
+                        "Físico", "Fuerza de pistón recomendada (solo lectura)"
+                        ).FuerzaPistonRecomendada = ""
 
         # Geometría
         obj.addProperty("App::PropertyLength", "Ancho", "Dimensiones",

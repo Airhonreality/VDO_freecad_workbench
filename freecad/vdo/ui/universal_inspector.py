@@ -4,7 +4,7 @@
 #
 # Panel unificado permanente lateral con:
 # 1. Micro-Header editable de alta densidad:
-#    📐 [ W ] × [ H ] × [ D ] mm │ Espesor: [ E ] mm
+#    📐 [ W ] x [ H ] x [ D ] mm | Espesor: [ E ] mm
 # 2. Visor 2D frontal en elevación completa (CocoPreview2D)
 # 3. QSplitter horizontal inferior que aloja:
 #    - Izquierda: QTreeWidget Maestro unificado (Chasis, Piezas, Vanos e Insertos)

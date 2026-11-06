@@ -165,7 +165,7 @@ class CocoUnifiedConstruccionMixin:
         main_layout.addWidget(grupo_resumen)
 
 
-    def _on_chassis_changed(self, cfg):
+    def _on_chassis_changed(self, cfg):  # noqa: C901 - complejidad 15 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
         """Reacciona al cambio interactivo en el chasis 2D y actualiza el objeto."""
         if getattr(self, "_building", False):
             return

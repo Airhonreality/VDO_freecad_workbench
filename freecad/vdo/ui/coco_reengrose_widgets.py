@@ -73,7 +73,7 @@ class ReengroseDivisionesMixin:
         grid.addWidget(QtWidgets.QLabel("Cara de pegado:"), 4, 0)
         self.combo_cara = QtWidgets.QComboBox()
         self.combo_cara.addItem("Cara A (+)", "cara_a")
-        self.combo_cara.addItem("Cara B (−)", "cara_b")
+        self.combo_cara.addItem("Cara B (−)", "cara_b")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
         self.combo_cara.addItem("Ambas caras", "ambos")
         self.combo_cara.setToolTip("Cara del tablero donde se pegan las tiras.")
         grid.addWidget(self.combo_cara, 4, 1, 1, 3)
@@ -264,18 +264,18 @@ class ReengroseDivisionesMixin:
     @staticmethod
     def _etiquetas_caras(clave):
         if clave == "lateral_izquierdo":
-            return ("Interna (+)", "Externa (−)")
+            return ("Interna (+)", "Externa (−)")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
         if clave == "lateral_derecho":
-            return ("Externa (+)", "Interna (−)")
+            return ("Externa (+)", "Interna (−)")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
         if clave == "base":
-            return ("Superior / interna (+)", "Inferior / externa (−)")
+            return ("Superior / interna (+)", "Inferior / externa (−)")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
         if clave == "techo":
-            return ("Superior / externa (+)", "Inferior / interna (−)")
+            return ("Superior / externa (+)", "Inferior / interna (−)")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
         if clave == "fondo":
-            return ("Trasera (+)", "Delantera (−)")
+            return ("Trasera (+)", "Delantera (−)")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
         if str(clave).startswith("division_x:"):
-            return ("Lado derecho (+)", "Lado izquierdo (−)")
-        return ("Superior (+)", "Inferior (−)")
+            return ("Lado derecho (+)", "Lado izquierdo (−)")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+        return ("Superior (+)", "Inferior (−)")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
 
     @staticmethod
     def _set_combo_data(combo, valor):

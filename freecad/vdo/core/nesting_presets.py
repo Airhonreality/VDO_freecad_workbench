@@ -10,7 +10,7 @@ import json
 
 from freecad.vdo.core.helpers import _get_app
 
-# Presets estándar del taller (2440×1830 es estándar EN)
+# Presets estándar del taller (2440x1830 es estándar EN)
 DEFAULT_PRESETS = {
     "Estándar EN": {"width": 2440, "height": 1830, "spacing": 15, "thickness": 3},
     "Medio Horizontal": {"width": 1220, "height": 2440, "spacing": 15, "thickness": 3},

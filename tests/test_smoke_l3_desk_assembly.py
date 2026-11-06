@@ -211,7 +211,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
                f"{len(REQUIRED_API)} símbolos de API presentes")
 
     # --------------------------------------------------- 1. Subdivisión torre
-    def test_01_chain1_subdivision_torre_cajones(self):
+    def test_01_chain1_subdivision_torre_cajones(self):  # noqa: C901 - complejidad 13 (max 12): escenario de prueba de cadena larga; partirlo oculta el caso
         cadena = "1. Subdivisión torre de cajones"
         alto, ancho, fondo, zocalo = 700.0, 450.0, 550.0, 70.0
         inner_w = ancho - 2 * ESP          # 414
@@ -326,7 +326,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
             ok_espacio = total_alto <= (700 - 70 - ESP) + 1e-6
             record(cadena, "2.2 Tres fachadas respetan calle de 2.5 mm",
                    ok_espacio,
-                   f"3×{h_f:.2f} + 2×{calle} = {total_alto:.2f} mm ≤ cavidad")
+                   f"3×{h_f:.2f} + 2×{calle} = {total_alto:.2f} mm ≤ cavidad")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
 
             # 2a) Frentes con corte a 45° (makeChamfer en arista superior)
             fach = Part.makeBox(w_f, ESP, h_f)
@@ -384,7 +384,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
             })
             self.doc.recompute()
             ok_shape = obj.Shape.isValid()
-            record(cadena, "3.1 PanelFeature L1 1500×700×18 + reengrose 4 bordes",
+            record(cadena, "3.1 PanelFeature L1 1500×700×18 + reengrose 4 bordes",  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
                    ok_shape,
                    f"solids={len(obj.Shape.Solids)}, válido={ok_shape}")
 

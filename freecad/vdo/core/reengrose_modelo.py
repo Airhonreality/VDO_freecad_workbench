@@ -1,4 +1,5 @@
-"""Datos y tipos del reengrose: constantes de dominio, BordeConfig, ReengroseDTO y validadores de valor."""
+"""Datos y tipos del reengrose: constantes de dominio, BordeConfig, ReengroseDTO y
+validadores de valor."""
 
 class ReengroseError(ValueError):
     """Error de validacion del modificador de reengrose."""

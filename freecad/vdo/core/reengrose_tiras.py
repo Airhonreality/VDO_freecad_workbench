@@ -1,4 +1,5 @@
-"""Tiras perimetrales 2D de reengrose: recorte de esquinas, inglete 45 grados y generacion de tiras por borde."""
+"""Tiras perimetrales 2D de reengrose: recorte de esquinas, inglete 45 grados y generacion
+de tiras por borde."""
 
 import operator
 

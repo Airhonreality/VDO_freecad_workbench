@@ -77,7 +77,8 @@ def _resumen() -> dict:
                         publicos.append(f"{p.relative_to(ROOT)}.{n.name}")
                 elif isinstance(n, ast.ClassDef):
                     for m in n.body:
-                        if isinstance(m, (ast.FunctionDef, ast.AsyncFunctionDef)) and not m.name.startswith("_"):
+                        if (isinstance(m, (ast.FunctionDef, ast.AsyncFunctionDef))
+                                and not m.name.startswith("_")):
                             publicos.append(f"{p.relative_to(ROOT)}.{n.name}.{m.name}")
         resultado["capas"][nombre] = {
             "archivos": len(archivos),
@@ -109,7 +110,7 @@ def _es_tabla(valor) -> bool:
     return False
 
 
-def _duplicados() -> dict:
+def _duplicados() -> dict:  # noqa: C901 - complejidad 13 (max 12): herramienta de auditoria fuera del runtime; dividirla no aporta (D-81)
     # 1. Tablas constantes idénticas por AST
     tablas: dict[str, list[tuple[str, str]]] = collections.defaultdict(list)
     # 2. Funciones con cuerpo idéntico
@@ -128,7 +129,8 @@ def _duplicados() -> dict:
             for nodo in t.body:
                 if isinstance(nodo, ast.Assign):
                     for target in nodo.targets:
-                        if isinstance(target, ast.Name) and target.id.isupper() and _es_tabla(nodo.value):
+                        if (isinstance(target, ast.Name) and target.id.isupper()
+                                and _es_tabla(nodo.value)):
                             dump = _ast_dump_canonico(nodo.value)
                             tablas[dump].append((target.id, rel))
                 elif (isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name)
@@ -184,9 +186,11 @@ def _literales() -> dict:
             continue
         rel = str(p.relative_to(ROOT))
         for nodo in ast.walk(t):
-            if isinstance(nodo, ast.Constant) and isinstance(nodo.value, str) and nodo.value in conjunto:
+            if (isinstance(nodo, ast.Constant) and isinstance(nodo.value, str)
+                    and nodo.value in conjunto):
                 hallazgos.setdefault(nodo.value, []).append(f"{rel}:{nodo.lineno}")
-    return {"vigilados": vigilados, "hallazgos": hallazgos, "total": sum(len(v) for v in hallazgos.values())}
+    return {"vigilados": vigilados, "hallazgos": hallazgos,
+            "total": sum(len(v) for v in hallazgos.values())}
 
 
 # ---------------------------------------------------------------------------
@@ -241,7 +245,7 @@ def _contar_cadena_ifelif(nodo_func) -> int:
 # ---------------------------------------------------------------------------
 # Subcomando: fachadas
 # ---------------------------------------------------------------------------
-def _fachadas() -> dict:
+def _fachadas() -> dict:  # noqa: C901 - complejidad 13 (max 12): herramienta de auditoria fuera del runtime; dividirla no aporta (D-81)
     """Módulos cuyo cuerpo son solo imports y reexportaciones."""
     fachadas = []
     for _nombre, base in CAPAS:
@@ -308,7 +312,7 @@ def _tamano() -> dict:
 # ---------------------------------------------------------------------------
 # Subcomando: excepciones
 # ---------------------------------------------------------------------------
-def _excepciones() -> dict:
+def _excepciones() -> dict:  # noqa: C901 - complejidad 13 (max 12): herramienta de auditoria fuera del runtime; dividirla no aporta (D-81)
     """except sin re-lanzamiento (raise) ni registro (App.Console / logging)."""
     problemas = []
     for _nombre, base in CAPAS:
@@ -323,7 +327,8 @@ def _excepciones() -> dict:
                 if isinstance(nodo, ast.Try):
                     for handler in nodo.handlers:
                         tiene_raise = any(
-                            isinstance(s, ast.Raise) for s in ast.walk(handler) if isinstance(s, ast.Raise)
+                            isinstance(s, ast.Raise)
+                            for s in ast.walk(handler) if isinstance(s, ast.Raise)
                         )
                         tiene_log = False
                         for s in ast.walk(handler):
@@ -331,7 +336,8 @@ def _excepciones() -> dict:
                                 func = s.func
                                 if isinstance(func, ast.Attribute):
                                     if func.attr in ("PrintError", "PrintWarning", "PrintMessage",
-                                                     "error", "warning", "info", "debug", "exception"):
+                                                     "error", "warning", "info",
+                                                     "debug", "exception"):
                                         tiene_log = True
                                 elif (isinstance(func, ast.Name)
                                       and func.id in ("logging", "print")):
@@ -357,7 +363,7 @@ def _imprimir_tabla(titulo: str, filas: list[list[str]], cabecera: list[str]) ->
         print(" | ".join(fila))
 
 
-def main() -> int:
+def main() -> int:  # noqa: C901 - complejidad 18 (max 12): herramienta de auditoria fuera del runtime; dividirla no aporta (D-81)
     sub = sys.argv[1] if len(sys.argv) > 1 else "resumen"
     salida_json = {"subcomando": sub, "resultado": {}}
 
@@ -366,7 +372,8 @@ def main() -> int:
         salida_json["resultado"] = data
         filas = []
         for capa, d in data["capas"].items():
-            filas.append([capa, str(d["archivos"]), str(d["lineas"]), str(d["funciones"]), str(d["api_publica"])])
+            filas.append([capa, str(d["archivos"]), str(d["lineas"]),
+                          str(d["funciones"]), str(d["api_publica"])])
         filas.append(["TOTAL", str(data["total_archivos"]), str(data["total_lineas"]),
                       str(data["total_funciones"]), "-"])
         _imprimir_tabla("RESUMEN por capa", filas,

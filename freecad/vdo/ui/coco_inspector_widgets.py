@@ -45,7 +45,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
 
         self.lbl_dimensiones = QtWidgets.QLabel("—")
         self.lbl_dimensiones.setToolTip(
-            "Dimensiones brutas de corte: Largo × Ancho × Espesor.")
+            "Dimensiones brutas de corte: Largo × Ancho × Espesor.")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
         layout.addWidget(self.lbl_dimensiones)
 
         self.lbl_cantos = QtWidgets.QLabel("")
@@ -70,7 +70,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
             nombre = f"{nombre} {sufijo}"
         self.lbl_nombre.setText(nombre)
         self.lbl_dimensiones.setText(
-            f"{float(largo):.1f} × {float(ancho):.1f} × "
+            f"{float(largo):.1f} × {float(ancho):.1f} × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
             f"{float(espesor):.1f} mm")
         datos = self._normalizar_cantos(cantos)
         self.lbl_cantos.setText(" · ".join(
@@ -292,9 +292,9 @@ class InspectorDivisionesMixin:
             self.spin_n.setValue(2)
 
         self.lbl_nominal_neto.setText(
-            f"Nominal: {resuelto.nominal_w:.1f} × "
+            f"Nominal: {resuelto.nominal_w:.1f} × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
             f"{resuelto.nominal_h:.1f} mm\n"
-            f"Neto: {resuelto.w:.1f} × {resuelto.h:.1f} mm")
+            f"Neto: {resuelto.w:.1f} × {resuelto.h:.1f} mm")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
         invasores = self._reengroses_invasores(resuelto)
         self.lbl_invasores.setText(
             ("Reengroses invasores: " + ", ".join(invasores))

@@ -2,7 +2,7 @@
 # tests/test_single_dock_convergence.py
 # Pruebas de integración del Dock Lateral Único Consolidado:
 # - Visor 2D (CocoPreview2D) en la sección superior
-# - Micro-Header editable (W × H × D │ Esp)
+# - Micro-Header editable (W x H x D | Esp)
 # - QSplitter con Árbol Maestro (izq) y Stack Contextual (der)
 # - Sincronización bidireccional (2D <-> Árbol <-> Stack)
 # - Erradicación de diálogos modales en edición y doble clic

@@ -267,7 +267,8 @@ def _resumen_despiece(d):
         f"({caja['montaje_trasera']})\n"
         f"Piso: {caja['ancho_piso']:.0f} x {caja['largo_piso']:.0f} x "
         f"{g_fondo:.0f} mm (z={z_piso:.1f})\n"
-        f"Fachada: {d['fachada']['ancho']:.0f} x {d['fachada']['alto']:.0f} x {d['fachada']['espesor']:.0f} mm ({sistema_apertura})\n"
+        f"Fachada: {d['fachada']['ancho']:.0f} x {d['fachada']['alto']:.0f} "
+        f"x {d['fachada']['espesor']:.0f} mm ({sistema_apertura})\n"
         f"Tipo corredera: {tipo_corredera}"
     )
 

@@ -40,7 +40,7 @@ class PaginaVano(_PaginaBase):
         lay_b = QtWidgets.QHBoxLayout(self.banner_luz)
         lay_b.setContentsMargins(6, 3, 6, 3)
 
-        self.lbl_luz_banner = QtWidgets.QLabel("📐 <b>LUZ LIBRE NETA:</b> 564 × 280 × 550 mm")
+        self.lbl_luz_banner = QtWidgets.QLabel("📐 <b>LUZ LIBRE NETA:</b> 564 × 280 × 550 mm")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
         tema.aplicar_estilo(self.lbl_luz_banner, tema.ESTILO_LUZ_10PX)
         lay_b.addWidget(self.lbl_luz_banner)
         self.contenedor_datos.addWidget(self.banner_luz)
@@ -240,7 +240,7 @@ class PaginaVano(_PaginaBase):
 
     def _aplicar_subdivision(self):
         cfg = self.get_habitante_config()
-        self.lbl_subdiv.setText(f"{cfg['eje']} × {cfg['n_partes']}")
+        self.lbl_subdiv.setText(f"{cfg['eje']} × {cfg['n_partes']}")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
         self.sigHabitanteCambiado.emit("subdividir", cfg)
 
     def _aplicar_cajon(self):
@@ -300,7 +300,7 @@ class PaginaVano(_PaginaBase):
         self.lbl_luz_w.setText(f"{w:.1f} mm")
         self.lbl_luz_h.setText(f"{h:.1f} mm")
         self.lbl_luz_d.setText(f"{d:.1f} mm")
-        self.lbl_luz_banner.setText(f"📐 <b>LUZ LIBRE NETA:</b> {w:.1f} × {h:.1f} × {d:.1f} mm")
+        self.lbl_luz_banner.setText(f"📐 <b>LUZ LIBRE NETA:</b> {w:.1f} × {h:.1f} × {d:.1f} mm")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
 
     def cargar_vano_cell(self, cell, fondo=550.0):
         """Carga medidas desde una ResolvedCell de vdo_layout."""
@@ -314,4 +314,4 @@ class PaginaVano(_PaginaBase):
         self.lbl_luz_w.setText(f"{w:.1f} mm")
         self.lbl_luz_h.setText(f"{h:.1f} mm")
         self.lbl_luz_d.setText(f"{d:.1f} mm")
-        self.lbl_luz_banner.setText(f"📐 <b>LUZ {self._celda_actual}:</b> {w:.1f} × {h:.1f} × {d:.1f} mm")
+        self.lbl_luz_banner.setText(f"📐 <b>LUZ {self._celda_actual}:</b> {w:.1f} × {h:.1f} × {d:.1f} mm")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto

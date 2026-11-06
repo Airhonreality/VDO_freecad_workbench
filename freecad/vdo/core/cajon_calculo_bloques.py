@@ -91,7 +91,8 @@ def _leer_defectos(config):
 
 
 def _validar_entradas(g_caja, g_fondo, montaje):
-    """Valida grosores y montaje. Devuelve los avisos; lanza ValueError si el montaje es inválido."""
+    """Valida grosores y montaje. Devuelve los avisos; lanza ValueError si el montaje es
+    inválido."""
     avisos = []
 
     # --- Validaciones ---
@@ -128,8 +129,10 @@ def _ancho_exterior(li, delta):
     return ancho_ext
 
 
-def _geometria_caja(montaje, ancho_ext, g_caja, lg, alto_caja, alto_lateral, eje_ranura, g_fondo, pen_ranura):
-    """Contra-frente, frente interior, piso y su altura; lanza ValueError si la caja es demasiado baja."""
+def _geometria_caja(montaje, ancho_ext, g_caja, lg, alto_caja, alto_lateral,
+                    eje_ranura, g_fondo, pen_ranura):
+    """Contra-frente, frente interior, piso y su altura; lanza ValueError si la caja es
+    demasiado baja."""
     # --- 4. Contra-frente y frente interior ---
     if montaje == "entre_laterales":
         ancho_contra = ancho_ext - (2 * g_caja)

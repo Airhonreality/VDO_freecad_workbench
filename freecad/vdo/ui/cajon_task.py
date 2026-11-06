@@ -124,7 +124,7 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
     # -----------------------------------------------------------------
     # Carga de valores
     # -----------------------------------------------------------------
-    def _cargar_valores(self, obj):
+    def _cargar_valores(self, obj):  # noqa: C901 - complejidad 20 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
         """Carga las propiedades del objeto en los controles."""
         if hasattr(obj, "AnchoLibre"):
             self.spin_li.setValue(float(obj.AnchoLibre))

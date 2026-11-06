@@ -115,9 +115,9 @@ class CocoUnifiedValoresMixin:
         ancho_util = valores["ancho"] - (espesor * 2)
         alto_util = valores["alto"] - (espesor * 2)
         texto = (
-            f"COCO {valores['ancho']:.0f} × {valores['alto']:.0f} × "
+            f"COCO {valores['ancho']:.0f} × {valores['alto']:.0f} × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
             f"{valores['fondo']:.0f} mm\n"
-            f"Cavidad interior: {ancho_util:.1f} × {alto_util:.1f} mm\n"
+            f"Cavidad interior: {ancho_util:.1f} × {alto_util:.1f} mm\n"  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
             f"Tapa: {valores['tapa']} · Base: {valores['base']} · "
             f"Espesor: {espesor:.0f} mm\n\n")
         texto += self.editor_divisiones.resumen()

@@ -181,7 +181,7 @@ class PuertaTaskPanel(PuertaTaskConstruccionMixin, VDOTransactionMixin):
                 lineas.append(f"Montaje: {tecnicos['tipo_montaje']}")
             if "diametro_cazoleta" in tecnicos:
                 lineas.append(
-                    f"Cazoleta: Ø{tecnicos['diametro_cazoleta']} mm × "
+                    f"Cazoleta: Ø{tecnicos['diametro_cazoleta']} mm × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
                     f"{tecnicos['profundidad_cazoleta']} mm profundo")
             if "descuento_altura_hoja" in tecnicos:
                 lineas.append(

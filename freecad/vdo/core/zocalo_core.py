@@ -251,13 +251,13 @@ def _resumen_zocalo(ancho, fondo, alto_zocalo, espesor, tiene_trasera,
                     piezas):
     """Texto de resumen del zócalo y sus piezas."""
     lineas = [
-        f"Zócalo: {ancho:.0f} × {fondo:.0f} × {alto_zocalo:.0f} mm "
+        f"Zócalo: {ancho:.0f} × {fondo:.0f} × {alto_zocalo:.0f} mm "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
         f"(e={espesor:.0f}, trasera={'sí' if tiene_trasera else 'no'})"
     ]
     for pieza in piezas:
         lineas.append(
-            f"{pieza['nombre']}: {pieza['largo']:.1f} × "
-            f"{pieza['ancho']:.1f} × {pieza['espesor']:.0f} mm "
+            f"{pieza['nombre']}: {pieza['largo']:.1f} × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+            f"{pieza['ancho']:.1f} × {pieza['espesor']:.0f} mm "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
             f"({pieza['largo_tira']}, "
             f"canto={pieza['distancia_al_canto']:.1f})")
     return "\n".join(lineas)

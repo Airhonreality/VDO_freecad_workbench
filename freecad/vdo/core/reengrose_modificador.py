@@ -1,4 +1,5 @@
-"""Modificador de reengrose: normalizacion de entrada, espesor efectivo y lectura/escritura en el objeto."""
+"""Modificador de reengrose: normalizacion de entrada, espesor efectivo y
+lectura/escritura en el objeto."""
 
 import json
 import logging

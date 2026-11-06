@@ -43,7 +43,7 @@ def _prioridad_par(a, b):
     return pa or pb or "vertical_domina"
 
 
-def _resolver_tiras_entre_si(tiras):
+def _resolver_tiras_entre_si(tiras):  # noqa: C901 - complejidad 15 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
     """Matriz de prioridades tira contra tira (X/Z, L y T)."""
     for i in range(len(tiras)):
         for j in range(i + 1, len(tiras)):

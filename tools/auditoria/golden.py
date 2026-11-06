@@ -237,7 +237,7 @@ def _cargar_modulo(modulo: str):
     return importlib.import_module(f"freecad.vdo.core.{modulo}")
 
 
-def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
+def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:  # noqa: C901 - complejidad 15 (max 12): herramienta de auditoria fuera del runtime; dividirla no aporta (D-81)
     """Devuelve entradas representativas por función para un módulo."""
     mod = _cargar_modulo(modulo)
     entradas: dict[str, list[dict]] = {}
@@ -247,7 +247,8 @@ def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
             {"w_vano": 500.0, "h_vano": 700.0, "tipo_montaje": "parche"},
             {"w_vano": 500.0, "h_vano": 700.0, "tipo_montaje": "semiparche"},
             {"w_vano": 500.0, "h_vano": 700.0, "tipo_montaje": "embebida"},
-            {"w_vano": 1000.0, "h_vano": 500.0, "tipo_montaje": "parche", "holgura": 4.0, "solape": 10.0},
+            {"w_vano": 1000.0, "h_vano": 500.0, "tipo_montaje": "parche",
+             "holgura": 4.0, "solape": 10.0},
         ]
         entradas["aplicar_sistema_apertura"] = [
             {"h_fachada": 700.0, "sistema_apertura": "gola_aluminio"},
@@ -378,7 +379,8 @@ def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
         ]
         entradas["resolver_politica_cantos"] = [
             {"panel_base": {"cantos": {}}, "modifier": {"activo": False}},
-            {"panel_base": {"cantos": {}}, "modifier": {"activo": True, "modo_fabricacion": "independiente"}},
+            {"panel_base": {"cantos": {}},
+             "modifier": {"activo": True, "modo_fabricacion": "independiente"}},
             {"panel_base": {"cantos": {"frente": "FX"}},
              "modifier": {"activo": True, "modo_fabricacion": "pacha"}},
         ]
@@ -636,7 +638,8 @@ def regenerar(modulo: str):
         salidas = []
         for entrada in entradas:
             try:
-                salida = _serializar(_ejecutar_funcion(_modulo_para_funcion(modulo, mod, fn_name), fn_name, entrada))
+                salida = _serializar(_ejecutar_funcion(
+                    _modulo_para_funcion(modulo, mod, fn_name), fn_name, entrada))
                 salidas.append({"entrada": entrada, "salida": salida})
             except Exception as exc:
                 salidas.append({"entrada": entrada, "error": str(exc)})
@@ -669,7 +672,8 @@ def verificar(modulo: str | None = None) -> bool:
             for i, exp in enumerate(esperadas):
                 entrada = entradas[i] if i < len(entradas) else exp["entrada"]
                 try:
-                    salida = _ejecutar_funcion(_modulo_para_funcion(mod_name, mod, fn_name), fn_name, entrada)
+                    salida = _ejecutar_funcion(
+                        _modulo_para_funcion(mod_name, mod, fn_name), fn_name, entrada)
                     salida_serial = _serializar(salida)
                     if "error" in exp:
                         print(f"  {mod_name}.{fn_name}[{i}]: esperaba error, obtuvo salida")

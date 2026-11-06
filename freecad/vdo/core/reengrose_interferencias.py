@@ -1,4 +1,5 @@
-"""Interferencias del reengrose con piezas vecinas: vano neto, choque tira-panel y mocheo de repisa."""
+"""Interferencias del reengrose con piezas vecinas: vano neto, choque tira-panel y mocheo
+de repisa."""
 
 from freecad.vdo.core.helpers import DIMENSION_POR_EJE
 from freecad.vdo.core.reengrose_encuentros import (

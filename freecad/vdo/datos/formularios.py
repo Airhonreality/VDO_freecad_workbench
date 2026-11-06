@@ -232,7 +232,7 @@ def cajon_bloques(marcas):
         )),
         ("apertura", "Sistema de apertura (fachada)", (
             {"tipo": "combo", "clave": "apertura", "etiqueta": "Sistema:",
-             "items": [(a, None) for a in ("Tirador", "Gola aluminio (−35 mm altura)",
+             "items": [(a, None) for a in ("Tirador", "Gola aluminio (−35 mm altura)",  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
                                            "45° (bisel en arista superior)",
                                            "Push open (expulsor magnético)")],
              "tooltip": ("Tirador: manija postiza, altura completa.\n"

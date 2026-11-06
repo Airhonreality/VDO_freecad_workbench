@@ -34,7 +34,7 @@ class Layout:
     def key(col_id, row_id):
         return f"{col_id}|{row_id}"
 
-    def _normalizar(self):
+    def _normalizar(self):  # noqa: C901 - complejidad 14 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
         if not self.columns:
             self.columns = [Track("x1")]
         if not self.rows:
@@ -288,7 +288,7 @@ class Layout:
         return layout, warnings
 
 
-def _legacy_tracks(texto, eje, warnings):
+def _legacy_tracks(texto, eje, warnings):  # noqa: C901 - complejidad 13 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
     nodos = []
     if texto:
         try:

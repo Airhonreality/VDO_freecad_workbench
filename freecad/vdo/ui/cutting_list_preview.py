@@ -65,7 +65,7 @@ class CuttingListPreviewPanel:
         # Tabla de piezas
         self.tabla = QtWidgets.QTableWidget()
         self.tabla.setColumnCount(5)
-        self.tabla.setHorizontalHeaderLabels(["Nombre", "Material", "L×A×E", "Cantidad", "Costo"])
+        self.tabla.setHorizontalHeaderLabels(["Nombre", "Material", "L×A×E", "Cantidad", "Costo"])  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
         self.tabla.setRowCount(len(piezas))
         self.tabla.setMaximumHeight(200)
 
@@ -78,7 +78,7 @@ class CuttingListPreviewPanel:
             mat_str = material["nombre"] if material else mat_id
             mat_item = QtWidgets.QTableWidgetItem(mat_str)
 
-            dims = f"{pieza.get('largo', 0)}×{pieza.get('ancho', 0)}×{pieza.get('espesor', 0)}"
+            dims = f"{pieza.get('largo', 0)}×{pieza.get('ancho', 0)}×{pieza.get('espesor', 0)}"  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
             dims_item = QtWidgets.QTableWidgetItem(dims)
 
             qty = QtWidgets.QTableWidgetItem(str(pieza.get("cantidad", 1)))

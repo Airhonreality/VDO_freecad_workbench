@@ -74,7 +74,7 @@ class AccionesInspectorMixin:
                     "[VDO] No se pudieron actualizar las dimensiones del header")
         self._actualizar_vista_completa()
 
-    def _on_habitante_vano_cambiado(self, tipo_hab, cfg):
+    def _on_habitante_vano_cambiado(self, tipo_hab, cfg):  # noqa: C901 - complejidad 15 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
         obj = self._obj_actual
         if obj is None or Layout is None:
             return

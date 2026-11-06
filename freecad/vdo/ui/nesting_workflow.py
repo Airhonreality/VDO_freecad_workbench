@@ -273,7 +273,7 @@ class NestingDialog(QtWidgets.QDialog):
     def _ejecutar_nesting(self, shapes, width, height, spacing, algo, generations):
         # Ejecutar nesting
         App.Console.PrintMessage(f"\n🔄 Ejecutando nesting ({algo})...")
-        App.Console.PrintMessage(f"   Tablero: {width}×{height} mm, Espaciado: {spacing} mm")
+        App.Console.PrintMessage(f"   Tablero: {width}×{height} mm, Espaciado: {spacing} mm")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
 
         sheets, unplaced, _steps, elapsed = nest(
             parts=shapes,

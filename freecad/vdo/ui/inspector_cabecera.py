@@ -74,7 +74,7 @@ class _BreadcrumbBar(QtWidgets.QWidget):
         self._nivel_activo = activo
 
         for label, clave in niveles:
-            sep = QtWidgets.QLabel(" › ")
+            sep = QtWidgets.QLabel(" › ")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
             tema.aplicar_estilo(sep, tema.ESTILO_SEPARADOR)
             self.layout.insertWidget(self.layout.count() - 1, sep)
 
@@ -97,7 +97,7 @@ class _BreadcrumbBar(QtWidgets.QWidget):
 class _MicroHeaderWidget(QtWidgets.QFrame):
     """
     Micro-Header editable de una sola línea según la Ley de Tufte:
-    📐 [ 600 W ] × [ 720 H ] × [ 580 D ] mm  │  Esp: [ 18 ] mm
+    📐 [ 600 W ] x [ 720 H ] x [ 580 D ] mm  |  Esp: [ 18 ] mm
     """
 
     sigDimensionesCambiadas = QtCore.Signal(float, float, float, float)  # (w, h, d, e)
@@ -138,7 +138,7 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
         self.spin_w.setFixedWidth(64)
         layout.addWidget(self.spin_w)
 
-        layout.addWidget(QtWidgets.QLabel("×"))
+        layout.addWidget(QtWidgets.QLabel("×"))  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
 
         # Alto (H)
         self.spin_h = VDO_DoubleSpinBox()
@@ -149,7 +149,7 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
         self.spin_h.setFixedWidth(64)
         layout.addWidget(self.spin_h)
 
-        layout.addWidget(QtWidgets.QLabel("×"))
+        layout.addWidget(QtWidgets.QLabel("×"))  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
 
         # Fondo (D)
         self.spin_d = VDO_DoubleSpinBox()

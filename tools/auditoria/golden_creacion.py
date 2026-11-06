@@ -148,7 +148,8 @@ def main():
     modo = os.environ.get("GOLDEN_MODO", "verificar")
     nuevo = generar()
     if modo == "regenerar":
-        texto = json.dumps(nuevo, indent=2, ensure_ascii=False) + "\n"  # serializa antes de escribir
+        # serializa antes de escribir
+        texto = json.dumps(nuevo, indent=2, ensure_ascii=False) + "\n"
         with open(GOLDEN, "w", encoding="utf-8") as f:
             f.write(texto)
         print("GOLDEN_ESCRITO", GOLDEN, flush=True)

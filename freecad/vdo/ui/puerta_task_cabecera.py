@@ -13,7 +13,7 @@ from freecad.vdo.ui import tema
 class PanelHeaderWidget(QtWidgets.QGroupBox):
     """Cabecera obligatoria para toda pieza física del sistema VDO.
 
-    Muestra: [ Identificador ] [ Largo × Ancho × Espesor mm ]
+    Muestra: [ Identificador ] [ Largo x Ancho x Espesor mm ]
              [ Cantos: Norte, Sur, Este, Oeste ]
     """
 
@@ -31,7 +31,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
 
         self.lbl_dimensiones = QtWidgets.QLabel("—")
         self.lbl_dimensiones.setToolTip(
-            "Dimensiones brutas de corte: Largo × Ancho × Espesor (mm).")
+            "Dimensiones brutas de corte: Largo × Ancho × Espesor (mm).")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
         layout.addWidget(self.lbl_dimensiones)
 
         self.lbl_cantos = QtWidgets.QLabel("")
@@ -42,7 +42,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
     def set_pieza(self, identificador, largo, ancho, espesor, cantos=None):
         self.lbl_id.setText(str(identificador or "Pieza"))
         self.lbl_dimensiones.setText(
-            f"{float(largo):.1f} × {float(ancho):.1f} × "
+            f"{float(largo):.1f} × {float(ancho):.1f} × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
             f"{float(espesor):.1f} mm")
         cantos = cantos or {}
         partes = []

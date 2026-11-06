@@ -1,4 +1,5 @@
-"""Tipos de salida de la resolución de vanos (ResolvedTrack, ResolvedCell, PanelPiece, ResolvedLayout)."""
+"""Tipos de salida de la resolución de vanos (ResolvedTrack, ResolvedCell, PanelPiece,
+ResolvedLayout)."""
 
 from freecad.vdo.core.layout_modelo import EPS
 
@@ -134,8 +135,8 @@ class ResolvedLayout:
 
     def summary(self):
         lineas = [
-            f"Matriz {len(self.columns)} × {len(self.rows)}",
-            f"Interior: {self.inner_w:.1f} × {self.inner_h:.1f} mm",
+            f"Matriz {len(self.columns)} × {len(self.rows)}",  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+            f"Interior: {self.inner_w:.1f} × {self.inner_h:.1f} mm",  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
             f"Paneles internos: {len(self.pieces)}",
         ]
         if self.overflow:

@@ -9,6 +9,8 @@ Los imports pesados (core, ui, Qt) se hacen dentro de Activated(), así que impo
 módulo es barato y no carga GUI.
 """
 
+from typing import ClassVar
+
 import FreeCAD as App
 
 from freecad.vdo.core.paths import ruta_icono
@@ -50,7 +52,7 @@ class _ComandoCreacion(_ComandoBase):
     """Crea un módulo con crear_modulo_interactivo(module_key, configuracion)."""
 
     MODULE_KEY = None
-    CONFIG = {}
+    CONFIG: ClassVar[dict] = {}
 
     def Activated(self):
         # Entrada (commands.py) = composición: aquí se inyecta la interfaz en app/.
@@ -82,7 +84,7 @@ class CmdPanelEstandar(_ComandoCreacion):
     TOOLTIP = "Panel estándar paramétrico"
     ICONO = "vdo_panel_estandar.svg"
     MODULE_KEY = "panel_estandar"
-    CONFIG = {
+    CONFIG: ClassVar[dict] = {
         "nombre": "Panel_Base",
         "etiqueta": "Panel Estándar",
         "orientacion": "horizontal",
@@ -96,7 +98,7 @@ class CmdPanelFachada(_ComandoCreacion):
     TOOLTIP = "Panel fachada paramétrico"
     ICONO = "vdo_panel_fachada.svg"
     MODULE_KEY = "panel_fachada"
-    CONFIG = {
+    CONFIG: ClassVar[dict] = {
         "nombre": "Fachada_Principal",
         "etiqueta": "Fachada",
         "orientacion": "vertical",
@@ -110,7 +112,7 @@ class CmdCoco4C(_ComandoCreacion):
     TOOLTIP = "Cajón 4 caras paramétrico"
     ICONO = "vdo_coco.svg"
     MODULE_KEY = "coco_4c"
-    CONFIG = {"nombre": "COCO_4C"}  # resto de valores: module_specs
+    CONFIG: ClassVar[dict] = {"nombre": "COCO_4C"}  # resto de valores: module_specs
 
 
 class CmdPanelDivision(_ComandoCreacion):
@@ -118,7 +120,7 @@ class CmdPanelDivision(_ComandoCreacion):
     TOOLTIP = "Panel divisor vertical paramétrico"
     ICONO = "vdo_panel.svg"
     MODULE_KEY = "panel_division"
-    CONFIG = {
+    CONFIG: ClassVar[dict] = {
         "nombre": "Division_1",
         "etiqueta": "División",
         "orientacion": "vertical",
@@ -132,7 +134,7 @@ class CmdZocalo(_ComandoCreacion):
     TOOLTIP = "Zócalo paramétrico de base"
     ICONO = "vdo_zocalo.svg"
     MODULE_KEY = "zocalo"
-    CONFIG = {"nombre": "Zocalo"}
+    CONFIG: ClassVar[dict] = {"nombre": "Zocalo"}
 
 
 class CmdPuerta(_ComandoCreacion):
@@ -140,7 +142,7 @@ class CmdPuerta(_ComandoCreacion):
     TOOLTIP = "Puerta paramétrica (batiente, parche)"
     ICONO = "vdo_puerta.svg"
     MODULE_KEY = "puerta"
-    CONFIG = {
+    CONFIG: ClassVar[dict] = {
         "nombre": "Puerta",
         "tipo_sistema": "Batiente Vertical",
         "tipo_montaje": "Parche",
@@ -158,7 +160,8 @@ class CmdPuerta(_ComandoCreacion):
     }
 
     def Activated(self):
-        # Guarda de seguridad: cerrar un diálogo activo antes de crear (lo que hacía el antiguo macro).
+        # Guarda de seguridad: cerrar un diálogo activo antes de crear
+        # (lo que hacía el antiguo macro).
         if _gui_activa():
             try:
                 import FreeCADGui as Gui
@@ -175,7 +178,7 @@ class CmdCajonOculta(_ComandoCreacion):
     TOOLTIP = "Cajón con corredera oculta"
     ICONO = "vdo_cajon.svg"
     MODULE_KEY = "cajon_oculta"
-    CONFIG = {"nombre": "Cajon_Oculta"}
+    CONFIG: ClassVar[dict] = {"nombre": "Cajon_Oculta"}
 
 
 # ---------------------------------------------------------------------
@@ -199,7 +202,8 @@ class CmdEditarVDO(_ComandoBase):
         )
         seleccion = Gui.Selection.getSelection()
         if not seleccion:
-            App.Console.PrintWarning("[VDO] Selecciona un módulo VDO en el árbol o en la vista 3D.\n")
+            App.Console.PrintWarning(
+                "[VDO] Selecciona un módulo VDO en el árbol o en la vista 3D.\n")
             return
         for obj in seleccion:
             App.Console.PrintMessage(diagnostico_viewprovider(obj) + "\n")

@@ -165,6 +165,6 @@ def make_zocalo(doc, configuracion):
     doc.recompute()
     _get_app().Console.PrintMessage(
         f"[VDO] Zócalo '{nombre}' creado "
-        f"({float(obj.Ancho):.0f} × {float(obj.Fondo):.0f} × "
+        f"({float(obj.Ancho):.0f} × {float(obj.Fondo):.0f} × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
         f"{float(obj.AltoZocalo):.0f} mm).\n")
     return obj

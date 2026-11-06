@@ -81,7 +81,8 @@ def _ejecutar(directorio, salida):
     except ImportError:
         pass
 
-    descubiertos = unittest.defaultTestLoader.discover(directorio, pattern="test_*.py", top_level_dir=directorio)
+    descubiertos = unittest.defaultTestLoader.discover(
+        directorio, pattern="test_*.py", top_level_dir=directorio)
     # unittest vacía la suite al ejecutarla: los ids se recogen antes
     todos = [t.id() for t in _ids(descubiertos)]
     resultado = _Registro()
@@ -96,7 +97,8 @@ def _ejecutar(directorio, salida):
     filas += [("ERROR", t.id(), _ultima(tb)) for t, tb in resultado.errors]
     filas += [("SKIP", t.id(), motivo) for t, motivo in resultado.skipped]
 
-    ejecutados_o_omitidos = {t.id() for t, _ in resultado.failures + resultado.errors + resultado.skipped}
+    ejecutados_o_omitidos = {t.id() for t, _ in
+                             resultado.failures + resultado.errors + resultado.skipped}
     # Si setUpClass omite la clase (entorno ausente), sus tests no llegan a iniciarse.
     # Se reportan como SKIP con el mismo motivo impreso por setUpClass, no como NO_EJECUTADO.
     omitidas_por_clase = {}
@@ -122,8 +124,10 @@ def _ejecutar(directorio, salida):
     with open(salida, "w", encoding="utf-8") as f:
         for estado, tid, detalle in filas:
             f.write("{} {}{}\n".format(estado, tid, (" :: " + detalle[:300]) if detalle else ""))
-        f.write(f"\nRESUMEN ejecutados={n_ok + n_fail + n_error + n_skip} fallos={n_fail} errores={n_error} skip={n_skip} no_ejecutado={n_no_exec}\n")
-    print(f"RESUMEN ejecutados={n_ok + n_fail + n_error + n_skip} fallos={n_fail} errores={n_error} skip={n_skip} no_ejecutado={n_no_exec} -> {salida}")
+        f.write(f"\nRESUMEN ejecutados={n_ok + n_fail + n_error + n_skip} "
+                f"fallos={n_fail} errores={n_error} skip={n_skip} no_ejecutado={n_no_exec}\n")
+    print(f"RESUMEN ejecutados={n_ok + n_fail + n_error + n_skip} "
+          f"fallos={n_fail} errores={n_error} skip={n_skip} no_ejecutado={n_no_exec} -> {salida}")
     # Código de salida honesto: cualquier FALLO o ERROR devuelve 1 (F19-D1).
     # Antes el runner salía con 0 aunque hubiera fallos.
     return 1 if (n_fail or n_error or n_no_exec) else 0

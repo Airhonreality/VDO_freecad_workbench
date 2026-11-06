@@ -34,7 +34,7 @@ class ArbolPintadoMixin:
 
     def _crear_raiz_vanos(self):
         root = QtWidgets.QTreeWidgetItem([
-            f"COCO — Matriz {len(self.layout.columns)} × "
+            f"COCO — Matriz {len(self.layout.columns)} × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
             f"{len(self.layout.rows)}", "", "", ""])
         root.setFlags(root.flags() & ~QtCore.Qt.ItemIsSelectable)
         self.tree.addTopLevelItem(root)
@@ -90,7 +90,7 @@ class ArbolPintadoMixin:
                 corredera = cfg.get("corredera", "Oculta")
                 apertura = cfg.get("apertura", "Tirador")
                 child = QtWidgets.QTreeWidgetItem([
-                    f"🗄️ Cajón ×{cantidad} ({corredera} · {apertura})",
+                    f"🗄️ Cajón ×{cantidad} ({corredera} · {apertura})",  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
                     "", "", ""])
                 child.setData(0, ROLE_DATA, {
                     "kind": "contenido_hijo",
@@ -153,7 +153,7 @@ class ArbolPintadoMixin:
         })
         item.setToolTip(
             0, f"{pieza['nombre']}\n"
-               f"{pieza['largo']:.1f} × {pieza['ancho']:.1f} × "
+               f"{pieza['largo']:.1f} × {pieza['ancho']:.1f} × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
                f"{pieza['espesor']:.1f} mm")
         parent.addChild(item)
         return item

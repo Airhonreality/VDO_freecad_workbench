@@ -55,7 +55,7 @@ def _nombre_unico(doc: Any, base: str) -> str:
     return f"{base}_{i:03d}"
 
 
-def crear_modulo_interactivo(
+def crear_modulo_interactivo(  # noqa: C901 - complejidad 16 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
     module_key: str,
     config: dict[str, Any] | None = None,
     *,
