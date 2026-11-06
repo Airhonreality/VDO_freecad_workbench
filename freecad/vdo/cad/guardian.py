@@ -9,7 +9,9 @@ No contiene lógica de dominio: solo escribe lo que core/planifica.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from fractions import Fraction
+from typing import Any, Final
 
 import FreeCAD as App
 
@@ -17,11 +19,11 @@ from freecad.vdo.core import defaults as VDO_D
 from freecad.vdo.core import manifest as VM
 from freecad.vdo.core.errores import ParametroInvalido
 
-HOJA_GLOBAL = "Params_Melamina"
-HOJA_LOCAL = "Params"
+HOJA_GLOBAL: Final = "Params_Melamina"
+HOJA_LOCAL: Final = "Params"
 
 
-def _obtener_hoja(doc, nombre):
+def _obtener_hoja(doc: Any, nombre: str) -> Any:  # objeto de FreeCAD: sin tipos
     """Obtiene la hoja de cálculo ``nombre``; la crea si no existe."""
     hoja = doc.getObject(nombre)
     if hoja is None:
@@ -30,15 +32,15 @@ def _obtener_hoja(doc, nombre):
     return hoja
 
 
-def _tiene_alias(hoja, celda):
+def _tiene_alias(hoja: Any, celda: str) -> bool:  # hoja de FreeCAD: sin tipos
     return hoja.getAlias(celda) is not None
 
 
 # Por encima de 2^53 un entero no se representa exactamente como double.
-LIMITE_EXACTO = 2 ** 53
+LIMITE_EXACTO: Final = 2 ** 53
 
 
-def _celda_numerica(valor):
+def _celda_numerica(valor: Any) -> str:  # valor del manifiesto (JSON): Any
     """Contenido de celda que FreeCAD lee igual con cualquier LC_NUMERIC.
 
     Con locale de coma decimal, FreeCAD lee "0.4" como 0 (D-11). Las
@@ -58,8 +60,9 @@ def _celda_numerica(valor):
     return f"={fraccion.numerator}/{fraccion.denominator}"
 
 
-def _asegurar_parametros(hoja, fila_inicio, fila_valor, fila_descripcion,
-                         parametros):
+def _asegurar_parametros(hoja: Any, fila_inicio: int, fila_valor: str,
+                         fila_descripcion: str,
+                         parametros: Mapping[str, Mapping[str, Any]]) -> None:
     """Inyecta etiqueta/valor+alias/descripcion en cada fila de parametros.
 
     Solo escribe celdas sin alias: respeta cualquier valor ya editado.
@@ -81,7 +84,7 @@ def _asegurar_parametros(hoja, fila_inicio, fila_valor, fila_descripcion,
             f"[VDO Guardian] Parametro '{nombre}' = {info['valor']} mm")
 
 
-def asegurar_hoja_global(doc):
+def asegurar_hoja_global(doc: Any) -> Any:  # documento de FreeCAD: sin tipos
     """Capa Global (Reglas de Taller): hoja Params_Melamina."""
     nombre = VM.VDO_MANIFEST.get("capa_global", {}).get("hoja", HOJA_GLOBAL)
     hoja = _obtener_hoja(doc, nombre)
@@ -101,7 +104,7 @@ def asegurar_hoja_global(doc):
     return hoja
 
 
-def asegurar_params_local(doc):
+def asegurar_params_local(doc: Any) -> Any:  # documento de FreeCAD: sin tipos
     """Capa Local (Contenedores y Módulos): hoja Params del módulo."""
     nombre = VM.VDO_MANIFEST.get("capa_local", {}).get("hoja", HOJA_LOCAL)
     hoja = _obtener_hoja(doc, nombre)
@@ -116,7 +119,7 @@ def asegurar_params_local(doc):
     return hoja
 
 
-def asegurar_documento():
+def asegurar_documento() -> Any:  # documento de FreeCAD: sin tipos
     """Devuelve el documento activo, creando uno si no hay ninguno."""
     doc = App.ActiveDocument
     if doc is None:
@@ -126,7 +129,7 @@ def asegurar_documento():
     return doc
 
 
-def vdo_guard(doc=None):
+def vdo_guard(doc: Any = None) -> Any:  # documento de FreeCAD: sin tipos
     """Punto de entrada: valida el documento e inyecta el entorno completo."""
     if doc is None:
         doc = asegurar_documento()
