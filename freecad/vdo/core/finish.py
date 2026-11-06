@@ -4,6 +4,9 @@ No escribe geometria. Recibe piezas descritas por ``rol`` y devuelve el
 mismo listado con un diccionario ``cantos`` por borde de tablero.
 """
 
+from collections.abc import Iterable, Mapping
+from typing import Any
+
 from freecad.vdo.core import frames as FR
 
 CANTO_VISTO = "RIG"
@@ -23,7 +26,7 @@ ROLES = (
 )
 
 
-def _mapa(rol, tapa, base):
+def _mapa(rol: str, tapa: str, base: str) -> dict[str, str | None]:
     if rol in ("lateral_izquierdo", "lateral_derecho"):
         return {
             "oeste": FR.FRENTE,
@@ -61,7 +64,8 @@ def _mapa(rol, tapa, base):
     return {}
 
 
-def cantos_para_rol(rol, lados_vistos, tapa="externo", base="interno"):
+def cantos_para_rol(rol: str, lados_vistos: Any, tapa: str = "externo",
+                    base: str = "interno") -> dict[str, str]:
     vistos = set(FR.interpretar_lados(lados_vistos))
     mapa = _mapa(rol, tapa, base)
     return {
@@ -70,14 +74,15 @@ def cantos_para_rol(rol, lados_vistos, tapa="externo", base="interno"):
     }
 
 
-def aplicar_cantos(piezas, lados_vistos, lados_apoyados=(),
-                   tapa="externo", base="interno"):
+def aplicar_cantos(piezas: Iterable[Mapping[str, Any]], lados_vistos: Any,
+                   lados_apoyados: Any = (),
+                   tapa: str = "externo", base: str = "interno") -> list[dict[str, Any]]:
     vistos = FR.interpretar_lados(lados_vistos)
     apoyados = [
         lado for lado in FR.interpretar_lados(lados_apoyados)
         if lado not in vistos
     ]
-    resultado = []
+    resultado: list[dict[str, Any]] = []
     for original in piezas:
         pieza = dict(original)
         pieza["cantos"] = cantos_para_rol(
