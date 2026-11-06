@@ -178,24 +178,20 @@ class EdicionDivisionesMixin:
     # Acciones del inspector
     # -----------------------------------------------------------------
     def _on_col_fixed(self, *args):
-        if self._building or not self._selected_data:
-            return
-        data = self._selected_data
-        if data["kind"] != "cell":
-            return
-        valor = (self.spin_col_fixed.value()
-                 if self.chk_col_fixed.isChecked() else None)
-        self.layout.set_column_fixed(data["col_index"], valor)
-        self._rebuild_y_avisar()
+        self._aplicar_fijo(("cell",), self.chk_col_fixed, self.spin_col_fixed,
+                           "col_index", self.layout.set_column_fixed)
     def _on_row_fixed(self, *args):
+        self._aplicar_fijo(("cell", "row"), self.chk_row_fixed, self.spin_row_fixed,
+                           "row_index", self.layout.set_row_fixed)
+    def _aplicar_fijo(self, tipos, chk, spin, clave_indice, fijar):
+        """Fija (o libera) la columna/fila de la selección con el valor de `spin` si `chk` está marcado."""
         if self._building or not self._selected_data:
             return
         data = self._selected_data
-        if data["kind"] not in ("cell", "row"):
+        if data["kind"] not in tipos:
             return
-        valor = (self.spin_row_fixed.value()
-                 if self.chk_row_fixed.isChecked() else None)
-        self.layout.set_row_fixed(data["row_index"], valor)
+        valor = spin.value() if chk.isChecked() else None
+        fijar(data[clave_indice], valor)
         self._rebuild_y_avisar()
     def _on_cell_fixed(self, *args):
         if self._building or not self._selected_data:
