@@ -9,9 +9,10 @@
 import json
 import os
 from types import MappingProxyType
+from typing import Any
 
 
-def _obtener_json():
+def _obtener_json() -> Any:  # Any: JSON del manifiesto, sin esquema fijo en código
     """Carga vdo_manifest.json directamente, sin caché de módulo."""
     macro_dir = os.path.dirname(os.path.abspath(__file__))
     json_path = os.path.join(macro_dir, "vdo_manifest.json")

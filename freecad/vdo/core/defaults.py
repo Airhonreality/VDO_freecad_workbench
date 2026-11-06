@@ -5,10 +5,13 @@
 # o se carga fresco por llamada (sin caché en _MANIFEST).
 # =====================================================================
 
+from typing import Any
+
 from freecad.vdo.core.manifest import _obtener_json as _cargar_json_fresco
 
 
-def get_param(ruta, default=None, manifest=None):
+# Any: el manifiesto es JSON con valores heterogeneos; get_param devuelve el valor tal cual.
+def get_param(ruta: str, default: Any = None, manifest: Any = None) -> Any:
     """
     Obtiene un parámetro del manifest por ruta de acceso.
 
@@ -73,7 +76,7 @@ ORIENTACION_DEFAULT = (
 )
 
 
-def obtener_mapeo_orientacion(orientacion):
+def obtener_mapeo_orientacion(orientacion: str) -> Any:  # Any: mapeo de ejes leido del JSON
     """Devuelve el mapeo de ejes de una orientación desde el manifest.
 
     Args:
