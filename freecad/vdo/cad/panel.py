@@ -20,95 +20,52 @@ from freecad.vdo.core.vdo_panel_core import (
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 
+# (nombre, tipo, descripción, valor por defecto, opciones o None)
+_PROPS_REENGROSE = (
+    ("VDO_Reengrose_Activo", "App::PropertyBool",
+     "Activa una tira o duplicado de refuerzo sobre el panel", False, None),
+    ("VDO_Reengrose_Orientacion", "App::PropertyEnumeration",
+     "Paralela al largo del panel o transversal cruzando el ancho",
+     "paralela", VDO_RE_MODELO.ORIENTACIONES),
+    ("VDO_Reengrose_Ancho", "App::PropertyLength",
+     "Ancho de la tira de refuerzo en mm", 70.0, None),
+    ("VDO_Reengrose_Espesor", "App::PropertyLength",
+     "Espesor de la tira; 0 usa el espesor del panel base", 0.0, None),
+    ("VDO_Reengrose_Cara", "App::PropertyEnumeration",
+     "Cara del tablero donde se adhiere el refuerzo",
+     "cara_a", VDO_RE_MODELO.CARAS),
+    ("VDO_Reengrose_Alineacion", "App::PropertyEnumeration",
+     "Posicion de la tira hacia el frente, centro o fondo",
+     "frente", VDO_RE_MODELO.ALINEACIONES),
+    ("VDO_Reengrose_Modo", "App::PropertyEnumeration",
+     "Tira independiente o pacha encolada y canteada en bloque",
+     "pacha", VDO_RE_MODELO.MODOS),
+    ("VDO_Reengrose_Alcance", "App::PropertyEnumeration",
+     "Pacha parcial en tira o pacha total de toda la cara",
+     "parcial", VDO_RE_MODELO.ALCANCES),
+    ("VDO_Reengrose_PoliticaRepisa", "App::PropertyEnumeration",
+     "Ante colision con repisa: retroceder o mochear en escuadra",
+     "retroceder", VDO_RE_MODELO.POLITICAS_REPISA),
+    ("VDO_Reengrose_PrioridadEncuentro", "App::PropertyEnumeration",
+     "Prioridad al cruzar tiras: vertical, horizontal o inglete 45",
+     "vertical_domina", VDO_RE_MODELO.PRIORIDADES_ENCUENTRO),
+    ("VDO_Reengrose_ChoqueNucleo", "App::PropertyEnumeration",
+     "Choque contra panel nucleo: retroceso, mocheo o interrumpir tira",
+     "retroceso", VDO_RE_MODELO.MODOS_CHOQUE_NUCLEO),
+    ("VDO_Reengrose_JSON", "App::PropertyString",
+     "Instantanea JSON del modificador de reengrose", "", None),
+)
+
+
 def add_reengrose_props(obj):
     """Anade las propiedades del motor de reengrose a un panel L1."""
-    if not hasattr(obj, "VDO_Reengrose_Activo"):
-        obj.addProperty(
-            "App::PropertyBool", "VDO_Reengrose_Activo", "Reengrose",
-            "Activa una tira o duplicado de refuerzo sobre el panel"
-        ).VDO_Reengrose_Activo = False
-
-    if not hasattr(obj, "VDO_Reengrose_Orientacion"):
-        prop = obj.addProperty(
-            "App::PropertyEnumeration", "VDO_Reengrose_Orientacion",
-            "Reengrose",
-            "Paralela al largo del panel o transversal cruzando el ancho")
-        prop.VDO_Reengrose_Orientacion = list(VDO_RE_MODELO.ORIENTACIONES)
-        obj.VDO_Reengrose_Orientacion = "paralela"
-
-    if not hasattr(obj, "VDO_Reengrose_Ancho"):
-        obj.addProperty(
-            "App::PropertyLength", "VDO_Reengrose_Ancho", "Reengrose",
-            "Ancho de la tira de refuerzo en mm"
-        ).VDO_Reengrose_Ancho = 70.0
-
-    if not hasattr(obj, "VDO_Reengrose_Espesor"):
-        obj.addProperty(
-            "App::PropertyLength", "VDO_Reengrose_Espesor", "Reengrose",
-            "Espesor de la tira; 0 usa el espesor del panel base"
-        ).VDO_Reengrose_Espesor = 0.0
-
-    if not hasattr(obj, "VDO_Reengrose_Cara"):
-        prop = obj.addProperty(
-            "App::PropertyEnumeration", "VDO_Reengrose_Cara", "Reengrose",
-            "Cara del tablero donde se adhiere el refuerzo")
-        prop.VDO_Reengrose_Cara = list(VDO_RE_MODELO.CARAS)
-        obj.VDO_Reengrose_Cara = "cara_a"
-
-    if not hasattr(obj, "VDO_Reengrose_Alineacion"):
-        prop = obj.addProperty(
-            "App::PropertyEnumeration", "VDO_Reengrose_Alineacion",
-            "Reengrose",
-            "Posicion de la tira hacia el frente, centro o fondo")
-        prop.VDO_Reengrose_Alineacion = list(VDO_RE_MODELO.ALINEACIONES)
-        obj.VDO_Reengrose_Alineacion = "frente"
-
-    if not hasattr(obj, "VDO_Reengrose_Modo"):
-        prop = obj.addProperty(
-            "App::PropertyEnumeration", "VDO_Reengrose_Modo", "Reengrose",
-            "Tira independiente o pacha encolada y canteada en bloque")
-        prop.VDO_Reengrose_Modo = list(VDO_RE_MODELO.MODOS)
-        obj.VDO_Reengrose_Modo = "pacha"
-
-    if not hasattr(obj, "VDO_Reengrose_Alcance"):
-        prop = obj.addProperty(
-            "App::PropertyEnumeration", "VDO_Reengrose_Alcance",
-            "Reengrose",
-            "Pacha parcial en tira o pacha total de toda la cara")
-        prop.VDO_Reengrose_Alcance = list(VDO_RE_MODELO.ALCANCES)
-        obj.VDO_Reengrose_Alcance = "parcial"
-
-    if not hasattr(obj, "VDO_Reengrose_PoliticaRepisa"):
-        prop = obj.addProperty(
-            "App::PropertyEnumeration", "VDO_Reengrose_PoliticaRepisa",
-            "Reengrose",
-            "Ante colision con repisa: retroceder o mochear en escuadra")
-        prop.VDO_Reengrose_PoliticaRepisa = list(VDO_RE_MODELO.POLITICAS_REPISA)
-        obj.VDO_Reengrose_PoliticaRepisa = "retroceder"
-
-    if not hasattr(obj, "VDO_Reengrose_PrioridadEncuentro"):
-        prop = obj.addProperty(
-            "App::PropertyEnumeration", "VDO_Reengrose_PrioridadEncuentro",
-            "Reengrose",
-            "Prioridad al cruzar tiras: vertical, horizontal o inglete 45")
-        prop.VDO_Reengrose_PrioridadEncuentro = list(
-            VDO_RE_MODELO.PRIORIDADES_ENCUENTRO)
-        obj.VDO_Reengrose_PrioridadEncuentro = "vertical_domina"
-
-    if not hasattr(obj, "VDO_Reengrose_ChoqueNucleo"):
-        prop = obj.addProperty(
-            "App::PropertyEnumeration", "VDO_Reengrose_ChoqueNucleo",
-            "Reengrose",
-            "Choque contra panel nucleo: retroceso, mocheo o interrumpir tira")
-        prop.VDO_Reengrose_ChoqueNucleo = list(
-            VDO_RE_MODELO.MODOS_CHOQUE_NUCLEO)
-        obj.VDO_Reengrose_ChoqueNucleo = "retroceso"
-
-    if not hasattr(obj, "VDO_Reengrose_JSON"):
-        obj.addProperty(
-            "App::PropertyString", "VDO_Reengrose_JSON", "Reengrose",
-            "Instantanea JSON del modificador de reengrose"
-        ).VDO_Reengrose_JSON = ""
+    for nombre, tipo, descripcion, defecto, opciones in _PROPS_REENGROSE:
+        if hasattr(obj, nombre):
+            continue
+        prop = obj.addProperty(tipo, nombre, "Reengrose", descripcion)
+        if opciones is not None:
+            setattr(prop, nombre, list(opciones))
+        setattr(obj, nombre, defecto)
 
 
 def _limpiar_expresion(obj, prop):
