@@ -4,11 +4,13 @@
 # carcasa (laterales, base, techo y fondo). Extraído de coco.py (D-39).
 # =====================================================================
 
+from typing import Any
+
 from freecad.vdo.core import defaults as VDO_D
 from freecad.vdo.core.helpers import _get_app, _get_part
 
 
-def leer_parametros(fp):
+def leer_parametros(fp: Any) -> tuple[Any, ...]:
     """Lee los parámetros dimensionales y de configuración del COCO."""
     alto = float(fp.Alto)
     ancho = float(fp.Ancho)
@@ -24,7 +26,9 @@ def leer_parametros(fp):
             calibre_fondo, prof_ranura, dist_borde)
 
 
-def cajas_carcasa(alto, ancho, fondo, espesor, tapa, base):
+def cajas_carcasa(
+    alto: Any, ancho: Any, fondo: Any, espesor: Any, tapa: Any, base: Any,
+) -> tuple[Any, ...]:
     """Calcula laterales, base y techo del cofre (sin fondo)."""
     lat_height = alto
     lat_pos_z = 0.0
@@ -76,9 +80,11 @@ def cajas_carcasa(alto, ancho, fondo, espesor, tapa, base):
             panel_techo)
 
 
-def caja_fondo(alto, ancho, fondo, espesor, tiene_fondo, calibre_fondo,
-               prof_ranura, dist_borde, lat_izq, lat_der, panel_base,
-               panel_techo, boxes):
+def caja_fondo(
+    alto: Any, ancho: Any, fondo: Any, espesor: Any, tiene_fondo: Any,
+    calibre_fondo: Any, prof_ranura: Any, dist_borde: Any, lat_izq: Any,
+    lat_der: Any, panel_base: Any, panel_techo: Any, boxes: Any,
+) -> tuple[Any, ...]:
     """Calcula el fondo en Y+ y las ranuras de los paneles. Añade los
     paneles y el fondo a boxes in situ."""
     # --- Fondo en Y+ (nunca en el frente) ---

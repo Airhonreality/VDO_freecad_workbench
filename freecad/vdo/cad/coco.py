@@ -7,6 +7,7 @@
 # =====================================================================
 
 import json
+from typing import Any
 
 from freecad.vdo.cad.coco_carcasa import (
     caja_fondo,
@@ -40,7 +41,7 @@ from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 class CocoFeature:
     """FeaturePython que genera la geometría de un cofre COCO."""
 
-    def __init__(self, obj):
+    def __init__(self, obj: Any) -> None:  # Any: objeto FeaturePython de FreeCAD
         obj.addProperty("App::PropertyLength", "Alto", "Dimensiones",
                         "Alto total del módulo (mm)").Alto = VDO_D.ALTO_DEFAULT
         obj.addProperty("App::PropertyLength", "Ancho", "Dimensiones",
@@ -91,13 +92,13 @@ class CocoFeature:
 
         obj.Proxy = self
 
-    def execute(self, fp):
+    def execute(self, fp: Any) -> None:  # Any: FeaturePython de FreeCAD
         """Reconstruir la geometría del cofre."""
 
         (alto, ancho, fondo, espesor, tapa, base, tiene_fondo,
          calibre_fondo, prof_ranura, dist_borde) = leer_parametros(fp)
 
-        boxes = []
+        boxes: list[Any] = []  # Any: formas de FreeCAD (Part.Shape)
 
         (lat_height, base_length, base_pos_x, base_pos_z, techo_length,
          techo_pos_x, techo_pos_z, lat_izq, lat_der, panel_base,
@@ -142,14 +143,14 @@ class CocoFeature:
         # todos sus hijos se mueven rígidamente con él.
         propagar_placement(fp)
 
-    def dumps(self):
+    def dumps(self) -> None:
         return None
 
-    def loads(self, state):
+    def loads(self, state: Any) -> None:  # Any: estado de serializacion de FreeCAD
         return None
 
 
-def make_coco(doc, configuracion):
+def make_coco(doc: Any, configuracion: dict[str, Any]) -> Any:  # Any: documento y objeto de FreeCAD
     """
     Crea un COCO FeaturePython con propiedades configurables.
 

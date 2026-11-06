@@ -5,6 +5,7 @@
 # =====================================================================
 
 import logging
+from typing import Any
 
 from freecad.vdo.core import reengrose_encuentros as VDO_RE_ENCUENTROS
 from freecad.vdo.core.helpers import _get_part
@@ -41,8 +42,10 @@ def _cortar_shape(forma, recorte):
     return _get_part().makeCompound(solidos)
 
 
-def resolver_tiras_divisiones(resuelto, shell_tiras, divisiones_piezas,
-                              divs, boxes, indice_divs):
+def resolver_tiras_divisiones(
+    resuelto: Any, shell_tiras: Any, divisiones_piezas: Any,
+    divs: Any, boxes: Any, indice_divs: Any,
+) -> Any:
     """Segmenta las tiras de carcasa alrededor de las divisiones y resuelve
     tiras contra tiras. Modifica divs y boxes in situ.
 
@@ -85,8 +88,10 @@ def resolver_tiras_divisiones(resuelto, shell_tiras, divisiones_piezas,
     return division_tiras
 
 
-def cortar_shells_contra_nucleos(division_tiras, shell_refs, shell_cores,
-                                 divs, boxes):
+def cortar_shells_contra_nucleos(
+    division_tiras: Any, shell_refs: Any, shell_cores: Any,
+    divs: Any, boxes: Any,
+) -> None:
     """Recorta cada tira de carcasa contra los núcleos y las divisiones.
     Modifica boxes in situ."""
     from freecad.vdo.cad.coco_espacios import _shape_tira

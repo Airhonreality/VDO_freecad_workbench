@@ -5,6 +5,8 @@
 # función de módulo con sus variables como argumentos.
 # =====================================================================
 
+from typing import Any
+
 from freecad.vdo.cad.geometria import forma_ref
 from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
@@ -75,8 +77,10 @@ def _aplicar_shell(boxes, shell_info, shell_tiras, shell_refs, obstaculos,
         obstaculos.append(tira)
 
 
-def preparar_carcasa(fp, lat_izq, lat_der, panel_base, panel_techo,
-                     fondo_box):
+def preparar_carcasa(
+    fp: Any, lat_izq: Any, lat_der: Any, panel_base: Any, panel_techo: Any,
+    fondo_box: Any,
+) -> tuple[Any, ...]:
     """Lee los reengroses de carcasa y prepara las listas y el mapa de
     núcleos de la carcasa."""
     reengroses = VDO_RE_MODIFICADOR.leer_reengroses(fp)
@@ -96,11 +100,13 @@ def preparar_carcasa(fp, lat_izq, lat_der, panel_base, panel_techo,
             shell_cores)
 
 
-def aplicar_carcasa(fp, espesor, ancho, alto, fondo, base_pos_x,
-                    base_length, base_pos_z, techo_pos_x, techo_length,
-                    techo_pos_z, tiene_fondo, f_x, f_y, f_z, f_len,
-                    calibre_fondo, f_alt, reengroses, obstaculos,
-                    shell_tiras, shell_info, shell_refs, boxes):
+def aplicar_carcasa(
+    fp: Any, espesor: Any, ancho: Any, alto: Any, fondo: Any, base_pos_x: Any,
+    base_length: Any, base_pos_z: Any, techo_pos_x: Any, techo_length: Any,
+    techo_pos_z: Any, tiene_fondo: Any, f_x: Any, f_y: Any, f_z: Any, f_len: Any,
+    calibre_fondo: Any, f_alt: Any, reengroses: Any, obstaculos: Any,
+    shell_tiras: Any, shell_info: Any, shell_refs: Any, boxes: Any,
+) -> None:
     """Aplica los reengroses a laterales, base, techo y fondo. Modifica
     las listas recibidas y boxes in situ."""
     _aplicar_shell(

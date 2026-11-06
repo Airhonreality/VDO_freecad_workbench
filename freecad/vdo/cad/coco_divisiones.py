@@ -5,8 +5,13 @@
 # =====================================================================
 
 
-def aplicar_divisiones(fp, alto, ancho, espesor, fondo, tiene_fondo, f_y,
-                       reengroses, obstaculos, boxes):
+from typing import Any
+
+
+def aplicar_divisiones(
+    fp: Any, alto: Any, ancho: Any, espesor: Any, fondo: Any, tiene_fondo: Any,
+    f_y: Any, reengroses: Any, obstaculos: Any, boxes: Any,
+) -> tuple[Any, ...]:
     """Genera las divisiones internas a partir de VDO_Divisiones.
 
     Añade las formas de las divisiones a boxes in situ y actualiza

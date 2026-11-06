@@ -6,6 +6,7 @@
 # =====================================================================
 
 import json
+from typing import Any
 
 from freecad.vdo.core import finish as VDO_FINISH
 from freecad.vdo.core import frames as VDO_FR
@@ -13,8 +14,10 @@ from freecad.vdo.core.coco_core import _expandir_reengrose
 from freecad.vdo.core.helpers import _get_part
 
 
-def paneles_carcasa(fp, fondo, lat_height, espesor, base_length,
-                    techo_length):
+def paneles_carcasa(
+    fp: Any, fondo: Any, lat_height: Any, espesor: Any, base_length: Any,
+    techo_length: Any,
+) -> Any:
     """Crea los paneles de carcasa (laterales, base y techo) para exportar.
 
     Devuelve (lados_vistos, lados_apoyados, paneles_data).
@@ -71,9 +74,11 @@ def paneles_carcasa(fp, fondo, lat_height, espesor, base_length,
     return lados_vistos, lados_apoyados, paneles_data
 
 
-def anadir_fondo_y_divisiones(fp, tiene_fondo, fondo_es_delgado, f_len,
-                              f_alt, calibre_fondo, paneles_data,
-                              divisiones_piezas):
+def anadir_fondo_y_divisiones(
+    fp: Any, tiene_fondo: Any, fondo_es_delgado: Any, f_len: Any,
+    f_alt: Any, calibre_fondo: Any, paneles_data: Any,
+    divisiones_piezas: Any,
+) -> None:
     """Añade a paneles_data el panel de fondo (si lo hay) y las piezas de
     divisiones. Modifica paneles_data in situ."""
     if tiene_fondo:
@@ -96,8 +101,10 @@ def anadir_fondo_y_divisiones(fp, tiene_fondo, fondo_es_delgado, f_len,
         paneles_data.append(pz)
 
 
-def exportar_paneles(fp, shell_info, tapa, base, lados_vistos,
-                     lados_apoyados, paneles_data):
+def exportar_paneles(
+    fp: Any, shell_info: Any, tapa: Any, base: Any, lados_vistos: Any,
+    lados_apoyados: Any, paneles_data: Any,
+) -> None:
     """Aplica reengroses, cantos y expansión a los paneles y escribe
     fp.VDO_Paneles_JSON."""
     for pz in paneles_data:
@@ -120,7 +127,7 @@ def exportar_paneles(fp, shell_info, tapa, base, lados_vistos,
     fp.VDO_Paneles_JSON = json.dumps(paneles_data, ensure_ascii=False)
 
 
-def ensamblar_forma(fp, boxes):
+def ensamblar_forma(fp: Any, boxes: Any) -> None:
     """Une las formas de boxes en un compound y lo asigna a fp.Shape."""
     solidos = []
     for forma in boxes:
@@ -135,7 +142,7 @@ def ensamblar_forma(fp, boxes):
     fp.Shape = _get_part().makeCompound(solidos)
 
 
-def propagar_placement(fp):
+def propagar_placement(fp: Any) -> None:
     """Mueve los insertos (hijos) rígidamente con el Placement del COCO."""
     # Cuando el COCO se mueve o rota (su Placement cambia),
     # todos sus hijos se mueven rígidamente con él.

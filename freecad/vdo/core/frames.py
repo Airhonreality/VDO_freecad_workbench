@@ -11,6 +11,7 @@ Este modulo es puro: no importa FreeCAD ni Qt.
 
 import json
 import math
+from typing import Any
 
 FRENTE = "frente"
 FONDO = "fondo"
@@ -123,7 +124,7 @@ def cargar_exposicion(obj, por_defecto_vistos=(FRENTE,),
     return vistos, apoyados
 
 
-def guardar_exposicion(obj, vistos, apoyados):
+def guardar_exposicion(obj: Any, vistos: Any, apoyados: Any) -> None:
     vistos = interpretar_lados(vistos)
     apoyados = [
         lado for lado in interpretar_lados(apoyados) if lado not in vistos]
