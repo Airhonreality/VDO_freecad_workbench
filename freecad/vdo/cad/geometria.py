@@ -70,5 +70,6 @@ def forma_ref(ref: dict) -> object | None:
                 float(ref.get("x", 0.0)),
                 float(ref.get("y", 0.0)),
                 float(ref.get("z", 0.0))))
-    except (TypeError, ValueError, Part.OCCError):
+    except (TypeError, ValueError, Part.OCCError) as exc:
+        App.Console.PrintWarning(f"[VDO] geometria: volumen no calculable, devuelve None: {exc}\n")
         return None

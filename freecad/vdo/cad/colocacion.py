@@ -22,7 +22,8 @@ def leer_rotacion(obj: Any) -> float:
     """Devuelve la rotación en grados (lee el atributo del objeto)."""
     try:
         return float(getattr(obj, "VDO_RotacionZ", 0.0))
-    except (TypeError, ValueError):
+    except (TypeError, ValueError) as exc:
+        App.Console.PrintWarning(f"[VDO] colocacion: valor no calculable, devuelve 0.0: {exc}\n")
         return 0.0
 
 
