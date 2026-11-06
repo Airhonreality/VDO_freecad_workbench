@@ -1,5 +1,7 @@
 """Geometria de refuerzos de reengrose sobre paneles y cajas de modulo."""
 
+from typing import Any
+
 from freecad.vdo.core.reengrose_modelo import _EJES, ReengroseError
 from freecad.vdo.core.reengrose_modificador import espesor_efectivo, normalizar_modificador
 from freecad.vdo.core.reengrose_tiras import generar_geometria_tiras_perimetrales
@@ -328,7 +330,8 @@ def calcular_geometria_caja(caja, modifier, ejes=None):
     return resultado
 
 
-def extras_por_cara(modifier, espesor_panel):
+# Any: modifier es un modificador de UI o de JSON, sin tipo fijo.
+def extras_por_cara(modifier: Any, espesor_panel: float) -> tuple[float, float]:
     """Devuelve el espesor extra que invade cada cara (+/-) del panel."""
     mod = normalizar_modificador(modifier)
     if not mod["activo"]:
