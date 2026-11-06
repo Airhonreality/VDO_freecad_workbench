@@ -246,28 +246,70 @@ def resolver_espacios_eje(nodes, espacio_total, espesor):
     return resultado
 
 
+def _reparto_iguales(children, espacio_libre, espesor):
+    """Espacio que recibe cada division de los nodos ESPACIO_IGUALES del nivel."""
+    espacio_disponible = espacio_libre
+    fijos = [c for c in children if c.space_type == ESPACIO_FIJO]
+    iguales = [c for c in children if c.space_type == ESPACIO_IGUALES]
+    espacio_consumido = sum(c.value for c in fijos)
+    espacio_para_iguales = espacio_disponible - espacio_consumido
+    if not (iguales and espacio_para_iguales > 0):
+        return 0
+    n_div = sum(int(c.value) for c in iguales)
+    separadores_iguales = sum(max(0, int(c.value) - 1) for c in iguales)
+    espacio_para_dividir = max(
+        0, espacio_para_iguales - separadores_iguales * espesor)
+    return espacio_para_dividir / n_div if n_div > 0 else 0
+
+
+def _entrada_libre(child, cursor, libre, espesor):
+    """Entrada de un nodo fijo o restante cuyo espacio libre ya esta resuelto."""
+    return {
+        "id": child.space_id,
+        "inicio": cursor,
+        "fin": cursor + libre,
+        "libre": libre,
+        "tipo": child.space_type,
+        "children": _resolver_subespacios(
+            child.children, libre, espesor) if child.children else [],
+    }
+
+
+def _entrada_iguales(child, cursor, espacio_cada, espesor):
+    """Entrada de un nodo ESPACIO_IGUALES. Devuelve (entrada, cursor nuevo)."""
+    n_sub = max(1, int(child.value))
+    sub_cursor = cursor
+    sub_spaces = []
+    for j in range(n_sub):
+        sub_spaces.append({
+            "id": f"{child.space_id}_{j+1}",
+            "inicio": sub_cursor,
+            "fin": sub_cursor + espacio_cada,
+            "libre": espacio_cada,
+            "tipo": ESPACIO_FIJO,
+            "children": [],
+        })
+        sub_cursor += espacio_cada
+        if j < n_sub - 1:
+            sub_cursor += espesor
+    entrada = {
+        "id": child.space_id,
+        "inicio": cursor,
+        "fin": sub_cursor,
+        "libre": espacio_cada * n_sub,
+        "tipo": ESPACIO_IGUALES,
+        "children": sub_spaces,
+    }
+    return entrada, sub_cursor
+
+
 def _resolver_subespacios(children, espacio_libre, espesor):
     """Resuelve sub-espacios recursivamente en el eje opuesto."""
     if not children or espacio_libre <= 0:
         return []
 
     espacio_disponible = espacio_libre
-
-    fijos = [c for c in children if c.space_type == ESPACIO_FIJO]
-    [c for c in children if c.space_type == ESPACIO_RESTANTE]
-    iguales = [c for c in children if c.space_type == ESPACIO_IGUALES]
-
-    espacio_consumido = sum(c.value for c in fijos)
-    espacio_para_iguales = espacio_disponible - espacio_consumido
-
-    if iguales and espacio_para_iguales > 0:
-        n_div = sum(int(c.value) for c in iguales)
-        separadores_iguales = sum(max(0, int(c.value) - 1) for c in iguales)
-        espacio_para_dividir = max(
-            0, espacio_para_iguales - separadores_iguales * espesor)
-        espacio_cada = (espacio_para_dividir / n_div if n_div > 0 else 0)
-    else:
-        espacio_cada = 0
+    espacio_cada = _reparto_iguales(children, espacio_libre, espesor)
 
     resultado = []
     cursor = 0.0
@@ -275,54 +317,17 @@ def _resolver_subespacios(children, espacio_libre, espesor):
     for i, child in enumerate(children):
         if child.space_type == ESPACIO_FIJO:
             libre = min(child.value, max(0, espacio_disponible - cursor))
-            resultado.append({
-                "id": child.space_id,
-                "inicio": cursor,
-                "fin": cursor + libre,
-                "libre": libre,
-                "tipo": ESPACIO_FIJO,
-                "children": _resolver_subespacios(
-                    child.children, libre, espesor) if child.children else [],
-            })
+            resultado.append(_entrada_libre(child, cursor, libre, espesor))
             cursor += libre
 
         elif child.space_type == ESPACIO_IGUALES:
-            n_sub = max(1, int(child.value))
-            sub_cursor = cursor
-            sub_spaces = []
-            for j in range(n_sub):
-                sub_spaces.append({
-                    "id": f"{child.space_id}_{j+1}",
-                    "inicio": sub_cursor,
-                    "fin": sub_cursor + espacio_cada,
-                    "libre": espacio_cada,
-                    "tipo": ESPACIO_FIJO,
-                    "children": [],
-                })
-                sub_cursor += espacio_cada
-                if j < n_sub - 1:
-                    sub_cursor += espesor
-            resultado.append({
-                "id": child.space_id,
-                "inicio": cursor,
-                "fin": sub_cursor,
-                "libre": espacio_cada * n_sub,
-                "tipo": ESPACIO_IGUALES,
-                "children": sub_spaces,
-            })
-            cursor = sub_cursor
+            entrada, cursor = _entrada_iguales(
+                child, cursor, espacio_cada, espesor)
+            resultado.append(entrada)
 
         elif child.space_type == ESPACIO_RESTANTE:
             libre = max(0, espacio_disponible - cursor)
-            resultado.append({
-                "id": child.space_id,
-                "inicio": cursor,
-                "fin": cursor + libre,
-                "libre": libre,
-                "tipo": ESPACIO_RESTANTE,
-                "children": _resolver_subespacios(
-                    child.children, libre, espesor) if child.children else [],
-            })
+            resultado.append(_entrada_libre(child, cursor, libre, espesor))
             cursor += libre
 
         if i < len(children) - 1:

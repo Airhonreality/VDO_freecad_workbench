@@ -554,3 +554,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-57
 
 - **D-57:** seis funciones de core de 87-102 líneas divididas en bloques. Mismo criterio que D-54.
+
+## D-58
+
+- **D-58:** ocho funciones restantes de core y cad de mas de 60 lineas divididas en bloques (ver lista en el commit). Mismo criterio que D-57.
