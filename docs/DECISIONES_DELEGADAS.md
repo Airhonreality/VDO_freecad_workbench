@@ -529,3 +529,7 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 
 - **D-52:** M7 ui/vdo_hardware_manager partido por concepto. Verificación visual pendiente (M10).
 - Decisión de implementación: las tablas de presentación (`FAMILIAS`, `ETIQUETAS`, `CLAVES_BOOL`) van a `ui/hardware_constantes.py`, sin cambios de código. La función `_resumen_cotas` (texto resumen de cotas para la tabla) va a `ui/hardware_resumen.py`. La raíz `ui/vdo_hardware_manager.py` conserva `VDOHardwareManagerDialog`, y `freecad/vdo/commands.py` no cambia. Sin reexportaciones (P6). La prueba `test_catalogo_herrajes_ruta` sigue leyendo el original sin cambios. Sin ciclos nuevos.
+
+## D-53
+
+- **D-53:** calcular_despiece (323 líneas) se divide en bloques de módulo, sin cambiar valores ni orden (P3/P5). Golden cajon_despiece y 13 snapshots son la prueba.

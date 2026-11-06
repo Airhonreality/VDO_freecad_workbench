@@ -36,6 +36,30 @@ from freecad.vdo.core.vdo_facade_contract import (
 from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR
 
 
+def _leer_entradas(config):
+    """Lee las entradas obligatorias, la marca y el tipo de corredera."""
+    li = float(config["ancho_libre"])
+    prof_int = float(config["prof_libre"])
+    float(config["ancho_modulo"])
+    alto_frente = float(config["alto_frente"])
+    marca_id = config.get("marca", BLUM_TANDEM)
+
+    marca = obtener_marca(marca_id)
+    delta = float(marca["delta_ancho"])
+    mecanizado = dict(marca.get("mecanizado", {}))
+
+    # --- Tipo de corredera: ajusta delta para telescópica ---
+    tipo_corredera = str(config.get("tipo_corredera", CORREDERA_OCULTA)).strip().lower()
+    if tipo_corredera == CORREDERA_TELESCOPICA:
+        # Telescópica: holgura lateral 12.7 mm por lado → delta = 25.4 mm
+        delta = 25.4
+
+    # Añadir tipo_corredera al resultado para el generador 3D
+    _tipo_corredera_result = tipo_corredera
+    return (li, prof_int, alto_frente, marca_id, marca, delta, mecanizado,
+            _tipo_corredera_result)
+
+
 def calcular_despiece(config):
     """Calcula el despiece completo del cajón con corredera oculta.
 
@@ -61,25 +85,9 @@ def calcular_despiece(config):
             "mecanizados": cotas de mecanizado usadas
             "avisos":      lista de advertencias (str)
     """
-    # --- Entradas obligatorias ---
-    li = float(config["ancho_libre"])
-    prof_int = float(config["prof_libre"])
-    float(config["ancho_modulo"])
-    alto_frente = float(config["alto_frente"])
-    marca_id = config.get("marca", BLUM_TANDEM)
-
-    marca = obtener_marca(marca_id)
-    delta = float(marca["delta_ancho"])
-    mecanizado = dict(marca.get("mecanizado", {}))
-
-    # --- Tipo de corredera: ajusta delta para telescópica ---
-    tipo_corredera = str(config.get("tipo_corredera", CORREDERA_OCULTA)).strip().lower()
-    if tipo_corredera == CORREDERA_TELESCOPICA:
-        # Telescópica: holgura lateral 12.7 mm por lado → delta = 25.4 mm
-        delta = 25.4
-
-    # Añadir tipo_corredera al resultado para el generador 3D
-    _tipo_corredera_result = tipo_corredera
+    # --- Entradas obligatorias, marca y tipo de corredera ---
+    (li, prof_int, alto_frente, marca_id, marca, delta, mecanizado,
+     _tipo_corredera_result) = _leer_entradas(config)
 
     # --- Defaults desde manifest (parametros_cajon) ---
     pc = _MANIFEST.get("parametros_cajon", {})
