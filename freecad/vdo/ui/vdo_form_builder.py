@@ -55,6 +55,56 @@ _ASIGNADORES_VALOR = {
 }
 
 
+def _crear_double_spin(campo, parent):
+    w = QtWidgets.QDoubleSpinBox(parent)
+    if campo.rango:
+        w.setRange(*campo.rango)
+    if campo.decimales is not None:
+        w.setDecimals(campo.decimales)
+    if campo.sufijo:
+        w.setSuffix(campo.sufijo)
+    w.setValue(float(campo.valor_defecto or 0.0))
+    return w
+
+
+def _crear_spin(campo, parent):
+    w = QtWidgets.QSpinBox(parent)
+    if campo.rango:
+        w.setRange(*campo.rango)
+    w.setValue(int(campo.valor_defecto or 0))
+    if campo.sufijo:
+        w.setSuffix(campo.sufijo)
+    return w
+
+
+def _crear_checkbox(campo, parent):
+    w = QtWidgets.QCheckBox(campo.etiqueta or "", parent)
+    w.setChecked(bool(campo.valor_defecto or False))
+    return w
+
+
+def _crear_combo(campo, parent):
+    w = QtWidgets.QComboBox(parent)
+    for label, data in (campo.items or []):
+        w.addItem(label, data)
+    w.setCurrentIndex(0)
+    return w
+
+
+def _crear_label(campo, parent):
+    return QtWidgets.QLabel(str(campo.valor_defecto or ""), parent)
+
+
+# tipo de campo -> funcion que crea el widget Qt (campo, parent)
+_CONSTRUCTORES_WIDGET = {
+    "double_spin": _crear_double_spin,
+    "spin": _crear_spin,
+    "checkbox": _crear_checkbox,
+    "combo": _crear_combo,
+    "label": _crear_label,
+}
+
+
 class FormField:
     """Un campo de formulario con su widget y metadatos."""
 
@@ -72,34 +122,10 @@ class FormField:
 
     def crear_widget(self, parent=None):
         """Crea el widget Qt del campo segun su tipo."""
-        if self.tipo == "double_spin":
-            w = QtWidgets.QDoubleSpinBox(parent)
-            if self.rango:
-                w.setRange(*self.rango)
-            if self.decimales is not None:
-                w.setDecimals(self.decimales)
-            if self.sufijo:
-                w.setSuffix(self.sufijo)
-            w.setValue(float(self.valor_defecto or 0.0))
-        elif self.tipo == "spin":
-            w = QtWidgets.QSpinBox(parent)
-            if self.rango:
-                w.setRange(*self.rango)
-            w.setValue(int(self.valor_defecto or 0))
-            if self.sufijo:
-                w.setSuffix(self.sufijo)
-        elif self.tipo == "checkbox":
-            w = QtWidgets.QCheckBox(self.etiqueta or "", parent)
-            w.setChecked(bool(self.valor_defecto or False))
-        elif self.tipo == "combo":
-            w = QtWidgets.QComboBox(parent)
-            for label, data in (self.items or []):
-                w.addItem(label, data)
-            w.setCurrentIndex(0)
-        elif self.tipo == "label":
-            w = QtWidgets.QLabel(str(self.valor_defecto or ""), parent)
-        else:
+        constructor = _CONSTRUCTORES_WIDGET.get(self.tipo)
+        if constructor is None:
             raise ValueError(f"Tipo de campo no soportado: {self.tipo!r}")
+        w = constructor(self, parent)
 
         if self.tooltip:
             w.setToolTip(self.tooltip)
