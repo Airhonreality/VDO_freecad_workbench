@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from freecad.vdo.core.helpers import DIMENSION_POR_EJE
 from freecad.vdo.core.reengrose_modelo import _EJES, ReengroseError
 from freecad.vdo.core.reengrose_modificador import (
     ReengroseModifier,
@@ -213,8 +214,6 @@ def _refuerzos_bordes_caja(
     return refuerzos, tiras
 
 
-_CLAVE_DIMENSION = {"x": "w", "y": "h", "z": "d"}
-
 
 def _validar_ejes(ejes: dict[str, str]) -> dict[str, str]:
     """Normaliza a minusculas y valida los ejes largo, ancho y espesor."""
@@ -230,7 +229,7 @@ def _validar_ejes(ejes: dict[str, str]) -> dict[str, str]:
 
 def _dimensiones_caja(base: dict[str, float], ejes: dict[str, str]) -> tuple[float, float, float]:
     """Devuelve largo, ancho y espesor de la caja segun los ejes."""
-    dims = {eje: base[_CLAVE_DIMENSION[eje]] for eje in ("x", "y", "z")}
+    dims = {eje: base[DIMENSION_POR_EJE[eje]] for eje in ("x", "y", "z")}
     largo = dims[ejes["largo"]]
     ancho = dims[ejes["ancho"]]
     espesor = dims[ejes["espesor"]]
@@ -283,7 +282,7 @@ def _refuerzo_cara(
     ref: dict[str, Any] = dict(base)
     for eje, (inicio, tamano) in intervalos.items():
         ref[eje] = base[eje] + inicio
-        ref[_CLAVE_DIMENSION[eje]] = tamano
+        ref[DIMENSION_POR_EJE[eje]] = tamano
     ref["nombre"] = (
         f"{nombre}_Pacha{sufijo}"
         if mod["modo_fabricacion"] == "pacha"
