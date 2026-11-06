@@ -126,16 +126,20 @@ def _division_iguales(nodes: list[SpaceNode], espacio_total: float,
     return espacio_disponible, espacio_cada_div
 
 
-def _nodo_fijo(node: SpaceNode, cursor: float, espacio_disponible: float,
-               espesor: float) -> tuple[dict[str, Any], float]:
-    """Resuelve un nodo 'fijo'. Devuelve (resuelto, nuevo_cursor)."""
-    libre = min(node.value, max(0, espacio_disponible - cursor))
+def _nodo_con_espacio(node: SpaceNode, cursor: float, espacio_disponible: float,
+                      espesor: float, tipo: str) -> tuple[dict[str, Any], float]:
+    """Resuelve un nodo 'fijo' (libre acotado a su valor) o 'restante' (todo lo libre).
+
+    Devuelve (resuelto, nuevo_cursor).
+    """
+    disponible = max(0, espacio_disponible - cursor)
+    libre = min(node.value, disponible) if tipo == ESPACIO_FIJO else disponible
     resuelto: dict[str, Any] = {
         "id": node.space_id,
         "inicio": cursor,
         "fin": cursor + libre,
         "libre": libre,
-        "tipo": ESPACIO_FIJO,
+        "tipo": tipo,
         "children": [],
     }
     if node.children:
@@ -175,34 +179,16 @@ def _nodo_iguales(node: SpaceNode, cursor: float, espacio_cada_div: float,
     return resuelto, sub_cursor
 
 
-def _nodo_restante(node: SpaceNode, cursor: float, espacio_disponible: float,
-                   espesor: float) -> tuple[dict[str, Any], float]:
-    """Resuelve un nodo 'restante'. Devuelve (resuelto, nuevo_cursor)."""
-    libre = max(0, espacio_disponible - cursor)
-    resuelto: dict[str, Any] = {
-        "id": node.space_id,
-        "inicio": cursor,
-        "fin": cursor + libre,
-        "libre": libre,
-        "tipo": ESPACIO_RESTANTE,
-        "children": [],
-    }
-    if node.children:
-        resuelto["children"] = _resolver_subespacios(
-            node.children, libre, espesor)
-    return resuelto, cursor + libre
-
-
 def _resolver_nodo(node: SpaceNode, cursor: float, espacio_disponible: float,
                    espacio_cada_div: float,
                    espesor: float) -> tuple[dict[str, Any] | None, float]:
     """Despacha un nodo a su resolutor. Tipo desconocido: (None, cursor)."""
     if node.space_type == ESPACIO_FIJO:
-        return _nodo_fijo(node, cursor, espacio_disponible, espesor)
+        return _nodo_con_espacio(node, cursor, espacio_disponible, espesor, ESPACIO_FIJO)
     if node.space_type == ESPACIO_IGUALES:
         return _nodo_iguales(node, cursor, espacio_cada_div, espesor)
     if node.space_type == ESPACIO_RESTANTE:
-        return _nodo_restante(node, cursor, espacio_disponible, espesor)
+        return _nodo_con_espacio(node, cursor, espacio_disponible, espesor, ESPACIO_RESTANTE)
     return None, cursor
 
 
