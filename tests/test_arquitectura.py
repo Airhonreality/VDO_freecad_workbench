@@ -88,9 +88,10 @@ def _tiene_escritura_freecad(src: str) -> bool:
 
 class CapasTests(unittest.TestCase):
     def test_ui_no_importa_core_cad_app_api(self):
+        # D-31 (MN-03): ui/ SÍ puede importar core y cad. Prohibido: app
+        # (eliminado, MN-01) y app.vdo_api.
         prohibidos = (
-            "freecad.vdo.core",
-            "freecad.vdo.cad",
+            "freecad.vdo.app",
             "freecad.vdo.app.vdo_api",
         )
         violaciones = []
@@ -100,7 +101,7 @@ class CapasTests(unittest.TestCase):
                 violaciones.append(str(p.relative_to(ROOT)))
         self.assertEqual(
             violaciones, [],
-            f"ui/ importa core/cad/app.vdo_api: {violaciones}",
+            f"ui/ importa app/app.vdo_api (prohibido por MN-03/MN-01): {violaciones}",
         )
 
     def test_ui_no_escritura_freecad(self):
