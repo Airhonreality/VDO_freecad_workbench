@@ -12,6 +12,7 @@ módulo es barato y no carga GUI.
 import FreeCAD as App
 
 from freecad.vdo.core.vdo_paths import ruta_icono
+from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 
 def _gui_activa():
@@ -86,7 +87,7 @@ class CmdPanelEstandar(_ComandoCreacion):
         "etiqueta": "Panel Estándar",
         "orientacion": "horizontal",
         "cantos": {"norte": "FX", "sur": "FX", "este": "RIG", "oeste": "FX"},
-        "material_ref": "melamina_standar",
+        "material_ref": MELAMINA_ESTANDAR,
     }
 
 
@@ -100,7 +101,7 @@ class CmdPanelFachada(_ComandoCreacion):
         "etiqueta": "Fachada",
         "orientacion": "vertical",
         "cantos": {"norte": "RIG", "sur": "RIG", "este": "RIG", "oeste": "RIG"},
-        "material_ref": "melamina_standar",
+        "material_ref": MELAMINA_ESTANDAR,
     }
 
 
@@ -122,7 +123,7 @@ class CmdPanelDivision(_ComandoCreacion):
         "etiqueta": "División",
         "orientacion": "vertical",
         "cantos": {"norte": "FX", "sur": "FX", "este": "FX", "oeste": "FX"},
-        "material_ref": "melamina_standar",
+        "material_ref": MELAMINA_ESTANDAR,
     }
 
 
