@@ -198,27 +198,32 @@ class ChassisConstruccionMixin:
 
     def _construir_pagina_zocalo(self):
         # Página Zócalo
-        page_zocalo = QtWidgets.QWidget()
-        lay_pz = QtWidgets.QHBoxLayout(page_zocalo)
-        lay_pz.setContentsMargins(0, 0, 0, 0)
-        lay_pz.setSpacing(6)
+        self.spin_altura_zocalo, self.spin_offset_zocalo = self._crear_pagina_parametros([
+            ("Altura zócalo:", (20.0, 300.0), 100.0),
+            ("Separación:", (0.0, 150.0), 50.0),
+        ])
 
-        lay_pz.addWidget(QtWidgets.QLabel("Altura zócalo:"))
-        self.spin_altura_zocalo = VDO_DoubleSpinBox()
-        self.spin_altura_zocalo.setRange(20.0, 300.0)
-        self.spin_altura_zocalo.setValue(100.0)
-        self.spin_altura_zocalo.setSuffix(" mm")
-        self.spin_altura_zocalo.valueChanged.connect(self._on_param_base_changed)
-        lay_pz.addWidget(self.spin_altura_zocalo)
+    def _crear_pagina_parametros(self, filas):
+        """Página del stack de parámetros con una fila (etiqueta, (mín, máx), valor) por spin en mm.
 
-        lay_pz.addWidget(QtWidgets.QLabel("Separación:"))
-        self.spin_offset_zocalo = VDO_DoubleSpinBox()
-        self.spin_offset_zocalo.setRange(0.0, 150.0)
-        self.spin_offset_zocalo.setValue(50.0)
-        self.spin_offset_zocalo.setSuffix(" mm")
-        self.spin_offset_zocalo.valueChanged.connect(self._on_param_base_changed)
-        lay_pz.addWidget(self.spin_offset_zocalo)
-        self.stack_params.addWidget(page_zocalo)
+        Devuelve la lista de spins en el orden de `filas`.
+        """
+        page = QtWidgets.QWidget()
+        lay = QtWidgets.QHBoxLayout(page)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.setSpacing(6)
+        spins = []
+        for etiqueta, (minimo, maximo), valor in filas:
+            lay.addWidget(QtWidgets.QLabel(etiqueta))
+            spin = VDO_DoubleSpinBox()
+            spin.setRange(minimo, maximo)
+            spin.setValue(valor)
+            spin.setSuffix(" mm")
+            spin.valueChanged.connect(self._on_param_base_changed)
+            lay.addWidget(spin)
+            spins.append(spin)
+        self.stack_params.addWidget(page)
+        return spins
 
     def _construir_pagina_suspendido(self):
         # Página Suspendido
@@ -242,24 +247,7 @@ class ChassisConstruccionMixin:
 
     def _construir_pagina_patas(self):
         # Página Patas
-        page_patas = QtWidgets.QWidget()
-        lay_pp = QtWidgets.QHBoxLayout(page_patas)
-        lay_pp.setContentsMargins(0, 0, 0, 0)
-        lay_pp.setSpacing(6)
-
-        lay_pp.addWidget(QtWidgets.QLabel("Altura patas:"))
-        self.spin_altura_patas = VDO_DoubleSpinBox()
-        self.spin_altura_patas.setRange(50.0, 200.0)
-        self.spin_altura_patas.setValue(100.0)
-        self.spin_altura_patas.setSuffix(" mm")
-        self.spin_altura_patas.valueChanged.connect(self._on_param_base_changed)
-        lay_pp.addWidget(self.spin_altura_patas)
-
-        lay_pp.addWidget(QtWidgets.QLabel("Retranqueo:"))
-        self.spin_offset_patas = VDO_DoubleSpinBox()
-        self.spin_offset_patas.setRange(0.0, 100.0)
-        self.spin_offset_patas.setValue(50.0)
-        self.spin_offset_patas.setSuffix(" mm")
-        self.spin_offset_patas.valueChanged.connect(self._on_param_base_changed)
-        lay_pp.addWidget(self.spin_offset_patas)
-        self.stack_params.addWidget(page_patas)
+        self.spin_altura_patas, self.spin_offset_patas = self._crear_pagina_parametros([
+            ("Altura patas:", (50.0, 200.0), 100.0),
+            ("Retranqueo:", (0.0, 100.0), 50.0),
+        ])
