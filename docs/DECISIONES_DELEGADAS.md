@@ -461,3 +461,8 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 ## D-36 (ola 24)
 
 - **D-36:** M7 vdo_cajon_despiece partido por concepto, sin reexportaciones (P6).
+
+## D-39
+
+- **D-39 (decisión del director):** M7 cad/coco. `CocoFeature` se queda en `cad/coco.py` con su nombre y ruta (sin reexportación, P6). Se extrae el cuerpo de `execute` y `_cortar_shape` a módulos por concepto dentro de `cad/`: `coco_cortes.py` (resta de formas y tiras de carcasa frente a divisiones y núcleos), `coco_carcasa.py`, `coco_shell.py`, `coco_divisiones.py` y `coco_propiedades.py`. Cada bloque es una función de módulo que recibe exactamente las variables que lee y devuelve las que escribe, en el mismo orden de operaciones. Meta: `cad/coco.py` < 400 líneas y ninguna función > 60 líneas.
+- Revertir: `git revert --no-edit` de los commits de esta extracción.
