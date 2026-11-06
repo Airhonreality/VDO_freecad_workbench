@@ -18,10 +18,7 @@ import sys
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtSvg, QtWidgets
 
-from freecad.vdo.ui.chassis_constantes import (
-    CARAS,
-    ENCUENTROS,
-)
+from freecad.vdo.ui.chassis_config import ChassisConfigMixin
 from freecad.vdo.ui.chassis_construccion import ChassisConstruccionMixin
 from freecad.vdo.ui.chassis_estado import ChassisEstadoMixin
 from freecad.vdo.ui.chassis_estilos import ChassisEstilosMixin
@@ -39,6 +36,7 @@ class VDOChassisControllerWidget(
     ChassisEstilosMixin,
     ChassisEventosMixin,
     ChassisEstadoMixin,
+    ChassisConfigMixin,
     QtWidgets.QWidget,
 ):
     """
@@ -77,61 +75,6 @@ class VDOChassisControllerWidget(
         self._init_ui()
         self._aplicar_estilos()
         self._actualizar_ui()
-
-    def _emitir_cambio(self):
-        if not self._cargando:
-            self.sigChassisChanged.emit(self.getChassisConfig())
-
-    # ------------------------------------------------------------------
-    # Contrato Público API (Capa 1)
-    # ------------------------------------------------------------------
-    def setChassisConfig(self, cfg: dict):
-        """Carga la configuración sin emitir señales redundantes."""
-        if not isinstance(cfg, dict):
-            return
-
-        self._cargando = True
-        try:
-            # Caras
-            caras_cfg = cfg.get("caras", {})
-            for c in CARAS:
-                if c in caras_cfg:
-                    self._caras[c] = dict(caras_cfg[c])
-
-            # Encuentros
-            enc_cfg = cfg.get("encuentros", {})
-            for e in ENCUENTROS:
-                if e in enc_cfg:
-                    self._encuentros[e] = enc_cfg[e]
-
-            # Base
-            base_cfg = cfg.get("base", {})
-            if base_cfg:
-                self._base.update(base_cfg)
-
-            self._actualizar_ui()
-        finally:
-            self._cargando = False
-
-    def getChassisConfig(self) -> dict:
-        """Devuelve el diccionario canónico de Capa 1 para el chasis."""
-        return {
-            "caras": {
-                c: dict(self._caras[c]) for c in CARAS
-            },
-            "encuentros": {
-                e: self._encuentros[e] for e in ENCUENTROS
-            },
-            "base": {
-                "estrategia": self._base.get("estrategia", "zocalo"),
-                "altura": float(self._base.get("altura", 100.0)),
-                "separacion_frente": float(self._base.get("separacion_frente", 50.0)),
-            }
-        }
-
-    # Aliases de compatibilidad y estilo snake_case
-    set_chassis_config = setChassisConfig
-    get_chassis_config = getChassisConfig
 
 
 # ----------------------------------------------------------------------
