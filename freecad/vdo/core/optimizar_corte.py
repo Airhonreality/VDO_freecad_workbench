@@ -1,4 +1,4 @@
-"""app/casos_uso/optimizar_corte.py — Caso de uso: optimizador de corte."""
+"""core/optimizar_corte.py — Caso de uso: optimizador de corte."""
 
 from __future__ import annotations
 
