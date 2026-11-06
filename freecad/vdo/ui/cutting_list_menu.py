@@ -19,7 +19,7 @@ def mostrar_menu():
 
     layout = QtWidgets.QVBoxLayout()
     _agregar_titulo(layout)
-    radio_todo, radio_seleccion, radio_grupo = _crear_opciones(layout)
+    _radio_todo, radio_seleccion, radio_grupo = _crear_opciones(layout)
     _agregar_info(layout)
     _agregar_botones(dialog, layout)
 

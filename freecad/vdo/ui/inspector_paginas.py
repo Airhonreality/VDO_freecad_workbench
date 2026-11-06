@@ -174,7 +174,7 @@ class PaginaChasis(_PaginaBase):
                     "inferior_der": "lateral_domina",
                 },
                 "base": {
-                    "estrategia": "zocalo" if getattr(obj, "AltoZocalo", None) else "zocalo",
+                    "estrategia": "zocalo",
                     "altura": _float_seguro(getattr(obj, "AltoZocalo", None), 100.0),
                     "separacion_frente": _float_seguro(getattr(obj, "DistanciaFrente", None), 50.0),
                 }

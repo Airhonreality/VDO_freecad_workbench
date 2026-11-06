@@ -57,7 +57,7 @@ class CocoUnifiedValoresMixin:
                         "inferior_der": "base_domina" if base == "externo" else "lateral_domina",
                     },
                     "base": {
-                        "estrategia": "zocalo" if getattr(obj, "AltoZocalo", None) else "zocalo",
+                        "estrategia": "zocalo",
                         "altura": float(getattr(obj, "AltoZocalo", 100.0) or 100.0),
                         "separacion_frente": float(getattr(obj, "DistanciaFrente", 50.0) or 50.0),
                     }

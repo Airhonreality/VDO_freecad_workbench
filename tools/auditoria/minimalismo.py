@@ -131,10 +131,11 @@ def _duplicados() -> dict:
                         if isinstance(target, ast.Name) and target.id.isupper() and _es_tabla(nodo.value):
                             dump = _ast_dump_canonico(nodo.value)
                             tablas[dump].append((target.id, rel))
-                elif isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name):
-                    if nodo.target.id.isupper() and nodo.value is not None and _es_tabla(nodo.value):
-                        dump = _ast_dump_canonico(nodo.value)
-                        tablas[dump].append((nodo.target.id, rel))
+                elif (isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name)
+                      and nodo.target.id.isupper() and nodo.value is not None
+                      and _es_tabla(nodo.value)):
+                    dump = _ast_dump_canonico(nodo.value)
+                    tablas[dump].append((nodo.target.id, rel))
             # Funciones con cuerpo idéntico (>= 2 statements, sin docstring al inicio)
             for nodo in ast.walk(t):
                 if isinstance(nodo, (ast.FunctionDef, ast.AsyncFunctionDef)):
@@ -253,20 +254,17 @@ def _fachadas() -> dict:
             except SyntaxError:
                 continue
             solo_imports = True
-            tiene_export = False
             for nodo in t.body:
                 if isinstance(nodo, (ast.Import, ast.ImportFrom)):
                     continue
                 if isinstance(nodo, ast.Assign):
                     for target in nodo.targets:
                         if isinstance(target, ast.Name) and target.id == "__all__":
-                            tiene_export = True
                             continue
                     solo_imports = False
                     break
                 if isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name):
                     if nodo.target.id == "__all__":
-                        tiene_export = True
                         continue
                     solo_imports = False
                     break
@@ -324,7 +322,6 @@ def _excepciones() -> dict:
             for nodo in ast.walk(t):
                 if isinstance(nodo, ast.Try):
                     for handler in nodo.handlers:
-                        cuerpo = handler.body
                         tiene_raise = any(
                             isinstance(s, ast.Raise) for s in ast.walk(handler) if isinstance(s, ast.Raise)
                         )
@@ -336,9 +333,9 @@ def _excepciones() -> dict:
                                     if func.attr in ("PrintError", "PrintWarning", "PrintMessage",
                                                      "error", "warning", "info", "debug", "exception"):
                                         tiene_log = True
-                                elif isinstance(func, ast.Name):
-                                    if func.id in ("logging", "print"):
-                                        tiene_log = True
+                                elif (isinstance(func, ast.Name)
+                                      and func.id in ("logging", "print")):
+                                    tiene_log = True
                         if not tiene_raise and not tiene_log:
                             problemas.append({
                                 "archivo": rel,

@@ -78,11 +78,11 @@ def _prune(rects):
         for j, s in enumerate(rects):
             if i == j:
                 continue
-            if _contains(s, r):
-                # Si son idénticos, conservar solo el de menor índice.
-                if _area(s) > _area(r) or (abs(_area(s) - _area(r)) < 1e-9 and j < i):
-                    contained = True
-                    break
+            # Si son idénticos, conservar solo el de menor índice.
+            if _contains(s, r) and (
+                    _area(s) > _area(r) or (abs(_area(s) - _area(r)) < 1e-9 and j < i)):
+                contained = True
+                break
         if not contained:
             keep.append(r)
     return keep

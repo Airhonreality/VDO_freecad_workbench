@@ -148,10 +148,8 @@ def _geometria_caja(montaje, ancho_ext, g_caja, lg, alto_caja, alto_lateral, eje
     alto_frente_int = alto_contra
 
     # --- 5. Piso ---
-    if montaje == "entre_laterales":
-        anchoEntre = ancho_contra  # = ancho_ext - 2*g_caja
-    else:
-        anchoEntre = ancho_ext - (2 * g_caja)
+    # entre_laterales: ancho_contra (= ancho_ext - 2*g_caja)
+    anchoEntre = ancho_contra if montaje == "entre_laterales" else ancho_ext - (2 * g_caja)
     ancho_piso = anchoEntre + (2 * pen_ranura)
     largo_piso = lg  # fórmula del usuario (largo = LG)
     return ancho_contra, y_trasera, z_piso, alto_contra, alto_frente_int, ancho_piso, largo_piso

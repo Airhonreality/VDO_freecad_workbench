@@ -101,14 +101,14 @@ def extraer_piezas_del_documento(modo="todo"):
         if modulo and hasattr(modulo, "VDO_Tipo"):
             if modulo.VDO_Tipo == "panel":
                 piezas.extend(extraer_piezas_panel(modulo))
-            elif modulo.VDO_Tipo == "contenedor":
-                if hasattr(modulo, "VDO_Paneles_JSON") and modulo.VDO_Paneles_JSON:
-                    try:
-                        paneles_json = json.loads(modulo.VDO_Paneles_JSON)
-                        piezas.extend(paneles_json)
-                    except Exception as exc:
-                        App.Console.PrintWarning(
-                            f"[VDO] JSON de paneles invalido: {exc}\n")
+            elif modulo.VDO_Tipo == "contenedor" and hasattr(modulo, "VDO_Paneles_JSON") \
+                    and modulo.VDO_Paneles_JSON:
+                try:
+                    paneles_json = json.loads(modulo.VDO_Paneles_JSON)
+                    piezas.extend(paneles_json)
+                except Exception as exc:
+                    App.Console.PrintWarning(
+                        f"[VDO] JSON de paneles invalido: {exc}\n")
 
     else:  # "todo":
         _piezas_todo(piezas, json, doc)
@@ -124,15 +124,15 @@ def _piezas_seleccion(piezas, json):
         if hasattr(obj, "VDO_Tipo"):
             if obj.VDO_Tipo == "panel":
                 piezas.extend(extraer_piezas_panel(obj))
-            elif obj.VDO_Tipo == "contenedor":
+            elif obj.VDO_Tipo == "contenedor" and hasattr(obj, "VDO_Paneles_JSON") \
+                    and obj.VDO_Paneles_JSON:
                 # Extraer paneles del contenedor (ej: COCO_4C)
-                if hasattr(obj, "VDO_Paneles_JSON") and obj.VDO_Paneles_JSON:
-                    try:
-                        paneles_json = json.loads(obj.VDO_Paneles_JSON)
-                        piezas.extend(paneles_json)
-                    except Exception as exc:
-                        App.Console.PrintWarning(
-                            f"[VDO] JSON de paneles invalido: {exc}\n")
+                try:
+                    paneles_json = json.loads(obj.VDO_Paneles_JSON)
+                    piezas.extend(paneles_json)
+                except Exception as exc:
+                    App.Console.PrintWarning(
+                        f"[VDO] JSON de paneles invalido: {exc}\n")
 
 
 def _piezas_todo(piezas, json, doc):
@@ -141,15 +141,15 @@ def _piezas_todo(piezas, json, doc):
         if hasattr(obj, "VDO_Tipo"):
             if obj.VDO_Tipo == "panel":
                 piezas.extend(extraer_piezas_panel(obj))
-            elif obj.VDO_Tipo == "contenedor":
+            elif obj.VDO_Tipo == "contenedor" and hasattr(obj, "VDO_Paneles_JSON") \
+                    and obj.VDO_Paneles_JSON:
                 # Extraer paneles del contenedor (ej: COCO_4C)
-                if hasattr(obj, "VDO_Paneles_JSON") and obj.VDO_Paneles_JSON:
-                    try:
-                        paneles_json = json.loads(obj.VDO_Paneles_JSON)
-                        piezas.extend(paneles_json)
-                    except Exception as exc:
-                        App.Console.PrintWarning(
-                            f"[VDO] JSON de paneles invalido: {exc}\n")
+                try:
+                    paneles_json = json.loads(obj.VDO_Paneles_JSON)
+                    piezas.extend(paneles_json)
+                except Exception as exc:
+                    App.Console.PrintWarning(
+                        f"[VDO] JSON de paneles invalido: {exc}\n")
 
 
 def _escribir_cabecera_csv(writer):
@@ -187,10 +187,7 @@ def _escribir_piezas_csv(writer, piezas):
         # cajón caja=16, fondo=6, fachada=18); fallback al
         # primer espesor del material.
         espesor_pieza = pieza.get("espesor") or 0
-        if espesor_pieza:
-            espesor = espesor_pieza
-        else:
-            espesor = material["espesores"][0] if material["espesores"] else 18
+        espesor = espesor_pieza or (material["espesores"][0] if material["espesores"] else 18)
         material_str = f"{espesor}mm_{material['referencia']}_{material['tipo']}"
 
         # Calcular costo

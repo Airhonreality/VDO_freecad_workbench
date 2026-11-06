@@ -146,7 +146,6 @@ class InspectorDivisionesMixin:
         self.lbl_aviso.setText("")
 
     def _actualizar_contenido_celda(self, data):
-        cell = data.get("cell")
         contenido = self._contenido_por_celda.get(
             (data.get("col_index"), data.get("row_index")), {"tipo": "vacio"})
         idx = self.combo_contenido.findData(contenido["tipo"])

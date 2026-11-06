@@ -44,9 +44,9 @@ class ReengroseConfigMixin:
                     bordes[borde] = VDO_RE_MODELO.BordeConfig.from_dict(cfg)
         else:
             activo_legacy = None
-            if mod.activo and mod.orientacion == "paralela":
-                if mod.alineacion_profundidad in ("frente", "fondo"):
-                    activo_legacy = mod.alineacion_profundidad
+            if (mod.activo and mod.orientacion == "paralela"
+                    and mod.alineacion_profundidad in ("frente", "fondo")):
+                activo_legacy = mod.alineacion_profundidad
             if mod.activo and activo_legacy is None:
                 activo_legacy = "frente"
             for borde in VDO_RE_MODELO.BORDES_2D:

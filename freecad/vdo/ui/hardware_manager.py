@@ -258,13 +258,11 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
             self.form_detalle.removeRow(0)
         self._editores.clear()
 
-        fila_form = 0
         for clave_tec, valor in tecnicos.items():
             etiqueta = ETIQUETAS.get(clave_tec, clave_tec)
             widget = self._crear_editor(clave_tec, valor)
             self._editores[clave_tec] = widget
             self.form_detalle.addRow(etiqueta, widget)
-            fila_form += 1
 
         if not self._editores:
             lbl = QtWidgets.QLabel("(Sin parámetros técnicos registrados)")
