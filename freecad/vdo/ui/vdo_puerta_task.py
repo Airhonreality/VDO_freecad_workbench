@@ -7,6 +7,7 @@
 import FreeCAD as App
 
 from freecad.vdo.cad.propiedades import add_common_props
+from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.core import vdo_hardware_hub as H
 from freecad.vdo.core.aperturas import ETIQUETAS, SISTEMA_POR_ETIQUETA
 from freecad.vdo.core.vdo_facade_contract import (
@@ -489,7 +490,7 @@ class PuertaTaskPanel(VDOTransactionMixin):
             else:
                 self.obj.FuerzaPistonRecomendada = ""
 
-            App.ActiveDocument.recompute()
+            recalcular_activo()
             self._vdo_commit()
             self._vdo_aceptado = True
             self._vdo_call_accept()
