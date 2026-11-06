@@ -49,6 +49,8 @@ class ReengroseModifier:
     esquinas: dict[str, str] | str
     fabricacion: str
     choque_nucleo: str
+    # Atributo fijado por setattr desde normalizar_modificador(); solo se declara para el tipo.
+    comportamiento_choque_nucleo: str
 
     def __init__(self, datos: Any = None) -> None:
         datos = normalizar_modificador(datos)
