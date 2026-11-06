@@ -159,14 +159,6 @@ class Layout:
             )
         return col
 
-    def remove_column(self) -> bool:
-        if len(self.columns) <= 1:
-            return False
-        col = self.columns.pop()
-        for row in self.rows:
-            self.cells.pop(self.key(col.id, row.id), None)
-        return True
-
     def add_row(self, fixed: object = None) -> Track:
         row = Track(_id_unico("y", [r.id for r in self.rows]), fixed)
         self.rows.append(row)
@@ -176,14 +168,6 @@ class Layout:
                 py=_sufijo_id(row.id, "y"),
             )
         return row
-
-    def remove_row(self) -> bool:
-        if len(self.rows) <= 1:
-            return False
-        row = self.rows.pop()
-        for col in self.columns:
-            self.cells.pop(self.key(col.id, row.id), None)
-        return True
 
     def set_column_fixed(self, index: int, fixed: object) -> None:
         if 0 <= index < len(self.columns):
@@ -205,24 +189,6 @@ class Layout:
         yield cell
         for child in getattr(cell, "children", []):
             yield from self._celdas_arbol(child)
-
-    def column_has_subtree(self, index: int) -> bool:
-        if not (0 <= index < len(self.columns)):
-            return False
-        for j in range(len(self.rows)):
-            cell = self.get_cell(index, j)
-            if cell and (cell.axis or cell.children):
-                return True
-        return False
-
-    def row_has_subtree(self, index: int) -> bool:
-        if not (0 <= index < len(self.rows)):
-            return False
-        for i in range(len(self.columns)):
-            cell = self.get_cell(i, index)
-            if cell and (cell.axis or cell.children):
-                return True
-        return False
 
     # -----------------------------------------------------------------
     # Subdivisiones anidadas

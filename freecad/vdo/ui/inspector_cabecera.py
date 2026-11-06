@@ -87,9 +87,6 @@ class _BreadcrumbBar(QtWidgets.QWidget):
                 lambda _e, c=clave: self.sigNivelClickeado.emit(c))
             self.layout.insertWidget(self.layout.count() - 1, lbl)
 
-    def limpiar(self):
-        self.set_ruta([], activo=None)
-
 
 # ----------------------------------------------------------------------
 # Micro-Header Editable de Alta Densidad

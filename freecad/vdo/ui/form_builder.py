@@ -38,35 +38,11 @@ from freecad.vdo.ui.qt import VDO_DoubleSpinBox, VDO_ExpressionInput
 _TIPOS_NUMERICOS = ("double_spin", "vdo_double_spin", "spin")
 
 
-def _asignar_numero(widget, valor):
-    widget.setValue(valor)
 
 
-def _asignar_check(widget, valor):
-    widget.setChecked(bool(valor))
-
-
-def _asignar_combo(widget, valor):
-    idx = widget.findData(valor)
-    if idx >= 0:
-        widget.setCurrentIndex(idx)
-
-
-def _asignar_texto(widget, valor):
-    widget.setText(str(valor))
 
 
 # tipo de campo -> funcion que escribe el valor en el widget
-_ASIGNADORES_VALOR = {
-    "double_spin": _asignar_numero,
-    "spin": _asignar_numero,
-    "checkbox": _asignar_check,
-    "combo": _asignar_combo,
-    "label": _asignar_texto,
-    "texto": _asignar_texto,
-    "expresion": _asignar_texto,
-    "vdo_double_spin": _asignar_numero,
-}
 
 
 def _crear_double_spin(campo, parent, clase=None):
@@ -185,13 +161,6 @@ class FormField:
             return self.widget.value()
         return self.valor_defecto
 
-    def set_valor(self, valor):
-        if self.widget is None:
-            return
-        asignar = _ASIGNADORES_VALOR.get(self.tipo)
-        if asignar is not None:
-            asignar(self.widget, valor)
-
 
 class FormBuilder:
     """Construye un formulario a partir de una lista de especificaciones."""
@@ -215,9 +184,6 @@ class FormBuilder:
 
     def valor(self, clave):
         return self.campos[clave].valor()
-
-    def set_valor(self, clave, valor):
-        self.campos[clave].set_valor(valor)
 
     def valores(self):
         return {clave: self.campos[clave].valor() for clave in self.orden}
