@@ -67,13 +67,7 @@ class ReengroseEventosMixin:
         if self._cargando:
             return
         if uniforme:
-            self._cargando = True
-            for borde in VDO_RE_MODELO.BORDES_2D:
-                self.spin_ancho_borde[borde].setValue(
-                    self.spin_ancho.value())
-                self.spin_offset_borde[borde].setValue(
-                    self.spin_offset.value())
-            self._cargando = False
+            self._replicar_uniforme()
         self._actualizar_estado()
         self._emitir()
 
@@ -81,14 +75,18 @@ class ReengroseEventosMixin:
         if self._cargando:
             return
         if self.chk_uniforme.isChecked():
-            self._cargando = True
-            for borde in VDO_RE_MODELO.BORDES_2D:
-                self.spin_ancho_borde[borde].setValue(
-                    self.spin_ancho.value())
-                self.spin_offset_borde[borde].setValue(
-                    self.spin_offset.value())
-            self._cargando = False
+            self._replicar_uniforme()
         self._emitir()
+
+    def _replicar_uniforme(self):
+        """Copia ancho y offset globales a todos los bordes sin disparar los manejadores de cada spin."""
+        self._cargando = True
+        for borde in VDO_RE_MODELO.BORDES_2D:
+            self.spin_ancho_borde[borde].setValue(
+                self.spin_ancho.value())
+            self.spin_offset_borde[borde].setValue(
+                self.spin_offset.value())
+        self._cargando = False
 
     def _on_custom_spin(self, *args):
         if self._cargando or self.chk_uniforme.isChecked():
