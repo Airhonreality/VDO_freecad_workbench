@@ -346,6 +346,52 @@ def _piezas_restantes(ancho_contra, alto_contra, g_caja, material_ref, notch_anc
     return piezas
 
 
+def _resumen_caja(ancho_ext, largo_lateral, alto_lateral, g_caja,
+                  ancho_contra, alto_contra, montaje, ancho_piso,
+                  largo_piso, g_fondo, z_piso):
+    """Medidas de la caja para el resultado de calcular_despiece."""
+    return {
+        "ancho_exterior": ancho_ext,
+        "largo_lateral": largo_lateral,
+        "alto_lateral": alto_lateral,
+        "grosor": g_caja,
+        "ancho_contra": ancho_contra,
+        "alto_contra": alto_contra,
+        "montaje_trasera": montaje,
+        "ancho_piso": ancho_piso,
+        "largo_piso": largo_piso,
+        "grosor_piso": g_fondo,
+        "z_piso": z_piso,
+    }
+
+
+def _resumen_fachada(ancho_fachada, alto_fachada, alto_fachada_nominal,
+                     g_fachada, sistema_apertura, tipo_montaje_fachada,
+                     operacion_canto, cantos_fachada):
+    """Medidas y reglas de la fachada para el resultado."""
+    return {
+        "ancho": ancho_fachada,
+        "alto": alto_fachada,
+        "alto_nominal": alto_fachada_nominal,
+        "espesor": g_fachada,
+        "sistema_apertura": sistema_apertura,
+        "tipo_montaje": tipo_montaje_fachada,
+        "operacion_canto": operacion_canto,
+        "cantos": cantos_fachada,
+        "necesita_gola": necesita_descuento_gola(sistema_apertura),
+        "necesita_bisel_45": necesita_bisel_45(sistema_apertura),
+        "necesita_expulsor": necesita_expulsor_magnetico(sistema_apertura),
+    }
+
+
+def _filtrar_piezas(piezas, tipo_corredera):
+    """Quita los laterales en caja metalica (van en el perfil)."""
+    if tipo_corredera != CAJA_METALICA:
+        return piezas
+    return [p for p in piezas
+            if p["nombre"] not in ("Cajon_Lateral_Izq", "Cajon_Lateral_Der")]
+
+
 def calcular_despiece(config):
     """Calcula el despiece completo del cajón con corredera oculta.
 
@@ -422,40 +468,15 @@ def calcular_despiece(config):
                  "prof_int": prof_int,
                  "auto": lg_manual <= 0},
         "tipo_corredera": _tipo_corredera_result,
-        "caja": {
-            "ancho_exterior": ancho_ext,
-            "largo_lateral": largo_lateral,
-            "alto_lateral": alto_lateral,
-            "grosor": g_caja,
-            "ancho_contra": ancho_contra,
-            "alto_contra": alto_contra,
-            "montaje_trasera": montaje,
-            "ancho_piso": ancho_piso,
-            "largo_piso": largo_piso,
-            "grosor_piso": g_fondo,
-            "z_piso": z_piso,
-        },
-        "fachada": {
-            "ancho": ancho_fachada,
-            "alto": alto_fachada,
-            "alto_nominal": alto_fachada_nominal,
-            "espesor": g_fachada,
-            "sistema_apertura": sistema_apertura,
-            "tipo_montaje": tipo_montaje_fachada,
-            "operacion_canto": operacion_canto,
-            "cantos": cantos_fachada,
-            "necesita_gola": necesita_descuento_gola(sistema_apertura),
-            "necesita_bisel_45": necesita_bisel_45(sistema_apertura),
-            "necesita_expulsor": necesita_expulsor_magnetico(sistema_apertura),
-        },
+        "caja": _resumen_caja(ancho_ext, largo_lateral, alto_lateral, g_caja,
+                              ancho_contra, alto_contra, montaje, ancho_piso,
+                              largo_piso, g_fondo, z_piso),
+        "fachada": _resumen_fachada(ancho_fachada, alto_fachada,
+                                    alto_fachada_nominal, g_fachada,
+                                    sistema_apertura, tipo_montaje_fachada,
+                                    operacion_canto, cantos_fachada),
         "posiciones": posiciones,
-        "piezas": (
-            [p for p in piezas
-             if p["nombre"] not in ("Cajon_Lateral_Izq",
-                                    "Cajon_Lateral_Der")]
-            if _tipo_corredera_result == CAJA_METALICA
-            else piezas
-        ),
+        "piezas": _filtrar_piezas(piezas, _tipo_corredera_result),
         "mecanizados": mecanizados_resumen,
         "avisos": avisos,
     }
