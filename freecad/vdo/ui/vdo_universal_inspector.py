@@ -36,22 +36,15 @@ except ImportError:  # pragma: no cover
     Layout = None
     resolve_layout = None
     cavidad_interior = None
-from freecad.vdo.cad.documento import recalcular
-from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades
+from freecad.vdo.ui.inspector_acciones import AccionesInspectorMixin
 from freecad.vdo.ui.inspector_arbol import ArbolInspectorMixin
-from freecad.vdo.ui.inspector_cabecera import (
-    _BreadcrumbBar,
-    _CLAVE_BREADCRUMB_A_NIVEL,
-    _MicroHeaderWidget,
-    _RUTA_BREADCRUMB_DEFECTO,
-    _RUTA_BREADCRUMB_POR_TARGET,
-)
+from freecad.vdo.ui.inspector_cabecera import _BreadcrumbBar, _MicroHeaderWidget
 from freecad.vdo.ui.inspector_pagina_pieza import PaginaPieza
 from freecad.vdo.ui.inspector_pagina_vano import PaginaVano
 from freecad.vdo.ui.inspector_paginas import PAGE_CHASIS, PaginaChasis, PaginaCierre, _float_seguro
 
 
-class VDOUniversalInspectorWidget(ArbolInspectorMixin, QtWidgets.QWidget):
+class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, QtWidgets.QWidget):
     """
     Inspector universal lateral reactivo para el Sistema VDO.
     Unifica en un solo panel permanente:
@@ -166,22 +159,6 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, QtWidgets.QWidget):
 
         # Iniciar en nivel Chasis
         self._ir_a_nivel(PAGE_CHASIS, VDOSelectionBridge.TARGET_UNKNOWN)
-    def _ir_a_nivel(self, page_index, target_type):
-        if self.stack is None:
-            return
-        self.stack.setCurrentIndex(page_index)
-        self._tipo_actual = target_type
-
-        # Actualizar breadcrumbs
-        ruta, activo = _RUTA_BREADCRUMB_POR_TARGET.get(
-            target_type, _RUTA_BREADCRUMB_DEFECTO)
-        self.breadcrumbs.set_ruta(list(ruta), activo=activo)
-
-        self.sigNivelCambiado.emit(page_index, target_type)
-    def _on_breadcrumb_clicked(self, clave):
-        destino = _CLAVE_BREADCRUMB_A_NIVEL.get(clave)
-        if destino is not None:
-            self._ir_a_nivel(*destino)
     # ------------------------------------------------------------------
     # Sincronización del Árbol Maestro y Preview 2D
     # ------------------------------------------------------------------
@@ -311,83 +288,6 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, QtWidgets.QWidget):
 
         # 5. Regenerar Árbol Maestro
         self._regenerar_arbol_maestro(obj, piezas, resolved, contenido_por_celda)
-    # ------------------------------------------------------------------
-    # Ediciones de Usuario en MicroHeader y Páginas
-    # ------------------------------------------------------------------
-    def _on_dimensiones_header_cambiadas(self, w, h, d, e):
-        obj = self._obj_actual
-        if obj is not None:
-            try:
-                if hasattr(obj, "Ancho"):
-                    asignar_propiedades(obj, {"Ancho": w})
-                if hasattr(obj, "Alto"):
-                    asignar_propiedades(obj, {"Alto": h})
-                if hasattr(obj, "FondoModulo"):
-                    asignar_propiedades(obj, {"FondoModulo": d})
-                if hasattr(obj, "Espesor"):
-                    try:
-                        asignar_propiedades(obj, {"Espesor": e})
-                    except TypeError:
-                        asignar_propiedades(obj, {"Espesor": round(e)})
-                doc = getattr(obj, "Document", None)
-                if doc is not None:
-                    recalcular(doc)
-            except Exception:
-                App.Console.PrintWarning(
-                    "[VDO] No se pudieron actualizar las dimensiones del header")
-        self._actualizar_vista_completa()
-    def _on_habitante_vano_cambiado(self, tipo_hab, cfg):
-        obj = self._obj_actual
-        if obj is None or Layout is None:
-            return
-
-        def _guardar_prop(prop_name, prop_val):
-            try:
-                if hasattr(obj, prop_name):
-                    asignar_propiedades(obj, {prop_name: prop_val})
-                elif hasattr(obj, "addProperty"):
-                    anadir_propiedad_texto(obj, prop_name, "VDO", prop_name)
-                    asignar_propiedades(obj, {prop_name: prop_val})
-            except Exception:
-                App.Console.PrintWarning(
-                    f"[VDO] No se pudo guardar propiedad {prop_name}")
-
-        celda_lbl = cfg.get("celda", "(x1, y1)")
-        texto_div = getattr(obj, "VDO_Divisiones", "") or ""
-        layout = Layout.loads(texto_div)
-
-        texto_contenido = getattr(obj, "VDO_Contenido_JSON", "{}") or "{}"
-        try:
-            contenido = json.loads(texto_contenido) if isinstance(texto_contenido, str) else dict(texto_contenido)
-        except Exception:
-            contenido = {}
-
-        if tipo_hab == "subdividir":
-            cell = layout.find_label(celda_lbl)
-            if cell is not None:
-                layout.set_split(cell, cfg.get("eje", "Y"), int(cfg.get("n_partes", 2)))
-                _guardar_prop("VDO_Divisiones", layout.dumps())
-        elif tipo_hab == "cajon" or tipo_hab == "puerta":
-            contenido[celda_lbl] = cfg
-            _guardar_prop("VDO_Contenido_JSON", json.dumps(contenido))
-        elif tipo_hab == "vacio":
-            cell = layout.find_label(celda_lbl)
-            if cell is not None:
-                layout.disable_split(cell)
-                _guardar_prop("VDO_Divisiones", layout.dumps())
-            if celda_lbl in contenido:
-                del contenido[celda_lbl]
-                _guardar_prop("VDO_Contenido_JSON", json.dumps(contenido))
-
-        try:
-            doc = getattr(obj, "Document", None)
-            if doc is not None:
-                recalcular(doc)
-        except Exception:
-            App.Console.PrintWarning(
-                "[VDO] No se pudo recomputar el documento")
-
-        self._actualizar_vista_completa()
     # ------------------------------------------------------------------
     # API pública y Ciclo de Vida
     # ------------------------------------------------------------------
