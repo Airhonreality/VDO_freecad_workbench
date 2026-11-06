@@ -17,7 +17,12 @@ except ImportError as exc:  # pragma: no cover
 from freecad.vdo.cad.documento import recalcular  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
 from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
 from freecad.vdo.ui import tema  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
-from freecad.vdo.ui.inspector_paginas import _float_seguro, _PaginaBase, _str_seguro  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
+from freecad.vdo.ui.inspector_paginas import (  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
+    _float_seguro,
+    _PaginaBase,
+    _str_seguro,
+    persistir_json_en_objeto,
+)
 
 
 # ----------------------------------------------------------------------
@@ -133,19 +138,6 @@ class PaginaPieza(_PaginaBase):
         obj = self._obj_actual
         if obj is None:
             return
-        try:
-            if hasattr(obj, "VDO_Reengrose_JSON"):
-                asignar_propiedades(obj, {"VDO_Reengrose_JSON": json.dumps(cfg)})
-            elif hasattr(obj, "addProperty"):
-                try:
-                    anadir_propiedad_texto(obj, "VDO_Reengrose_JSON", "VDO", "Regrueso JSON")
-                    asignar_propiedades(obj, {"VDO_Reengrose_JSON": json.dumps(cfg)})
-                except Exception:
-                    App.Console.PrintWarning(
-                        "[VDO] No se pudo añadir propiedad VDO_Reengrose_JSON")
-            doc = getattr(obj, "Document", None)
-            if doc is not None:
-                recalcular(doc)
-        except Exception:
-            App.Console.PrintWarning(
-                "[VDO] No se pudo persistir VDO_Reengrose_JSON")
+        persistir_json_en_objeto(
+            obj, "VDO_Reengrose_JSON", "Regrueso JSON", cfg,
+            "[VDO] No se pudo persistir VDO_Reengrose_JSON")
