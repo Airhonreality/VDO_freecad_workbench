@@ -110,7 +110,7 @@ def _refuerzo_pieza(
 
 
 def calcular_geometria_reengrose(panel_base: dict[str, Any],
-                                 modifier: ReengroseModifier) -> dict[str, Any]:
+                                 modifier: ReengroseModifier | dict[str, Any]) -> dict[str, Any]:
     """Calcula la pieza base y los refuerzos en coordenadas del tablero."""
     mod = normalizar_modificador(modifier)
     largo = float(panel_base.get("largo", 0.0))
@@ -313,7 +313,8 @@ def _refuerzos_caras(
     return refuerzos
 
 
-def calcular_geometria_caja(caja: dict[str, Any], modifier: ReengroseModifier,
+def calcular_geometria_caja(caja: dict[str, Any],
+                            modifier: ReengroseModifier | dict[str, Any],
                             ejes: dict[str, str] | None = None) -> dict[str, Any]:
     """Calcula refuerzos de una pieza en coordenadas de modulo.
 
