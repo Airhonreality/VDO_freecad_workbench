@@ -494,3 +494,8 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 
 - **D-45:** M7 ui/vdo_chassis_widget partido por concepto. Verificación visual pendiente (M10).
 - Decisión de implementación: la clase `VDOChassisControllerWidget` queda como raíz en `ui/vdo_chassis_widget.py` y hereda de mixins por concepto (`chassis_construccion`, `chassis_estilos`, `chassis_eventos`, `chassis_estado`, `chassis_config`), sin cambios de código. Constantes, tablas e iconos van a `chassis_constantes` y el canvas de sección a `chassis_canvas`. Las señales quedan en la raíz, porque son atributos de clase QObject. Los alias de método (`set_chassis_config`, `get_chassis_config`) se quedan en el mixin de su destino (`chassis_config`). Sin reexportaciones (P6).
+
+## D-46
+
+- **D-46:** M7 ui/vdo_reengrose_ui partido por concepto. Verificación visual pendiente (M10).
+- Decisión de implementación: la clase `ReengroseBorderEditor` queda como raíz en `ui/vdo_reengrose_ui.py` y hereda de mixins por concepto (`reengrose_ui_construccion`, `reengrose_ui_eventos`, `reengrose_ui_estado`, `reengrose_ui_config`), sin cambios de código. Las constantes van a `reengrose_ui_constantes` y `VDOBoardPreview` a `reengrose_ui_preview`. La señal `changed` y `__init__` quedan en la raíz. Sin reexportaciones (P6). El único consumidor (`vdo_panel_task`) importa `ReengroseBorderEditor` desde la raíz, que no cambia.

@@ -3,35 +3,8 @@
 from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui.reengrose_ui_constantes import COLOR_ESQUINA, LABEL_BORDE, LABEL_ESQUINA, OPCIONES_ESQUINA
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
-
-LABEL_BORDE = {
-    "frente": "Frente",
-    "fondo": "Fondo",
-    "izquierda": "Izquierda",
-    "derecha": "Derecha",
-}
-
-LABEL_ESQUINA = {
-    "frente_izquierda": "Frente izq.",
-    "frente_derecha": "Frente der.",
-    "fondo_izquierda": "Fondo izq.",
-    "fondo_derecha": "Fondo der.",
-}
-
-OPCIONES_ESQUINA = (
-    ("A tope lateral (Vertical domina)", "vertical_domina"),
-    ("A tope frontal (Horizontal domina)", "horizontal_domina"),
-    ("Inglete 45°", "inglete_45"),
-    ("Marco interior", "marco_interior"),
-)
-
-COLOR_ESQUINA = {
-    "vertical_domina": "#00b894",
-    "horizontal_domina": "#e67e22",
-    "inglete_45": "#9b59b6",
-    "marco_interior": "#7f8c8d",
-}
 
 
 class VDOBoardPreview(QtWidgets.QWidget):
@@ -109,6 +82,7 @@ class VDOBoardPreview(QtWidgets.QWidget):
             QtCore.QRectF(x0, y0, x1 - x0, y1 - y0),
             QtCore.Qt.AlignCenter, "Tablero")
         painter.end()
+
 
 
 class ReengroseBorderEditor(QtWidgets.QGroupBox):
@@ -390,9 +364,6 @@ class ReengroseBorderEditor(QtWidgets.QGroupBox):
         self.combo_choque.currentIndexChanged.connect(self._emitir)
         self.combo_cara.currentIndexChanged.connect(self._emitir)
 
-    # -----------------------------------------------------------------
-    # Estado y lectura
-    # -----------------------------------------------------------------
     def _emitir(self, *args):
         if self._cargando:
             return
