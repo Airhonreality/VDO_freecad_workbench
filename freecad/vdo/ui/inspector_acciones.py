@@ -1,9 +1,6 @@
 """Acciones de navegacion y edicion del inspector (migas, dimensiones, habitantes)."""
 
 import json
-import os
-if os.environ.get("QT_QPA_PLATFORM") is None:
-    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 import FreeCAD as App
 try:
     from freecad.vdo.core.vdo_layout_matriz import Layout

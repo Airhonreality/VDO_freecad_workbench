@@ -1,8 +1,5 @@
 """Cabecera del inspector: migas de pan y micro-cabecera de dimensiones."""
 
-import os
-if os.environ.get("QT_QPA_PLATFORM") is None:
-    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_selection_bridge import VDOSelectionBridge
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox

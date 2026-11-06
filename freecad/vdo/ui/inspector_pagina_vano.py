@@ -1,8 +1,5 @@
 """Pagina de vano del inspector: luz neta y dock de habitantes."""
 
-import os
-if os.environ.get("QT_QPA_PLATFORM") is None:
-    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.core import vdo_hardware_hub as HH
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA

@@ -1,9 +1,6 @@
 """Pagina de pieza del inspector: cabecera de panel y caja."""
 
 import json
-import os
-if os.environ.get("QT_QPA_PLATFORM") is None:
-    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 import FreeCAD as App
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 try:

@@ -1,9 +1,6 @@
 """Paginas de detalle del inspector: constantes de pagina, base, chasis y cierre."""
 
 import json
-import os
-if os.environ.get("QT_QPA_PLATFORM") is None:
-    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 import FreeCAD as App
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_selection_bridge import VDOSelectionBridge
