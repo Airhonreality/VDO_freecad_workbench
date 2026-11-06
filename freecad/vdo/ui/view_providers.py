@@ -158,7 +158,8 @@ def reparar_viewprovider(obj):
         return None
     try:
         vp = obj.ViewObject
-    except Exception:
+    except Exception as exc:
+        App.Console.PrintWarning(f"[VDO] view_providers: ViewProvider no creado, devuelve None: {exc}\n")
         return None
     if vp is None:
         return None
@@ -171,7 +172,8 @@ def reparar_viewprovider(obj):
             try:
                 from freecad.vdo.ui.drag_handles import DragableViewProvider
                 return DragableViewProvider(vp)
-            except Exception:
+            except Exception as exc:
+                App.Console.PrintWarning(f"[VDO] view_providers: DragableViewProvider fallido, usa ViewProviderCoco: {exc}\n")
                 return ViewProviderCoco(vp)
         if _es_cajon(obj):
             return ViewProviderCajon(vp)

@@ -70,7 +70,8 @@ class VDOSelectionBridge:
             Gui.Selection.addObserver(self)
             self._observador_activo = True
             return True
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] selection_bridge: observador no activado: {exc}\n")
             self._observador_activo = False
             return False
 
@@ -85,7 +86,8 @@ class VDOSelectionBridge:
             Gui.Selection.removeObserver(self)
             self._observador_activo = False
             return True
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] selection_bridge: observador no desactivado: {exc}\n")
             self._observador_activo = False
             return False
 
@@ -96,7 +98,8 @@ class VDOSelectionBridge:
     def _tiene_prop(obj, nombre):
         try:
             return hasattr(obj, nombre)
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] selection_bridge: comprobacion fallida, devuelve False: {exc}\n")
             return False
 
     def classify_object(self, obj) -> str:

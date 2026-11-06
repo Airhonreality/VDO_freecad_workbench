@@ -105,7 +105,8 @@ class ColocadorModulo:
     def _iniciar_fallback(self):
         try:
             self._view = Gui.ActiveDocument.ActiveView
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] placement: vista 3D no obtenida: {exc}\n")
             self._view = None
         if self._view is None or coin is None:
             self._cancelar()
@@ -177,13 +178,15 @@ class ColocadorModulo:
         pos = (pos[0], pos[1])
         try:
             info = self._view.getObjectInfo(pos)
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] placement: informacion de punto no leida: {exc}\n")
             info = None
         if info and all(k in info for k in ("x", "y", "z")):
             return App.Vector(info["x"], info["y"], info["z"])
         try:
             return self._view.getPoint(pos)
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] placement: punto no leido, devuelve None: {exc}\n")
             return None
 
     # -----------------------------------------------------------------
@@ -193,7 +196,8 @@ class ColocadorModulo:
         try:
             return Gui.ActiveDocument is not None and \
                 Gui.ActiveDocument.ActiveView is not None
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] placement: vista activa no comprobada, devuelve False: {exc}\n")
             return False
 
     def _mostrar(self):

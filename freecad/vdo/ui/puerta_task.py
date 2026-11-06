@@ -96,7 +96,8 @@ class PuertaTaskPanel(PuertaTaskConstruccionMixin, VDOTransactionMixin):
         self.combo_sku.clear()
         try:
             skus = sorted(H.query_family(familia).keys())
-        except KeyError:
+        except KeyError as exc:
+            App.Console.PrintWarning(f"[VDO] puerta_task: catalogo de SKU no leido, lista vacia: {exc}\n")
             skus = []
         if skus:
             self.combo_sku.addItems(skus)
@@ -158,7 +159,8 @@ class PuertaTaskPanel(PuertaTaskConstruccionMixin, VDOTransactionMixin):
             if sistema == "Batiente Vertical":
                 identificador += f"_{self.combo_montaje.currentText()}"
             self.header.set_pieza(identificador, W, H_efectiva, t, cantos)
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] puerta_task: cabecera no actualizada: {exc}\n")
             self.header.clear()
 
     def _actualizar_herraje_info(self):

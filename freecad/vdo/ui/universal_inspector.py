@@ -195,7 +195,8 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
         texto_reeng = getattr(obj, "VDO_Reengrose_JSON", "{}") or "{}"
         try:
             reengroses = json.loads(texto_reeng) if isinstance(texto_reeng, str) else dict(texto_reeng)
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] universal_inspector: reengroses no leidos, usa vacio: {exc}\n")
             reengroses = {}
         return reengroses
 
@@ -203,7 +204,8 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
         texto_contenido = getattr(obj, "VDO_Contenido_JSON", "{}") or "{}"
         try:
             contenido_por_celda = json.loads(texto_contenido) if isinstance(texto_contenido, str) else dict(texto_contenido)
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] universal_inspector: contenido por celda no leido, usa vacio: {exc}\n")
             contenido_por_celda = {}
         return contenido_por_celda
 
@@ -336,7 +338,8 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
         if Gui is not None and hasattr(Gui, "Control"):
             try:
                 Gui.Control.showDialog(instancia)
-            except Exception:
+            except Exception as exc:
+                App.Console.PrintWarning(f"[VDO] universal_inspector: showDialog fallido, se muestra con show(): {exc}\n")
                 instancia.show()
         else:
             instancia.show()
