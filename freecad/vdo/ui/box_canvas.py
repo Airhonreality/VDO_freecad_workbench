@@ -62,17 +62,30 @@ class _VDOConcentricCenterCanvas(QtWidgets.QWidget):
         p = QtGui.QPainter(self)
         p.setRenderHint(QtGui.QPainter.Antialiasing)
 
+        x0, y0, bw, bh = self._geometria_tablero()
+
+        if bw <= 10 or bh <= 10:
+            p.end()
+            return
+
+        self._pintar_base(p, x0, y0, bw, bh)
+        gap_norte, gap_sur, gap_oeste, gap_este = self._calcular_brechas()
+        self._pintar_lineas_offset(p, x0, y0, bw, bh)
+        self._pintar_tiras(p, x0, y0, bw, bh, gap_norte, gap_sur, gap_oeste, gap_este)
+        self._pintar_ingletes(p, x0, y0, bw, bh, gap_norte, gap_sur, gap_oeste, gap_este)
+
+        p.end()
+
+    def _geometria_tablero(self):
         w = self.width()
         h = self.height()
         x0 = 8
         y0 = 8
         bw = w - 16
         bh = h - 16
+        return x0, y0, bw, bh
 
-        if bw <= 10 or bh <= 10:
-            p.end()
-            return
-
+    def _pintar_base(self, p, x0, y0, bw, bh):
         # 1. Fondo del tablero interior
         p.fillRect(QtCore.QRectF(x0, y0, bw, bh), QtGui.QColor("#161616"))
 
@@ -89,6 +102,7 @@ class _VDOConcentricCenterCanvas(QtWidgets.QWidget):
             x1, y1, x2, y2 = segmento(x0, y0, bw, bh)
             p.drawLine(QtCore.QPointF(x1, y1), QtCore.QPointF(x2, y2))
 
+    def _calcular_brechas(self):
         # 3. Brechas y Calibre 3px: Tiras de Melamina
         # Si offset == 0: gap = 3 px (al ras)
         # Si offset > 0: gap = 11 px (retranqueado / visiblemente separado)
@@ -99,7 +113,9 @@ class _VDOConcentricCenterCanvas(QtWidgets.QWidget):
         gap_sur = calc_gap("frente")
         gap_oeste = calc_gap("izquierda")
         gap_este = calc_gap("derecha")
+        return gap_norte, gap_sur, gap_oeste, gap_este
 
+    def _pintar_lineas_offset(self, p, x0, y0, bw, bh):
         # Línea indicadora de offset en la brecha si offset > 0 (Dotted ámbar/azul)
         pen_offset_line = QtGui.QPen(QtGui.QColor("#e67e22"), 1, QtCore.Qt.DotLine)
         p.setPen(pen_offset_line)
@@ -112,6 +128,7 @@ class _VDOConcentricCenterCanvas(QtWidgets.QWidget):
         if self.valores["derecha"]["offset"] > 0.0 and self.activos["derecha"]:
             p.drawLine(QtCore.QPointF(x0 + bw - 6, y0 + 4), QtCore.QPointF(x0 + bw - 6, y0 + bh - 4))
 
+    def _pintar_tiras(self, p, x0, y0, bw, bh, gap_norte, gap_sur, gap_oeste, gap_este):
         # Tiras de Calibre 3px
         pen3_act = QtGui.QPen(QtGui.QColor("#007acc"), 3, QtCore.Qt.SolidLine)
         pen3_sel = QtGui.QPen(QtGui.QColor("#00b4d8"), 3, QtCore.Qt.SolidLine)
@@ -145,6 +162,7 @@ class _VDOConcentricCenterCanvas(QtWidgets.QWidget):
         p.drawLine(QtCore.QPointF(x0 + bw - gap_este, y0 + gap_norte),
                    QtCore.QPointF(x0 + bw - gap_este, y0 + bh - gap_sur))
 
+    def _pintar_ingletes(self, p, x0, y0, bw, bh, gap_norte, gap_sur, gap_oeste, gap_este):
         # 4. Encuentros de esquina (Miters)
         # Inglete 45°: Línea diagonal en esquinas activas
         pen_miter = QtGui.QPen(QtGui.QColor("#007acc"), 1.2, QtCore.Qt.SolidLine)
@@ -157,5 +175,3 @@ class _VDOConcentricCenterCanvas(QtWidgets.QWidget):
             p.drawLine(QtCore.QPointF(x0, y0 + bh), QtCore.QPointF(x0 + gap_oeste, y0 + bh - gap_sur))
         if self.esquinas.get("frente_derecha") == "inglete_45" and (self.activos["frente"] or self.activos["derecha"]):
             p.drawLine(QtCore.QPointF(x0 + bw, y0 + bh), QtCore.QPointF(x0 + bw - gap_este, y0 + bh - gap_sur))
-
-        p.end()
