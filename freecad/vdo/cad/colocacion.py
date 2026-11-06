@@ -100,7 +100,8 @@ def aplicar_colocacion(obj: Any, punto: Any, plan: PlanColocacion) -> None:
     obj.Placement = App.Placement(base, plan.rot)
 
 
-def colocar_modulo(doc, dto: ColocarModuloDTO) -> ColocarModuloResultado:
+def colocar_modulo(doc: Any,  # documento FreeCAD sin tipo
+                    dto: ColocarModuloDTO) -> ColocarModuloResultado:
     """Coloca un módulo en el documento estableciendo su Placement."""
     if doc is None:
         raise ValueError("Documento requerido para colocar el módulo.")
