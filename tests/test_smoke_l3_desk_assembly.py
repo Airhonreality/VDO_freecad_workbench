@@ -148,7 +148,7 @@ REQUIRED_API = [
     ("freecad.vdo.cad.coco", "make_coco"),
     ("freecad.vdo.cad.cajon", "make_cajon"),
     ("freecad.vdo.cad.cajon", "CajonFeature"),
-    ("freecad.vdo.core.vdo_cajon_despiece", "calcular_despiece"),
+    ("freecad.vdo.core.vdo_cajon_calculo", "calcular_despiece"),
     ("freecad.vdo.core.vdo_cajon_correderas", "CORREDERA_OCULTA"),
     ("freecad.vdo.core.vdo_cajon_correderas", "CORREDERA_TELESCOPICA"),
     ("freecad.vdo.core.vdo_hardware_hub", "resolve_drawer_slide"),

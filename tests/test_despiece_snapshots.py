@@ -25,7 +25,7 @@ from freecad.vdo.core.vdo_cajon_correderas import (
     CORREDERA_OCULTA,
     CORREDERA_TELESCOPICA,
 )
-from freecad.vdo.core.vdo_cajon_despiece import calcular_despiece
+from freecad.vdo.core.vdo_cajon_calculo import calcular_despiece
 from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,

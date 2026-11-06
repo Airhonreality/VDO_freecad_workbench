@@ -470,7 +470,7 @@ class CajonTaskPanel(VDOTransactionMixin):
     def _actualizar_header(self):
         """Actualiza el PanelHeaderWidget con las cotas calculadas."""
         try:
-            from freecad.vdo.core.vdo_cajon_despiece import calcular_despiece
+            from freecad.vdo.core.vdo_cajon_calculo import calcular_despiece
             config = {
                 "ancho_libre": self.spin_li.value(),
                 "prof_libre": self.spin_prof.value(),
