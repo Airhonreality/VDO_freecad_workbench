@@ -29,7 +29,7 @@ def aplicar_divisiones(
     z_util = cavidad["z0"]
 
     resuelto = None
-    divs = []
+    divs: list[Any] = []  # formas FreeCAD sin tipo
     indice_divs = None
     fondo_divisiones = max(0.0, f_y) if tiene_fondo else fondo
     if divisiones_json:
