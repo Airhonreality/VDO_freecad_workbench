@@ -7,7 +7,6 @@
 import json
 import FreeCAD as App
 
-from freecad.vdo.cad.colocacion import aplicar_rotacion
 from freecad.vdo.cad.documento import (
     crear_objeto,
     eliminar_objeto,
@@ -19,7 +18,6 @@ from freecad.vdo.cad.propiedades import (
     asignar_placement_local,
     asignar_propiedades,
 )
-from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
@@ -27,7 +25,6 @@ from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_TIRADOR,
     CALLE_ENTRE_FRENTES_DEFAULT,
 )
-from freecad.vdo.datos.formularios import COCO_EXPOSICION
 from freecad.vdo.datos.valores import BLUM_TANDEM
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin
@@ -38,6 +35,7 @@ from freecad.vdo.ui.coco_unified_pestanas import CocoUnifiedPestanasMixin
 from freecad.vdo.ui.coco_unified_valores import CocoUnifiedValoresMixin
 from freecad.vdo.ui.coco_unified_celdas import CocoUnifiedCeldasMixin
 from freecad.vdo.ui.coco_unified_espacios import CocoUnifiedEspaciosMixin
+from freecad.vdo.ui.coco_unified_escritura import CocoUnifiedEscrituraMixin
 
 
 class CocoUnifiedTaskPanel(
@@ -46,6 +44,7 @@ class CocoUnifiedTaskPanel(
     CocoUnifiedValoresMixin,
     CocoUnifiedCeldasMixin,
     CocoUnifiedEspaciosMixin,
+    CocoUnifiedEscrituraMixin,
     VDOTransactionMixin,
 ):
     """Task Panel UNIFICADO: Medidas + Estructura + Divisiones + Colocación."""
@@ -293,105 +292,42 @@ class CocoUnifiedTaskPanel(
             return True
         try:
             self._vdo_begin()
-
-            self._asignar_dimensiones()
-            self._asignar_chasis()
-            self._asignar_anclaje_rotacion()
-
-            if self.editor_divisiones.tiene_overflow():
-                QtWidgets.QMessageBox.warning(
-                    self.form, "Divisiones VDO",
-                    "Las medidas fijas no caben en la cavidad interior.\n"
-                    "Reduce alguna medida antes de aplicar.")
-                self._vdo_abort()
-                return False
-
-            self._guardar_exposicion()
-
-            self._asignar_contenido()
-
-            # --- Construir insertos solo al aceptar (ciclo transaccional) ---
-            self._construir_insertos(self.obj)
-
-            recalcular_activo()
-            self._vdo_commit()
-            self._vdo_aceptado = True
-            self._vdo_call_accept()
-            return True
+            return self._escribir_coco() and self._confirmar()
         except Exception as exc:
-            self._vdo_abort()
-            App.Console.PrintError(
-                f"[VDO] Error aceptando COCO: {exc}\n")
-            import traceback
-            App.Console.PrintError(traceback.format_exc())
+            return self._fallar_accept(exc)
+
+    def _escribir_coco(self):
+        self._asignar_dimensiones()
+        self._guardar_estructura()
+        self._asignar_anclaje_rotacion()
+        if not self._comprobar_divisiones():
             return False
+        self._guardar_exposicion()
+        self._guardar_divisiones()
+        self._construir_insertos(self.obj)
+        return True
 
-    def _asignar_dimensiones(self):
-        # Campos simples desde la especificacion COCO_MEDIDAS (D-74).
-        self.form_coco.interpretar_texto()
-        for clave, prop in (("alto", "Alto"), ("ancho", "Ancho"),
-                            ("fondo_modulo", "FondoModulo"),
-                            ("espesor", "Espesor")):
-            asignar_propiedades(self.obj, {prop: self.form_coco.valor(clave)})
+    def _comprobar_divisiones(self):
+        if not self.editor_divisiones.tiene_overflow():
+            return True
+        QtWidgets.QMessageBox.warning(
+            self.form, "Divisiones VDO",
+            "Las medidas fijas no caben en la cavidad interior.\n"
+            "Reduce alguna medida antes de aplicar.")
+        self._vdo_abort()
+        return False
 
-    def _asignar_chasis(self):
-        if hasattr(self, "box_chassis") and self.box_chassis is not None:
-            cfg = self.box_chassis.getChassisConfig()
-            enc_sup = cfg.get("encuentros", {}).get("superior_izq", "tapa_domina")
-            enc_inf = cfg.get("encuentros", {}).get("inferior_izq", "lateral_domina")
-            asignar_propiedades(self.obj, {"Tapa": "externo" if enc_sup == "tapa_domina" else "interno"})
-            asignar_propiedades(self.obj, {"Base": "externo" if enc_inf == "base_domina" else "interno"})
-            asignar_propiedades(self.obj, {"TieneFondo": bool(cfg.get("caras", {}).get("fondo", {}).get("activa", True))})
+    def _confirmar(self):
+        recalcular_activo()
+        self._vdo_commit()
+        self._vdo_aceptado = True
+        self._vdo_call_accept()
+        return True
 
-            base_info = cfg.get("base", {})
-            if "altura" in base_info and hasattr(self.obj, "AltoZocalo"):
-                try:
-                    asignar_propiedades(self.obj, {"AltoZocalo": float(base_info["altura"])})
-                except Exception:
-                    App.Console.PrintWarning(
-                        "[VDO] No se pudo establecer AltoZocalo")
-            if "separacion_frente" in base_info and hasattr(self.obj, "DistanciaFrente"):
-                try:
-                    asignar_propiedades(self.obj, {"DistanciaFrente": float(base_info["separacion_frente"])})
-                except Exception:
-                    App.Console.PrintWarning(
-                        "[VDO] No se pudo establecer DistanciaFrente")
-
-            try:
-                if hasattr(self.obj, "VDO_Chassis_JSON"):
-                    asignar_propiedades(self.obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
-                elif hasattr(self.obj, "addProperty"):
-                    anadir_propiedad_texto(self.obj, "VDO_Chassis_JSON", "VDO",
-                                       "Configuración semiótica de Capa 1")
-                    asignar_propiedades(self.obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
-            except Exception:
-                App.Console.PrintWarning(
-                    "[VDO] No se pudo persistir VDO_Chassis_JSON")
-
-    def _asignar_anclaje_rotacion(self):
-        anclaje = self.form_coco.valor("anclaje")
-        if anclaje:
-            asignar_propiedades(self.obj, {"VDO_Anclaje": anclaje})
-        aplicar_rotacion(self.obj, self.form_coco.valor("rotacion"))
-
-    def _guardar_exposicion(self):
-        vistos = []
-        apoyados = []
-        for lado, _espec in COCO_EXPOSICION:
-            estado = self.form_coco.valor(f"exp_{lado}")
-            if estado == "visto":
-                vistos.append(lado)
-            elif estado == "apoyado":
-                apoyados.append(lado)
-        VDO_FR.guardar_exposicion(self.obj, vistos, apoyados)
-
-    def _asignar_contenido(self):
-        if not hasattr(self.obj, "VDO_Divisiones"):
-            anadir_propiedad_texto(
-                self.obj, "VDO_Divisiones", "Divisiones",
-                "Matriz de vanos v2 (JSON)")
-        asignar_propiedades(self.obj, {"VDO_Divisiones": self.editor_divisiones.dumps()})
-        asignar_propiedades(self.obj, {"VDO_Reengrose_JSON": (
-            self.editor_divisiones.dumps_reengroses())})
-        asignar_propiedades(self.obj, {"VDO_Contenido_JSON": (
-            self.editor_divisiones.dumps_contenido())})
+    def _fallar_accept(self, exc):
+        self._vdo_abort()
+        App.Console.PrintError(
+            f"[VDO] Error aceptando COCO: {exc}\n")
+        import traceback
+        App.Console.PrintError(traceback.format_exc())
+        return False
