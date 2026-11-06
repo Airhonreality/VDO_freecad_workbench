@@ -2,11 +2,7 @@
 
 
 
-class ChassisEstilosMixin:
-    """Mixin de VDOChassisControllerWidget: hoja de estilos. Sin cambios de codigo (D-45)."""
-
-    def _aplicar_estilos(self):
-        self.setStyleSheet("""
+_ESTILO_CHASSIS = """
             QWidget {
                 background-color: #1e1e1e;
                 color: #e0e0e0;
@@ -116,4 +112,11 @@ class ChassisEstilosMixin:
             QDoubleSpinBox:focus {
                 border-color: #007acc;
             }
-        """)
+        """
+
+
+class ChassisEstilosMixin:
+    """Mixin de VDOChassisControllerWidget: hoja de estilos. Sin cambios de codigo (D-45)."""
+
+    def _aplicar_estilos(self):
+        self.setStyleSheet(_ESTILO_CHASSIS)
