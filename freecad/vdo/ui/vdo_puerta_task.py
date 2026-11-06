@@ -6,7 +6,7 @@
 
 import FreeCAD as App
 
-from freecad.vdo.cad.propiedades import add_common_props
+from freecad.vdo.cad.propiedades import add_common_props, asignar_propiedades
 from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.core import vdo_hardware_hub as H
 from freecad.vdo.core.aperturas import ETIQUETAS, SISTEMA_POR_ETIQUETA
@@ -467,28 +467,31 @@ class PuertaTaskPanel(VDOTransactionMixin):
                          self.spin_pos_x, self.spin_pos_y,
                          self.spin_pos_z):
                 spin.interpretText()
-            self.obj.TipoSistema = self.combo_sistema.currentText()
-            self.obj.TipoMontaje = self.combo_montaje.currentText()
-            self.obj.SentidoApertura = self.combo_sentido.currentText()
             label = self.combo_apertura.currentText()
-            self.obj.SistemaApertura = SISTEMA_POR_ETIQUETA.get(label, label)
-            self.obj.HardwareSKU = self.combo_sku.currentText()
-            self.obj.Ancho = self.spin_ancho.value()
-            self.obj.Alto = self.spin_alto.value()
-            self.obj.Espesor = self.spin_espesor.value()
-            self.obj.PosX = self.spin_pos_x.value()
-            self.obj.PosY = self.spin_pos_y.value()
-            self.obj.PosZ = self.spin_pos_z.value()
+            valores = {
+                "TipoSistema": self.combo_sistema.currentText(),
+                "TipoMontaje": self.combo_montaje.currentText(),
+                "SentidoApertura": self.combo_sentido.currentText(),
+                "SistemaApertura": SISTEMA_POR_ETIQUETA.get(label, label),
+                "HardwareSKU": self.combo_sku.currentText(),
+                "Ancho": self.spin_ancho.value(),
+                "Alto": self.spin_alto.value(),
+                "Espesor": self.spin_espesor.value(),
+                "PosX": self.spin_pos_x.value(),
+                "PosY": self.spin_pos_y.value(),
+                "PosZ": self.spin_pos_z.value(),
+            }
             anclaje = self.combo_anclaje.currentData()
             if anclaje:
-                self.obj.VDO_Anclaje = anclaje
+                valores["VDO_Anclaje"] = anclaje
+            asignar_propiedades(self.obj, valores)
 
             # Fuerza de pistón (solo lectura)
             if self.obj.TipoSistema == "Basculante Horizontal":
                 texto, _, _ = descripcion_piston(self.obj.Ancho, self.obj.Alto)
-                self.obj.FuerzaPistonRecomendada = texto
+                asignar_propiedades(self.obj, {"FuerzaPistonRecomendada": texto})
             else:
-                self.obj.FuerzaPistonRecomendada = ""
+                asignar_propiedades(self.obj, {"FuerzaPistonRecomendada": ""})
 
             recalcular_activo()
             self._vdo_commit()
