@@ -400,3 +400,7 @@ $ minimalismo.py fachadas   -> 0
 ## D-23 (ola 8)
 
 - **D-23:** los DTO de app/dto.py (dataclasses inmutables, sin FreeCAD ni cálculo) pasan a core/dto.py. Razón: plan §3, TIPOS de core/cad; MN-03 permite que cad/ e ui/ importen core/. Revertir: git revert de T5.
+
+## D-24 (ola 11)
+
+- **D-24:** vdo_creacion.py y los crear_*.py pasan a freecad/vdo/creacion.py (307 líneas, bajo el límite de P5). commands.py no crece. Razón: juntos con commands.py (359) superarían 400 líneas. Revertir: git revert de T12b y T12c.
