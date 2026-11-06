@@ -36,7 +36,7 @@ class CajonTaskConstruccionMixin:
         self._enlazar_widgets()
 
         main_layout.addStretch()
-        self._crear_botones(main_layout)
+        self._crear_botonera_vdo(main_layout)
         self._conectar_senales()
         return widget
 
@@ -66,14 +66,3 @@ class CajonTaskConstruccionMixin:
         self.combo_apertura.currentIndexChanged.connect(
             self._on_apertura_cambiado)
         self._on_tipo_cambiado(0)
-
-    def _crear_botones(self, main_layout):
-        botones = QtWidgets.QDialogButtonBox()
-        botones.addButton(
-            "Crear y colocar" if not self.auto_transaction else "Aplicar",
-            QtWidgets.QDialogButtonBox.AcceptRole)
-        botones.addButton(
-            "Cancelar", QtWidgets.QDialogButtonBox.RejectRole)
-        botones.accepted.connect(self._on_ok)
-        botones.rejected.connect(self._on_cancel)
-        main_layout.addWidget(botones)

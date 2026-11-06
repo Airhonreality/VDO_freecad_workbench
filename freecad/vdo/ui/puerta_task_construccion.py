@@ -42,7 +42,7 @@ class PuertaTaskConstruccionMixin:
         self._enlazar_widgets(grupos)
 
         main.addStretch()
-        self._crear_botones(main)
+        self._crear_botonera_vdo(main)
         self._conectar_senales()
         return widget
 
@@ -67,18 +67,6 @@ class PuertaTaskConstruccionMixin:
         self.spin_pos_y = fb.widget("pos_y")
         self.spin_pos_z = fb.widget("pos_z")
         self.combo_anclaje = fb.widget("anclaje")
-
-    def _crear_botones(self, main):
-        # Botones
-        botones = QtWidgets.QDialogButtonBox()
-        botones.addButton(
-            "Aplicar" if self.auto_transaction else "Crear y colocar",
-            QtWidgets.QDialogButtonBox.AcceptRole)
-        botones.addButton(
-            "Cancelar", QtWidgets.QDialogButtonBox.RejectRole)
-        botones.accepted.connect(self._on_ok)
-        botones.rejected.connect(self._on_cancel)
-        main.addWidget(botones)
 
     def _conectar_senales(self):
         # Señales de cambio

@@ -57,7 +57,10 @@ class PanelTaskPanel(VDOTransactionMixin):
             self._form_builder.construir_grupo(main_layout, titulo, filas)
         main_layout.addStretch()
 
-        self._crear_botones(main_layout)
+        self._crear_botonera_vdo(
+            main_layout,
+            "Guarda los cambios en el panel y recalcula la geometría.",
+            "Cierra sin aplicar los cambios.")
         self._enlazar_widgets()
         self.re_editor.changed.connect(self._on_reengrose_modo_changed)
         return widget
@@ -76,20 +79,6 @@ class PanelTaskPanel(VDOTransactionMixin):
             d: fb.widget(f"canto_{d.lower()}") for d in DIRECCIONES_CANTO}
         self.spin_rotacion = fb.widget("rotacion")
         self.combo_anclaje = fb.widget("anclaje")
-
-    def _crear_botones(self, main_layout):
-        botones = QtWidgets.QDialogButtonBox()
-        btn_ok = botones.addButton(
-            "Crear y colocar" if not self.auto_transaction else "Aplicar",
-            QtWidgets.QDialogButtonBox.AcceptRole)
-        btn_cancelar = botones.addButton(
-            "Cancelar", QtWidgets.QDialogButtonBox.RejectRole)
-        botones.accepted.connect(self._on_ok)
-        botones.rejected.connect(self._on_cancel)
-        btn_ok.setToolTip(
-            "Guarda los cambios en el panel y recalcula la geometría.")
-        btn_cancelar.setToolTip("Cierra sin aplicar los cambios.")
-        main_layout.addWidget(botones)
 
     def _crear_grupo_reengrose(self):
         from freecad.vdo.ui.reengrose_ui import ReengroseBorderEditor

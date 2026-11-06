@@ -39,6 +39,22 @@ class VDOTransactionMixin:
         self.transaction_name = transaction_name
         self._vdo_tx_open = False
 
+    def _crear_botonera_vdo(self, main_layout, tip_aceptar=None, tip_cancelar=None):
+        """Botonera Aceptar/Cancelar de los task panels; tooltips opcionales."""
+        botones = QtWidgets.QDialogButtonBox()
+        btn_ok = botones.addButton(
+            "Crear y colocar" if not self.auto_transaction else "Aplicar",
+            QtWidgets.QDialogButtonBox.AcceptRole)
+        btn_cancelar = botones.addButton(
+            "Cancelar", QtWidgets.QDialogButtonBox.RejectRole)
+        botones.accepted.connect(self._on_ok)
+        botones.rejected.connect(self._on_cancel)
+        if tip_aceptar is not None:
+            btn_ok.setToolTip(tip_aceptar)
+        if tip_cancelar is not None:
+            btn_cancelar.setToolTip(tip_cancelar)
+        main_layout.addWidget(botones)
+
     # -----------------------------------------------------------------
     # Transacciones
     # -----------------------------------------------------------------

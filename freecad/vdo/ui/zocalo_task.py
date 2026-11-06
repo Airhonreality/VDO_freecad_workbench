@@ -54,7 +54,10 @@ class ZocaloTaskPanel(VDOTransactionMixin):
             self._form_builder.construir_grupo(main_layout, titulo, filas)
         main_layout.addStretch()
 
-        self._crear_botones(main_layout)
+        self._crear_botonera_vdo(
+            main_layout,
+            "Guarda los cambios del zócalo y recalcula la geometría.",
+            "Cierra sin aplicar los cambios.")
         self._enlazar_widgets()
         self._conectar_senales()
 
@@ -74,20 +77,6 @@ class ZocaloTaskPanel(VDOTransactionMixin):
         self.spin_amarres = fb.widget("amarres")
         self.spin_rotacion = fb.widget("rotacion")
         self.combo_anclaje = fb.widget("anclaje")
-
-    def _crear_botones(self, main_layout):
-        botones = QtWidgets.QDialogButtonBox()
-        btn_ok = botones.addButton(
-            "Crear y colocar" if not self.auto_transaction else "Aplicar",
-            QtWidgets.QDialogButtonBox.AcceptRole)
-        btn_cancelar = botones.addButton(
-            "Cancelar", QtWidgets.QDialogButtonBox.RejectRole)
-        botones.accepted.connect(self._on_ok)
-        botones.rejected.connect(self._on_cancel)
-        btn_ok.setToolTip(
-            "Guarda los cambios del zócalo y recalcula la geometría.")
-        btn_cancelar.setToolTip("Cierra sin aplicar los cambios.")
-        main_layout.addWidget(botones)
 
     def _conectar_senales(self):
         for senal in (
