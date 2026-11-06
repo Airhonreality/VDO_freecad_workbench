@@ -49,6 +49,22 @@ class PanelTaskPanel(VDOTransactionMixin):
         widget = QtWidgets.QWidget()
         main_layout = QtWidgets.QVBoxLayout(widget)
 
+        self._crear_grupo_general(main_layout)
+
+        self._crear_grupo_dimensiones(main_layout)
+
+        self._crear_grupo_cantos(main_layout)
+
+        main_layout.addWidget(self._crear_grupo_reengrose())
+
+        self._crear_grupo_colocacion(main_layout)
+
+        self._crear_botones(main_layout)
+
+        self.re_editor.changed.connect(self._on_reengrose_modo_changed)
+        return widget
+
+    def _crear_grupo_general(self, main_layout):
         grupo_general = QtWidgets.QGroupBox("Panel")
         grid = QtWidgets.QGridLayout(grupo_general)
 
@@ -75,6 +91,7 @@ class PanelTaskPanel(VDOTransactionMixin):
 
         main_layout.addWidget(grupo_general)
 
+    def _crear_grupo_dimensiones(self, main_layout):
         grupo_dim = QtWidgets.QGroupBox("Dimensiones")
         grid_dim = QtWidgets.QGridLayout(grupo_dim)
 
@@ -107,6 +124,7 @@ class PanelTaskPanel(VDOTransactionMixin):
 
         main_layout.addWidget(grupo_dim)
 
+    def _crear_grupo_cantos(self, main_layout):
         grupo_cantos = QtWidgets.QGroupBox("Cantos")
         grid_cantos = QtWidgets.QGridLayout(grupo_cantos)
         self.combo_cantos = {}
@@ -128,8 +146,7 @@ class PanelTaskPanel(VDOTransactionMixin):
 
         main_layout.addWidget(grupo_cantos)
 
-        main_layout.addWidget(self._crear_grupo_reengrose())
-
+    def _crear_grupo_colocacion(self, main_layout):
         grupo_coloc = QtWidgets.QGroupBox("Colocación")
         grid_coloc = QtWidgets.QGridLayout(grupo_coloc)
 
@@ -156,6 +173,7 @@ class PanelTaskPanel(VDOTransactionMixin):
         main_layout.addWidget(grupo_coloc)
         main_layout.addStretch()
 
+    def _crear_botones(self, main_layout):
         botones = QtWidgets.QDialogButtonBox()
         btn_ok = botones.addButton(
             "Crear y colocar" if not self.auto_transaction else "Aplicar",
@@ -168,9 +186,6 @@ class PanelTaskPanel(VDOTransactionMixin):
             "Guarda los cambios en el panel y recalcula la geometría.")
         btn_cancelar.setToolTip("Cierra sin aplicar los cambios.")
         main_layout.addWidget(botones)
-
-        self.re_editor.changed.connect(self._on_reengrose_modo_changed)
-        return widget
 
     def _crear_grupo_reengrose(self):
         from freecad.vdo.ui.vdo_reengrose_ui import ReengroseBorderEditor
