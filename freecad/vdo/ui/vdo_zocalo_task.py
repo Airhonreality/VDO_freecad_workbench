@@ -53,6 +53,21 @@ class ZocaloTaskPanel(VDOTransactionMixin):
 
         self._form_builder = FormBuilder(widget)
 
+        self._crear_grupo_dimensiones(main_layout)
+
+        self._crear_grupo_separacion(main_layout)
+
+        self._crear_grupo_estructura(main_layout)
+
+        self._crear_grupo_colocacion(main_layout)
+
+        self._crear_botones(main_layout)
+
+        self._conectar_senales()
+
+        return widget
+
+    def _crear_grupo_dimensiones(self, main_layout):
         grupo_dim = QtWidgets.QGroupBox("Dimensiones del mueble")
         grid_dim = QtWidgets.QGridLayout(grupo_dim)
 
@@ -79,6 +94,7 @@ class ZocaloTaskPanel(VDOTransactionMixin):
 
         main_layout.addWidget(grupo_dim)
 
+    def _crear_grupo_separacion(self, main_layout):
         grupo_sep = QtWidgets.QGroupBox("Separación y encuentros")
         grid_sep = QtWidgets.QGridLayout(grupo_sep)
 
@@ -106,6 +122,7 @@ class ZocaloTaskPanel(VDOTransactionMixin):
 
         main_layout.addWidget(grupo_sep)
 
+    def _crear_grupo_estructura(self, main_layout):
         grupo_est = QtWidgets.QGroupBox("Estructura")
         grid_est = QtWidgets.QGridLayout(grupo_est)
 
@@ -118,6 +135,7 @@ class ZocaloTaskPanel(VDOTransactionMixin):
 
         main_layout.addWidget(grupo_est)
 
+    def _crear_grupo_colocacion(self, main_layout):
         grupo_coloc = QtWidgets.QGroupBox("Colocación")
         grid_coloc = QtWidgets.QGridLayout(grupo_coloc)
 
@@ -140,6 +158,7 @@ class ZocaloTaskPanel(VDOTransactionMixin):
         main_layout.addWidget(grupo_coloc)
         main_layout.addStretch()
 
+    def _crear_botones(self, main_layout):
         botones = QtWidgets.QDialogButtonBox()
         btn_ok = botones.addButton(
             "Crear y colocar" if not self.auto_transaction else "Aplicar",
@@ -153,6 +172,7 @@ class ZocaloTaskPanel(VDOTransactionMixin):
         btn_cancelar.setToolTip("Cierra sin aplicar los cambios.")
         main_layout.addWidget(botones)
 
+    def _conectar_senales(self):
         for senal in (
                 self.spin_ancho.valueChanged,
                 self.spin_fondo.valueChanged,
@@ -165,8 +185,6 @@ class ZocaloTaskPanel(VDOTransactionMixin):
         self.chk_trasera.toggled.connect(self._on_trasera)
         self.chk_trasera.toggled.connect(self._actualizar_header)
         self.chk_trasera.setChecked(True)
-
-        return widget
 
     def _campo(self, grid, fila, etiqueta, clave, tipo, rango=None,
                decimales=None, sufijo=None, tooltip=None, wrapping=False,
