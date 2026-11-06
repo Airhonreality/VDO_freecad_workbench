@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from freecad.vdo.core.dto import OptimizarCorteDTO, OptimizarCorteResultado
 
 
-def optimizar_corte(doc, dto: OptimizarCorteDTO) -> OptimizarCorteResultado:
+def optimizar_corte(doc: Any,  # documento FreeCAD sin tipo
+                    dto: OptimizarCorteDTO) -> OptimizarCorteResultado:
     """Optimiza el corte de tableros para una lista de módulos."""
     if doc is None:
         raise ValueError("Documento requerido para optimizar el corte.")
