@@ -2,6 +2,7 @@
 de tiras por borde."""
 
 import operator
+from typing import Any
 
 from freecad.vdo.core.reengrose_modelo import (
     BORDES_2D,
@@ -16,20 +17,23 @@ from freecad.vdo.core.reengrose_modificador import (
 )
 
 
-def _poligono_rect(x0, y0, x1, y1):
+def _poligono_rect(x0: float, y0: float, x1: float,
+                   y1: float) -> list[tuple[float, float]]:
     if x1 - x0 <= 1e-9 or y1 - y0 <= 1e-9:
         return []
     return [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
 
 
-def _clip_poligono(poligono, a, b, c, sentido=1.0, tolerancia=1e-9):
+def _clip_poligono(poligono: list[tuple[float, float]], a: float, b: float, c: float,
+                   sentido: float = 1.0,
+                   tolerancia: float = 1e-9) -> list[tuple[float, float]]:
     """Recorta un poligono contra la semirrecta a*x+b*y=c.
 
     ``sentido=1`` conserva a*x+b*y >= c; ``sentido=-1`` conserva <=.
     """
     if not poligono:
         return []
-    salida = []
+    salida: list[tuple[float, float]] = []
     total = len(poligono)
     for i, punto in enumerate(poligono):
         siguiente = poligono[(i + 1) % total]
@@ -47,7 +51,7 @@ def _clip_poligono(poligono, a, b, c, sentido=1.0, tolerancia=1e-9):
             salida.append((
                 punto[0] + t * (siguiente[0] - punto[0]),
                 punto[1] + t * (siguiente[1] - punto[1])))
-    limpio = []
+    limpio: list[tuple[float, float]] = []
     for punto in salida:
         if not limpio or (
                 abs(punto[0] - limpio[-1][0]) > 1e-9
@@ -60,7 +64,7 @@ def _clip_poligono(poligono, a, b, c, sentido=1.0, tolerancia=1e-9):
     return limpio
 
 
-def _esquina_bordes(esquina):
+def _esquina_bordes(esquina: str) -> tuple[str, str]:
     """Devuelve el par de bordes (horizontal, vertical) que se unen en la esquina."""
     return {
         "frente_izquierda": ("frente", "izquierda"),
@@ -88,7 +92,9 @@ _RECORTE_INGLETE_POR_ESQUINA = {
 }
 
 
-def _inglete_clip(poligonos, rects, esquina, borde_h, borde_v, largo, ancho):
+def _inglete_clip(poligonos: dict[str, list[tuple[float, float]]],
+                  rects: dict[str, list[float]], esquina: str, borde_h: str,
+                  borde_v: str, largo: float, ancho: float) -> None:
     """Aplica corte a 45° (miter) en una esquina entre dos bordes activos."""
     h0, h1 = rects[borde_h][1], rects[borde_h][3]  # rango Y del borde horizontal
     v0, v1 = rects[borde_v][0], rects[borde_v][2]  # rango X del borde vertical
@@ -144,9 +150,10 @@ _REGLAS_ESQUINA = {
 }
 
 
-def _config_bordes(bordes, espesor_madre, largo, ancho):
+def _config_bordes(bordes: dict[str, Any] | None, espesor_madre: float, largo: float,
+                   ancho: float) -> dict[str, dict[str, Any]]:
     """Normaliza la configuración de cada borde (activo, ancho, distancia, espesor)."""
-    cfgs = {}
+    cfgs: dict[str, dict[str, Any]] = {}
     for borde in BORDES_2D:
         cfg = _normalizar_borde_config(
             (bordes or {}).get(borde),
@@ -167,7 +174,8 @@ def _config_bordes(bordes, espesor_madre, largo, ancho):
     return cfgs
 
 
-def _caja_interior(cfgs, largo, ancho):
+def _caja_interior(cfgs: dict[str, dict[str, Any]], largo: float,
+                   ancho: float) -> dict[str, Any]:
     """Caja interior definida por los bordes y su distancia al canto."""
     x0_box = cfgs["izquierda"]["distancia"] if "izquierda" in cfgs else 0.0
     x1_box = largo - (cfgs["derecha"]["distancia"] if "derecha" in cfgs else 0.0)
@@ -176,14 +184,17 @@ def _caja_interior(cfgs, largo, ancho):
     return {"x0": x0_box, "x1": x1_box, "y0": y0_box, "y1": y1_box}
 
 
-def _ancho_efectivo(cfgs, borde):
-    return max(0.0, cfgs[borde]["ancho"])
+def _ancho_efectivo(cfgs: dict[str, dict[str, Any]], borde: str) -> float:
+    ancho: float = cfgs[borde]["ancho"]
+    return max(0.0, ancho)
 
 
-def _largos_con_topes(cfgs, caja, activos, encuentro_por_esquina, largo, ancho):
+def _largos_con_topes(cfgs: dict[str, dict[str, Any]], caja: dict[str, Any],
+                      activos: set[str], encuentro_por_esquina: dict[str, str],
+                      largo: float, ancho: float) -> dict[str, list[float]]:
     """Rango largo por borde según largo_tira, con topes de esquina."""
     dimension = {"x": largo, "y": ancho}
-    largos = {}
+    largos: dict[str, list[float]] = {}
     for borde in BORDES_2D:
         es_punta = cfgs[borde]["largo_tira"] == "punta_a_punta"
         eje = _EJE_RANGO_LARGO[borde]
@@ -204,14 +215,15 @@ def _largos_con_topes(cfgs, caja, activos, encuentro_por_esquina, largo, ancho):
     return largos
 
 
-def _rectangulos(largos, cfgs, largo, ancho):
+def _rectangulos(largos: dict[str, list[float]], cfgs: dict[str, dict[str, Any]],
+                 largo: float, ancho: float) -> dict[str, list[float]]:
     """Rectángulo 2D de cada borde a partir de su rango largo y corto."""
-    def sane(x0, x1):
+    def sane(x0: float, x1: float) -> tuple[float, float]:
         if x1 < x0:
             x1 = x0
         return x0, x1
 
-    rects = {}
+    rects: dict[str, list[float]] = {}
     for borde in BORDES_2D:
         largo0, largo1 = sane(*largos[borde])
         corto0, corto1 = _RANGO_CORTO_POR_BORDE[borde](
@@ -224,9 +236,11 @@ def _rectangulos(largos, cfgs, largo, ancho):
     return rects
 
 
-def _poligonos_bordes(rects, activos, encuentro_por_esquina, largo, ancho):
+def _poligonos_bordes(rects: dict[str, list[float]], activos: set[str],
+                      encuentro_por_esquina: dict[str, str], largo: float,
+                      ancho: float) -> dict[str, list[tuple[float, float]]]:
     """Polígono de cada borde activo, con inglete 45° donde corresponde."""
-    poligonos = {}
+    poligonos: dict[str, list[tuple[float, float]]] = {}
     for borde in activos:
         x0, y0, x1, y1 = rects[borde]
         x0, x1 = sorted((x0, x1))
@@ -244,9 +258,11 @@ def _poligonos_bordes(rects, activos, encuentro_por_esquina, largo, ancho):
     return poligonos
 
 
-def _tiras_desde_poligonos(poligonos, activos, encuentro_por_esquina, cfgs):
+def _tiras_desde_poligonos(poligonos: dict[str, list[tuple[float, float]]],
+                           activos: set[str], encuentro_por_esquina: dict[str, str],
+                           cfgs: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
     """Tiras (dict) a partir de los polígonos finales de cada borde."""
-    tiras = []
+    tiras: list[dict[str, Any]] = []
     for borde in BORDES_2D:
         if borde not in activos:
             continue
@@ -289,9 +305,11 @@ def _tiras_desde_poligonos(poligonos, activos, encuentro_por_esquina, cfgs):
     return tiras
 
 
-def generar_tiras_perimetrales(largo_tablero, ancho_tablero, bordes,
-                               espesor_madre,
-                               encuentro_esquinas=ENCUENTRO_ESQUINAS_DEFAULT):
+def generar_tiras_perimetrales(largo_tablero: float, ancho_tablero: float,
+                               bordes: dict[str, Any] | None, espesor_madre: float,
+                               encuentro_esquinas: str | dict[str, str] =
+                               ENCUENTRO_ESQUINAS_DEFAULT,
+                               ) -> list[dict[str, Any]]:
     """Primitiva perimetral 2D con lenguaje limpio de taller.
 
     Coordenadas del tablero: x = largo (0..largo_tablero),
@@ -331,8 +349,9 @@ def generar_tiras_perimetrales(largo_tablero, ancho_tablero, bordes,
                                   cfgs)
 
 
-def generar_geometria_tiras_perimetrales(ancho_tablero, largo_tablero,
-                                         reengrose_dto, espesor_madre):
+def generar_geometria_tiras_perimetrales(ancho_tablero: float, largo_tablero: float,
+                                         reengrose_dto: Any,  # DTO o dict de usuario (JSON)
+                                         espesor_madre: float) -> list[dict[str, Any]]:
     """Compatibilidad: tiras perimetrales desde un ReengroseDTO.
 
     x = largo (0..largo_tablero), y = ancho/profundidad (0..ancho_tablero).
