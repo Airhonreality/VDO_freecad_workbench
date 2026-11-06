@@ -9,6 +9,7 @@ import FreeCADGui as Gui
 from freecad.vdo.cad.colocacion import aplicar_rotacion
 from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.cad.propiedades import add_common_props
+from freecad.vdo.cad.transaccion import foto_propiedades, restaurar_propiedades
 from freecad.vdo.core import hardware_hub, module_props
 from freecad.vdo.core.cajon_correderas import (
     CAJA_METALICA,
@@ -243,11 +244,13 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
     def accept(self):
         if not self.obj:
             return True
+        foto = foto_propiedades(self.obj)
         try:
             self._transaccion_cajon()
             return True
         except Exception as e:
             self._vdo_abort()
+            restaurar_propiedades(self.obj, foto)
             App.Console.PrintError(f"[VDO] Error aceptando cambios: {e}\n")
             return False
 
