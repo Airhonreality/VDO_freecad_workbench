@@ -174,6 +174,30 @@ def _plan_inglete(a, b):
     }
 
 
+def _ganador_perdedor(prioridad, oa, ob):
+    """Tira ganadora y perdedora del encuentro segun prioridad y orientaciones."""
+    if prioridad == "vertical_domina":
+        if ob == "vertical" and oa != "vertical":
+            return "b", "a"
+        return "a", "b"
+    if ob == "horizontal" and oa != "horizontal":
+        return "b", "a"
+    return "a", "b"
+
+
+def _recortes_interseccion(tira_a, tira_b):
+    """Caja de interseccion de las dos tiras como lista de un recorte, o []."""
+    inter = _interseccion_aabb(tira_a, tira_b)
+    if inter is None:
+        return []
+    return [_aabb_dict({
+        "x": inter[0], "y": inter[1], "z": inter[2],
+        "w": inter[3] - inter[0],
+        "h": inter[4] - inter[1],
+        "d": inter[5] - inter[2],
+    })]
+
+
 def resolver_encuentro_tiras(tira_a, tira_b, prioridad="vertical_domina"):
     """Resuelve el encuentro entre dos tiras sin solape booleano.
 
@@ -209,19 +233,8 @@ def resolver_encuentro_tiras(tira_a, tira_b, prioridad="vertical_domina"):
             resultado["inglete"] = plan
             return resultado
 
-    oa = resultado["orientacion_a"]
-    ob = resultado["orientacion_b"]
-    if prioridad == "vertical_domina":
-        if ob == "vertical" and oa != "vertical":
-            ganador, perdedor = "b", "a"
-        else:
-            ganador, perdedor = "a", "b"
-    else:
-        if ob == "horizontal" and oa != "horizontal":
-            ganador, perdedor = "b", "a"
-        else:
-            ganador, perdedor = "a", "b"
-
+    ganador, perdedor = _ganador_perdedor(
+        prioridad, resultado["orientacion_a"], resultado["orientacion_b"])
     g = tira_a if ganador == "a" else tira_b
     p = tira_b if perdedor == "b" else tira_a
     segmentos = recortar_tira_contra_tira(p, g)
@@ -231,12 +244,5 @@ def resolver_encuentro_tiras(tira_a, tira_b, prioridad="vertical_domina"):
         resultado["tira_a"] = segmentos
     else:
         resultado["tira_b"] = segmentos
-    inter = _interseccion_aabb(tira_a, tira_b)
-    if inter is not None:
-        resultado["recortes"] = [_aabb_dict({
-            "x": inter[0], "y": inter[1], "z": inter[2],
-            "w": inter[3] - inter[0],
-            "h": inter[4] - inter[1],
-            "d": inter[5] - inter[2],
-        })]
+    resultado["recortes"] = _recortes_interseccion(tira_a, tira_b)
     return resultado
