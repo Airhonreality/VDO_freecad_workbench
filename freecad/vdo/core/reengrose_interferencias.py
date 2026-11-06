@@ -67,7 +67,9 @@ def calcular_vano_neto_con_reengrose(
     }
 
 
-def _retroceso_panel(panel_t, tira_t, eje_normal, eje_ancho):
+# panel_t y tira_t: tuplas AABB de longitud 6 (valores numericos), sin tipo fijo aqui
+def _retroceso_panel(panel_t: Any, tira_t: Any, eje_normal: str,
+                     eje_ancho: str) -> dict[str, Any]:
     """Retroceso simetrico panel/tira en el eje de profundidad correcto.
 
     Si la tira cubre todo el ancho del panel, el panel se retira por su
@@ -123,7 +125,8 @@ def _retroceso_panel(panel_t, tira_t, eje_normal, eje_ancho):
     return _aabb_dict(panel)
 
 
-def _caja_interseccion(inter):
+# inter: tupla AABB de interseccion, sin tipo fijo aqui
+def _caja_interseccion(inter: Any) -> dict[str, Any]:
     """Caja de la banda de invasion (tupla AABB de interseccion) como dict."""
     return _aabb_dict({
         "x": inter[0], "y": inter[1], "z": inter[2],
@@ -192,7 +195,9 @@ def resolver_choque_tira_panel(tira: dict[str, Any], panel_perpendicular: dict[s
     return plan
 
 
-def generar_mocheo_repisa(repisa, reengrose_vertical, politica=None):
+# repisa y reengrose_vertical: piezas (dict) sin tipo fijo aqui
+def generar_mocheo_repisa(repisa: Any, reengrose_vertical: Any,
+                          politica: str | None = None) -> dict[str, Any] | None:
     """Detecta colision repisa/reengrose y devuelve retroceso o mocheo."""
     if not detectar_colision(repisa, reengrose_vertical):
         return None
