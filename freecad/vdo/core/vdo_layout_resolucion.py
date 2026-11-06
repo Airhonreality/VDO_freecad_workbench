@@ -191,6 +191,71 @@ def _resolver_celda(cell, x, z, w, h, espesor, pieces, warnings,
     return resuelto
 
 
+def _normalizar_entrada_layout(layout):
+    """Acepta Layout, texto JSON o nada y devuelve un Layout normalizado."""
+    if isinstance(layout, str):
+        layout = Layout.loads(layout)
+    if not isinstance(layout, Layout):
+        layout = Layout()
+    if isinstance(layout.to_dict().get("cells"), dict):
+        layout._normalizar()
+    return layout
+
+
+def _extras_divisiones(layout, reengroses, thickness):
+    """Espesores extra de cada division interior (columnas y filas)."""
+    extras_columnas = [
+        _extras_borde(
+            reengroses, f"division_x:x{i + 1}", thickness)
+        for i in range(1, len(layout.columns))
+    ]
+    extras_filas = [
+        _extras_borde(
+            reengroses, f"division_y:y{j + 1}", thickness)
+        for j in range(1, len(layout.rows))
+    ]
+    return extras_columnas, extras_filas
+
+
+def _piezas_divisiones(columns, rows, inner_h, thickness):
+    """Paneles de division vertical (X) y repisas horizontales (Y)."""
+    pieces = []
+    for i in range(1, len(columns)):
+        prev = columns[i - 1]
+        pieces.append(PanelPiece(
+            AXIS_X, "root", f"x{i + 1}",
+            prev.end, 0.0, thickness, inner_h, thickness,
+            f"Division_X_col_{i + 1:03d}"))
+
+    for j in range(1, len(rows)):
+        prev = rows[j - 1]
+        for i, col in enumerate(columns):
+            pieces.append(PanelPiece(
+                AXIS_Y, "root", f"y{j + 1}_x{i + 1}",
+                col.start, prev.end, col.size, thickness, thickness,
+                f"Repisa_Y_row_{j + 1:03d}_col_{i + 1:03d}"))
+    return pieces
+
+
+def _celdas_resueltas(layout, columns, rows, thickness, pieces, warnings,
+                      seq, reengroses):
+    """Resuelve cada celda ocupada de la matriz sobre las pistas dadas."""
+    cells = []
+    for row in rows:
+        for col in columns:
+            cell = layout.cells.get(Layout.key(col.id, row.id))
+            if cell is None:
+                continue
+            cells.append(_resolver_celda(
+                cell, col.clear_start, row.clear_start,
+                col.clear_size, row.clear_size,
+                thickness, pieces, warnings, 0, seq,
+                nominal_x=col.start, nominal_z=row.start,
+                nominal_w=col.size, nominal_h=row.size,
+                reengroses=reengroses))
+    return cells
+
+
 def resolve_layout(layout, inner_w, inner_h, thickness, reengroses=None):
     """Resuelve la matriz completa y devuelve cajas/paneles locales.
 
@@ -198,13 +263,7 @@ def resolve_layout(layout, inner_w, inner_h, thickness, reengroses=None):
     laterales con reengrose reducen la luz clara del vano afectado; la
     geometria nominal queda disponible para el recorte/mocheo de repisas.
     """
-    if isinstance(layout, str):
-        layout = Layout.loads(layout)
-    if not isinstance(layout, Layout):
-        layout = Layout()
-    if isinstance(layout.to_dict().get("cells"), dict):
-        layout._normalizar()
-
+    layout = _normalizar_entrada_layout(layout)
     inner_w = max(0.0, float(inner_w))
     inner_h = max(0.0, float(inner_h))
     thickness = max(0.0, float(thickness))
@@ -219,17 +278,8 @@ def resolve_layout(layout, inner_w, inner_h, thickness, reengroses=None):
         reengroses, "base", thickness, "inferior")
     extra_sup = _extra_shell(
         reengroses, "techo", thickness, "superior")
-
-    extras_columnas = [
-        _extras_borde(
-            reengroses, f"division_x:x{i + 1}", thickness)
-        for i in range(1, len(layout.columns))
-    ]
-    extras_filas = [
-        _extras_borde(
-            reengroses, f"division_y:y{j + 1}", thickness)
-        for j in range(1, len(layout.rows))
-    ]
+    extras_columnas, extras_filas = _extras_divisiones(
+        layout, reengroses, thickness)
 
     columns = _resolver_track(
         layout.columns, inner_w, thickness, "columnas", warnings,
@@ -242,39 +292,11 @@ def resolve_layout(layout, inner_w, inner_h, thickness, reengroses=None):
         extra_borde_izq=extra_inf,
         extra_borde_der=extra_sup)
 
-    pieces = []
-    seq = [0]
-
-    for i in range(1, len(columns)):
-        prev = columns[i - 1]
-        seq[0] += 1
-        pieces.append(PanelPiece(
-            AXIS_X, "root", f"x{i + 1}",
-            prev.end, 0.0, thickness, inner_h, thickness,
-            f"Division_X_col_{i + 1:03d}"))
-
-    for j in range(1, len(rows)):
-        prev = rows[j - 1]
-        for i, col in enumerate(columns):
-            seq[0] += 1
-            pieces.append(PanelPiece(
-                AXIS_Y, "root", f"y{j + 1}_x{i + 1}",
-                col.start, prev.end, col.size, thickness, thickness,
-                f"Repisa_Y_row_{j + 1:03d}_col_{i + 1:03d}"))
-
-    cells = []
-    for row in rows:
-        for col in columns:
-            cell = layout.cells.get(Layout.key(col.id, row.id))
-            if cell is None:
-                continue
-            cells.append(_resolver_celda(
-                cell, col.clear_start, row.clear_start,
-                col.clear_size, row.clear_size,
-                thickness, pieces, warnings, 0, seq,
-                nominal_x=col.start, nominal_z=row.start,
-                nominal_w=col.size, nominal_h=row.size,
-                reengroses=reengroses))
+    pieces = _piezas_divisiones(columns, rows, inner_h, thickness)
+    # seq cuenta una pieza por cada division o repisa creada.
+    seq = [len(pieces)]
+    cells = _celdas_resueltas(
+        layout, columns, rows, thickness, pieces, warnings, seq, reengroses)
 
     return ResolvedLayout(
         inner_w, inner_h, thickness, columns, rows, cells, pieces, warnings)
