@@ -471,3 +471,7 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 
 - **D-40:** M7 ui/vdo_widgets_coco partido por concepto, sin reexportaciones (P6). Verificación visual pendiente (M10).
 - Decisión de implementación: `DivisionesEditor` (una sola clase de ~1.600 líneas) se reparte en mixins por concepto, uno por módulo; la clase raíz queda en `ui/coco_construccion_widgets.py`. Los métodos se mueven sin cambios de código. Son cinco módulos nuevos (`coco_construccion`, `coco_inspector`, `coco_arbol`, `coco_edicion`, `coco_reengrose`), todos bajo 400 líneas. `PanelHeaderWidget` va con el inspector, porque `_actualizar_header_pieza` es quien lo actualiza.
+
+## D-41 (ola 29)
+
+- **D-41:** M7 ui/vdo_universal_inspector partido por concepto. Verificación visual pendiente (M10).

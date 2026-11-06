@@ -49,13 +49,13 @@ from freecad.vdo.cad.coco import CocoFeature
 from freecad.vdo.cad.panel import PanelFeature
 from freecad.vdo.cad.puerta import PuertaFeature
 from freecad.vdo.ui.vdo_selection_bridge import VDOSelectionBridge
-from freecad.vdo.ui.vdo_universal_inspector import (
+from freecad.vdo.ui.inspector_paginas import (
     PAGE_CHASIS,
     PAGE_CIERRE,
     PAGE_PIEZA,
     PAGE_VANO,
-    VDOUniversalInspectorWidget,
 )
+from freecad.vdo.ui.vdo_universal_inspector import VDOUniversalInspectorWidget
 
 
 def _get_qapp():

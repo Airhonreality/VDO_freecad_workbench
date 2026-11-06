@@ -16,13 +16,13 @@ except ImportError:  # pragma: no cover
     Gui = None
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui.vdo_universal_inspector import (
+from freecad.vdo.ui.inspector_paginas import (
     PAGE_CHASIS,
     PAGE_CIERRE,
     PAGE_PIEZA,
     PAGE_VANO,
-    VDOUniversalInspectorWidget,
 )
+from freecad.vdo.ui.vdo_universal_inspector import VDOUniversalInspectorWidget
 
 
 class VDOInspectorDockWidget(QtWidgets.QDockWidget):

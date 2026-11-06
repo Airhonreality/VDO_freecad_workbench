@@ -15,37 +15,23 @@
 
 import json
 import os
-
-# Forzar plataforma offscreen si no hay display (freecadcmd / CI).
 if os.environ.get("QT_QPA_PLATFORM") is None:
     os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
-
 import FreeCAD as App
-
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-
 try:
     import FreeCADGui as Gui
 except ImportError:  # pragma: no cover
     Gui = None
-
 from freecad.vdo.ui.vdo_selection_bridge import VDOSelectionBridge
-
 try:
     from freecad.vdo.ui.vdo_box_controller import VDOBoxControllerWidget
 except ImportError:  # pragma: no cover
     VDOBoxControllerWidget = None
-
-try:
-    from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
-except ImportError:  # pragma: no cover
-    VDOChassisControllerWidget = None
-
 try:
     from freecad.vdo.ui.vdo_coco_preview2d import CocoPreview2D
 except ImportError:  # pragma: no cover
     CocoPreview2D = None
-
 try:
     from freecad.vdo.core.vdo_layout_matriz import Layout
     from freecad.vdo.core.vdo_layout_modelo import cavidad_interior
@@ -54,29 +40,24 @@ except ImportError:  # pragma: no cover
     Layout = None
     resolve_layout = None
     cavidad_interior = None
-
 from freecad.vdo.cad.documento import recalcular
 from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades
 from freecad.vdo.core import vdo_hardware_hub as HH
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
+from freecad.vdo.ui.inspector_paginas import (
+    PAGE_CHASIS,
+    PAGE_CIERRE,
+    PAGE_PIEZA,
+    PAGE_VANO,
+    PaginaChasis,
+    PaginaCierre,
+    _PaginaBase,
+    _TARGET_TO_PAGE,
+    _float_seguro,
+    _str_seguro,
+)
 
-# ----------------------------------------------------------------------
-# Constantes de navegación del QStackedWidget
-# ----------------------------------------------------------------------
-PAGE_CHASIS = 0   # COCO / Chasis L2 (VDOChassisControllerWidget)
-PAGE_VANO = 1     # Vano libre L0 (Luz neta + Dock de Habitantes)
-PAGE_PIEZA = 2    # PANEL L1 (Header + Cuadrado Figma)
-PAGE_CIERRE = 3   # CAJON / PUERTA / ZOCALO (Herrajes y Capa H)
-
-_TARGET_TO_PAGE = {
-    VDOSelectionBridge.TARGET_COCO: PAGE_CHASIS,
-    getattr(VDOSelectionBridge, "TARGET_VANO", "VANO"): PAGE_VANO,
-    VDOSelectionBridge.TARGET_PANEL: PAGE_PIEZA,
-    VDOSelectionBridge.TARGET_CAJON: PAGE_CIERRE,
-    VDOSelectionBridge.TARGET_PUERTA: PAGE_CIERRE,
-    VDOSelectionBridge.TARGET_ZOCALO: PAGE_CIERRE,
-}
 
 # tipo de destino -> (ruta del breadcrumb, clave activa)
 _RUTA_BREADCRUMB_DEFECTO = ((("Mueble", "mueble"),), "mueble")
@@ -96,7 +77,6 @@ _RUTA_BREADCRUMB_POR_TARGET = {
     VDOSelectionBridge.TARGET_ZOCALO: (
         (("Mueble", "mueble"), ("Cierre / Herraje", "cierre")), "cierre"),
 }
-
 # clave del breadcrumb -> (pagina, tipo de destino) para _ir_a_nivel
 _CLAVE_BREADCRUMB_A_NIVEL = {
     "mueble": (PAGE_CHASIS, VDOSelectionBridge.TARGET_COCO),
@@ -105,24 +85,6 @@ _CLAVE_BREADCRUMB_A_NIVEL = {
     "pieza": (PAGE_PIEZA, VDOSelectionBridge.TARGET_PANEL),
     "cierre": (PAGE_CIERRE, VDOSelectionBridge.TARGET_CAJON),
 }
-
-
-def _float_seguro(valor, default=0.0):
-    try:
-        if valor is None:
-            return default
-        return float(valor)
-    except (TypeError, ValueError, AttributeError):
-        return default
-
-
-def _str_seguro(valor, default=""):
-    try:
-        if valor is None:
-            return default
-        return str(valor)
-    except Exception:
-        return default
 
 
 # ----------------------------------------------------------------------
@@ -309,156 +271,6 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
         d = float(self.spin_d.value())
         e = float(self.spin_e.value())
         self.sigDimensionesCambiadas.emit(w, h, d, e)
-
-
-# ----------------------------------------------------------------------
-# Páginas del QStackedWidget (Con Contenedores Scrollables)
-# ----------------------------------------------------------------------
-class _PaginaBase(QtWidgets.QWidget):
-    """Página base con contenedor scrollable de datos."""
-
-    def __init__(self, titulo, parent=None):
-        super().__init__(parent)
-        self._titulo = titulo
-
-        layout_externo = QtWidgets.QVBoxLayout(self)
-        layout_externo.setContentsMargins(0, 0, 0, 0)
-        layout_externo.setSpacing(0)
-
-        self.scroll = QtWidgets.QScrollArea(self)
-        self.scroll.setWidgetResizable(True)
-        self.scroll.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.scroll.setStyleSheet("QScrollArea { background-color: transparent; }")
-
-        self.contenido = QtWidgets.QWidget()
-        self._layout = QtWidgets.QVBoxLayout(self.contenido)
-        self._layout.setContentsMargins(6, 6, 6, 6)
-        self._layout.setSpacing(4)
-
-        self.lbl_titulo = QtWidgets.QLabel(titulo)
-        self.lbl_titulo.setObjectName("lblPaginaTitulo")
-        self.lbl_titulo.setStyleSheet(
-            "QLabel#lblPaginaTitulo { color: #007acc; font-size: 11px; "
-            "font-weight: bold; padding-bottom: 2px; }")
-        self._layout.addWidget(self.lbl_titulo)
-
-        self.contenedor_datos = QtWidgets.QVBoxLayout()
-        self.contenedor_datos.setSpacing(4)
-        self._layout.addLayout(self.contenedor_datos)
-        self._layout.addStretch()
-
-        self.scroll.setWidget(self.contenido)
-        layout_externo.addWidget(self.scroll)
-
-    def _add_dato(self, etiqueta, valor):
-        fila = QtWidgets.QHBoxLayout()
-        lbl_key = QtWidgets.QLabel(etiqueta)
-        lbl_key.setFixedWidth(110)
-        lbl_key.setStyleSheet("color: #aaaaaa; font-size: 10px;")
-        lbl_val = QtWidgets.QLabel(str(valor))
-        lbl_val.setStyleSheet("color: #e0e0e0; font-size: 11px; font-weight: bold;")
-        fila.addWidget(lbl_key)
-        fila.addWidget(lbl_val)
-        fila.addStretch()
-        self.contenedor_datos.addLayout(fila)
-        return lbl_val
-
-
-# ----------------------------------------------------------------------
-# PÁGINA 0: CHASIS L2 (VDOChassisControllerWidget)
-# ----------------------------------------------------------------------
-class PaginaChasis(_PaginaBase):
-    """Nivel Chasis / Envolvente (L2): Corte Transversal 2D interactivo."""
-
-    def __init__(self, parent=None):
-        super().__init__("Chasis / Envolvente (L2)", parent)
-        self._obj_actual = None
-
-        # Etiquetas dummy de compatibilidad para tests existentes (ocultas)
-        self.lbl_alto = QtWidgets.QLabel("—")
-        self.lbl_ancho = QtWidgets.QLabel("—")
-        self.lbl_fondo = QtWidgets.QLabel("—")
-        self.lbl_anclaje = QtWidgets.QLabel("—")
-        self.lbl_subtipo = QtWidgets.QLabel("—")
-
-        # Widget de corte transversal interactivo 2D
-        self.box_chassis = None
-        if VDOChassisControllerWidget is not None:
-            self.box_chassis = VDOChassisControllerWidget()
-            self.box_chassis.sigChassisChanged.connect(self._on_chassis_changed)
-            self.contenedor_datos.addWidget(self.box_chassis)
-
-    def cargar_coco(self, obj):
-        """Carga los parámetros del chasis desde un objeto FreeCAD."""
-        self._obj_actual = obj
-        alto = _float_seguro(getattr(obj, "Alto", None))
-        ancho = _float_seguro(getattr(obj, "Ancho", None))
-        fondo = _float_seguro(getattr(obj, "FondoModulo", None))
-        anclaje = _str_seguro(getattr(obj, "VDO_Anclaje", None))
-        subtipo = _str_seguro(getattr(obj, "VDO_Subtipo", None))
-
-        self.lbl_alto.setText(f"{alto:.1f} mm" if alto else "—")
-        self.lbl_ancho.setText(f"{ancho:.1f} mm" if ancho else "—")
-        self.lbl_fondo.setText(f"{fondo:.1f} mm" if fondo else "—")
-        self.lbl_anclaje.setText(anclaje if anclaje else "—")
-        self.lbl_subtipo.setText(subtipo if subtipo else "—")
-
-        if self.box_chassis is not None:
-            raw_cfg = getattr(obj, "VDO_Chassis_JSON", None)
-            if raw_cfg:
-                try:
-                    cfg = json.loads(raw_cfg) if isinstance(raw_cfg, str) else raw_cfg
-                    self.box_chassis.setChassisConfig(cfg)
-                    return
-                except Exception:
-                    App.Console.PrintWarning(
-                        "[VDO] No se pudo cargar VDO_Chassis_JSON")
-
-            cfg_default = {
-                "caras": {
-                    "superior": {"activa": True, "tipo": "estructural"},
-                    "inferior": {"activa": True, "tipo": "estructural"},
-                    "izquierda": {"activa": True, "tipo": "estructural"},
-                    "derecha": {"activa": True, "tipo": "estructural"},
-                    "fondo": {"activa": True, "tipo": "ranurado_5mm"},
-                },
-                "encuentros": {
-                    "superior_izq": "tapa_domina",
-                    "superior_der": "tapa_domina",
-                    "inferior_izq": "lateral_domina",
-                    "inferior_der": "lateral_domina",
-                },
-                "base": {
-                    "estrategia": "zocalo" if getattr(obj, "AltoZocalo", None) else "zocalo",
-                    "altura": _float_seguro(getattr(obj, "AltoZocalo", None), 100.0),
-                    "separacion_frente": _float_seguro(getattr(obj, "DistanciaFrente", None), 50.0),
-                }
-            }
-            self.box_chassis.setChassisConfig(cfg_default)
-
-    def _on_chassis_changed(self, cfg):
-        """Persiste la configuración modificada en el objeto FreeCAD."""
-        obj = self._obj_actual
-        if obj is None:
-            return
-        try:
-            if hasattr(obj, "VDO_Chassis_JSON"):
-                asignar_propiedades(obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
-            elif hasattr(obj, "addProperty"):
-                try:
-                    anadir_propiedad_texto(obj, "VDO_Chassis_JSON", "VDO",
-                                           "Configuración semiótica de Capa 1")
-                    asignar_propiedades(obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
-                except Exception:
-                    App.Console.PrintWarning(
-                        "[VDO] No se pudo añadir propiedad VDO_Chassis_JSON")
-
-            doc = getattr(obj, "Document", None)
-            if doc is not None:
-                recalcular(doc)
-        except Exception:
-            App.Console.PrintWarning(
-                "[VDO] No se pudo persistir la configuración del chasis")
 
 
 # ----------------------------------------------------------------------
@@ -911,123 +723,6 @@ class PaginaPieza(_PaginaBase):
                 "[VDO] No se pudo persistir VDO_Reengrose_JSON")
 
 
-# ----------------------------------------------------------------------
-# PÁGINA 3: CIERRES Y HERRAJES (CAJON / PUERTA / ZOCALO / CAPA H)
-# ----------------------------------------------------------------------
-class PaginaCierre(_PaginaBase):
-    """Nivel Cierre / Herraje (CAJON / PUERTA / ZOCALO): Capa H y Fresado CNC."""
-
-    def __init__(self, parent=None):
-        super().__init__("Cierre / Herraje (Capa H)", parent)
-        self._obj_actual = None
-
-        self.lbl_tipo = self._add_dato("Tipo de cierre", "—")
-        self.lbl_subtipo = self._add_dato("Subtipo", "—")
-        self.lbl_sistema = self._add_dato("Sistema", "—")
-        self.lbl_ancho_libre = self._add_dato("Ancho libre", "—")
-        self.lbl_alto_frente = self._add_dato("Alto frente", "—")
-
-        self.grp_herraje = QtWidgets.QGroupBox("Herrajes y Fresado CNC (Capa H)")
-        self.grp_herraje.setStyleSheet(
-            "QGroupBox { color: #28a745; font-weight: bold; border: 1px solid #334d38; "
-            "border-radius: 4px; margin-top: 6px; padding-top: 10px; }")
-        lay_h = QtWidgets.QVBoxLayout(self.grp_herraje)
-        lay_h.setContentsMargins(6, 6, 6, 6)
-        lay_h.setSpacing(3)
-
-        def _fila_h(etiqueta):
-            f = QtWidgets.QHBoxLayout()
-            k = QtWidgets.QLabel(etiqueta)
-            k.setFixedWidth(90)
-            k.setStyleSheet("color: #aaaaaa; font-size: 10px;")
-            v = QtWidgets.QLabel("—")
-            v.setStyleSheet("color: #ffffff; font-size: 10px; font-weight: bold;")
-            f.addWidget(k)
-            f.addWidget(v, 1)
-            lay_h.addLayout(f)
-            return v
-
-        self.lbl_sku = _fila_h("SKU:")
-        self.lbl_proveedor = _fila_h("Proveedor:")
-        self.lbl_precio = _fila_h("Precio:")
-        self.lbl_fresado = _fila_h("Fresado:")
-
-        self.contenedor_datos.addWidget(self.grp_herraje)
-
-    def cargar_cierre(self, obj, target_type):
-        self._obj_actual = obj
-        subtipo = _str_seguro(getattr(obj, "VDO_Subtipo", None))
-        sistema = _str_seguro(getattr(obj, "SistemaApertura", None))
-        ancho_libre = _float_seguro(getattr(obj, "AnchoLibre", None))
-        alto_frente = _float_seguro(getattr(obj, "AltoFrente", None))
-
-        self.lbl_tipo.setText(target_type)
-        self.lbl_subtipo.setText(subtipo if subtipo else "—")
-        self.lbl_sistema.setText(sistema if sistema else "—")
-        self.lbl_ancho_libre.setText(f"{ancho_libre:.1f} mm" if ancho_libre else "—")
-        self.lbl_alto_frente.setText(f"{alto_frente:.1f} mm" if alto_frente else "—")
-
-        sku = _str_seguro(getattr(obj, "HardwareSKU", getattr(obj, "VDO_Herraje_Ref", None)))
-
-        if target_type == "PUERTA":
-            montaje = _str_seguro(getattr(obj, "TipoMontaje", "parche")).lower()
-            h = HH.resolve_hinge(montaje, prefer_sku=sku if sku else None)
-            if h:
-                sku_txt = sku if sku else h.get("sku", "GEN-CAZ-35-PARCHE")
-                self.lbl_sku.setText(sku_txt)
-                self.lbl_proveedor.setText(h.get("proveedor", "Genérico"))
-                self.lbl_precio.setText(f"${h.get('precio_unitario', 0.0):.2f} {h.get('moneda', 'USD')}")
-                params = h.get("parametros_tecnicos", {})
-                self.lbl_fresado.setText(
-                    f"Cazoleta {params.get('diametro_cazoleta', 35):.0f}mm × {params.get('profundidad_cazoleta', 11.5):.1f}mm | K={params.get('cota_k_default', 4):.0f}mm")
-                return
-
-        elif target_type == "CAJON":
-            marca = _str_seguro(getattr(obj, "MarcaCorredera", BLUM_TANDEM)).lower()
-            tipo_cor = _str_seguro(getattr(obj, "TipoCorredera", OCULTA)).lower()
-            s = HH.resolve_drawer_slide(tipo_cor, marca)
-            if s:
-                self.lbl_sku.setText(s.get("sku", "BLUM-TANDEM"))
-                self.lbl_proveedor.setText(s.get("proveedor", "Blum"))
-                self.lbl_precio.setText(f"${s.get('precio_unitario', 0.0):.2f} {s.get('moneda', 'USD')}")
-                params = s.get("parametros_tecnicos", {})
-                self.lbl_fresado.setText(
-                    f"Delta: {params.get('delta_ancho', 49):.0f}mm | Pin: {params.get('diametro_pin_trasero', 6):.0f}mm")
-                return
-
-        self.lbl_sku.setText(sku if sku else "STD-VDO")
-        self.lbl_proveedor.setText("Taller Estándar")
-        self.lbl_precio.setText("—")
-        self.lbl_fresado.setText("Perforaciones de ensamble estándar")
-
-    def cargar_cierre_desde_config(self, tipo_cierre, cfg):
-        """Carga datos de cierre desde un diccionario de configuración de vano."""
-        tipo_tag = "CAJON" if "cajon" in tipo_cierre.lower() else "PUERTA"
-        self.lbl_tipo.setText(tipo_tag)
-        self.lbl_subtipo.setText(str(cfg.get("tipo", tipo_tag)))
-        self.lbl_sistema.setText(str(cfg.get("sistema", cfg.get("corredera", "Estándar"))))
-        self.lbl_ancho_libre.setText("—")
-        self.lbl_alto_frente.setText("—")
-
-        if tipo_tag == "PUERTA":
-            h = HH.resolve_hinge("parche")
-            if h:
-                self.lbl_sku.setText(h.get("sku", "GEN-CAZ-35-PARCHE"))
-                self.lbl_proveedor.setText(h.get("proveedor", "Genérico"))
-                self.lbl_precio.setText(f"${h.get('precio_unitario', 0.0):.2f} {h.get('moneda', 'USD')}")
-                self.lbl_fresado.setText("Cazoleta 35mm × 11.5mm | K=4mm")
-        else:
-            s = HH.resolve_drawer_slide(OCULTA, BLUM_TANDEM)
-            if s:
-                self.lbl_sku.setText(s.get("sku", "BLUM-TANDEM"))
-                self.lbl_proveedor.setText(s.get("proveedor", "Blum"))
-                self.lbl_precio.setText(f"${s.get('precio_unitario', 0.0):.2f} {s.get('moneda', 'USD')}")
-                self.lbl_fresado.setText("Delta: 49mm | Pin: 6mm")
-
-
-# ----------------------------------------------------------------------
-# Widget Inspector Universal Consolidado
-# ----------------------------------------------------------------------
 class VDOUniversalInspectorWidget(QtWidgets.QWidget):
     """
     Inspector universal lateral reactivo para el Sistema VDO.
@@ -1037,9 +732,7 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
     - Árbol Maestro Izquierdo (QTreeWidget)
     - Stack Contextual Derecho (Chasis, Vano, Pieza, Cierre)
     """
-
     sigNivelCambiado = QtCore.Signal(int, str)  # (page_index, target_type)
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("VDOUniversalInspector")
@@ -1054,7 +747,6 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
 
         self._construir_ui()
         self._inicializar_puente()
-
     # ------------------------------------------------------------------
     # UI
     # ------------------------------------------------------------------
@@ -1146,7 +838,6 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
 
         # Iniciar en nivel Chasis
         self._ir_a_nivel(PAGE_CHASIS, VDOSelectionBridge.TARGET_UNKNOWN)
-
     def _ir_a_nivel(self, page_index, target_type):
         if self.stack is None:
             return
@@ -1159,12 +850,10 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
         self.breadcrumbs.set_ruta(list(ruta), activo=activo)
 
         self.sigNivelCambiado.emit(page_index, target_type)
-
     def _on_breadcrumb_clicked(self, clave):
         destino = _CLAVE_BREADCRUMB_A_NIVEL.get(clave)
         if destino is not None:
             self._ir_a_nivel(*destino)
-
     # ------------------------------------------------------------------
     # Sincronización del Árbol Maestro y Preview 2D
     # ------------------------------------------------------------------
@@ -1184,7 +873,6 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
 
         # 3. Resolver Layout y calcular piezas
         self._actualizar_vista_completa()
-
     def _actualizar_vista_completa(self):
         """Recalcula layout, actualiza CocoPreview2D y regenera el QTreeWidget Maestro."""
         obj = self._obj_actual
@@ -1295,7 +983,6 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
 
         # 5. Regenerar Árbol Maestro
         self._regenerar_arbol_maestro(obj, piezas, resolved, contenido_por_celda)
-
     def _regenerar_arbol_maestro(self, obj, piezas, resolved, contenido_por_celda):
         self.master_tree.blockSignals(True)
         self.master_tree.clear()
@@ -1361,7 +1048,6 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
         item_chasis.setExpanded(True)
         item_vanos.setExpanded(True)
         self.master_tree.blockSignals(False)
-
     def _on_tree_item_clicked(self, item, column):
         data = item.data(0, QtCore.Qt.UserRole)
         if not data or not isinstance(data, dict):
@@ -1394,7 +1080,6 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
             cfg = data.get("cfg", {})
             self.pagina_cierre.cargar_cierre_desde_config(tipo, cfg)
             self._ir_a_nivel(PAGE_CIERRE, "CAJON" if "cajon" in tipo else "PUERTA")
-
     # ------------------------------------------------------------------
     # Clics del Visor 2D (CocoPreview2D) -> Árbol y Páginas
     # ------------------------------------------------------------------
@@ -1406,7 +1091,6 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
                     self.pagina_vano.cargar_vano_cell(cell, fondo=_float_seguro(getattr(self._obj_actual, "FondoModulo", 550.0)))
                     break
         self._ir_a_nivel(PAGE_VANO, getattr(VDOSelectionBridge, "TARGET_VANO", "VANO"))
-
     def _on_preview_panel_clicked(self, clave):
         self._seleccionar_item_en_arbol("clave", clave)
         for p in self._piezas_calculadas:
@@ -1414,10 +1098,8 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
                 self.pagina_pieza.cargar_pieza_dict(p)
                 break
         self._ir_a_nivel(PAGE_PIEZA, VDOSelectionBridge.TARGET_PANEL)
-
     def _on_preview_reengrose_clicked(self, clave):
         self._on_preview_panel_clicked(clave)
-
     def _seleccionar_item_en_arbol(self, campo, valor):
         """Busca y selecciona el elemento en el QTreeWidget Maestro."""
         it = QtWidgets.QTreeWidgetItemIterator(self.master_tree)
@@ -1430,7 +1112,6 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
                 self.master_tree.blockSignals(False)
                 return
             it += 1
-
     # ------------------------------------------------------------------
     # Ediciones de Usuario en MicroHeader y Páginas
     # ------------------------------------------------------------------
@@ -1456,7 +1137,6 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
                 App.Console.PrintWarning(
                     "[VDO] No se pudieron actualizar las dimensiones del header")
         self._actualizar_vista_completa()
-
     def _on_habitante_vano_cambiado(self, tipo_hab, cfg):
         obj = self._obj_actual
         if obj is None or Layout is None:
@@ -1509,7 +1189,6 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
                 "[VDO] No se pudo recomputar el documento")
 
         self._actualizar_vista_completa()
-
     # ------------------------------------------------------------------
     # Puente de selección nativa FreeCAD
     # ------------------------------------------------------------------
@@ -1517,7 +1196,6 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
         self._puente = VDOSelectionBridge(
             on_target_changed=self._on_selection_changed)
         self._puente.attach()
-
     def _on_selection_changed(self, obj, target_type):
         """Reacción reactiva a un cambio de selección en FreeCAD."""
         try:
@@ -1552,22 +1230,17 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
             except Exception:
                 App.Console.PrintWarning(
                     "[VDO] No se pudo navegar a la página de chasis")
-
     # ------------------------------------------------------------------
     # API pública y Ciclo de Vida
     # ------------------------------------------------------------------
     def pagina_actual(self):
         return self.stack.currentIndex() if self.stack is not None else -1
-
     def tipo_actual(self):
         return self._tipo_actual
-
     def objeto_actual(self):
         return self._obj_actual
-
     def puente(self):
         return self._puente
-
     def cerrar_inspector(self):
         """Limpieza: desregistra el observer de FreeCAD sin fugas."""
         try:
@@ -1577,17 +1250,13 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
         except Exception:
             App.Console.PrintWarning(
                 "[VDO] No se pudo desregistrar el observer de selección")
-
     def __enter__(self):
         return self
-
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.cerrar_inspector()
-
     def closeEvent(self, event):
         self.cerrar_inspector()
         super().closeEvent(event)
-
     @classmethod
     def mostrar_en_freecad(cls, parent=None):
         """Abre el inspector en FreeCAD GUI dentro de un QDockWidget lateral."""
@@ -1609,9 +1278,5 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
 
 
 __all__ = [
-    "PAGE_CHASIS",
-    "PAGE_CIERRE",
-    "PAGE_PIEZA",
-    "PAGE_VANO",
     "VDOUniversalInspectorWidget",
 ]
