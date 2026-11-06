@@ -453,3 +453,7 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 ## D-34 (ola 22)
 
 - **D-34:** M7 parte archivos por concepto; reapuntar imports, sin reexportaciones (P6).
+
+## D-35 (ola 23)
+
+- **D-35:** M7 vdo_layout partido por concepto, sin reexportaciones (P6).
