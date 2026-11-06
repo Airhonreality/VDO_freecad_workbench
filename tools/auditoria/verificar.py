@@ -55,7 +55,7 @@ def _grep_count(pattern: str, path: Path, flags: int = 0) -> int:
     """
     res = _run(["rg", "-n", pattern, str(path)], timeout=60)
     if res.returncode == 0:
-        return len([l for l in res.stdout.splitlines() if l.strip()])
+        return len([ln for ln in res.stdout.splitlines() if ln.strip()])
     if res.returncode == 1:
         return 0
     raise RuntimeError(f"rg falló ({res.returncode}): {res.stderr.strip()[:200]}")
@@ -76,7 +76,7 @@ def _grep_files(pattern: str, path: Path) -> list[str]:
     # rg: 0 = coincidencias, 1 = ninguna, 2+ = error. Un error no es "cero coincidencias".
     res = _run(["rg", "-l", pattern, str(path)], timeout=60)
     if res.returncode == 0:
-        return [l for l in res.stdout.splitlines() if l.strip()]
+        return [ln for ln in res.stdout.splitlines() if ln.strip()]
     if res.returncode == 1:
         return []
     raise RuntimeError(f"rg falló ({res.returncode}): {res.stderr.strip()[:200]}")
@@ -142,7 +142,8 @@ def _m2_agnosticismo():
             modulos_no_puros.append(str(p.relative_to(ROOT)))
     cumple = len(modulos_no_puros) == 0
     _registrar("R2_agnosticismo_core", len(modulos_no_puros), 0, cumple,
-               "modulos no puros: " + ", ".join(modulos_no_puros) if modulos_no_puros else "ninguno")
+               "modulos no puros: " + ", ".join(modulos_no_puros)
+               if modulos_no_puros else "ninguno")
 
 
 # ---------------------------------------------------------------------------
@@ -167,7 +168,8 @@ def _m3_dominio_como_datos():
                 break
     cumple = len(escritos_fuera_cad) == 0
     _registrar("R3_dominio_como_datos", len(escritos_fuera_cad), 0, cumple,
-               "escrituras fuera de cad/: " + ", ".join(escritos_fuera_cad) if escritos_fuera_cad else "ninguna")
+               "escrituras fuera de cad/: " + ", ".join(escritos_fuera_cad)
+               if escritos_fuera_cad else "ninguna")
 
 
 # ---------------------------------------------------------------------------
@@ -207,9 +209,9 @@ def _asignaciones_mutables_modulo(src: str) -> list[tuple[int, str]]:
             for target in nodo.targets:
                 if isinstance(target, ast.Name) and not _es_constante_o_all(target.id):
                     salida.append((target.lineno, target.id))
-        elif isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name):
-            if not _es_constante_o_all(nodo.target.id):
-                salida.append((nodo.target.lineno, nodo.target.id))
+        elif (isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name)
+              and not _es_constante_o_all(nodo.target.id)):
+            salida.append((nodo.target.lineno, nodo.target.id))
     return salida
 
 
@@ -228,7 +230,8 @@ def _m5_estado_inmutable():
             asignaciones_mutables += [f"{p.relative_to(ROOT)}:{ln}:{n}" for ln, n in hallazgos]
     cumple = len(asignaciones_mutables) == 0
     _registrar("R5_estado_inmutable", len(asignaciones_mutables), 0, cumple,
-               "asignaciones mutables: " + ", ".join(asignaciones_mutables) if asignaciones_mutables else "ninguna")
+               "asignaciones mutables: " + ", ".join(asignaciones_mutables)
+               if asignaciones_mutables else "ninguna")
 
 
 # ---------------------------------------------------------------------------
@@ -354,10 +357,10 @@ def _m9_duplicacion():
                timeout=60)
     salida = res.stdout
     n_clones = 0
-    for l in salida.splitlines():
-        if l.startswith("grupos de funciones"):
+    for linea in salida.splitlines():
+        if linea.startswith("grupos de funciones"):
             with contextlib.suppress(Exception):
-                n_clones = int(l.split(":")[1].strip())
+                n_clones = int(linea.split(":")[1].strip())
     # defs no usadas (implementación simple: definiciones sin importador externo)
     n_no_usadas = _contar_defs_no_usadas()
     _registrar("R9_clones", n_clones, 0, n_clones == 0, f"{n_clones} grupos de clones")
@@ -387,7 +390,8 @@ def _referencias(src: str) -> set[str]:
             refs.add(nodo.attr)
         elif isinstance(nodo, ast.Name):
             refs.add(nodo.id)
-        elif isinstance(nodo, ast.Constant) and isinstance(nodo.value, str) and nodo.value.isidentifier():
+        elif (isinstance(nodo, ast.Constant) and isinstance(nodo.value, str)
+              and nodo.value.isidentifier()):
             refs.add(nodo.value)
     return refs
 
@@ -442,8 +446,8 @@ def _m10_consistencia():
                    timeout=120)
         mypy_ok = res.returncode == 0
         if not mypy_ok:
-            mypy_errores = len([l for l in res.stdout.splitlines()
-                                if ": error:" in l])
+            mypy_errores = len([linea for linea in res.stdout.splitlines()
+                                if ": error:" in linea])
 
     # cero print en paquete
     n_print = _grep_count(r"\bprint\(", FREECAD)
