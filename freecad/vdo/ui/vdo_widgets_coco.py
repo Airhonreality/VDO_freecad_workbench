@@ -27,7 +27,7 @@ from freecad.vdo.core.vdo_layout import (
     cavidad_interior,
     resolve_layout,
 )
-from freecad.vdo.core.vdo_puerta_core import make_puerta
+from freecad.vdo.cad.puerta import make_puerta
 from freecad.vdo.datos.valores import TIRADOR
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_coco_preview2d import CocoPreview2D

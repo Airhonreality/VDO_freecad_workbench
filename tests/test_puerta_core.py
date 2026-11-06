@@ -155,11 +155,11 @@ class CoreImportTests(unittest.TestCase):
 
     @requiere_freecad
     def test_import_core(self):
-        from freecad.vdo.core import vdo_puerta_core
+        from freecad.vdo.cad import puerta as vdo_puerta_core
 
     @requiere_freecad
     def test_make_puerta_existe(self):
-        from freecad.vdo.core.vdo_puerta_core import make_puerta
+        from freecad.vdo.cad.puerta import make_puerta
         self.assertTrue(callable(make_puerta))
 
 

@@ -33,7 +33,7 @@ from freecad.vdo.core.vdo_cajon_core import make_cajon
 from freecad.vdo.core.vdo_coco_core import make_coco
 from freecad.vdo.core.vdo_module_specs import get_spec
 from freecad.vdo.core.vdo_panel_core import crear_pieza
-from freecad.vdo.core.vdo_puerta_core import make_puerta
+from freecad.vdo.cad.puerta import make_puerta
 from freecad.vdo.core.vdo_view_base import diagnostico_viewprovider
 from freecad.vdo.core.vdo_zocalo_core import make_zocalo
 
