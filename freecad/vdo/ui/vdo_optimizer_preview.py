@@ -40,9 +40,28 @@ def render_svg(sheets, unplaced, path,
                kerf=0.0, margin=0.0):
     """Escribe un SVG con todos los tableros y devuelve la ruta."""
 
+    scale = _escala_tableros(sheets, board_w)
+    total_h, sheet_geom = _geometria_tableros(sheets, scale)
+    parts = _cabecera_svg(total_h)
+    y = _PAD + 6
+    y = _dibujar_tableros(parts, sheets, sheet_geom, scale, margin, y)
+    _dibujar_no_colocadas(parts, unplaced, y)
+
+    parts.append("</svg>")
+
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(parts))
+    return path
+
+
+
+def _escala_tableros(sheets, board_w):
     max_board_w = max([s["board_w"] for s in sheets], default=board_w)
     scale = min(1.0, 1000.0 / max_board_w) if max_board_w else 1.0
+    return scale
 
+
+def _geometria_tableros(sheets, scale):
     # Altura total
     total_h = _PAD
     sheet_geom = []
@@ -52,7 +71,10 @@ def render_svg(sheets, unplaced, path,
         sheet_geom.append((bw, bh))
         total_h += _TITLE_H + bh + _GAP
     total_h += _PAD + 30
+    return total_h, sheet_geom
 
+
+def _cabecera_svg(total_h):
     parts = []
     parts.append(
         f"<svg xmlns='http://www.w3.org/2000/svg' "
@@ -62,8 +84,10 @@ def render_svg(sheets, unplaced, path,
     parts.append(
         f"<text x='{_PAD}' y='{_PAD - 10}' font-size='20' font-weight='bold' "
         f"{_FONT} fill='#222'>VDO · Plan de corte</text>")
+    return parts
 
-    y = _PAD + 6
+
+def _dibujar_tableros(parts, sheets, sheet_geom, scale, margin, y):
     for s, (bw, bh) in zip(sheets, sheet_geom, strict=False):
         parts.append(
             f"<text x='{_PAD}' y='{y + 18}' font-size='15' font-weight='bold' "
@@ -111,7 +135,10 @@ def render_svg(sheets, unplaced, path,
                     f"fill='#555'>{dims}</text>")
 
         y = board_y + bh + _GAP
+    return y
 
+
+def _dibujar_no_colocadas(parts, unplaced, y):
     # Piezas no colocadas
     if unplaced:
         parts.append(
@@ -122,9 +149,3 @@ def render_svg(sheets, unplaced, path,
                 f"<text x='{_PAD + 16}' y='{y + 18 + i * 15}' font-size='11' "
                 f"{_FONT} fill='#c00'>- {_esc(p['name'])} "
                 f"({p['w']:.0f}x{p['h']:.0f})</text>")
-
-    parts.append("</svg>")
-
-    with open(path, "w", encoding="utf-8") as f:
-        f.write("\n".join(parts))
-    return path
