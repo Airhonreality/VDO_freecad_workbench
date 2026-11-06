@@ -35,8 +35,6 @@ from freecad.vdo.ui.coco_unified_construccion import (
     CocoUnifiedConstruccionMixin,
 )
 from freecad.vdo.ui.coco_unified_escritura import CocoUnifiedEscrituraMixin
-from freecad.vdo.ui.coco_unified_espacios import CocoUnifiedEspaciosMixin
-from freecad.vdo.ui.coco_unified_pestanas import CocoUnifiedPestanasMixin
 from freecad.vdo.ui.coco_unified_valores import CocoUnifiedValoresMixin
 from freecad.vdo.ui.task_base import VDOTransactionMixin
 
@@ -45,10 +43,8 @@ _LOG = logging.getLogger(__name__)
 
 class CocoUnifiedTaskPanel(
     CocoUnifiedConstruccionMixin,
-    CocoUnifiedPestanasMixin,
     CocoUnifiedValoresMixin,
     CocoUnifiedCeldasMixin,
-    CocoUnifiedEspaciosMixin,
     CocoUnifiedEscrituraMixin,
     VDOTransactionMixin,
 ):
