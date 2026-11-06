@@ -37,7 +37,7 @@ class SelectionBridgeTests(unittest.TestCase):
 
         # Importar los proxies FeaturePython de cada módulo VDO.
         from freecad.vdo.cad.cajon import CajonFeature
-        from freecad.vdo.cad.coco import CocoFeature
+        from freecad.vdo.cad.coco_feature import CocoFeature
         from freecad.vdo.cad.panel import PanelFeature
         from freecad.vdo.cad.puerta import PuertaFeature
         from freecad.vdo.cad.zocalo import ZocaloFeature
