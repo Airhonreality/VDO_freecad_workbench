@@ -76,7 +76,7 @@ def _fabrica(nombre_flujo):
     elif nombre_flujo == "make_zocalo":
         from freecad.vdo.cad.zocalo import make_zocalo as f
     elif nombre_flujo == "make_cajon":
-        from freecad.vdo.cad.cajon import make_cajon as f
+        from freecad.vdo.core.vdo_cajon_core import make_cajon as f
     else:
         from freecad.vdo.cad.puerta import make_puerta as f
     return f
