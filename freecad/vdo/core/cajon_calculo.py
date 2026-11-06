@@ -160,25 +160,36 @@ def _piezas_restantes(
             "material_ref": material_ref,
             "mecanizados": [],
         },
-        {
-            "nombre": "Cajon_Fachada",
-            "tipo": "panel",
-            "largo": ancho_fachada,
-            "ancho": alto_fachada,
-            "espesor": g_fachada,
-            "cantidad": 1,
-            "material_ref": material_ref,
-            "sistema_apertura": sistema_apertura,
-            "operacion_canto": operacion_canto,
-            "cantos": cantos_fachada,
-            "mecanizados": [
-                {"tipo": "canto", "caras": 4,
-                 "nota": "Fachada: 4 cantos (convención VDO)"},
-                {"tipo": operacion_canto, "cara": "superior",
-                 "nota": f"Sistema de apertura: {sistema_apertura}"},
-            ],
-        },
+        _panel_fachada(
+            material_ref, ancho_fachada, alto_fachada, g_fachada,
+            sistema_apertura, operacion_canto, cantos_fachada,
+        ),
     ]
+
+
+def _panel_fachada(
+    material_ref: Any, ancho_fachada: Any, alto_fachada: Any, g_fachada: float,
+    sistema_apertura: Any, operacion_canto: Any, cantos_fachada: Any,
+) -> dict[str, Any]:
+    """Panel de fachada del cajon: 4 cantos y operacion de apertura."""
+    return {
+        "nombre": "Cajon_Fachada",
+        "tipo": "panel",
+        "largo": ancho_fachada,
+        "ancho": alto_fachada,
+        "espesor": g_fachada,
+        "cantidad": 1,
+        "material_ref": material_ref,
+        "sistema_apertura": sistema_apertura,
+        "operacion_canto": operacion_canto,
+        "cantos": cantos_fachada,
+        "mecanizados": [
+            {"tipo": "canto", "caras": 4,
+             "nota": "Fachada: 4 cantos (convención VDO)"},
+            {"tipo": operacion_canto, "cara": "superior",
+             "nota": f"Sistema de apertura: {sistema_apertura}"},
+        ],
+    }
 
 
 def _resumen_caja(
