@@ -2,6 +2,10 @@
 
 Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 from freecad.vdo.core import defaults as VDO_D
 from freecad.vdo.core.layout_matriz import Layout
 from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y
@@ -344,7 +348,8 @@ class DivisionesEditor(
                 return
             try:
                 col, row = celda
-            except (ValueError, TypeError):
+            except (ValueError, TypeError) as exc:
+                _LOG.warning("coco_construccion_widgets: configuracion no guardada desde UI: %s", exc)
                 return
             self._guardar_config_actual(col, row)
             # Refrescar preview 2D al instante

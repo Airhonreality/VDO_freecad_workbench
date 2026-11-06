@@ -2,6 +2,10 @@
 
 Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 from freecad.vdo.core import (
     finish as VDO_FIN,
     reengrose_geometria as VDO_RE_GEOMETRIA,
@@ -162,7 +166,8 @@ class InspectorDivisionesMixin:
                 )
                 if resuelto is not None:
                     celda_label = resuelto.label
-            except (ValueError, TypeError, AttributeError):
+            except (ValueError, TypeError, AttributeError) as exc:
+                _LOG.debug("coco_inspector_widgets: celda sin formato, usa texto plano: %s", exc)
                 celda_label = f"{celda}"
         # Ocultar panel de pieza física
         self.header.setVisible(False)
@@ -355,7 +360,8 @@ class InspectorDivisionesMixin:
             geo = VDO_RE_GEOMETRIA.calcular_geometria_caja(
                 pieza["caja"], mod, pieza["ejes"])
             refs = geo.get("refuerzos") or []
-        except Exception:
+        except Exception as exc:
+            _LOG.warning("coco_inspector_widgets: referencias de pieza no leidas: %s", exc)
             refs = []
         if not refs:
             self.header.set_panel(

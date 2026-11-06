@@ -4,6 +4,10 @@
 # Acepta tanto "850.5" como "850,5" aunque el sistema use coma.
 # =====================================================================
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
 QDOUBLESPINBOX_BASE = getattr(QtWidgets, "QDoubleSpinBox", getattr(QtGui, "QDoubleSpinBox", None))
@@ -30,13 +34,15 @@ class VDO_DoubleSpinBox(QDOUBLESPINBOX_BASE):
         try:
             float(limpio)
             return (QtGui.QValidator.Acceptable, texto, posicion)
-        except ValueError:
+        except ValueError as exc:
+            _LOG.debug("qt: texto no valido en validador: %s", exc)
             return (QtGui.QValidator.Invalid, texto, posicion)
 
     def valueFromText(self, texto):
         try:
             return float(self._numero(texto))
-        except ValueError:
+        except ValueError as exc:
+            _LOG.debug("qt: texto no convertible en valueFromText: %s", exc)
             return super().valueFromText(self._numero(texto))
 
     def fixup(self, texto):
@@ -97,7 +103,8 @@ class VDO_ExpressionInput(QtWidgets.QWidget):
         try:
             limpio = self.value().replace(",", ".")
             return float(limpio)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError) as exc:
+            _LOG.debug("qt: valor no convertible, usa default: %s", exc)
             return default
 
     def setEnabled(self, enabled):

@@ -1,5 +1,9 @@
 """Pintado y edicion de celdas de la tabla de espacios."""
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 from freecad.vdo.core.spaces import ESPACIO_FIJO, ESPACIO_IGUALES
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 from freecad.vdo.ui.coco_unified_tabla import (
@@ -49,7 +53,8 @@ class CocoUnifiedCeldasMixin:
             for idx in path[1:]:
                 row = row.children_rows[idx]
             return row
-        except (IndexError, TypeError):
+        except (IndexError, TypeError) as exc:
+            _LOG.debug("coco_unified_celdas: ruta de fila no encontrada: %s", exc)
             return None
 
     def _path_text(self, axis, path):
@@ -141,7 +146,8 @@ class CocoUnifiedCeldasMixin:
         texto = item.text().strip()
         try:
             valor = float(texto)
-        except ValueError:
+        except ValueError as exc:
+            _LOG.debug("coco_unified_celdas: valor de celda no valido en edicion: %s", exc)
             return
         if row_obj.node.space_type == ESPACIO_IGUALES:
             valor = max(1.0, float(round(valor)))

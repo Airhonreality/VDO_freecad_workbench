@@ -11,6 +11,10 @@ Flujo:
   5. Click "Aceptar" → CSV generado
 """
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import sys
 from pathlib import Path
 
@@ -173,7 +177,8 @@ class CuttingListPreviewPanel:
         # Diálogo para elegir ubicación (con padre = ventana principal de FreeCAD)
         try:
             parent = Gui.getMainWindow()
-        except Exception:
+        except Exception as exc:
+            _LOG.warning("cutting_list_preview: ventana padre no obtenida: %s", exc)
             parent = None
 
         # Ruta sugerida en el HOME (siempre existe); NO usar ~/Desktop

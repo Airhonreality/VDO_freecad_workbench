@@ -5,6 +5,10 @@ herrajes (vdo_hardware_catalog.json). 100% compatible con el tema oscuro
 de FreeCAD.
 """
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import json
 import os
 
@@ -43,6 +47,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
             with open(H.CATALOGO_PATH, encoding="utf-8") as fh:
                 return json.load(fh)
         except (OSError, ValueError) as exc:
+            _LOG.warning("hardware_manager: catalogo no leido: %s", exc)
             QtWidgets.QMessageBox.critical(
                 self, "Error de catálogo",
                 f"No se pudo leer el catálogo de herrajes:\n{exc}")
@@ -323,6 +328,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
         try:
             self._guardar_catalogo()
         except OSError as exc:
+            _LOG.warning("hardware_manager: catalogo no guardado: %s", exc)
             QtWidgets.QMessageBox.critical(
                 self, "Error al guardar", f"No se pudo guardar el catálogo:\n{exc}")
             return

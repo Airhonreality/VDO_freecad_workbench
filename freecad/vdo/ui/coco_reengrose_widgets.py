@@ -2,6 +2,10 @@
 
 Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import json
 
 from freecad.vdo.core import (
@@ -176,7 +180,8 @@ class ReengroseDivisionesMixin:
                 tuple(map(int, k.split(","))): v
                 for k, v in self._contenido_por_celda.items()
             }
-        except (ValueError, TypeError, AttributeError):
+        except (ValueError, TypeError, AttributeError) as exc:
+            _LOG.warning("coco_reengrose_widgets: contenido por celda no leido: %s", exc)
             self._contenido_por_celda = {}
         self._rebuild()
     def dumps(self):
@@ -240,7 +245,8 @@ class ReengroseDivisionesMixin:
             mod = (
                 VDO_RE_MODIFICADOR.ReengroseModifier(datos) if datos
                 else VDO_RE_MODIFICADOR.ReengroseModifier())
-        except VDO_RE_MODELO.ReengroseError:
+        except VDO_RE_MODELO.ReengroseError as exc:
+            _LOG.warning("coco_reengrose_widgets: reengrose invalido, usa modificador vacio: %s", exc)
             mod = VDO_RE_MODIFICADOR.ReengroseModifier()
         self.re_editor.cargar(mod)
         self._set_combo_data(

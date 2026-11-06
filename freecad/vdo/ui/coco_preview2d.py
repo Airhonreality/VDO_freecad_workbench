@@ -4,6 +4,10 @@
 # Sin dependencias de FreeCAD 3D; sólo Qt.
 # =====================================================================
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 from freecad.vdo.core import frames as VDO_FR
 from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
 from freecad.vdo.core.facade_contract import CALLE_ENTRE_FRENTES_DEFAULT
@@ -237,7 +241,8 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
                 if col_row is None:
                     continue
                 col, row = col_row
-            except (ValueError, TypeError, AttributeError):
+            except (ValueError, TypeError, AttributeError) as exc:
+                _LOG.debug("coco_preview2d: frente de cajon malformado, se omite: %s", exc)
                 continue
             datos = self._contenido_por_celda.get((col, row))
             if not datos or datos.get("tipo") != "cajon":
@@ -310,7 +315,8 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
             ejes = pieza.get("ejes")
             try:
                 geo = VDO_RE_GEOMETRIA.calcular_geometria_caja(caja, datos, ejes)
-            except Exception:
+            except Exception as exc:
+                _LOG.debug("coco_preview2d: tira malformada, se omite: %s", exc)
                 continue
             refs = geo.get("refuerzos") or []
             if not refs:

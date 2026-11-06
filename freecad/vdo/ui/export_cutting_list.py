@@ -7,6 +7,10 @@ Sin hardcode: Lee especificaciones desde vdo_manifest.json
 Filtro: Solo exporta paneles de melamina (excluye muros, paneles BIM, etc)
 """
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import csv
 import sys
 from pathlib import Path
@@ -52,7 +56,8 @@ def extraer_piezas_panel(obj):
     largo, ancho, espesor, cantos, orientacion = _datos_panel(obj)
     try:
         mod = VDO_RE_MODIFICADOR.desde_objeto(obj)
-    except Exception:
+    except Exception as exc:
+        _LOG.warning("export_cutting_list: reengrose invalido, usa modificador vacio: %s", exc)
         mod = VDO_RE_MODIFICADOR.ReengroseModifier()
     try:
         piezas = VDO_RE_DESPIECE.despiece_panel(

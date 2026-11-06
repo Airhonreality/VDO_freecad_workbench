@@ -1,5 +1,9 @@
 """Carga, lectura y resumen de valores del panel COCO."""
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import json
 
 from freecad.vdo.core import frames as VDO_FR
@@ -32,7 +36,8 @@ class CocoUnifiedValoresMixin:
             if raw_cfg:
                 try:
                     cfg = json.loads(raw_cfg) if isinstance(raw_cfg, str) else raw_cfg
-                except Exception:
+                except Exception as exc:
+                    _LOG.warning("coco_unified_valores: configuracion de chasis no leida: %s", exc)
                     cfg = None
             if not cfg or not isinstance(cfg, dict):
                 tapa = getattr(obj, "Tapa", "externo")
