@@ -11,26 +11,30 @@
 # no importa FreeCAD a nivel de modulo.
 # =====================================================================
 
+from typing import Any
 
-def _es_coco(obj):
+# obj: objeto FreeCAD con atributos dinamicos, sin tipo estatico (Any)
+
+
+def _es_coco(obj: Any) -> bool:
     return (hasattr(obj, "VDO_Divisiones")
             or hasattr(obj, "EspaciosX")
             or hasattr(obj, "EspaciosY"))
 
 
-def _es_cajon(obj):
+def _es_cajon(obj: Any) -> bool:
     return hasattr(obj, "AnchoLibre") and hasattr(obj, "MarcaCorredera")
 
 
-def _es_zocalo(obj):
+def _es_zocalo(obj: Any) -> bool:
     return hasattr(obj, "AltoZocalo") and hasattr(obj, "DistanciaFrente")
 
 
-def _es_panel(obj):
+def _es_panel(obj: Any) -> bool:
     return hasattr(obj, "VDO_Orientacion") and hasattr(obj, "Largo")
 
 
-def diagnostico_viewprovider(obj):
+def diagnostico_viewprovider(obj: Any) -> str:
     """Texto de diagnóstico para depurar el proxy de un módulo VDO."""
     if obj is None:
         return "Sin objeto."
