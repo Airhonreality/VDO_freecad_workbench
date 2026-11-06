@@ -88,37 +88,26 @@ class BoxMargenMixin:
         self.spin_offset.setValue(float(val))
 
     def _on_spin_ancho_changed(self):
-        if self._cargando:
-            return
-        w = self.spin_ancho.value()
-        if self.btn_centro.isChecked():
-            # Uniforme: replicar a todos los bordes
-            for b in VDO_RE_MODELO.BORDES_2D:
-                self._valores_bordes[b]["ancho"] = w
-                self.spin_ancho_borde[b].setValue(w)
-        else:
-            # Individual: aplicar solo al margen seleccionado
-            m = self._margen_seleccionado
-            self._valores_bordes[m]["ancho"] = w
-            self.spin_ancho_borde[m].setValue(w)
-
-        self._actualizar_canvas_concentrico()
-        self._emitir_cambio()
+        self._aplicar_margen("ancho", self.spin_ancho, self.spin_ancho_borde)
 
     def _on_spin_offset_changed(self):
+        self._aplicar_margen("offset", self.spin_offset, self.spin_offset_borde)
+
+    def _aplicar_margen(self, clave, spin, spin_borde):
+        """Copia el valor de `spin` a `clave` de los bordes: todos si está centrado, o solo el seleccionado."""
         if self._cargando:
             return
-        d = self.spin_offset.value()
+        valor = spin.value()
         if self.btn_centro.isChecked():
             # Uniforme: replicar a todos los bordes
             for b in VDO_RE_MODELO.BORDES_2D:
-                self._valores_bordes[b]["offset"] = d
-                self.spin_offset_borde[b].setValue(d)
+                self._valores_bordes[b][clave] = valor
+                spin_borde[b].setValue(valor)
         else:
             # Individual: aplicar solo al margen seleccionado
             m = self._margen_seleccionado
-            self._valores_bordes[m]["offset"] = d
-            self.spin_offset_borde[m].setValue(d)
+            self._valores_bordes[m][clave] = valor
+            spin_borde[m].setValue(valor)
 
         self._actualizar_canvas_concentrico()
         self._emitir_cambio()
