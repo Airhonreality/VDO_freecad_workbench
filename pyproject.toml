@@ -21,7 +21,6 @@ ignore = []
 [tool.ruff.lint.per-file-ignores]
 "freecad/vdo/cad/**" = ["F401"]
 "freecad/vdo/commands.py" = ["F401"]
-"freecad/vdo/app/vdo_api.py" = ["F401"]
 "freecad/vdo/ui/**" = ["F401", "E501"]
 "tests/**" = ["E501", "F401"]
 
