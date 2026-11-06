@@ -31,22 +31,8 @@ def _extra_shell(reengroses, clave, espesor, lado):
     return negativo
 
 
-def _resolver_track(tracks, total, espesor, etiqueta, warnings,
-                    extras_internos=None, extra_borde_izq=0.0,
-                    extra_borde_der=0.0):
-    n = len(tracks)
-    total = max(0.0, float(total))
-    espesor = max(0.0, float(espesor))
-    extras_internos = list(extras_internos or [])
-    separadores = max(0, n - 1) * espesor
-    disponible = total - separadores
-
-    if disponible < -EPS:
-        warnings.append(
-            f"{etiqueta}: el espesor de los separadores "
-            f"({separadores:.1f} mm) excede el espacio ({total:.1f} mm).")
-        disponible = 0.0
-
+def _fijos_resueltos(tracks, etiqueta, warnings):
+    """Medida fija de cada vano (None si es libre); los negativos pasan a 0."""
     fijos = []
     for track in tracks:
         if track.fixed is None:
@@ -58,7 +44,11 @@ def _resolver_track(tracks, total, espesor, etiqueta, warnings,
                     f"{etiqueta}/{track.id}: medida fija negativa; se usa 0.")
                 valor = 0.0
             fijos.append(valor)
+    return fijos
 
+
+def _tamanos_track(fijos, disponible, n, etiqueta, warnings):
+    """Tamano de cada vano y desbordamiento. Devuelve (tamanos, overflow)."""
     suma_fijos = sum(v for v in fijos if v is not None)
     overflow = 0.0
 
@@ -81,6 +71,28 @@ def _resolver_track(tracks, total, espesor, etiqueta, warnings,
         tamanos[-1] += max(0.0, disponible - suma_fijos)
     else:
         tamanos = [0.0] * n
+    return tamanos, overflow
+
+
+def _resolver_track(tracks, total, espesor, etiqueta, warnings,
+                    extras_internos=None, extra_borde_izq=0.0,
+                    extra_borde_der=0.0):
+    n = len(tracks)
+    total = max(0.0, float(total))
+    espesor = max(0.0, float(espesor))
+    extras_internos = list(extras_internos or [])
+    separadores = max(0, n - 1) * espesor
+    disponible = total - separadores
+
+    if disponible < -EPS:
+        warnings.append(
+            f"{etiqueta}: el espesor de los separadores "
+            f"({separadores:.1f} mm) excede el espacio ({total:.1f} mm).")
+        disponible = 0.0
+
+    fijos = _fijos_resueltos(tracks, etiqueta, warnings)
+    tamanos, overflow = _tamanos_track(
+        fijos, disponible, n, etiqueta, warnings)
 
     resultado = []
     cursor = 0.0
