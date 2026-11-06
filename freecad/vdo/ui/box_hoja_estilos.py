@@ -1,128 +1,129 @@
 """Hoja de estilos oscura. Parte de ui/box_controller.py (M7, D-44)."""
 
+from freecad.vdo.ui import tema
 
 # ----------------------------------------------------------------------
 # Hoja de estilos oscura (Figma Dark Theme)
 # ----------------------------------------------------------------------
-ESTILO_WIDGET = """
-QWidget#VDOBoxRoot {
-    background-color: #1e1e1e;
-    color: #e0e0e0;
-}
+ESTILO_WIDGET = f"""
+QWidget#VDOBoxRoot {{
+    background-color: {tema.FONDO};
+    color: {tema.TEXTO};
+}}
 
-QFrame#canvas_container {
-    background-color: #141414;
-    border: 1px solid #333333;
+QFrame#canvas_container {{
+    background-color: {tema.COLOR_FONDO_PROFUNDO};
+    border: 1px solid {tema.FONDO3};
     border-radius: 8px;
-}
+}}
 
-QPushButton.borde-btn {
-    background-color: #262626;
-    border: 1px solid #444444;
+QPushButton.borde-btn {{
+    background-color: {tema.FONDO2};
+    border: 1px solid {tema.BORDE};
     border-radius: 4px;
-    color: #888888;
+    color: {tema.TEXTO_SUAVE};
     font-size: 10px;
     font-weight: bold;
     padding: 2px 4px;
-}
-QPushButton.borde-btn:hover {
-    background-color: #333333;
-    border-color: #666666;
-    color: #cccccc;
-}
-QPushButton.borde-btn:checked {
-    background-color: #0d4a75;
-    border: 1px solid #007acc;
-    color: #ffffff;
-}
-QPushButton.borde-btn[selected="true"] {
-    border: 1.5px solid #00b4d8;
-}
+}}
+QPushButton.borde-btn:hover {{
+    background-color: {tema.FONDO3};
+    border-color: {tema.BORDE_CLARO};
+    color: {tema.TEXTO_SUAVE2};
+}}
+QPushButton.borde-btn:checked {{
+    background-color: {tema.ACEINTO_HOVER};
+    border: 1px solid {tema.ACEINTO};
+    color: {tema.TEXTO_CLARO};
+}}
+QPushButton.borde-btn[selected="true"] {{
+    border: 1.5px solid {tema.COLOR_ACENTO_CIAN};
+}}
 
-QPushButton.esquina-btn {
-    background-color: #202020;
-    border: 1px solid #444444;
+QPushButton.esquina-btn {{
+    background-color: {tema.COLOR_FONDO_ENTRADA};
+    border: 1px solid {tema.BORDE};
     border-radius: 4px;
     padding: 2px;
-}
-QPushButton.esquina-btn:hover {
-    background-color: #303030;
-    border-color: #007acc;
-}
-QPushButton.esquina-btn:pressed {
-    background-color: #161616;
-}
+}}
+QPushButton.esquina-btn:hover {{
+    background-color: {tema.COLOR_FONDO_ELEVADO};
+    border-color: {tema.ACEINTO};
+}}
+QPushButton.esquina-btn:pressed {{
+    background-color: {tema.COLOR_FONDO_CANVAS};
+}}
 
-QPushButton.centro-btn {
-    background-color: #1b1b1b;
-    border: 1px solid #3a3a3a;
+QPushButton.centro-btn {{
+    background-color: {tema.COLOR_FONDO_CAJA};
+    border: 1px solid {tema.BORDE_SUAVE};
     border-radius: 6px;
-    color: #cccccc;
+    color: {tema.TEXTO_SUAVE2};
     font-size: 10px;
     font-weight: bold;
     padding: 3px 6px;
-}
-QPushButton.centro-btn:hover {
-    background-color: #252525;
-    border-color: #555555;
-    color: #ffffff;
-}
-QPushButton.centro-btn:checked {
-    background-color: #192a3a;
-    border: 1px solid #007acc;
-    color: #4da3ff;
-}
+}}
+QPushButton.centro-btn:hover {{
+    background-color: {tema.COLOR_FONDO_BASE};
+    border-color: {tema.COLOR_BORDE_MEDIO};
+    color: {tema.TEXTO_CLARO};
+}}
+QPushButton.centro-btn:checked {{
+    background-color: {tema.COLOR_ACENTO_FONDO};
+    border: 1px solid {tema.ACEINTO};
+    color: {tema.COLOR_TEXTO_AZUL_CLARO};
+}}
 
-QPushButton.all-btn {
-    background-color: #2b2b2b;
-    border: 1px solid #444444;
+QPushButton.all-btn {{
+    background-color: {tema.COLOR_FONDO_BOTON};
+    border: 1px solid {tema.BORDE};
     border-radius: 4px;
-    color: #cccccc;
+    color: {tema.TEXTO_SUAVE2};
     font-weight: bold;
     font-size: 11px;
     padding: 2px 8px;
-}
-QPushButton.all-btn:hover {
-    background-color: #383838;
-    border-color: #666666;
-}
-QPushButton.all-btn:checked {
-    background-color: #007acc;
-    border-color: #007acc;
-    color: #ffffff;
-}
+}}
+QPushButton.all-btn:hover {{
+    background-color: {tema.COLOR_FONDO_SECUNDARIO};
+    border-color: {tema.BORDE_CLARO};
+}}
+QPushButton.all-btn:checked {{
+    background-color: {tema.ACEINTO};
+    border-color: {tema.ACEINTO};
+    color: {tema.TEXTO_CLARO};
+}}
 
-QPushButton.chip-btn {
-    background-color: #252525;
-    border: 1px solid #444444;
+QPushButton.chip-btn {{
+    background-color: {tema.COLOR_FONDO_BASE};
+    border: 1px solid {tema.BORDE};
     border-radius: 3px;
-    color: #aaaaaa;
+    color: {tema.COLOR_TEXTO_ATENUADO};
     font-size: 10px;
     padding: 2px 6px;
-}
-QPushButton.chip-btn:hover {
-    background-color: #333333;
-    border-color: #007acc;
-    color: #ffffff;
-}
-QPushButton.chip-btn:checked {
-    background-color: #005a9e;
-    border-color: #007acc;
-    color: #ffffff;
+}}
+QPushButton.chip-btn:hover {{
+    background-color: {tema.FONDO3};
+    border-color: {tema.ACEINTO};
+    color: {tema.TEXTO_CLARO};
+}}
+QPushButton.chip-btn:checked {{
+    background-color: {tema.COLOR_ACENTO_PRESIONADO};
+    border-color: {tema.ACEINTO};
+    color: {tema.TEXTO_CLARO};
     font-weight: bold;
-}
+}}
 
-QCheckBox {
-    color: #d0d0d0;
+QCheckBox {{
+    color: {tema.COLOR_TEXTO_SECUNDARIO};
     font-size: 11px;
-}
-QCheckBox::indicator {
+}}
+QCheckBox::indicator {{
     width: 14px;
     height: 14px;
-}
+}}
 
-QLabel {
-    color: #cccccc;
+QLabel {{
+    color: {tema.TEXTO_SUAVE2};
     font-size: 11px;
-}
+}}
 """

@@ -2,6 +2,7 @@
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui import tema
 from freecad.vdo.ui.box_constantes import _SEGMENTO_MARGEN_SEL, ESQUINAS
 
 
@@ -86,15 +87,15 @@ class _VDOConcentricCenterCanvas(QtWidgets.QWidget):
 
     def _pintar_base(self, p, x0, y0, bw, bh):
         # 1. Fondo del tablero interior
-        p.fillRect(QtCore.QRectF(x0, y0, bw, bh), QtGui.QColor("#161616"))
+        p.fillRect(QtCore.QRectF(x0, y0, bw, bh), QtGui.QColor(tema.COLOR_FONDO_CANVAS))
 
         # 2. Calibre 1px: Canto exterior del tablero
-        pen_canto_base = QtGui.QPen(QtGui.QColor("#444444"), 1, QtCore.Qt.SolidLine)
+        pen_canto_base = QtGui.QPen(QtGui.QColor(tema.BORDE), 1, QtCore.Qt.SolidLine)
         p.setPen(pen_canto_base)
         p.drawRect(QtCore.QRectF(x0, y0, bw, bh))
 
         # Resaltado del margen seleccionado en Calibre 1.5px Cyan
-        pen_sel = QtGui.QPen(QtGui.QColor("#007acc"), 1.8, QtCore.Qt.SolidLine)
+        pen_sel = QtGui.QPen(QtGui.QColor(tema.ACEINTO), 1.8, QtCore.Qt.SolidLine)
         p.setPen(pen_sel)
         segmento = _SEGMENTO_MARGEN_SEL.get(self.margen_sel)
         if segmento is not None:
@@ -116,7 +117,7 @@ class _VDOConcentricCenterCanvas(QtWidgets.QWidget):
 
     def _pintar_lineas_offset(self, p, x0, y0, bw, bh):
         # Línea indicadora de offset en la brecha si offset > 0 (Dotted ámbar/azul)
-        pen_offset_line = QtGui.QPen(QtGui.QColor("#e67e22"), 1, QtCore.Qt.DotLine)
+        pen_offset_line = QtGui.QPen(QtGui.QColor(tema.COLOR_NARANJA), 1, QtCore.Qt.DotLine)
         p.setPen(pen_offset_line)
         if self.valores["fondo"]["offset"] > 0.0 and self.activos["fondo"]:
             p.drawLine(QtCore.QPointF(x0 + 4, y0 + 6), QtCore.QPointF(x0 + bw - 4, y0 + 6))
@@ -129,9 +130,9 @@ class _VDOConcentricCenterCanvas(QtWidgets.QWidget):
 
     def _pintar_tiras(self, p, x0, y0, bw, bh, gap_norte, gap_sur, gap_oeste, gap_este):
         # Tiras de Calibre 3px
-        pen3_act = QtGui.QPen(QtGui.QColor("#007acc"), 3, QtCore.Qt.SolidLine)
-        pen3_sel = QtGui.QPen(QtGui.QColor("#00b4d8"), 3, QtCore.Qt.SolidLine)
-        pen3_inact = QtGui.QPen(QtGui.QColor("#2c2c2c"), 1, QtCore.Qt.DashLine)
+        pen3_act = QtGui.QPen(QtGui.QColor(tema.ACEINTO), 3, QtCore.Qt.SolidLine)
+        pen3_sel = QtGui.QPen(QtGui.QColor(tema.COLOR_ACENTO_CIAN), 3, QtCore.Qt.SolidLine)
+        pen3_inact = QtGui.QPen(QtGui.QColor(tema.COLOR_FONDO_INACTIVO), 1, QtCore.Qt.DashLine)
 
         # FONDO (Norte)
         p_top = pen3_sel if self.margen_sel == "fondo" and self.activos["fondo"] else (
@@ -164,7 +165,7 @@ class _VDOConcentricCenterCanvas(QtWidgets.QWidget):
     def _pintar_ingletes(self, p, x0, y0, bw, bh, gap_norte, gap_sur, gap_oeste, gap_este):
         # 4. Encuentros de esquina (Miters)
         # Inglete 45°: Línea diagonal en esquinas activas
-        pen_miter = QtGui.QPen(QtGui.QColor("#007acc"), 1.2, QtCore.Qt.SolidLine)
+        pen_miter = QtGui.QPen(QtGui.QColor(tema.ACEINTO), 1.2, QtCore.Qt.SolidLine)
         p.setPen(pen_miter)
         if self.esquinas.get("fondo_izquierda") == "inglete_45" and (self.activos["fondo"] or self.activos["izquierda"]):
             p.drawLine(QtCore.QPointF(x0, y0), QtCore.QPointF(x0 + gap_oeste, y0 + gap_norte))
