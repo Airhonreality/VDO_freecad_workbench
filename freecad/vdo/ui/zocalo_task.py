@@ -8,6 +8,7 @@ import FreeCAD as App
 from freecad.vdo.cad.colocacion import aplicar_rotacion
 from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.cad.propiedades import add_common_props, asignar_propiedades
+from freecad.vdo.cad.transaccion import foto_propiedades, restaurar_propiedades
 from freecad.vdo.core import module_props
 from freecad.vdo.core.module_props import ANCLAJE_DEFAULT
 from freecad.vdo.core.zocalo_core import ZocaloError, calcular_geometria_zocalo
@@ -156,6 +157,7 @@ class ZocaloTaskPanel(VDOTransactionMixin):
         return self._transaccion_zocalo()
 
     def _transaccion_zocalo(self):
+        foto = foto_propiedades(self.obj)
         try:
             self._vdo_begin()
             self._escribir_zocalo()
@@ -165,11 +167,13 @@ class ZocaloTaskPanel(VDOTransactionMixin):
             return True
         except ZocaloError as exc:
             self._vdo_abort()
+            restaurar_propiedades(self.obj, foto)
             QtWidgets.QMessageBox.warning(
                 self.form, "Zócalo", str(exc))
             return False
         except Exception as exc:
             self._vdo_abort()
+            restaurar_propiedades(self.obj, foto)
             App.Console.PrintError(
                 f"[VDO] Error aceptando el zócalo: {exc}\n")
             return False
