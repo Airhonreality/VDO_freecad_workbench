@@ -11,7 +11,7 @@ herramientas de sincronización (ver PLAN_CONVERSION_WORKBENCH_VDO.md, D14).
 from pathlib import Path
 
 
-def ruta_icono(nombre):
+def ruta_icono(nombre: str) -> Path:
     """Ruta absoluta de un icono SVG del repo (Resources/icons/<nombre>).
 
     Relativa a este archivo: freecad/vdo/core/paths.py -> raíz del módulo.
