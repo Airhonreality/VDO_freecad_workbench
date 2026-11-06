@@ -6,6 +6,10 @@
 
 from __future__ import annotations
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 from freecad.vdo.cad.geometria import forma_ref
 from freecad.vdo.core.coco_spaces import planificar_divisiones_matriz
 from freecad.vdo.core.helpers import _get_app, _get_part
@@ -35,7 +39,8 @@ def _prisma_inglete(inglete):
         v0, v1 = plan["rango_vertical"]
         h0, h1 = plan["rango_horizontal"]
         e0, e1 = plan["rango_extrusion"]
-    except (KeyError, TypeError, ValueError):
+    except (KeyError, TypeError, ValueError) as exc:
+        _LOG.warning("coco_espacios: prisma de inglete no calculable: %s", exc)
         return None
     if v1 - v0 <= 1e-9 or h1 - h0 <= 1e-9:
         return None
@@ -73,7 +78,8 @@ def _shape_tira(tira):
                 continue
             try:
                 corte = pieza.cut(prisma)
-            except ValueError:
+            except ValueError as exc:
+                _LOG.debug("coco_espacios: pieza sin valor de tira, se conserva: %s", exc)
                 nuevas.append(pieza)
                 continue
             if corte.isNull() or corte.Volume <= 1e-9:

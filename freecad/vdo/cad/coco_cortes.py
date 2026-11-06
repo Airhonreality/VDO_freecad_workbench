@@ -4,6 +4,10 @@
 # frente a divisiones y núcleos del COCO. Extraído de coco.py (D-39).
 # =====================================================================
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 from freecad.vdo.core import reengrose_encuentros as VDO_RE_ENCUENTROS
 from freecad.vdo.core.helpers import _get_part
 
@@ -15,7 +19,8 @@ def _cortar_shape(forma, recorte):
     if forma.ShapeType != "Compound":
         try:
             resultado = forma.cut(recorte)
-        except ValueError:
+        except ValueError as exc:
+            _LOG.warning("coco_cortes: valor de corte no valido: %s", exc)
             return None
         if resultado.isNull() or resultado.Volume <= 1e-9:
             return None
@@ -24,7 +29,8 @@ def _cortar_shape(forma, recorte):
     for solido in forma.Solids:
         try:
             resultado = solido.cut(recorte)
-        except ValueError:
+        except ValueError as exc:
+            _LOG.debug("coco_cortes: fila de corte malformada, se omite: %s", exc)
             continue
         if resultado.isNull():
             continue
