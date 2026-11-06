@@ -1,5 +1,5 @@
 # =====================================================================
-# puerta.py
+# vdo_puerta_core.py
 # Capa 2 - PuertaFeature (Part::FeaturePython) con mecanizados booleanos
 # y chaflanes para el submódulo de Puertas y Cierres (L2).
 # =====================================================================

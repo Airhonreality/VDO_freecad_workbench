@@ -39,7 +39,7 @@ class SelectionBridgeTests(unittest.TestCase):
         from freecad.vdo.core.vdo_cajon_core import CajonFeature
         from freecad.vdo.core.vdo_coco_core import CocoFeature
         from freecad.vdo.core.vdo_panel_core import PanelFeature
-        from freecad.vdo.cad.puerta import PuertaFeature
+        from freecad.vdo.core.vdo_puerta_core import PuertaFeature
         from freecad.vdo.core.vdo_zocalo_core import ZocaloFeature
 
         cls.CocoFeature = CocoFeature
