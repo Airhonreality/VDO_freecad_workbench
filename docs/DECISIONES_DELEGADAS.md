@@ -432,3 +432,9 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 ## D-30 (ola 18)
 
 - **D-30 (decisión del director):** corrección de clasificación, justificada: el test del golden `coco_spaces` necesita formas OCC reales. El skip previo era accidental (dependía del import de `core/vdo_coco_spaces`, que importaba FreeCAD), no un requisito declarado. Se añade una guarda de entorno en tiempo de ejecución en `tests/test_goldens.py` que, si no hay FreeCAD real (`_freecad_real()`, la misma detección de `tests/soporte/requisitos.py`), hace SKIP con el motivo "requiere FreeCAD real (formas OCC)". No cambia el golden ni la comparación. Revertir: `git revert` del commit de D-30 (guarda).
+
+## D-31 (ola 19)
+
+- **D-31 (decisión del director):** `ui/` puede importar `core` y `cad`, como fija MN-03 del plan vinculante (`docs/PLAN_MINIMALISMO_VDO.md` §2). La prueba `test_ui_no_importa_core_cad_app_api` era más estricta que el plan: prohibía `core` y `cad`. Se alinea: los prohibidos pasan a ser solo `freecad.vdo.app.vdo_api` (y `app`, ya eliminado). (a) Cambio de la lista de prohibidos y del mensaje de la prueba; sin cambio en las demás pruebas.
+- **(b)** Las escrituras de `ui/` en FreeCAD (`.recompute()`, `addProperty`, `addObject`, asignación de `Placement` y de propiedades) se mueven a funciones con nombre claro en `cad/` (p. ej. `cad/documento.py` con `recalcular(doc)`, y las propiedades en el módulo de `cad/` que corresponda). La UI llama a esas funciones. La lógica no cambia.
+- Revertir: `git revert` de los commits de esta ola (registro, alineación de la prueba y escrituras movidas).
