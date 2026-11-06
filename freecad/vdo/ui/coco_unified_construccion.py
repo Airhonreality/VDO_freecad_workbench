@@ -20,6 +20,7 @@ from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
 from freecad.vdo.ui.vdo_form_builder import FormBuilder
 from freecad.vdo.ui.coco_construccion_widgets import DivisionesEditor
+from freecad.vdo.ui import tema
 
 
 class CocoUnifiedConstruccionMixin:
@@ -158,9 +159,7 @@ class CocoUnifiedConstruccionMixin:
         layout_resumen = QtWidgets.QVBoxLayout(grupo_resumen)
         self.lbl_resumen = QtWidgets.QLabel("Sin configurar.")
         self.lbl_resumen.setWordWrap(True)
-        self.lbl_resumen.setStyleSheet(
-            "QLabel { background-color: #f0f0f0; padding: 8px; "
-            "border: 1px solid #ccc; font-family: monospace; }")
+        tema.aplicar_estilo(self.lbl_resumen, tema.ESTILO_RESUMEN_CLARO)
         layout_resumen.addWidget(self.lbl_resumen)
         main_layout.addWidget(grupo_resumen)
 

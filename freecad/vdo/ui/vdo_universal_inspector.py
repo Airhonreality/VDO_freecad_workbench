@@ -39,6 +39,7 @@ from freecad.vdo.ui.inspector_cabecera import _BreadcrumbBar, _MicroHeaderWidget
 from freecad.vdo.ui.inspector_pagina_pieza import PaginaPieza
 from freecad.vdo.ui.inspector_pagina_vano import PaginaVano
 from freecad.vdo.ui.inspector_paginas import PAGE_CHASIS, PaginaChasis, PaginaCierre, _float_seguro
+from freecad.vdo.ui import tema
 
 
 class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, QtWidgets.QWidget):
@@ -115,15 +116,7 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
         # 4. QSplitter Horizontal Inferior
         self.splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal, self)
         self.splitter.setChildrenCollapsible(False)
-        self.splitter.setStyleSheet("""
-            QSplitter::handle {
-                background-color: #2b2b2b;
-                width: 3px;
-            }
-            QSplitter::handle:hover {
-                background-color: #007acc;
-            }
-        """)
+        tema.aplicar_estilo(self.splitter, tema.ESTILO_SPLITTER)
 
     def _crear_arbol_maestro(self):
         # Panel Izquierdo: QTreeWidget Maestro
@@ -132,22 +125,7 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
         self.master_tree.setIndentation(12)
         self.master_tree.setUniformRowHeights(True)
         self.master_tree.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.master_tree.setStyleSheet("""
-            QTreeWidget {
-                background-color: #1a1a1a;
-                border: 1px solid #2d2d2d;
-                color: #dcdcdc;
-                font-size: 10px;
-            }
-            QTreeWidget::item:selected {
-                background-color: #007acc;
-                color: #ffffff;
-                font-weight: bold;
-            }
-            QTreeWidget::item:hover:!selected {
-                background-color: #262626;
-            }
-        """)
+        tema.aplicar_estilo(self.master_tree, tema.ESTILO_ARBOL_MAESTRO)
         self.master_tree.itemClicked.connect(self._on_tree_item_clicked)
         self.splitter.addWidget(self.master_tree)
 

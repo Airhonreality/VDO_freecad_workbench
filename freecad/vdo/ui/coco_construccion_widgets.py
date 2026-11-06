@@ -11,6 +11,7 @@ from freecad.vdo.ui.coco_edicion_widgets import EdicionDivisionesMixin
 from freecad.vdo.ui.coco_inspector_widgets import InspectorDivisionesMixin, PanelHeaderWidget
 from freecad.vdo.ui.coco_reengrose_widgets import ReengroseDivisionesMixin
 from freecad.vdo.ui.vdo_coco_preview2d import CocoPreview2D
+from freecad.vdo.ui import tema
 
 
 class DivisionesEditor(
@@ -128,9 +129,7 @@ class DivisionesEditor(
 
         self.lbl_nominal_neto = QtWidgets.QLabel("")
         self.lbl_nominal_neto.setWordWrap(True)
-        self.lbl_nominal_neto.setStyleSheet(
-            "QLabel { background: #2b2b2b; color: #e0e0e0; padding: 4px; "
-            "border: 1px solid #4a4a4a; }")
+        tema.aplicar_estilo(self.lbl_nominal_neto, tema.ESTILO_ETIQUETA_OSCURA)
         self.form.addRow(self.lbl_nominal_neto)
 
         self.lbl_invasores = QtWidgets.QLabel("")
@@ -173,7 +172,7 @@ class DivisionesEditor(
     def _construir_selector_contenido(self):
         # ---- Selector unificado de contenido de vano ----
         self.lbl_contenido = QtWidgets.QLabel("Contenido del vano:")
-        self.lbl_contenido.setStyleSheet("font-weight: bold; color: #e0e0e0;")
+        tema.aplicar_estilo(self.lbl_contenido, tema.ESTILO_NEGRITA_TEXTO)
         self.form.addRow(self.lbl_contenido)
 
         self.combo_contenido = QtWidgets.QComboBox()
@@ -235,7 +234,7 @@ class DivisionesEditor(
 
         self.lbl_puerta_info = QtWidgets.QLabel(
             "Se creará al aceptar el Task Panel del COCO.")
-        self.lbl_puerta_info.setStyleSheet("color: #8a8a8a; font-style: italic;")
+        tema.aplicar_estilo(self.lbl_puerta_info, tema.ESTILO_ATENUADO_ITALICA)
         puerta_layout.addRow(self.lbl_puerta_info)
         self.form.addRow(self.widget_puerta)
         self.widget_puerta.setVisible(False)
@@ -264,7 +263,7 @@ class DivisionesEditor(
 
         self.lbl_cajon_info = QtWidgets.QLabel(
             "Se creará al aceptar el Task Panel del COCO.")
-        self.lbl_cajon_info.setStyleSheet("color: #8a8a8a; font-style: italic;")
+        tema.aplicar_estilo(self.lbl_cajon_info, tema.ESTILO_ATENUADO_ITALICA)
         cajon_layout.addRow(self.lbl_cajon_info)
         self.form.addRow(self.widget_cajon)
         self.widget_cajon.setVisible(False)
@@ -272,7 +271,7 @@ class DivisionesEditor(
     def _construir_aviso_reengrose(self):
         self.lbl_aviso = QtWidgets.QLabel("")
         self.lbl_aviso.setWordWrap(True)
-        self.lbl_aviso.setStyleSheet("QLabel { color: #b03a2e; }")
+        tema.aplicar_estilo(self.lbl_aviso, tema.ESTILO_ERROR_TEXTO)
         self.form.addRow(self.lbl_aviso)
 
         self.grupo_reengrose = self._crear_grupo_reengrose()
@@ -284,9 +283,7 @@ class DivisionesEditor(
 
         self.lbl_resumen = QtWidgets.QLabel("")
         self.lbl_resumen.setWordWrap(True)
-        self.lbl_resumen.setStyleSheet(
-            "QLabel { background: #2b2b2b; color: #e0e0e0; padding: 6px; "
-            "border: 1px solid #4a4a4a; font-family: monospace; }")
+        tema.aplicar_estilo(self.lbl_resumen, tema.ESTILO_RESUMEN_MONO)
         layout.addWidget(self.lbl_resumen)
 
     def _conectar_senales(self):

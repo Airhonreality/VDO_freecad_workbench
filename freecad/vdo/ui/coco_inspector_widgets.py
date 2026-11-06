@@ -15,6 +15,7 @@ from freecad.vdo.core.vdo_facade_contract import (
 )
 from freecad.vdo.core.vdo_layout_modelo import AXIS_X, AXIS_Y
 from freecad.vdo.qt_compat import QtWidgets
+from freecad.vdo.ui import tema
 
 
 BORDE_LABELS = {
@@ -31,7 +32,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
         layout.setSpacing(2)
 
         self.lbl_nombre = QtWidgets.QLabel("Sin selección")
-        self.lbl_nombre.setStyleSheet("font-weight: bold;")
+        tema.aplicar_estilo(self.lbl_nombre, tema.ESTILO_NEGRITA)
         self.lbl_nombre.setWordWrap(True)
         layout.addWidget(self.lbl_nombre)
 
@@ -42,9 +43,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
 
         self.lbl_cantos = QtWidgets.QLabel("")
         self.lbl_cantos.setWordWrap(True)
-        self.lbl_cantos.setStyleSheet(
-            "QLabel { background: #2b2b2b; color: #e0e0e0; padding: 3px; "
-            "border: 1px solid #4a4a4a; }")
+        tema.aplicar_estilo(self.lbl_cantos, tema.ESTILO_ETIQUETA_OSCURA_COMPACTA)
         layout.addWidget(self.lbl_cantos)
 
         self._cantos_labels = {}
