@@ -558,3 +558,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-58
 
 - **D-58:** ocho funciones restantes de core y cad de mas de 60 lineas divididas en bloques (ver lista en el commit). Mismo criterio que D-57.
+
+## D-59
+
+- **D-59:** funciones de construcción de widgets de ui/ de más de 200 líneas divididas en secciones por extracción literal, verificada con AST. El comportamiento de la GUI se verifica solo con importación y nivel 2; la verificación visual queda para M10.

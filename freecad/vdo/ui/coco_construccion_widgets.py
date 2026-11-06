@@ -62,7 +62,19 @@ class DivisionesEditor(
     def _crear_widget(self):
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
+        self._construir_preview_y_modo(layout)
+        cuerpo = QtWidgets.QHBoxLayout()
+        self._construir_arbol(cuerpo)
+        self._construir_inspector_base()
+        self._construir_selector_contenido()
+        self._construir_panel_subdivision()
+        self._construir_panel_puerta()
+        self._construir_panel_cajon()
+        self._construir_aviso_reengrose()
+        self._construir_resumen(layout, cuerpo)
+        self._conectar_senales()
 
+    def _construir_preview_y_modo(self, layout):
         self.preview = CocoPreview2D()
         self.preview.setMinimumHeight(190)
         self.preview.cellClicked.connect(self._seleccionar_por_label)
@@ -80,7 +92,7 @@ class DivisionesEditor(
         self.tabs_modo.currentChanged.connect(self._on_modo_changed)
         layout.addWidget(self.tabs_modo)
 
-        cuerpo = QtWidgets.QHBoxLayout()
+    def _construir_arbol(self, cuerpo):
         self.tree = QtWidgets.QTreeWidget()
         self.tree.setColumnCount(4)
         self.tree.setHeaderLabels(
@@ -103,6 +115,7 @@ class DivisionesEditor(
             3, QtWidgets.QHeaderView.Stretch)
         cuerpo.addWidget(self.tree, 2)
 
+    def _construir_inspector_base(self):
         self.inspector = QtWidgets.QGroupBox("Inspector")
         self.form = QtWidgets.QFormLayout(self.inspector)
         self.header = PanelHeaderWidget()
@@ -157,6 +170,7 @@ class DivisionesEditor(
             self.chk_cell_fixed, self.spin_cell_fixed)
         self.form.addRow(self.widget_cell_fixed)
 
+    def _construir_selector_contenido(self):
         # ---- Selector unificado de contenido de vano ----
         self.lbl_contenido = QtWidgets.QLabel("Contenido del vano:")
         self.lbl_contenido.setStyleSheet("font-weight: bold; color: #e0e0e0;")
@@ -172,6 +186,7 @@ class DivisionesEditor(
             "requieren un vano padre y se anidan bajo él en el árbol.")
         self.form.addRow(self.combo_contenido)
 
+    def _construir_panel_subdivision(self):
         # ---- Panel reactivo: Subdivisión ----
         self.widget_split = QtWidgets.QWidget()
         split_layout = QtWidgets.QFormLayout(self.widget_split)
@@ -192,6 +207,7 @@ class DivisionesEditor(
         self.form.addRow(self.widget_split)
         self.widget_split.setVisible(False)
 
+    def _construir_panel_puerta(self):
         # ---- Panel reactivo: Puerta ----
         self.widget_puerta = QtWidgets.QWidget()
         puerta_layout = QtWidgets.QFormLayout(self.widget_puerta)
@@ -224,6 +240,7 @@ class DivisionesEditor(
         self.form.addRow(self.widget_puerta)
         self.widget_puerta.setVisible(False)
 
+    def _construir_panel_cajon(self):
         # ---- Panel reactivo: Cajón ----
         self.widget_cajon = QtWidgets.QWidget()
         cajon_layout = QtWidgets.QFormLayout(self.widget_cajon)
@@ -252,6 +269,7 @@ class DivisionesEditor(
         self.form.addRow(self.widget_cajon)
         self.widget_cajon.setVisible(False)
 
+    def _construir_aviso_reengrose(self):
         self.lbl_aviso = QtWidgets.QLabel("")
         self.lbl_aviso.setWordWrap(True)
         self.lbl_aviso.setStyleSheet("QLabel { color: #b03a2e; }")
@@ -260,6 +278,7 @@ class DivisionesEditor(
         self.grupo_reengrose = self._crear_grupo_reengrose()
         self.form.addRow(self.grupo_reengrose)
 
+    def _construir_resumen(self, layout, cuerpo):
         cuerpo.addWidget(self.inspector, 1)
         layout.addLayout(cuerpo, 2)
 
@@ -270,6 +289,7 @@ class DivisionesEditor(
             "border: 1px solid #4a4a4a; font-family: monospace; }")
         layout.addWidget(self.lbl_resumen)
 
+    def _conectar_senales(self):
         self.tree.itemSelectionChanged.connect(self._on_tree_selection)
         self.chk_col_fixed.toggled.connect(self._on_col_fixed)
         self.chk_row_fixed.toggled.connect(self._on_row_fixed)
@@ -306,6 +326,7 @@ class DivisionesEditor(
             self._guardar_config_desde_ui)
         self.combo_cajon_apertura.currentIndexChanged.connect(
             self._guardar_config_desde_ui)
+
 
     def _guardar_config_desde_ui(self, *args):
         """Guarda la configuración actual de los paneles reactivos en
