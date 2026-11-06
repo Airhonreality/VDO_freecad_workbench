@@ -90,23 +90,7 @@ def extraer_piezas_del_documento(modo="todo"):
     piezas = []
 
     if modo == "seleccion":
-        # Solo objetos seleccionados
-        selected = Gui.Selection.getSelectionEx()
-        for sel in selected:
-            obj = sel.Object
-            if hasattr(obj, "VDO_Tipo"):
-                if obj.VDO_Tipo == "panel":
-                    piezas.extend(extraer_piezas_panel(obj))
-                elif obj.VDO_Tipo == "contenedor":
-                    # Extraer paneles del contenedor (ej: COCO_4C)
-                    if hasattr(obj, "VDO_Paneles_JSON") and obj.VDO_Paneles_JSON:
-                        try:
-                            paneles_json = json.loads(obj.VDO_Paneles_JSON)
-                            piezas.extend(paneles_json)
-                        except Exception as exc:
-                            App.Console.PrintWarning(
-                                f"[VDO] JSON de paneles invalido: {exc}\n")
-
+        _piezas_seleccion(piezas, json)
     elif modo == "grupo":
         # Solo el módulo activo
         modulo = doc.ActiveObject
@@ -123,22 +107,45 @@ def extraer_piezas_del_documento(modo="todo"):
                             f"[VDO] JSON de paneles invalido: {exc}\n")
 
     else:  # "todo":
-        # Todas las piezas del documento
-        for obj in doc.Objects:
-            if hasattr(obj, "VDO_Tipo"):
-                if obj.VDO_Tipo == "panel":
-                    piezas.extend(extraer_piezas_panel(obj))
-                elif obj.VDO_Tipo == "contenedor":
-                    # Extraer paneles del contenedor (ej: COCO_4C)
-                    if hasattr(obj, "VDO_Paneles_JSON") and obj.VDO_Paneles_JSON:
-                        try:
-                            paneles_json = json.loads(obj.VDO_Paneles_JSON)
-                            piezas.extend(paneles_json)
-                        except Exception as exc:
-                            App.Console.PrintWarning(
-                                f"[VDO] JSON de paneles invalido: {exc}\n")
+        _piezas_todo(piezas, json, doc)
 
     return piezas
+
+
+def _piezas_seleccion(piezas, json):
+    # Solo objetos seleccionados
+    selected = Gui.Selection.getSelectionEx()
+    for sel in selected:
+        obj = sel.Object
+        if hasattr(obj, "VDO_Tipo"):
+            if obj.VDO_Tipo == "panel":
+                piezas.extend(extraer_piezas_panel(obj))
+            elif obj.VDO_Tipo == "contenedor":
+                # Extraer paneles del contenedor (ej: COCO_4C)
+                if hasattr(obj, "VDO_Paneles_JSON") and obj.VDO_Paneles_JSON:
+                    try:
+                        paneles_json = json.loads(obj.VDO_Paneles_JSON)
+                        piezas.extend(paneles_json)
+                    except Exception as exc:
+                        App.Console.PrintWarning(
+                            f"[VDO] JSON de paneles invalido: {exc}\n")
+
+
+def _piezas_todo(piezas, json, doc):
+    # Todas las piezas del documento
+    for obj in doc.Objects:
+        if hasattr(obj, "VDO_Tipo"):
+            if obj.VDO_Tipo == "panel":
+                piezas.extend(extraer_piezas_panel(obj))
+            elif obj.VDO_Tipo == "contenedor":
+                # Extraer paneles del contenedor (ej: COCO_4C)
+                if hasattr(obj, "VDO_Paneles_JSON") and obj.VDO_Paneles_JSON:
+                    try:
+                        paneles_json = json.loads(obj.VDO_Paneles_JSON)
+                        piezas.extend(paneles_json)
+                    except Exception as exc:
+                        App.Console.PrintWarning(
+                            f"[VDO] JSON de paneles invalido: {exc}\n")
 
 
 def _escribir_cabecera_csv(writer):
