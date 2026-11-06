@@ -170,7 +170,7 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
             idx = apertura_map_rev.get(obj.SistemaApertura, 0)
             self.combo_apertura.setCurrentIndex(idx)
         if hasattr(obj, "TipoMontaje"):
-            idx = self.combo_montaje_fachada.findText(obj.TipoMontaje)
+            idx = self.combo_montaje_fachada.findData(obj.TipoMontaje)
             if idx >= 0:
                 self.combo_montaje_fachada.setCurrentIndex(idx)
         if hasattr(obj, "VDO_Herraje_Ref"):
@@ -215,7 +215,7 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
                     else APERTURA_GOLA if self.combo_apertura.currentIndex() == 1
                     else APERTURA_45_GRADOS if self.combo_apertura.currentIndex() == 2
                     else APERTURA_PUSH_OPEN),
-                "tipo_montaje_fachada": self.combo_montaje_fachada.currentText(),
+                "tipo_montaje_fachada": self.combo_montaje_fachada.currentData(),
                 "penetracion_ranura": 10.0,
                 "eje_ranura": 11.5,
                 "holgura_lateral_fachada": 2.0,
@@ -280,7 +280,7 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
             else APERTURA_GOLA if self.combo_apertura.currentIndex() == 1
             else APERTURA_45_GRADOS if self.combo_apertura.currentIndex() == 2
             else APERTURA_PUSH_OPEN)
-        self.obj.TipoMontaje = self.combo_montaje_fachada.currentText()
+        self.obj.TipoMontaje = self.combo_montaje_fachada.currentData()
         sku_data = self.combo_sku.currentData()
         if sku_data:
             self.obj.VDO_Herraje_Ref = str(sku_data)

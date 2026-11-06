@@ -8,11 +8,24 @@ fila i de la rejilla del grupo.
 from freecad.vdo.core import frames as VDO_FR
 from freecad.vdo.core.aperturas import ETIQUETAS
 from freecad.vdo.core.defaults import ORIENTACIONES_VALIDAS
+from freecad.vdo.core.facade_contract import (
+    MONTAJE_EMBEBIDA,
+    MONTAJE_PARCHE,
+    MONTAJE_SEMIPARCHE,
+)
 from freecad.vdo.core.finish import CANTOS_VALIDOS
 from freecad.vdo.core.module_props import ANCLAJE_LABELS, ANCLAJES
 from freecad.vdo.core.puerta_despiece import SISTEMAS_APERTURA
 
 ITEMS_ANCLAJE = [(ANCLAJE_LABELS.get(a, a), a) for a in ANCLAJES]
+
+# Montaje de fachada del cajón: pares (etiqueta visible, valor del enumerado TipoMontaje).
+# Única fuente: el combo muestra la etiqueta y guarda el valor (D-87).
+MONTAJES_FACHADA = (
+    ("Parche", MONTAJE_PARCHE),
+    ("Semiparche", MONTAJE_SEMIPARCHE),
+    ("Embebida", MONTAJE_EMBEBIDA),
+)
 
 # Opciones del panel de puerta (antes en ui/puerta_task_constantes).
 FAMILIAS = ["Batiente Vertical", "Basculante Horizontal", "Corrediza"]
@@ -240,7 +253,7 @@ def cajon_bloques(marcas):
                          "45°: bisel paramétrico en arista superior frontal.\n"
                          "Push open: émbolo magnético, holgura perimetral ajustada.")},
             {"tipo": "combo", "clave": "montaje_fachada", "etiqueta": "Montaje fachada:",
-             "items": [(m, None) for m in ("Parche", "Semiparche", "Embebida")],
+             "items": list(MONTAJES_FACHADA),
              "tooltip": ("Parche: solapa sobre los cantos del vano.\n"
                          "Semiparche: comparte montante central.\n"
                          "Embebida: a ras dentro del vano (deja cantos vistos).")},

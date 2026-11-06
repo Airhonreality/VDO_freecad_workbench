@@ -675,3 +675,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-86
 
 - **D-86: tras anotar con mypy, tres archivos de core superaron 400 lineas y dos funciones superaron 60. Corregido por movimiento literal a modulos hermanos y extraccion literal, verificado con AST y gates.** Commits: reengrose_modificador (normalizacion a reengrose_modificador_normalizacion.py, golden AGREGADOS actualizado), spaces, optimizer_core, cajon_calculo._piezas_restantes, coco_shell._aplicar_shell. Revertir: git revert --no-edit de cada commit D-86.
+
+## D-87
+
+- **D-87:** primer defecto preexistente corregido. Cambio de comportamiento intencional: antes el accept fallaba con la opción por defecto. Prueba: test_cajon_montaje_defecto. Revertir: git revert del commit (b).
