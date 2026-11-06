@@ -504,3 +504,8 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 
 - **D-47:** M7 core/vdo_optimizer_core partido por concepto, sin reexportaciones (P6).
 - Decisión de implementación: la lista de corte (lectura del CSV, expansión a piezas unitarias, cantos y medidas de corte) va a `core/optimizer_lista_corte.py`. El original queda como raíz con presets, kerf/margen, motor MaxRects, `optimize`, `optimize_by_group` y resumen (359 líneas). Sin reexportaciones: `tools/vdo_optimizador_cli.py` y `ui/vdo_optimizer_dialog.py` importan de cada módulo. `tools/auditoria/golden.py` añade `optimizer_core` a `AGREGADOS` para que el golden busque en ambos módulos; `tests/golden/` no cambia.
+
+## D-48
+
+- **D-48:** M7 core/vdo_coco_spaces partido por concepto, sin reexportaciones (P6). Golden de formas OCC verificado solo en nivel 2.
+- Decisión de implementación: el modelo de caja y la clave de pieza (`_clave_pieza`, `_modificador`, `_caja_pieza`, `_ejes_pieza`, `_caja_dict`, `_fusionar_caja`, `_modo_obstaculo`, `_corte_expandido`, `_huella_caja`, `_agregar_interrupcion`, `_modo_efectivo`) van a `core/espacios_cajas.py`, sin cambios de código. La raíz `core/vdo_coco_spaces.py` (379 líneas) conserva choques, tiras y `planificar_divisiones_matriz`, e importa solo los nombres que usa. Ningún consumidor externo usa esos nombres, así que no cambia ningún import; `tools/auditoria/golden.py` no necesita cambios porque el golden solo busca `generar_divisiones_matriz`, que sigue en `cad/coco_espacios.py`. Sin ciclos nuevos; `core->cad` sigue en 0. Revertir: `git revert` del commit de esta ola.
