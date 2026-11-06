@@ -10,7 +10,9 @@ from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props
-from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.core import vdo_reengrose_geometria as VDO_RE_GEOMETRIA
+from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
 from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_DEFAULT,
     ANCLAJE_LABELS,
@@ -272,7 +274,7 @@ class PanelTaskPanel(VDOTransactionMixin):
         self.re_editor._actualizar_estado()
 
     def _cargar_reengrose(self, obj):
-        mod = VDO_RE.desde_objeto(obj)
+        mod = VDO_RE_MODIFICADOR.desde_objeto(obj)
         self.re_editor.cargar(mod)
         self.re_editor._actualizar_estado()
 
@@ -322,18 +324,18 @@ class PanelTaskPanel(VDOTransactionMixin):
             mod_reengrose = self._leer_reengrose()
             if mod_reengrose.activo:
                 try:
-                    VDO_RE.calcular_geometria_reengrose({
+                    VDO_RE_GEOMETRIA.calcular_geometria_reengrose({
                         "nombre": self.obj.Label,
                         "largo": self.spin_largo.value_float(),
                         "ancho": self.spin_ancho.value_float(),
                         "espesor": self.spin_espesor.value_float(),
                     }, mod_reengrose)
-                except VDO_RE.ReengroseError as exc:
+                except VDO_RE_MODELO.ReengroseError as exc:
                     QtWidgets.QMessageBox.warning(
                         self.form, "Reengrose / Pacha", str(exc))
                     self._vdo_abort()
                     return False
-            VDO_RE.aplicar_a_objeto(self.obj, mod_reengrose)
+            VDO_RE_MODIFICADOR.aplicar_a_objeto(self.obj, mod_reengrose)
 
             anclaje = self.combo_anclaje.currentData()
             if anclaje:

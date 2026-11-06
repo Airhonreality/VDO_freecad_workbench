@@ -11,7 +11,10 @@ import FreeCAD as App
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_finish as VDO_FIN
 from freecad.vdo.core import vdo_frames as VDO_FR
-from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.core import vdo_reengrose_despiece as VDO_RE_DESPIECE
+from freecad.vdo.core import vdo_reengrose_geometria as VDO_RE_GEOMETRIA
+from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
 from freecad.vdo.cad.cajon import make_cajon
 from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_45_GRADOS,
@@ -541,7 +544,7 @@ class DivisionesEditor(QtWidgets.QWidget):
         texto = getattr(obj, "VDO_Divisiones", "") or ""
         self._legacy_warnings = []
         self.layout = Layout.loads(texto)
-        self.reengroses = VDO_RE.leer_reengroses(obj)
+        self.reengroses = VDO_RE_MODIFICADOR.leer_reengroses(obj)
         self._obj = obj
         self._fondo = float(getattr(obj, "FondoModulo", self._fondo))
         self._tapa = str(getattr(obj, "Tapa", self._tapa))
@@ -812,8 +815,8 @@ class DivisionesEditor(QtWidgets.QWidget):
             datos = self.reengroses.get(clave)
             if datos:
                 try:
-                    mod = VDO_RE.ReengroseModifier(datos)
-                    plan = VDO_RE.resolver_politica_cantos(
+                    mod = VDO_RE_MODIFICADOR.ReengroseModifier(datos)
+                    plan = VDO_RE_DESPIECE.resolver_politica_cantos(
                         {"cantos": cantos}, mod)
                     cantos = (
                         plan.get("tira") or plan.get("bloque") or cantos)
@@ -936,8 +939,8 @@ class DivisionesEditor(QtWidgets.QWidget):
             if pieza is None:
                 continue
             try:
-                mod = VDO_RE.ReengroseModifier(datos)
-                geo = VDO_RE.calcular_geometria_caja(
+                mod = VDO_RE_MODIFICADOR.ReengroseModifier(datos)
+                geo = VDO_RE_GEOMETRIA.calcular_geometria_caja(
                     pieza["caja"], mod, pieza["ejes"])
             except Exception:
                 continue
@@ -1343,8 +1346,8 @@ class DivisionesEditor(QtWidgets.QWidget):
                 pieza["espesor"], cantos)
             return
         try:
-            mod = VDO_RE.ReengroseModifier(datos)
-            geo = VDO_RE.calcular_geometria_caja(
+            mod = VDO_RE_MODIFICADOR.ReengroseModifier(datos)
+            geo = VDO_RE_GEOMETRIA.calcular_geometria_caja(
                 pieza["caja"], mod, pieza["ejes"])
             refs = geo.get("refuerzos") or []
         except Exception:
@@ -1631,10 +1634,10 @@ class DivisionesEditor(QtWidgets.QWidget):
         datos = self.reengroses.get(clave)
         try:
             mod = (
-                VDO_RE.ReengroseModifier(datos) if datos
-                else VDO_RE.ReengroseModifier())
-        except VDO_RE.ReengroseError:
-            mod = VDO_RE.ReengroseModifier()
+                VDO_RE_MODIFICADOR.ReengroseModifier(datos) if datos
+                else VDO_RE_MODIFICADOR.ReengroseModifier())
+        except VDO_RE_MODELO.ReengroseError:
+            mod = VDO_RE_MODIFICADOR.ReengroseModifier()
         self.re_editor.cargar(mod)
         self._set_combo_data(
             self.combo_fabricacion, getattr(mod, "fabricacion", "pacha"))
@@ -1675,7 +1678,7 @@ class DivisionesEditor(QtWidgets.QWidget):
         datos["choque_nucleo"] = self.combo_choque.currentData()
         datos["cara"] = self.combo_cara.currentData()
         datos["activo"] = True
-        return VDO_RE.normalizar_modificador(datos)
+        return VDO_RE_MODIFICADOR.normalizar_modificador(datos)
 
     def _actualizar_estado_reengrose(self):
         activo = self.chk_reengrose.isChecked()

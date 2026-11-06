@@ -5,7 +5,9 @@
 # =====================================================================
 
 
-from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.core import vdo_reengrose_despiece as VDO_RE_DESPIECE
+from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
 from freecad.vdo.core.vdo_helpers import _get_app
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
@@ -14,11 +16,11 @@ from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 def _modificador_mapa(mapa, clave):
     datos = (mapa or {}).get(clave)
     if not datos:
-        return VDO_RE.ReengroseModifier()
+        return VDO_RE_MODIFICADOR.ReengroseModifier()
     try:
-        return VDO_RE.ReengroseModifier(datos)
-    except VDO_RE.ReengroseError:
-        return VDO_RE.ReengroseModifier()
+        return VDO_RE_MODIFICADOR.ReengroseModifier(datos)
+    except VDO_RE_MODELO.ReengroseError:
+        return VDO_RE_MODIFICADOR.ReengroseModifier()
 
 
 
@@ -34,13 +36,13 @@ def _expandir_reengrose(pieza):
         pieza.get("cantos")
         if mod.get("modo_fabricacion") == "pacha" else None)
     try:
-        subpiezas = VDO_RE.despiece_caja(
+        subpiezas = VDO_RE_DESPIECE.despiece_caja(
             caja, mod, ejes, cantos=pieza.get("cantos"),
             material_ref=pieza.get(
                 "material_ref", MELAMINA_ESTANDAR),
             orientacion=pieza.get("orientacion", "vertical"),
             cantos_bloque=cantos_bloque)
-    except VDO_RE.ReengroseError as exc:
+    except VDO_RE_MODELO.ReengroseError as exc:
         _get_app().Console.PrintWarning(
             f"[VDO] Reengrose inválido en '{pieza.get('nombre')}': {exc}\n")
         return [pieza]

@@ -5,7 +5,7 @@
 # =====================================================================
 
 from freecad.vdo.core import vdo_frames as VDO_FR
-from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.core import vdo_reengrose_geometria as VDO_RE_GEOMETRIA
 from freecad.vdo.core.vdo_facade_contract import CALLE_ENTRE_FRENTES_DEFAULT
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
@@ -299,7 +299,7 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
             caja = pieza.get("caja") or {}
             ejes = pieza.get("ejes")
             try:
-                geo = VDO_RE.calcular_geometria_caja(caja, datos, ejes)
+                geo = VDO_RE_GEOMETRIA.calcular_geometria_caja(caja, datos, ejes)
             except Exception:
                 continue
             refs = geo.get("refuerzos") or []

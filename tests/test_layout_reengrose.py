@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from freecad.vdo.core import vdo_reengrose as R
+from freecad.vdo.core import vdo_reengrose_modificador as R_MODIFICADOR
 from freecad.vdo.core.vdo_layout import Layout, resolve_layout
 
 
@@ -20,7 +20,7 @@ class LayoutReengroseTests(unittest.TestCase):
         self.assertAlmostEqual(resinas[0].w, 273.0)
 
     def test_division_izquierda_reduce_vano(self):
-        mod = R.ReengroseModifier({
+        mod = R_MODIFICADOR.ReengroseModifier({
             "activo": True, "ancho": 50, "cara": "cara_b",
             "orientacion": "paralela"})
         res = resolve_layout(
@@ -34,7 +34,7 @@ class LayoutReengroseTests(unittest.TestCase):
         self.assertAlmostEqual(vertical.x, 273.0)
 
     def test_division_derecha_reduce_vano(self):
-        mod = R.ReengroseModifier({
+        mod = R_MODIFICADOR.ReengroseModifier({
             "activo": True, "ancho": 50, "cara": "cara_a",
             "orientacion": "paralela"})
         res = resolve_layout(
@@ -44,7 +44,7 @@ class LayoutReengroseTests(unittest.TestCase):
         self.assertAlmostEqual(res.columns[1].clear_size, 255.0)
 
     def test_ambos_lados(self):
-        mod = R.ReengroseModifier({
+        mod = R_MODIFICADOR.ReengroseModifier({
             "activo": True, "ancho": 50, "cara": "ambos",
             "orientacion": "paralela"})
         res = resolve_layout(
@@ -54,7 +54,7 @@ class LayoutReengroseTests(unittest.TestCase):
         self.assertAlmostEqual(res.columns[1].clear_size, 255.0)
 
     def test_lateral_izquierdo(self):
-        mod = R.ReengroseModifier({
+        mod = R_MODIFICADOR.ReengroseModifier({
             "activo": True, "ancho": 50, "cara": "cara_a",
             "orientacion": "paralela"})
         res = resolve_layout(
@@ -64,7 +64,7 @@ class LayoutReengroseTests(unittest.TestCase):
         self.assertAlmostEqual(res.columns[0].clear_size, 255.0)
 
     def test_repisa_nominal_para_mocheo(self):
-        mod = R.ReengroseModifier({
+        mod = R_MODIFICADOR.ReengroseModifier({
             "activo": True, "ancho": 50, "cara": "cara_b",
             "orientacion": "paralela"})
         res = resolve_layout(

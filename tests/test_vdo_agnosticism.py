@@ -16,7 +16,10 @@ except NameError:
 _RAIZ = os.path.dirname(_AQUI)
 
 from freecad.vdo.core import vdo_layout as VDO_LAYOUT
-from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.core import vdo_reengrose_geometria as VDO_RE_GEOMETRIA
+from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
+from freecad.vdo.core import vdo_reengrose_tiras as VDO_RE_TIRAS
 from freecad.vdo.core.vdo_layout import AXIS_X, AXIS_Y, Layout, Track, resolve_layout
 
 TOL = 1e-6
@@ -173,11 +176,11 @@ class VDOAgnosticismTests(unittest.TestCase):
         self.assertAlmostEqual(contrato["X0"], 254.5, places=6)
         self.assertAlmostEqual(contrato["Z0"], 0.0, places=6)
 
-        mod_izq = VDO_RE.ReengroseModifier({
+        mod_izq = VDO_RE_MODIFICADOR.ReengroseModifier({
             "activo": True, "ancho": 50.0, "cara": "cara_a",
             "orientacion": "paralela",
         })
-        mod_sup = VDO_RE.ReengroseModifier({
+        mod_sup = VDO_RE_MODIFICADOR.ReengroseModifier({
             "activo": True, "ancho": 50.0, "cara": "cara_b",
             "orientacion": "paralela",
         })
@@ -203,7 +206,7 @@ class VDOAgnosticismTests(unittest.TestCase):
         largo_tablero = 800.0
         ancho_tablero = 600.0
         espesor = 18.0
-        bordes = {borde: {"activo": False} for borde in VDO_RE.BORDES_2D}
+        bordes = {borde: {"activo": False} for borde in VDO_RE_MODELO.BORDES_2D}
         bordes["fondo"] = {
             "activo": True,
             "ancho": 50.0,
@@ -212,7 +215,7 @@ class VDOAgnosticismTests(unittest.TestCase):
             "espesor": espesor,
         }
 
-        tiras = VDO_RE.generar_tiras_perimetrales(
+        tiras = VDO_RE_TIRAS.generar_tiras_perimetrales(
             largo_tablero, ancho_tablero, bordes, espesor)
         self.assertEqual(len(tiras), 1)
         tira = tiras[0]
@@ -236,7 +239,7 @@ class VDOAgnosticismTests(unittest.TestCase):
             "ancho": ancho_tablero,
             "espesor": espesor,
         }
-        modificador = VDO_RE.ReengroseModifier({
+        modificador = VDO_RE_MODIFICADOR.ReengroseModifier({
             "activo": True,
             "usa_bordes": True,
             "bordes": bordes,
@@ -244,7 +247,7 @@ class VDOAgnosticismTests(unittest.TestCase):
             "fabricacion": "pacha",
             "esquinas": "vertical_domina",
         })
-        geometria = VDO_RE.calcular_geometria_reengrose(panel, modificador)
+        geometria = VDO_RE_GEOMETRIA.calcular_geometria_reengrose(panel, modificador)
         self.assertEqual(len(geometria["refuerzos"]), 1)
         refuerzo = geometria["refuerzos"][0]
         self.assertAlmostEqual(refuerzo["z"], espesor, places=6)
@@ -270,9 +273,9 @@ class VDOAgnosticismTests(unittest.TestCase):
                 "largo_tira": "marco_interior",
                 "espesor": espesor,
             }
-            for borde in VDO_RE.BORDES_2D
+            for borde in VDO_RE_MODELO.BORDES_2D
         }
-        tiras = VDO_RE.generar_tiras_perimetrales(
+        tiras = VDO_RE_TIRAS.generar_tiras_perimetrales(
             largo_marco, ancho_marco, bordes, espesor)
         self.assertEqual(len(tiras), 4)
         por_borde = {tira["borde"]: tira for tira in tiras}

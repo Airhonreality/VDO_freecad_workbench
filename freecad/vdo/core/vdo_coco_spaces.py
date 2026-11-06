@@ -10,7 +10,11 @@
 # =====================================================================
 
 
-from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.core import vdo_reengrose_encuentros as VDO_RE_ENCUENTROS
+from freecad.vdo.core import vdo_reengrose_geometria as VDO_RE_GEOMETRIA
+from freecad.vdo.core import vdo_reengrose_interferencias as VDO_RE_INTERFERENCIAS
+from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
 
 
 def _clave_pieza(pieza):
@@ -22,11 +26,11 @@ def _clave_pieza(pieza):
 def _modificador(reengroses, pieza):
     datos = (reengroses or {}).get(_clave_pieza(pieza))
     if not datos:
-        return VDO_RE.ReengroseModifier()
+        return VDO_RE_MODIFICADOR.ReengroseModifier()
     try:
-        return VDO_RE.ReengroseModifier(datos)
-    except VDO_RE.ReengroseError:
-        return VDO_RE.ReengroseModifier()
+        return VDO_RE_MODIFICADOR.ReengroseModifier(datos)
+    except VDO_RE_MODELO.ReengroseError:
+        return VDO_RE_MODIFICADOR.ReengroseModifier()
 
 
 def _caja_pieza(pieza, fondo, espesor, x0, z0):
@@ -128,7 +132,7 @@ def _aplicar_choques(caja, obstaculos, es_vertical):
         if clave_host and obstaculo.get("host") == clave_host:
             continue
         modo = _modo_efectivo(obstaculo, es_vertical)
-        plan = VDO_RE.resolver_choque_tira_panel(
+        plan = VDO_RE_INTERFERENCIAS.resolver_choque_tira_panel(
             obstaculo, ajustada, modo)
         if not plan:
             continue
@@ -155,7 +159,7 @@ def _preparar_tira(refuerzo, entry, indice):
     tira["modo_explicito"] = entry.get("modo_explicito", False)
     prioridad = getattr(mod, "prioridad_encuentro_tiras", None)
     tira["prioridad"] = (
-        None if prioridad == VDO_RE.DEFAULTS["prioridad_encuentro_tiras"]
+        None if prioridad == VDO_RE_MODELO.DEFAULTS["prioridad_encuentro_tiras"]
         else prioridad)
     segmento = _caja_dict(tira)
     if tira.get("poligono"):
@@ -170,9 +174,9 @@ def _crear_refuerzos(entry):
     if not mod.activo:
         return []
     try:
-        geo = VDO_RE.calcular_geometria_caja(
+        geo = VDO_RE_GEOMETRIA.calcular_geometria_caja(
             entry["caja"], mod, entry["ejes"])
-    except VDO_RE.ReengroseError:
+    except VDO_RE_MODELO.ReengroseError:
         return []
     return geo["refuerzos"]
 
@@ -180,9 +184,9 @@ def _crear_refuerzos(entry):
 def _cortar_segmentos(segmentos, ganadora):
     nuevos = []
     for segmento in segmentos:
-        if VDO_RE.detectar_colision(segmento, ganadora):
+        if VDO_RE_ENCUENTROS.detectar_colision(segmento, ganadora):
             nuevos.extend(
-                VDO_RE.recortar_tira_contra_tira(segmento, ganadora))
+                VDO_RE_ENCUENTROS.recortar_tira_contra_tira(segmento, ganadora))
         else:
             nuevos.append(segmento)
     return nuevos
@@ -215,7 +219,7 @@ def _resolver_tiras_entre_si(tiras):
             par = None
             for sa in segs_a:
                 for sb in segs_b:
-                    if VDO_RE.detectar_colision(sa, sb):
+                    if VDO_RE_ENCUENTROS.detectar_colision(sa, sb):
                         par = (sa, sb)
                         break
                 if par:
@@ -224,7 +228,7 @@ def _resolver_tiras_entre_si(tiras):
                 continue
             prioridad = _prioridad_par(a, b)
             if prioridad == "inglete_45":
-                plan = VDO_RE.resolver_encuentro_tiras(
+                plan = VDO_RE_ENCUENTROS.resolver_encuentro_tiras(
                     par[0], par[1], "inglete_45")
                 if plan.get("inglete"):
                     a.setdefault("ingletes", []).append({
@@ -238,7 +242,7 @@ def _resolver_tiras_entre_si(tiras):
                         "plan": plan["inglete"],
                     })
                 continue
-            res = VDO_RE.resolver_encuentro_tiras(
+            res = VDO_RE_ENCUENTROS.resolver_encuentro_tiras(
                 par[0], par[1], prioridad)
             if res["perdedor"] == "a":
                 for ganadora in segs_b:
@@ -322,7 +326,7 @@ def planificar_divisiones_matriz(divisiones_json, ancho_cavidad, alto_cavidad,
         nuevas = []
         for i, ref in enumerate(entry["refuerzos"]):
             tira = _preparar_tira(ref, entry, i)
-            tira["anclaje_y"] = VDO_RE.vector_anclaje_y(entry["caja"])
+            tira["anclaje_y"] = VDO_RE_ENCUENTROS.vector_anclaje_y(entry["caja"])
             nuevas.append(tira)
         entry["tiras"] = nuevas
         return nuevas

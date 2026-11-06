@@ -25,7 +25,8 @@
 
 import json
 
-from freecad.vdo.core import vdo_reengrose as VDO_RE
+from freecad.vdo.core import vdo_reengrose_geometria as VDO_RE_GEOMETRIA
+from freecad.vdo.core import vdo_reengrose_interferencias as VDO_RE_INTERFERENCIAS
 
 VERSION = 2
 AXIS_X = "X"
@@ -607,7 +608,7 @@ def _extras_modificador(reengroses, clave, espesor):
     mod = (reengroses or {}).get(clave)
     if not mod:
         return (0.0, 0.0)
-    return VDO_RE.extras_por_cara(mod, espesor)
+    return VDO_RE_GEOMETRIA.extras_por_cara(mod, espesor)
 
 
 def _extras_borde(reengroses, clave, espesor):
@@ -684,11 +685,11 @@ def _resolver_track(tracks, total, espesor, etiqueta, warnings,
             else float(extras_internos[i][0]))
         neto = {"ancho": tamanos[i], "alto": 0.0}
         if extra_izq > EPS:
-            neto = VDO_RE.calcular_vano_neto_con_reengrose(
+            neto = VDO_RE_INTERFERENCIAS.calcular_vano_neto_con_reengrose(
                 neto, {"lado_afectado": "izquierda",
                        "espesor_extra": extra_izq})
         if extra_der > EPS:
-            neto = VDO_RE.calcular_vano_neto_con_reengrose(
+            neto = VDO_RE_INTERFERENCIAS.calcular_vano_neto_con_reengrose(
                 neto, {"lado_afectado": "derecha",
                        "espesor_extra": extra_der})
         clear_size = neto["ancho"]
