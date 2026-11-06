@@ -7,7 +7,8 @@
 
 from __future__ import annotations
 
-from typing import Any
+from collections.abc import Sequence
+from typing import Any, Final
 
 from freecad.vdo.core.aperturas import (
     SISTEMAS_APERTURA,
@@ -59,7 +60,7 @@ BRAZO_PALANCA_M = 0.12            # m
 NUM_PISTONES = 2
 FACTOR_SEGURIDAD = 1.2
 
-PISTONES_COMERCIALES_N = [60, 80, 100, 120, 150]
+PISTONES_COMERCIALES_N: Final[Sequence[int]] = [60, 80, 100, 120, 150]
 
 # Umbrales de altura para cantidad de bisagras (mm)
 UMBRAL_2_BISAGRAS = 1000.0
@@ -70,9 +71,9 @@ UMBRAL_3_BISAGRAS = 1500.0
 # A. Puertas Batientes Verticales
 # =====================================================================
 
-def calcular_dimensiones_batiente(W_neto, H_neto, tipo_montaje,
-                                  solape=SOLAPE_SEMIPARCHE_NOMINAL,
-                                  holgura=None):
+def calcular_dimensiones_batiente(W_neto: float, H_neto: float, tipo_montaje: str,
+                                  solape: float = SOLAPE_SEMIPARCHE_NOMINAL,
+                                  holgura: float | None = None) -> dict[str, Any]:
     """Calcula el corte neto de la puerta batiente vertical.
 
     Consume `calcular_fachada_base` de facade_contract.py como fuente
@@ -105,7 +106,7 @@ def calcular_dimensiones_batiente(W_neto, H_neto, tipo_montaje,
     }
 
 
-def cantidad_bisagras(H):
+def cantidad_bisagras(H: float) -> int:
     """Devuelve la cantidad de bisagras segun la regla de altura de taller.
 
     H < 1000 -> 2
@@ -120,7 +121,8 @@ def cantidad_bisagras(H):
     return 4
 
 
-def posiciones_cazoleta(H, n_bisagras=None, cota_extremo=COTA_CAZOLETA_Z_EXTREMO):
+def posiciones_cazoleta(H: float, n_bisagras: int | None = None,
+                        cota_extremo: float = COTA_CAZOLETA_Z_EXTREMO) -> list[float]:
     """Calcula las cotas Z de los centros de las cazoletas.
 
     Los extremos superior e inferior se colocan a cota_extremo del borde.
@@ -155,7 +157,7 @@ def posiciones_cazoleta(H, n_bisagras=None, cota_extremo=COTA_CAZOLETA_Z_EXTREMO
     return zs
 
 
-def cazoleta_tecnica():
+def cazoleta_tecnica() -> dict[str, float]:
     """Devuelve los parámetros técnicos de la cazoleta de 35 mm."""
     return {
         "diametro": CAZALETA_DIAMETRO,
@@ -204,7 +206,8 @@ def bisagras_para_puerta(H: float, tipo_montaje: str = "parche",
 # B. Puertas Horizontales (Basculantes / Abatibles) - Newtons
 # =====================================================================
 
-def masa_puerta(W, H, t=ESPESOR_PANEL_M, rho=DENSIDAD_MELAMINA_KG_M3):
+def masa_puerta(W: float, H: float, t: float = ESPESOR_PANEL_M,
+                rho: float = DENSIDAD_MELAMINA_KG_M3) -> float:
     """Masa estimada de la puerta en kg.
 
     M = (W/1000) * (H/1000) * t * rho
@@ -214,10 +217,11 @@ def masa_puerta(W, H, t=ESPESOR_PANEL_M, rho=DENSIDAD_MELAMINA_KG_M3):
     return W_m * H_m * t * rho
 
 
-def fuerza_piston_teorica(W, H, n_pistones=NUM_PISTONES,
-                          brazo_palanca=BRAZO_PALANCA_M,
-                          factor_seguridad=FACTOR_SEGURIDAD,
-                          t=ESPESOR_PANEL_M, rho=DENSIDAD_MELAMINA_KG_M3):
+def fuerza_piston_teorica(W: float, H: float, n_pistones: int = NUM_PISTONES,
+                          brazo_palanca: float = BRAZO_PALANCA_M,
+                          factor_seguridad: float = FACTOR_SEGURIDAD,
+                          t: float = ESPESOR_PANEL_M,
+                          rho: float = DENSIDAD_MELAMINA_KG_M3) -> float:
     """Fuerza teorica requerida por pistón (Newtons).
 
     F ≈ (M * g * (H / 2000)) / (2 * brazo_palanca) * factor_seguridad
@@ -228,7 +232,7 @@ def fuerza_piston_teorica(W, H, n_pistones=NUM_PISTONES,
     return F
 
 
-def piston_recomendado(W, H, n_pistones=NUM_PISTONES):
+def piston_recomendado(W: float, H: float, n_pistones: int = NUM_PISTONES) -> tuple[int, float]:
     """Devuelve el pistón comercial más cercano >= fuerza teorica.
 
     Catálogo: [60, 80, 100, 120, 150] N.
