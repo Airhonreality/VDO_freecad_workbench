@@ -73,7 +73,7 @@ def necesita_descuento_gola(sistema_apertura):
     return _clave(sistema_apertura) == APERTURA_GOLA
 
 
-def necesita_bisel_45(sistema_apertura):
+def necesita_bisel_45(sistema_apertura: str) -> bool:
     """True si el sistema requiere bisel a 45° en la arista de agarre."""
     return _clave(sistema_apertura) == APERTURA_45_GRADOS
 
