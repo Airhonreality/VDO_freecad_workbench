@@ -118,6 +118,17 @@ def _resolver_guia(config, prof_int, marca):
     return lg, lg_manual
 
 
+def _ancho_exterior(li, delta):
+    """Ancho exterior de la caja (LI - Delta). Lanza ValueError si no es positivo."""
+    # --- 2. Ancho exterior de la caja ---
+    ancho_ext = li - delta
+    if ancho_ext <= 0:
+        raise ValueError(
+            f"Ancho exterior de caja inválido: LI({li}) - Delta({delta}) "
+            f"= {ancho_ext}. Revise LI o la marca de corredera.")
+    return ancho_ext
+
+
 def calcular_despiece(config):
     """Calcula el despiece completo del cajón con corredera oculta.
 
@@ -155,12 +166,7 @@ def calcular_despiece(config):
 
     lg, lg_manual = _resolver_guia(config, prof_int, marca)
 
-    # --- 2. Ancho exterior de la caja ---
-    ancho_ext = li - delta
-    if ancho_ext <= 0:
-        raise ValueError(
-            f"Ancho exterior de caja inválido: LI({li}) - Delta({delta}) "
-            f"= {ancho_ext}. Revise LI o la marca de corredera.")
+    ancho_ext = _ancho_exterior(li, delta)
 
     # --- 3. Laterales ---
     largo_lateral = lg
