@@ -10,8 +10,13 @@ from __future__ import annotations
 import json
 import logging
 import os
+from collections.abc import Mapping
+from typing import Any, Final
 
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
+
+# Catalogo JSON: familia -> SKU -> entrada (datos comerciales y parametros_tecnicos).
+_Catalogo = dict[str, dict[str, dict[str, Any]]]  # JSON de usuario/catalogo: valores heterogeneos
 
 _LOG = logging.getLogger(__name__)
 
@@ -20,22 +25,22 @@ try:
 except NameError as exc:
     _LOG.debug("hardware_hub: __file__ no disponible, usa cwd: %s", exc)
     _HERE = os.getcwd()
-CATALOGO_PATH = os.path.join(_HERE, "vdo_hardware_catalog.json")
+CATALOGO_PATH: Final[str] = os.path.join(_HERE, "vdo_hardware_catalog.json")
 
-_FAMILIAS = (
+_FAMILIAS: Final[tuple[str, ...]] = (
     "bisagra_cazoleta",
     "sistema_corredizo",
     "corredera_oculta",
     "corredera_telescopica",
 )
 
-_DEFAULT_HINGE_BY_MONTAJE = {
+_DEFAULT_HINGE_BY_MONTAJE: Final[Mapping[str, str]] = {
     "parche": "GEN-CAZ-35-PARCHE",
     "semiparche": "GEN-CAZ-35-SEMIPARCHE",
     "embebida": "GEN-CAZ-35-EMBEBIDA",
 }
 
-_DEFAULT_SLIDING_BY_MUEBLE = {
+_DEFAULT_SLIDING_BY_MUEBLE: Final[Mapping[str, str]] = {
     "closet": "DUC-KIT-D52",
     "placard": "DUC-KIT-D52",
     "mueble": "DUC-AL-1535-MAD",
@@ -45,7 +50,7 @@ _DEFAULT_SLIDING_BY_MUEBLE = {
 # Mapeo de claves del manifest (vdo_manifest.json → correderas_ocultas)
 # hacia los SKU del catálogo de Capa H. Permite consumir el catálogo desde
 # vdo_cajon_despiece sin romper configuraciones existentes.
-_MARCA_A_SKU = {
+_MARCA_A_SKU: Final[Mapping[str, str]] = {
     BLUM_TANDEM: "BLUM-TANDEM",
     "generica": "GEN-OCULTA",
     "hafele": "HAFELE-OCULTA",
@@ -53,7 +58,7 @@ _MARCA_A_SKU = {
 }
 
 
-def _cargar_catalogo():
+def _cargar_catalogo() -> _Catalogo:
     """Carga el catálogo de herrajes desde disco.
 
     MN-05: el JSON es la única fuente de datos de herrajes. Si el archivo falta o no
@@ -61,7 +66,7 @@ def _cargar_catalogo():
     """
     try:
         with open(CATALOGO_PATH, encoding="utf-8") as _fh:
-            datos = json.load(_fh)
+            datos = json.load(_fh)  # Any: JSON cargado, se valida abajo
     except OSError as exc:
         raise FileNotFoundError(f"Falta el catálogo de herrajes: {CATALOGO_PATH}") from exc
     if not isinstance(datos, dict):
@@ -69,7 +74,7 @@ def _cargar_catalogo():
     return datos
 
 
-def _catalogo_completo():
+def _catalogo_completo() -> _Catalogo:
     """Devuelve el catálogo cargado desde disco, verificando las familias obligatorias."""
     catalogo = _cargar_catalogo()
     for _fam in ("bisagra_cazoleta", "sistema_corredizo"):
@@ -79,15 +84,17 @@ def _catalogo_completo():
     return catalogo
 
 
-def _index_sku(catalogo):
-    indice = {}
+def _index_sku(catalogo: _Catalogo) -> dict[str, str]:
+    indice: dict[str, str] = {}
     for familia in _FAMILIAS:
         for sku in catalogo.get(familia, {}):
             indice[sku] = familia
     return indice
 
 
-def _resolver_catalogo(catalogo=None):
+def _resolver_catalogo(
+    catalogo: _Catalogo | None = None,
+) -> tuple[_Catalogo, dict[str, str]]:
     """Devuelve (catalogo, sku_a_familia). Si catalogo es None, carga fresco."""
     if catalogo is None:
         catalogo = _catalogo_completo()
@@ -95,7 +102,7 @@ def _resolver_catalogo(catalogo=None):
     return catalogo, sku_a_familia
 
 
-def get_hardware(sku, catalogo=None):
+def get_hardware(sku: object, catalogo: _Catalogo | None = None) -> dict[str, Any]:
     """Devuelve el diccionario completo del herraje (comercial + técnicos).
 
     Lanza KeyError descriptivo si el SKU no existe.
@@ -113,7 +120,7 @@ def get_hardware(sku, catalogo=None):
     return catalogo[familia][sku]
 
 
-def get_family(familia, catalogo=None):
+def get_family(familia: object, catalogo: _Catalogo | None = None) -> dict[str, dict[str, Any]]:
     """Devuelve todos los SKUs registrados bajo una familia."""
     catalogo, _ = _resolver_catalogo(catalogo)
     familia = str(familia)
@@ -123,12 +130,14 @@ def get_family(familia, catalogo=None):
     return dict(catalogo.get(familia, {}))
 
 
-def query_family(familia, catalogo=None):
+def query_family(familia: object, catalogo: _Catalogo | None = None) -> dict[str, dict[str, Any]]:
     """Alias público de ``get_family`` para consultas de familia de herraje."""
     return get_family(familia, catalogo)
 
 
-def resolve_hinge(tipo_montaje, prefer_sku=None, catalogo=None):
+def resolve_hinge(
+    tipo_montaje: object, prefer_sku: object = None, catalogo: _Catalogo | None = None,
+) -> dict[str, Any]:
     """Helper para puertas batientes.
 
     Devuelve la bisagra de cazoleta 35 mm segun el tipo de montaje
@@ -155,7 +164,9 @@ def resolve_hinge(tipo_montaje, prefer_sku=None, catalogo=None):
     return get_hardware(sku, catalogo)
 
 
-def resolve_sliding(tipo_mueble="closet", catalogo=None):
+def resolve_sliding(
+    tipo_mueble: object = "closet", catalogo: _Catalogo | None = None,
+) -> dict[str, Any]:
     """Helper para puertas corredizas.
 
     closet/placard -> DUC-KIT-D52
@@ -171,7 +182,7 @@ def resolve_sliding(tipo_mueble="closet", catalogo=None):
     return get_hardware(sku, catalogo)
 
 
-def _herraje_compatible(sku, tipo, catalogo):
+def _herraje_compatible(sku: str, tipo: str, catalogo: _Catalogo) -> dict[str, Any] | None:
     """Herraje del SKU si existe y su tipo_corredera es compatible; si no, None."""
     try:
         hw = get_hardware(sku, catalogo)
@@ -183,7 +194,7 @@ def _herraje_compatible(sku, tipo, catalogo):
     return None
 
 
-def _herraje_por_familia(tipo, marca, catalogo):
+def _herraje_por_familia(tipo: str, marca: str, catalogo: _Catalogo) -> dict[str, Any] | None:
     """Busqueda por familia: marca coincide con un SKU de la familia del tipo."""
     familia = "corredera_oculta" if tipo == OCULTA else "corredera_telescopica"
     try:
@@ -199,7 +210,9 @@ def _herraje_por_familia(tipo, marca, catalogo):
     return None
 
 
-def resolve_drawer_slide(tipo=OCULTA, marca=BLUM_TANDEM, catalogo=None):
+def resolve_drawer_slide(
+    tipo: object = OCULTA, marca: object = BLUM_TANDEM, catalogo: _Catalogo | None = None,
+) -> dict[str, Any]:
     """Helper para correderas de cajón.
 
     Devuelve el diccionario completo del herraje (comercial +
@@ -246,7 +259,11 @@ def resolve_drawer_slide(tipo=OCULTA, marca=BLUM_TANDEM, catalogo=None):
         f"herrajes VDO. SKUs disponibles: {sorted(sku_a_familia)}.")
 
 
-def calculate_sliding_doors(inner_w, inner_h, sku, n_hojas=2, catalogo=None):
+def calculate_sliding_doors(
+    # Any: medidas y n_hojas son valores de usuario que se convierten con float()/int() abajo.
+    inner_w: Any, inner_h: Any, sku: object, n_hojas: Any = 2,
+    catalogo: _Catalogo | None = None,
+) -> dict[str, Any]:
     """Calcula el despiece de hojas corredizas.
 
     H_hoja = inner_h - descuento_altura_hoja
@@ -266,7 +283,7 @@ def calculate_sliding_doors(inner_w, inner_h, sku, n_hojas=2, catalogo=None):
     h_hoja = inner_h - descuento
     w_hoja = (inner_w + (n_hojas - 1) * traslape) / n_hojas
 
-    hojas = []
+    hojas: list[dict[str, Any]] = []
     for i in range(n_hojas):
         hojas.append({
             "hoja": i + 1,
