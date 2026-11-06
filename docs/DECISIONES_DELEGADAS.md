@@ -542,3 +542,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-55
 
 - **D-55:** planificar_divisiones_matriz y CajonFeature.execute divididos en bloques. Mismo criterio que D-53 y D-54.
+
+## D-56
+
+- **D-56:** funciones de cad/ puerta.execute, panel.crear_pieza y panel.add_reengrose_props divididas en bloques. Mismo criterio que D-55.
