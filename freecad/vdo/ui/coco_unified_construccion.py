@@ -45,6 +45,47 @@ class CocoUnifiedConstruccionMixin:
         tab_medidas = QtWidgets.QWidget()
         layout_medidas = QtWidgets.QVBoxLayout(tab_medidas)
 
+        self._crear_grupo_medidas(layout_medidas)
+        self._crear_grupo_coloc(layout_medidas)
+        self._crear_grupo_exposicion(layout_medidas)
+
+        # --- Tab 2: Estructura / Chasis (Corte Transversal 2D Gestalt) ---
+        tab_estructura = QtWidgets.QWidget()
+        self._crear_contenido_estructura(tab_estructura)
+
+        # --- Tab 3: Divisiones (matriz de vanos + preview 2D) ---
+        tab_divisiones = QtWidgets.QWidget()
+        self._crear_contenido_divisiones(tab_divisiones)
+
+        self.tabs.addTab(tab_medidas, "Medidas")
+        self.tabs.addTab(tab_estructura, "Estructura")
+        self.tabs.addTab(tab_divisiones, "Divisiones")
+
+        self._crear_grupo_resumen(main_layout)
+
+        main_layout.addStretch()
+
+        botones = QtWidgets.QDialogButtonBox()
+        texto_ok = ("Crear y colocar" if not self.auto_transaction
+                    else "Aplicar")
+        btn_ok = botones.addButton(
+            texto_ok, QtWidgets.QDialogButtonBox.AcceptRole)
+        btn_cancelar = botones.addButton(
+            "Cancelar", QtWidgets.QDialogButtonBox.RejectRole)
+        botones.accepted.connect(self._on_ok)
+        botones.rejected.connect(self._on_cancel)
+        btn_ok.setToolTip(
+            "Aplica medidas, estructura, divisiones y colocación del COCO.")
+        btn_cancelar.setToolTip("Cierra sin aplicar los cambios.")
+        main_layout.addWidget(botones)
+
+        # El resumen sigue los valores de la UI, no las propiedades viejas.
+        for spin in [self.spin_alto, self.spin_ancho,
+                     self.spin_fondo, self.spin_espesor]:
+            spin.valueChanged.connect(self._on_medida_changed)
+
+        return widget
+    def _crear_grupo_medidas(self, layout_medidas):
         grupo_medidas = QtWidgets.QGroupBox("Medidas Generales")
         grid_medidas = QtWidgets.QGridLayout(grupo_medidas)
 
@@ -86,6 +127,7 @@ class CocoUnifiedConstruccionMixin:
 
         layout_medidas.addWidget(grupo_medidas)
 
+    def _crear_grupo_coloc(self, layout_medidas):
         # --- Colocación (pose, no geometría) ---
         grupo_coloc = QtWidgets.QGroupBox("Colocación")
         grid_coloc = QtWidgets.QGridLayout(grupo_coloc)
@@ -130,6 +172,7 @@ class CocoUnifiedConstruccionMixin:
 
         layout_medidas.addWidget(grupo_coloc)
 
+    def _crear_grupo_exposicion(self, layout_medidas):
         grupo_exp = QtWidgets.QGroupBox("Exposición")
         grid_exp = QtWidgets.QGridLayout(grupo_exp)
         self.combos_exposicion = {}
@@ -147,8 +190,7 @@ class CocoUnifiedConstruccionMixin:
             grid_exp.addWidget(combo, fila, col + 1)
         layout_medidas.addWidget(grupo_exp)
 
-        # --- Tab 2: Estructura / Chasis (Corte Transversal 2D Gestalt) ---
-        tab_estructura = QtWidgets.QWidget()
+    def _crear_contenido_estructura(self, tab_estructura):
         layout_estructura = QtWidgets.QVBoxLayout(tab_estructura)
         layout_estructura.setContentsMargins(0, 0, 0, 0)
 
@@ -162,17 +204,13 @@ class CocoUnifiedConstruccionMixin:
 
         layout_estructura.addWidget(scroll_est)
 
-        # --- Tab 3: Divisiones (matriz de vanos + preview 2D) ---
-        tab_divisiones = QtWidgets.QWidget()
+    def _crear_contenido_divisiones(self, tab_divisiones):
         layout_divisiones = QtWidgets.QVBoxLayout(tab_divisiones)
         self.editor_divisiones = DivisionesEditor()
         self.editor_divisiones.changed.connect(self._on_divisiones_changed)
         layout_divisiones.addWidget(self.editor_divisiones)
 
-        self.tabs.addTab(tab_medidas, "Medidas")
-        self.tabs.addTab(tab_estructura, "Estructura")
-        self.tabs.addTab(tab_divisiones, "Divisiones")
-
+    def _crear_grupo_resumen(self, main_layout):
         # Resumen global
         grupo_resumen = QtWidgets.QGroupBox("Resumen Completo")
         layout_resumen = QtWidgets.QVBoxLayout(grupo_resumen)
@@ -184,28 +222,6 @@ class CocoUnifiedConstruccionMixin:
         layout_resumen.addWidget(self.lbl_resumen)
         main_layout.addWidget(grupo_resumen)
 
-        main_layout.addStretch()
-
-        botones = QtWidgets.QDialogButtonBox()
-        texto_ok = ("Crear y colocar" if not self.auto_transaction
-                    else "Aplicar")
-        btn_ok = botones.addButton(
-            texto_ok, QtWidgets.QDialogButtonBox.AcceptRole)
-        btn_cancelar = botones.addButton(
-            "Cancelar", QtWidgets.QDialogButtonBox.RejectRole)
-        botones.accepted.connect(self._on_ok)
-        botones.rejected.connect(self._on_cancel)
-        btn_ok.setToolTip(
-            "Aplica medidas, estructura, divisiones y colocación del COCO.")
-        btn_cancelar.setToolTip("Cierra sin aplicar los cambios.")
-        main_layout.addWidget(botones)
-
-        # El resumen sigue los valores de la UI, no las propiedades viejas.
-        for spin in [self.spin_alto, self.spin_ancho,
-                     self.spin_fondo, self.spin_espesor]:
-            spin.valueChanged.connect(self._on_medida_changed)
-
-        return widget
 
     def _on_chassis_changed(self, cfg):
         """Reacciona al cambio interactivo en el chasis 2D y actualiza el objeto."""
