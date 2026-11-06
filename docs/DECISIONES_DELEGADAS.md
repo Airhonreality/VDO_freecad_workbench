@@ -533,3 +533,4 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 ## D-53
 
 - **D-53:** calcular_despiece (323 líneas) se divide en bloques de módulo, sin cambiar valores ni orden (P3/P5). Golden cajon_despiece y 13 snapshots son la prueba.
+Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.

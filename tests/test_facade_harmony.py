@@ -15,7 +15,6 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-from freecad.vdo.core import vdo_cajon_calculo as D_CAJON
 from freecad.vdo.core import vdo_puerta_despiece as D_PUERTA
 from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_45_GRADOS,
@@ -216,10 +215,11 @@ class TestImportacionYEnums(unittest.TestCase):
         self.assertEqual(D_PUERTA.APERTURA_PUSH_OPEN, APERTURA_PUSH_OPEN)
 
     def test_cajon_consume_contrato(self):
-        """vdo_cajon_calculo usa las funciones del contrato (sin reexportarlas, D-36)."""
+        """Los bloques de cálculo del cajón usan las funciones del contrato (sin reexportarlas, D-36)."""
         from freecad.vdo.core import vdo_facade_contract as contrato
-        self.assertIs(D_CAJON.aplicar_sistema_apertura, contrato.aplicar_sistema_apertura)
-        self.assertIs(D_CAJON.calcular_fachada_base, contrato.calcular_fachada_base)
+        from freecad.vdo.core import cajon_calculo_bloques as D_BLOQUES
+        self.assertIs(D_BLOQUES.aplicar_sistema_apertura, contrato.aplicar_sistema_apertura)
+        self.assertIs(D_BLOQUES.calcular_fachada_base, contrato.calcular_fachada_base)
 
     def test_no_discrepancias_strings(self):
         """No hay discrepancias de strings entre puerta y cajón."""
