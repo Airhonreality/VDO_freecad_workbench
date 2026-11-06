@@ -156,4 +156,4 @@ class TestGuiWiring(unittest.TestCase):
 if __name__ == "__main__":
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestGuiWiring)
     resultado = unittest.TextTestRunner(verbosity=2).run(suite)
-    os._exit(0 if resultado.wasSuccessful() else 1)
+    sys.exit(0 if resultado.wasSuccessful() else 1)

@@ -9,6 +9,7 @@
 # =====================================================================
 
 import os
+import sys
 import unittest
 
 from tests.soporte.qt import qapplication
@@ -214,4 +215,4 @@ if __name__ == "__main__":
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestSingleDockConvergence)
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
-    os._exit(0 if result.wasSuccessful() else 1)
+    sys.exit(0 if result.wasSuccessful() else 1)
