@@ -153,3 +153,18 @@ def leer_reengroses(obj: Any) -> dict[str, Any]:
         _LOG.warning("reengrose_modificador: reengroses no leidos, usa vacio: %s", exc)
         return {}
     return datos if isinstance(datos, dict) else {}
+
+
+def modificador_de_mapa(mapa: Any, clave: str, origen: str) -> ReengroseModifier:
+    """Modificador de `clave` en un mapa de reengroses; vacío si falta o es inválido.
+
+    `origen` nombra al módulo que llama y aparece en el aviso de reengrose inválido.
+    """
+    datos = (mapa or {}).get(clave)
+    if not datos:
+        return ReengroseModifier()
+    try:
+        return ReengroseModifier(datos)
+    except ReengroseError as exc:
+        _LOG.warning("%s: reengrose invalido, usa modificador vacio: %s", origen, exc)
+        return ReengroseModifier()

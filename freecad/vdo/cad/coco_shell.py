@@ -11,7 +11,6 @@ from freecad.vdo.cad.geometria import forma_ref
 from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
-from freecad.vdo.core.coco_core import _modificador_mapa
 from freecad.vdo.core.helpers import _get_app
 
 
@@ -22,7 +21,7 @@ def _aplicar_shell(boxes: list[Any], shell_info: dict[str, dict[str, Any]],
                    ejes: dict[str, str]) -> None:
     """Registra una caja de carcasa y, si tiene reengrose, añade sus tiras.
     Modifica boxes, shell_info, shell_tiras, shell_refs y obstaculos in situ."""
-    mod = _modificador_mapa(reengroses, clave)
+    mod = VDO_RE_MODIFICADOR.modificador_de_mapa(reengroses, clave, "coco_core")
     shell_info[clave] = {
         "caja": caja,
         "ejes": ejes,

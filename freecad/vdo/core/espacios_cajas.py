@@ -6,32 +6,15 @@
 # =====================================================================
 
 
-import logging
 from typing import Any
 
-from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
-from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
 from freecad.vdo.core.layout_resuelto import PanelPiece
-
-_LOG = logging.getLogger(__name__)
 
 
 def _clave_pieza(pieza: PanelPiece) -> str:
     if pieza.axis == "X":
         return f"division_x:{pieza.path}"
     return f"division_y:{pieza.path}"
-
-
-def _modificador(reengroses: dict[str, Any] | None,
-                 pieza: PanelPiece) -> VDO_RE_MODIFICADOR.ReengroseModifier:
-    datos = (reengroses or {}).get(_clave_pieza(pieza))
-    if not datos:
-        return VDO_RE_MODIFICADOR.ReengroseModifier()
-    try:
-        return VDO_RE_MODIFICADOR.ReengroseModifier(datos)
-    except VDO_RE_MODELO.ReengroseError as exc:
-        _LOG.warning("espacios_cajas: reengrose invalido, usa modificador vacio: %s", exc)
-        return VDO_RE_MODIFICADOR.ReengroseModifier()
 
 
 def _caja_pieza(pieza: PanelPiece, fondo: float, espesor: float, x0: float,

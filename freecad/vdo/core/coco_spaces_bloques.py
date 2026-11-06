@@ -13,6 +13,7 @@ from freecad.vdo.core import reengrose_encuentros as VDO_RE_ENCUENTROS
 from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
 from freecad.vdo.core import reengrose_interferencias as VDO_RE_INTERFERENCIAS
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
 from freecad.vdo.core.espacios_cajas import (
     _agregar_interrupcion,
     _caja_dict,
@@ -22,7 +23,6 @@ from freecad.vdo.core.espacios_cajas import (
     _ejes_pieza,
     _fusionar_caja,
     _huella_caja,
-    _modificador,
     _modo_efectivo,
 )
 from freecad.vdo.core.layout_resuelto import ResolvedLayout
@@ -111,7 +111,8 @@ def _crear_entradas(resuelto: ResolvedLayout, reengroses: dict[str, Any], fondo:
             "caja": dict(caja),
             "caja_base": dict(caja),
             "ejes": _ejes_pieza(pieza),
-            "mod": _modificador(reengroses, pieza),
+            "mod": VDO_RE_MODIFICADOR.modificador_de_mapa(
+                reengroses, _clave_pieza(pieza), "espacios_cajas"),
             "modo_explicito": (
                 "comportamiento_choque_nucleo" in crudo),
             "refuerzos": [],

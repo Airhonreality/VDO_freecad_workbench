@@ -5,28 +5,12 @@
 # =====================================================================
 
 
-import logging
 from typing import Any
 
 from freecad.vdo.core import reengrose_despiece as VDO_RE_DESPIECE
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
-from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
 from freecad.vdo.core.helpers import _get_app
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
-
-_LOG = logging.getLogger(__name__)
-
-
-def _modificador_mapa(mapa: Any, clave: str) -> VDO_RE_MODIFICADOR.ReengroseModifier:
-    datos = (mapa or {}).get(clave)
-    if not datos:
-        return VDO_RE_MODIFICADOR.ReengroseModifier()
-    try:
-        return VDO_RE_MODIFICADOR.ReengroseModifier(datos)
-    except VDO_RE_MODELO.ReengroseError as exc:
-        _LOG.warning("coco_core: reengrose invalido, usa modificador vacio: %s", exc)
-        return VDO_RE_MODIFICADOR.ReengroseModifier()
-
 
 
 def _expandir_reengrose(pieza: dict[str, Any]) -> list[dict[str, Any]]:
