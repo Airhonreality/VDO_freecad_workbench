@@ -47,7 +47,9 @@ except ImportError:  # pragma: no cover
     CocoPreview2D = None
 
 try:
-    from freecad.vdo.core.vdo_layout import Layout, cavidad_interior, resolve_layout
+    from freecad.vdo.core.vdo_layout_matriz import Layout
+    from freecad.vdo.core.vdo_layout_modelo import cavidad_interior
+    from freecad.vdo.core.vdo_layout_resolucion import resolve_layout
 except ImportError:  # pragma: no cover
     Layout = None
     resolve_layout = None

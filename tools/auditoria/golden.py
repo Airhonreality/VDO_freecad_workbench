@@ -129,6 +129,9 @@ UBICACIONES: dict[str, tuple[str, ...]] = {
 # Módulos de dominio repartidos en varios archivos (M7, D-34). Su golden sigue siendo
 # uno solo: cada función se busca en el primer módulo del grupo que la define.
 AGREGADOS: dict[str, tuple[str, ...]] = {
+    "layout": tuple(
+        f"freecad.vdo.core.vdo_layout_{parte}"
+        for parte in ("modelo", "matriz", "resuelto", "resolucion")),
     "reengrose": tuple(
         f"freecad.vdo.core.vdo_reengrose_{parte}"
         for parte in ("modelo", "modificador", "tiras", "geometria",

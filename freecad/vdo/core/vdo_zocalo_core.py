@@ -8,7 +8,9 @@
 # =====================================================================
 
 from freecad.vdo.core import vdo_reengrose_tiras as VDO_RE_TIRAS
-from freecad.vdo.core.vdo_layout import AXIS_X, Layout, Track, resolve_layout
+from freecad.vdo.core.vdo_layout_matriz import Layout
+from freecad.vdo.core.vdo_layout_modelo import AXIS_X, Track
+from freecad.vdo.core.vdo_layout_resolucion import resolve_layout
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 

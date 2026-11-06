@@ -13,7 +13,7 @@ except BaseException:
 app = None
 
 from freecad.vdo.cad import coco as C
-from freecad.vdo.core.vdo_layout import Layout
+from freecad.vdo.core.vdo_layout_matriz import Layout
 
 try:
     from freecad.vdo.ui import vdo_export_cutting_list as E

@@ -287,7 +287,8 @@ def planificar_divisiones_matriz(divisiones_json, ancho_cavidad, alto_cavidad,
     ``reengroses``: dict clave -> modificador. ``obstaculos``: cajas AABB de
     reengroses externos (por ejemplo laterales) con su política de choque.
     """
-    from freecad.vdo.core.vdo_layout import Layout, resolve_layout
+    from freecad.vdo.core.vdo_layout_matriz import Layout
+    from freecad.vdo.core.vdo_layout_resolucion import resolve_layout
     if divisiones_json:
         layout = Layout.loads(divisiones_json)
         avisos = []

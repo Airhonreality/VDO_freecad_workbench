@@ -37,7 +37,9 @@ from freecad.vdo.core import vdo_defaults as VD
 from freecad.vdo.core import vdo_facade_contract as VFC
 from freecad.vdo.core import vdo_frames as VFR
 from freecad.vdo.core import vdo_hardware_hub as HH
-from freecad.vdo.core import vdo_layout as VL
+from freecad.vdo.core import vdo_layout_matriz as VL_MATRIZ
+from freecad.vdo.core import vdo_layout_modelo as VL_MODELO
+from freecad.vdo.core import vdo_layout_resolucion as VL_RESOLUCION
 from freecad.vdo.core import vdo_module_props as VMOD
 from freecad.vdo.cad import panel as VP
 from freecad.vdo.core.errores import VDOError
@@ -138,9 +140,9 @@ def world_box_from_panel(largo, ancho, espesor, translation, rot_z_deg=0.0):
 # 0. Cobertura de API (detección de gaps)
 # =============================================================================
 REQUIRED_API = [
-    ("freecad.vdo.core.vdo_layout", "Layout"),
-    ("freecad.vdo.core.vdo_layout", "resolve_layout"),
-    ("freecad.vdo.core.vdo_layout", "Track"),
+    ("freecad.vdo.core.vdo_layout_matriz", "Layout"),
+    ("freecad.vdo.core.vdo_layout_resolucion", "resolve_layout"),
+    ("freecad.vdo.core.vdo_layout_modelo", "Track"),
     ("freecad.vdo.cad.coco_espacios", "generar_divisiones_matriz"),
     ("freecad.vdo.cad.coco", "make_coco"),
     ("freecad.vdo.cad.cajon", "make_cajon"),
@@ -215,10 +217,10 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
         cav_h = alto - zocalo - ESP        # 612 (cavidad para cajones)
 
         try:
-            layout = VL.Layout()
-            layout.rows = [VL.Track("y1"), VL.Track("y2"), VL.Track("y3")]
+            layout = VL_MATRIZ.Layout()
+            layout.rows = [VL_MODELO.Track("y1"), VL_MODELO.Track("y2"), VL_MODELO.Track("y3")]
             layout._normalizar()
-            resuelto = VL.resolve_layout(layout, inner_w, cav_h, ESP)
+            resuelto = VL_RESOLUCION.resolve_layout(layout, inner_w, cav_h, ESP)
             cells = [c for c in resuelto.walk_cells() if not c.children]
             ok_celdas = len(cells) == 3
             motivo = f"{len(cells)} celdas hoja"

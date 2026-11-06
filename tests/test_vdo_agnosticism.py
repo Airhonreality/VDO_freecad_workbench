@@ -15,7 +15,10 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-from freecad.vdo.core import vdo_layout as VDO_LAYOUT
+from freecad.vdo.core import vdo_layout_matriz as VDO_LAYOUT_MATRIZ
+from freecad.vdo.core import vdo_layout_modelo as VDO_LAYOUT_MODELO
+from freecad.vdo.core import vdo_layout_resolucion as VDO_LAYOUT_RESOLUCION
+from freecad.vdo.core import vdo_layout_resuelto as VDO_LAYOUT_RESUELTO
 from freecad.vdo.core import vdo_reengrose_despiece as VDO_RE_DESPIECE
 from freecad.vdo.core import vdo_reengrose_encuentros as VDO_RE_ENCUENTROS
 from freecad.vdo.core import vdo_reengrose_geometria as VDO_RE_GEOMETRIA
@@ -23,7 +26,9 @@ from freecad.vdo.core import vdo_reengrose_interferencias as VDO_RE_INTERFERENCI
 from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
 from freecad.vdo.core import vdo_reengrose_tiras as VDO_RE_TIRAS
-from freecad.vdo.core.vdo_layout import AXIS_X, AXIS_Y, Layout, Track, resolve_layout
+from freecad.vdo.core.vdo_layout_matriz import Layout
+from freecad.vdo.core.vdo_layout_modelo import AXIS_X, AXIS_Y, Track
+from freecad.vdo.core.vdo_layout_resolucion import resolve_layout
 
 TOL = 1e-6
 _MODULOS_GUI = (
@@ -124,7 +129,8 @@ class _DummyDoorMock:
 
 class VDOAgnosticismTests(unittest.TestCase):
     def setUp(self):
-        for modulo in (VDO_LAYOUT, VDO_RE_MODELO, VDO_RE_MODIFICADOR,
+        for modulo in (VDO_LAYOUT_MATRIZ, VDO_LAYOUT_MODELO,
+                       VDO_LAYOUT_RESOLUCION, VDO_LAYOUT_RESUELTO, VDO_RE_MODELO, VDO_RE_MODIFICADOR,
                        VDO_RE_TIRAS, VDO_RE_GEOMETRIA, VDO_RE_DESPIECE,
                        VDO_RE_ENCUENTROS, VDO_RE_INTERFERENCIAS):
             ruta = getattr(modulo, "__file__", "")

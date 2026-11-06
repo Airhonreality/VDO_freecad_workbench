@@ -22,14 +22,9 @@ from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
 )
-from freecad.vdo.core.vdo_layout import (
-    AXIS_X,
-    AXIS_Y,
-    Layout,
-    LayoutError,
-    cavidad_interior,
-    resolve_layout,
-)
+from freecad.vdo.core.vdo_layout_matriz import Layout
+from freecad.vdo.core.vdo_layout_modelo import AXIS_X, AXIS_Y, LayoutError, cavidad_interior
+from freecad.vdo.core.vdo_layout_resolucion import resolve_layout
 from freecad.vdo.cad.puerta import make_puerta
 from freecad.vdo.datos.valores import TIRADOR
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
