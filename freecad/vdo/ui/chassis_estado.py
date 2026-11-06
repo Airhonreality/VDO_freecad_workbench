@@ -4,8 +4,8 @@
 from freecad.vdo.ui.chassis_constantes import (
     ENCUENTRO_LABELS,
     ENCUENTRO_TOOLTIPS,
-    obtener_svg_icon,
 )
+from freecad.vdo.ui.tema import obtener_svg_icon
 
 
 class ChassisEstadoMixin:

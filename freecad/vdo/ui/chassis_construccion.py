@@ -5,9 +5,9 @@ from freecad.vdo.ui import tema
 from freecad.vdo.ui.chassis_canvas import _VDOChassisCrossSectionCanvas
 from freecad.vdo.ui.chassis_constantes import (
     TIPOS_FONDO,
-    obtener_svg_icon,
 )
 from freecad.vdo.ui.qt import VDO_DoubleSpinBox
+from freecad.vdo.ui.tema import obtener_svg_icon
 
 
 class ChassisConstruccionMixin:

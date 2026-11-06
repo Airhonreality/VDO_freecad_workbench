@@ -1,17 +1,9 @@
 """Constantes, tablas e iconos del chasis. Parte de ui/chassis_widget.py (M7, D-45)."""
 
-from freecad.vdo.ui.tema import LUCIDE_ICONS
-from freecad.vdo.ui.tema import get_svg_icon as _svg_icon
 
 # ----------------------------------------------------------------------
 # Iconografía Vectorial Lucide Embebida (SVG)
 # ----------------------------------------------------------------------
-
-_ICON_CACHE = {}
-
-
-def obtener_svg_icon(name, size=22):
-    return _svg_icon(name, size, icons_map=LUCIDE_ICONS, cache=_ICON_CACHE)
 
 
 # ----------------------------------------------------------------------

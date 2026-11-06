@@ -296,6 +296,14 @@ def get_svg_icon(name: str, size: int = 22,
     cache[key] = icon
     return icon
 
+_ICON_CACHE = {}
+
+
+def obtener_svg_icon(name, size=22):
+    """Icono Lucide de la paleta VDO, con caché compartida por nombre y tamaño."""
+    return get_svg_icon(name, size, icons_map=LUCIDE_ICONS, cache=_ICON_CACHE)
+
+
 __all__ = [
     "ACEINTO",
     "ACEINTO_HOVER",
@@ -384,4 +392,5 @@ __all__ = [
     "estilo_boton",
     "estilo_breadcrumb",
     "get_svg_icon",
+    "obtener_svg_icon",
 ]

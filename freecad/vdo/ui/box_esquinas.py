@@ -4,8 +4,8 @@ from freecad.vdo.ui.box_constantes import (
     ENCUENTRO_TOOLTIPS,
     ESQUINAS,
     TIPOS_ENCUENTRO,
-    obtener_svg_icon,
 )
+from freecad.vdo.ui.tema import obtener_svg_icon
 
 
 class BoxEsquinasMixin:

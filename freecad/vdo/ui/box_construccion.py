@@ -8,9 +8,9 @@ from freecad.vdo.ui.box_constantes import (
     ENCUENTRO_LABELS,
     ESQUINAS,
     TIPOS_ENCUENTRO,
-    obtener_svg_icon,
 )
 from freecad.vdo.ui.qt import VDO_DoubleSpinBox
+from freecad.vdo.ui.tema import obtener_svg_icon
 
 
 class BoxConstruccionMixin:
