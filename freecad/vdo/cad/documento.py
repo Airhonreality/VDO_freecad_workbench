@@ -19,6 +19,11 @@ def crear_objeto(doc, tipo: str, nombre: str):
     return doc.addObject(tipo, nombre)
 
 
+def eliminar_objeto(doc, nombre: str) -> None:
+    """Elimina del documento el objeto de nombre ``nombre``."""
+    doc.removeObject(nombre)
+
+
 def crear_grupo(doc, nombre: str):
     """Crea un grupo de objetos (App::DocumentObjectGroup) en el documento."""
     return doc.addObject("App::DocumentObjectGroup", nombre)

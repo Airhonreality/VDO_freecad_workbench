@@ -10,7 +10,12 @@ import FreeCAD as App
 import FreeCADGui as Gui
 
 from freecad.vdo.cad.colocacion import aplicar_rotacion
-from freecad.vdo.cad.documento import crear_objeto, recalcular, recalcular_activo
+from freecad.vdo.cad.documento import (
+    crear_objeto,
+    eliminar_objeto,
+    recalcular,
+    recalcular_activo,
+)
 from freecad.vdo.cad.propiedades import (
     add_common_props,
     anadir_propiedad_texto,
@@ -1102,7 +1107,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
         for hijo in hijos_actuales:
             if hijo.Name not in claves_activas:
                 try:
-                    doc.removeObject(hijo.Name)
+                    eliminar_objeto(doc, hijo.Name)
                 except Exception:
                     App.Console.PrintWarning(
                         f"[VDO] No se pudo remover el hijo {hijo.Name}")
