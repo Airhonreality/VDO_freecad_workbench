@@ -1,4 +1,4 @@
-"""app/casos_uso/editar_modulo.py — Caso de uso: editar módulo existente."""
+"""cad/edicion.py — Edición de un módulo existente en el documento (escritura FreeCAD)."""
 
 from __future__ import annotations
 
