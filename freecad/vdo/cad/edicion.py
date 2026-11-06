@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from freecad.vdo.core.dto import EditarModuloDTO, EditarModuloResultado
 
 
-def editar_modulo(doc, dto: EditarModuloDTO) -> EditarModuloResultado:
+def editar_modulo(doc: Any,  # documento FreeCAD sin tipo
+                  dto: EditarModuloDTO) -> EditarModuloResultado:
     """Edita un módulo existente en el documento."""
     if doc is None:
         raise ValueError("Documento requerido para editar el módulo.")
