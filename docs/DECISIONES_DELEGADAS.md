@@ -489,3 +489,8 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 
 - **D-44:** M7 ui/vdo_box_controller partido por concepto. Verificación visual pendiente (M10).
 - Decisión de implementación: la clase `VDOBoxControllerWidget` queda como raíz en `ui/vdo_box_controller.py` y hereda de mixins por concepto (`box_construccion`, `box_margen`, `box_esquinas`, `box_estado`, `box_config`), sin cambios de código. Constantes, hoja de estilos y canvas van a `box_constantes`, `box_hoja_estilos` y `box_canvas`. Sin reexportaciones (P6). Los alias de clase (`get_config`, `set_config`, `seleccionar_margen`) se quedan en el mismo mixin que su destino. Ningún consumidor cambia: `coco_reengrose_widgets.py` e `inspector_pagina_pieza.py` solo importan `VDOBoxControllerWidget`.
+
+## D-45
+
+- **D-45:** M7 ui/vdo_chassis_widget partido por concepto. Verificación visual pendiente (M10).
+- Decisión de implementación: la clase `VDOChassisControllerWidget` queda como raíz en `ui/vdo_chassis_widget.py` y hereda de mixins por concepto (`chassis_construccion`, `chassis_estilos`, `chassis_eventos`, `chassis_estado`, `chassis_config`), sin cambios de código. Constantes, tablas e iconos van a `chassis_constantes` y el canvas de sección a `chassis_canvas`. Las señales quedan en la raíz, porque son atributos de clase QObject. Los alias de método (`set_chassis_config`, `get_chassis_config`) se quedan en el mixin de su destino (`chassis_config`). Sin reexportaciones (P6).
