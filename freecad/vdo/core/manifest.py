@@ -26,17 +26,18 @@ def _obtener_json() -> Any:  # Any: JSON del manifiesto, sin esquema fijo en có
 
 # --- Funciones de acceso tipado (absorbidas de vdo_loader.py) ---------
 
-def get_material(material_id):
+# Retornos Any: valores leidos del JSON del manifiesto, sin esquema fijo en codigo
+def get_material(material_id: str) -> Any:
     """Obtiene especificación de material."""
     return _obtener_json().get("materiales", {}).get(material_id)
 
 
-def get_hardware(hardware_id):
+def get_hardware(hardware_id: str) -> Any:
     """Obtiene especificación de herraje."""
     return _obtener_json().get("herrajes", {}).get(hardware_id)
 
 
-def calcular_costo_material(material_id, area_m2):
+def calcular_costo_material(material_id: str, area_m2: float) -> Any:
     """Calcula costo de material."""
     material = get_material(material_id)
     if not material:
@@ -44,7 +45,7 @@ def calcular_costo_material(material_id, area_m2):
     return material.get("costo_m2", 0) * area_m2
 
 
-def get_loader():
+def get_loader() -> Any:
     """Devuelve el manifiesto cargado (carga fresca)."""
     return _obtener_json()
 
