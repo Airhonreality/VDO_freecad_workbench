@@ -5,6 +5,10 @@
 # =====================================================================
 
 from freecad.vdo.core.vdo_helpers import _get_app, _get_part
+from freecad.vdo.core.vdo_cajon_correderas import (
+    CAJA_METALICA, CORREDERA_OCULTA, CORREDERA_TELESCOPICA)
+from freecad.vdo.core.vdo_facade_contract import (
+    BISEL_45_ANGULO_DEFAULT, necesita_bisel_45)
 
 
 def _box(pos):
@@ -101,3 +105,114 @@ def _aplicar_bisel_45_fachada(solido, pos, ancho, alto, bisel_dist=5.0):
     herramienta.translate(_get_app().Vector(pos["x"], pos["y"], pos["z"]))
 
     return _aplicar_corte(solido, herramienta)
+
+
+# =====================================================================
+# Constructores de bloques del cajón (D-55). Mismo orden de llamadas a
+# FreeCAD que el cuerpo original de CajonFeature.execute.
+# =====================================================================
+
+def _construir_laterales(tipo_corredera, posiciones, notch_ancho, notch_alto,
+                         diam_t, prof_t, prof_ranura, z_piso, g_fondo,
+                         alto_lateral, lg, g_caja):
+    """Laterales de madera con su mecanizado; vacío en caja metálica."""
+    solids = []
+    if tipo_corredera != CAJA_METALICA:
+        for clave in ("lateral_izquierdo", "lateral_derecho"):
+            lateral = _box(posiciones[clave])
+
+            if tipo_corredera == CORREDERA_OCULTA:
+                # Notch: 35 x 12 mm en talón inferior-trasero
+                lateral = _corte_notch_lateral(
+                    lateral, posiciones[clave],
+                    notch_ancho, notch_alto, lg)
+                # Pin de bloqueo en cara posterior del lateral
+                lateral = _corte_pin_trasero(
+                    lateral, posiciones[clave],
+                    diam_t, prof_t, z_piso, g_fondo,
+                    alto_lateral, lg, g_caja)
+
+            elif tipo_corredera == CORREDERA_TELESCOPICA:
+                # Ranura para piso delgado (5.5 mm) en cara interna
+                lateral = _corte_ranura_piso(
+                    lateral, posiciones[clave],
+                    prof_ranura, z_piso, g_fondo, lg)
+
+            solids.append(lateral)
+    return solids
+
+
+def _construir_contra(tipo_corredera, posiciones, notch_ancho, notch_alto,
+                      diam_t, prof_t, z_piso, g_fondo, alto_contra,
+                      ancho_contra, g_caja):
+    """Contra-frente (trasera de madera, siempre presente)."""
+    contra = _box(posiciones["contra_frente"])
+    if tipo_corredera == CORREDERA_OCULTA:
+        # Notch en esquinas inferiores de la contra-frente
+        contra = _corte_notch_lateral(
+            contra, posiciones["contra_frente"],
+            notch_ancho, notch_alto,
+            posiciones["contra_frente"]["largo_y"])
+        # Pin de bloqueo en cara posterior del testero trasero
+        contra = _corte_pin_trasero(
+            contra, posiciones["contra_frente"],
+            diam_t, prof_t, z_piso, g_fondo,
+            alto_contra, ancho_contra, g_caja)
+    return contra
+
+
+def _construir_fachada(sistema_apertura, fachada_pos, fachada):
+    """Fachada decorativa, con bisel 45 si el sistema de apertura lo exige."""
+    fachada_solid = _box(fachada_pos)
+    if necesita_bisel_45(sistema_apertura):
+        fachada_solid = _aplicar_bisel_45_fachada(
+            fachada_solid, fachada_pos,
+            fachada["ancho"], fachada["alto"],
+            bisel_dist=BISEL_45_ANGULO_DEFAULT / 9.0  # ~5 mm bisel
+        )
+    return fachada_solid
+
+
+def _solidos_cajon(d, tipo_corredera, sistema_apertura):
+    """Sólidos del cajón en orden: laterales, contra, frente, piso, fachada."""
+    caja = d["caja"]
+    posiciones = d["posiciones"]
+    mecanizados = d["mecanizados"]
+
+    g_caja = caja["grosor"]
+    g_fondo = caja["grosor_piso"]
+    z_piso = caja["z_piso"]
+    lg = caja["largo_lateral"]
+    alto_lateral = caja["alto_lateral"]
+    ancho_contra = caja["ancho_contra"]
+    alto_contra = caja["alto_contra"]
+
+    notch_ancho = float(mecanizados.get("notch_ancho", 35.0))
+    notch_alto = float(mecanizados.get("notch_alto", 12.0))
+    diam_t = float(mecanizados.get("diam_taladro", 6.0))
+    prof_t = float(mecanizados.get("prof_taladro", 10.0))
+    prof_ranura = float(mecanizados.get("prof_ranura_lateral", 4.0))
+
+    # 1. Laterales (solo si no es caja metálica)
+    solids = _construir_laterales(
+        tipo_corredera, posiciones, notch_ancho, notch_alto,
+        diam_t, prof_t, prof_ranura, z_piso, g_fondo,
+        alto_lateral, lg, g_caja)
+
+    # 2. Contra-frente (trasera de madera - siempre presente)
+    solids.append(_construir_contra(
+        tipo_corredera, posiciones, notch_ancho, notch_alto,
+        diam_t, prof_t, z_piso, g_fondo, alto_contra,
+        ancho_contra, g_caja))
+
+    # 3. Frente interior (solo si no es caja metálica)
+    if tipo_corredera != CAJA_METALICA:
+        solids.append(_box(posiciones["frente_interior"]))
+
+    # 4. Piso
+    solids.append(_box(posiciones["piso"]))
+
+    # 5. Fachada (con integración de contrato universal)
+    solids.append(_construir_fachada(
+        sistema_apertura, posiciones["fachada"], d["fachada"]))
+    return solids

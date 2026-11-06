@@ -32,8 +32,6 @@ from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
-    necesita_bisel_45,
-    BISEL_45_ANGULO_DEFAULT,
     MONTAJE_EMBEBIDA,
     MONTAJE_PARCHE,
     MONTAJE_SEMIPARCHE,
@@ -41,8 +39,7 @@ from freecad.vdo.core.vdo_facade_contract import (
 from freecad.vdo.core.vdo_helpers import _get_app, _get_part
 from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR
 from freecad.vdo.cad.cajon_geometria import (
-    _aplicar_bisel_45_fachada, _box, _corte_notch_lateral,
-    _corte_pin_trasero, _corte_ranura_piso)
+    _solidos_cajon)
 
 # =====================================================================
 # CajonFeature
@@ -191,127 +188,12 @@ class CajonFeature:
         tipo_corredera = d.get("tipo_corredera", CORREDERA_OCULTA)
         sistema_apertura = d.get("sistema_apertura", APERTURA_TIRADOR)
 
-        caja = d["caja"]
-        posiciones = d["posiciones"]
-        mecanizados = d["mecanizados"]
+        solids = _solidos_cajon(d, tipo_corredera, sistema_apertura)
 
-        g_caja = caja["grosor"]
-        g_fondo = caja["grosor_piso"]
-        z_piso = caja["z_piso"]
-        lg = caja["largo_lateral"]
-        alto_lateral = caja["alto_lateral"]
-        ancho_ext = caja["ancho_exterior"]
-        ancho_contra = caja["ancho_contra"]
-        alto_contra = caja["alto_contra"]
-
-        notch_ancho = float(mecanizados.get("notch_ancho", 35.0))
-        notch_alto = float(mecanizados.get("notch_alto", 12.0))
-        diam_t = float(mecanizados.get("diam_taladro", 6.0))
-        prof_t = float(mecanizados.get("prof_taladro", 10.0))
-        prof_ranura = float(mecanizados.get("prof_ranura_lateral", 4.0))
-
-        solids = []
-
-        # -----------------------------------------------------------------
-        # 1. Laterales (solo si no es caja metálica)
-        # -----------------------------------------------------------------
-        if tipo_corredera != CAJA_METALICA:
-            for clave in ("lateral_izquierdo", "lateral_derecho"):
-                lateral = _box(posiciones[clave])
-
-                if tipo_corredera == CORREDERA_OCULTA:
-                    # Notch: 35 x 12 mm en talón inferior-trasero
-                    lateral = _corte_notch_lateral(
-                        lateral, posiciones[clave],
-                        notch_ancho, notch_alto, lg)
-                    # Pin de bloqueo en cara posterior del lateral
-                    lateral = _corte_pin_trasero(
-                        lateral, posiciones[clave],
-                        diam_t, prof_t, z_piso, g_fondo,
-                        alto_lateral, lg, g_caja)
-
-                elif tipo_corredera == CORREDERA_TELESCOPICA:
-                    # Ranura para piso delgado (5.5 mm) en cara interna
-                    lateral = _corte_ranura_piso(
-                        lateral, posiciones[clave],
-                        prof_ranura, z_piso, g_fondo, lg)
-
-                solids.append(lateral)
-
-        # -----------------------------------------------------------------
-        # 2. Contra-frente (trasera de madera - siempre presente)
-        # -----------------------------------------------------------------
-        contra = _box(posiciones["contra_frente"])
-        if tipo_corredera == CORREDERA_OCULTA:
-            # Notch en esquinas inferiores de la contra-frente
-            contra = _corte_notch_lateral(
-                contra, posiciones["contra_frente"],
-                notch_ancho, notch_alto,
-                posiciones["contra_frente"]["largo_y"])
-            # Pin de bloqueo en cara posterior del testero trasero
-            contra = _corte_pin_trasero(
-                contra, posiciones["contra_frente"],
-                diam_t, prof_t, z_piso, g_fondo,
-                alto_contra, ancho_contra, g_caja)
-        solids.append(contra)
-
-        # -----------------------------------------------------------------
-        # 3. Frente interior (solo si no es caja metálica)
-        # -----------------------------------------------------------------
-        if tipo_corredera != CAJA_METALICA:
-            solids.append(_box(posiciones["frente_interior"]))
-
-        # -----------------------------------------------------------------
-        # 4. Piso
-        # -----------------------------------------------------------------
-        piso = _box(posiciones["piso"])
-        solids.append(piso)
-
-        # -----------------------------------------------------------------
-        # 5. Fachada (con integración de contrato universal)
-        # -----------------------------------------------------------------
-        fachada_pos = posiciones["fachada"]
-        fachada_solid = _box(fachada_pos)
-
-        if necesita_bisel_45(sistema_apertura):
-            fachada_solid = _aplicar_bisel_45_fachada(
-                fachada_solid, fachada_pos,
-                d["fachada"]["ancho"], d["fachada"]["alto"],
-                bisel_dist=BISEL_45_ANGULO_DEFAULT / 9.0  # ~5 mm bisel
-            )
-
-        solids.append(fachada_solid)
-
-        # -----------------------------------------------------------------
-        # Exportación: piezas del despiece
-        # -----------------------------------------------------------------
-        paneles = json.loads(json.dumps(d["piezas"], ensure_ascii=False))
-        if tipo_corredera == CAJA_METALICA:
-            # Para caja metálica, no reportar madera en costados
-            paneles = [p for p in paneles
-                       if p["nombre"] not in ("Cajon_Lateral_Izq",
-                                              "Cajon_Lateral_Der")]
-        for pz in paneles:
-            pz["nombre"] = f"{fp.Label}_{pz['nombre'].replace('Cajon_', '')}"
-        fp.VDO_Paneles_JSON = json.dumps(paneles, ensure_ascii=False)
-
-        # -----------------------------------------------------------------
-        # Resumen legible
-        # -----------------------------------------------------------------
-        guia = d["guia"]
-        fp.VDO_ResumenDespiece = (
-            f"Cajón Trinidad v2 ({tipo_corredera})\n"
-            f"Guía {guia['marca']}: LG={guia['lg']:.0f} mm "
-            f"({'auto' if guia['auto'] else 'manual'}, Δ={guia['delta']:.0f} mm)\n"
-            f"Caja ext: {ancho_ext:.0f} x {lg:.0f} x {alto_lateral:.0f} mm "
-            f"(G={g_caja:.0f})\n"
-            f"Contra-frente: {ancho_contra:.0f} x {alto_contra:.1f} mm "
-            f"({caja['montaje_trasera']})\n"
-            f"Piso: {caja['ancho_piso']:.0f} x {caja['largo_piso']:.0f} x "
-            f"{g_fondo:.0f} mm (z={z_piso:.1f})\n"
-            f"Fachada: {d['fachada']['ancho']:.0f} x {d['fachada']['alto']:.0f} x {d['fachada']['espesor']:.0f} mm ({sistema_apertura})\n"
-            f"Tipo corredera: {tipo_corredera}"
-        )
+        # Exportación: piezas del despiece y resumen legible
+        fp.VDO_Paneles_JSON = _paneles_json(
+            d["piezas"], tipo_corredera, fp.Label)
+        fp.VDO_ResumenDespiece = _resumen_despiece(d)
         for aviso in d["avisos"]:
             _get_app().Console.PrintWarning(f"[VDO] ⚠️ {aviso}\n")
 
@@ -321,16 +203,7 @@ class CajonFeature:
         # No escribir fp.Placement aquí: solo CocoFeature.execute() es
         # la fuente de verdad del placement mundial del hijo.
         # LocalPlacement almacena la pose relativa al vano del COCO.
-        # Validar que LocalPlacement no contenga NaN.
-        lp = fp.LocalPlacement
-        base = lp.Base
-        if any(
-            not isinstance(v, (int, float))
-            or v != v  # NaN check
-            for v in (base.x, base.y, base.z)
-        ):
-            fp.LocalPlacement = _get_app().Placement(
-                _get_app().Vector(0.0, 0.0, 0.0), _get_app().Rotation())
+        _normalizar_local_placement(fp)
 
     # -----------------------------------------------------------------
     def dumps(self):
@@ -338,6 +211,61 @@ class CajonFeature:
 
     def loads(self, state):
         return None
+
+
+def _paneles_json(piezas, tipo_corredera, label):
+    """JSON de las piezas del despiece con nombre prefijado por el Label."""
+    paneles = json.loads(json.dumps(piezas, ensure_ascii=False))
+    if tipo_corredera == CAJA_METALICA:
+        # Para caja metálica, no reportar madera en costados
+        paneles = [p for p in paneles
+                   if p["nombre"] not in ("Cajon_Lateral_Izq",
+                                          "Cajon_Lateral_Der")]
+    for pz in paneles:
+        pz["nombre"] = f"{label}_{pz['nombre'].replace('Cajon_', '')}"
+    return json.dumps(paneles, ensure_ascii=False)
+
+
+def _resumen_despiece(d):
+    """Resumen legible del despiece (texto de solo lectura)."""
+    tipo_corredera = d.get("tipo_corredera", CORREDERA_OCULTA)
+    sistema_apertura = d.get("sistema_apertura", APERTURA_TIRADOR)
+    caja = d["caja"]
+    guia = d["guia"]
+    g_caja = caja["grosor"]
+    g_fondo = caja["grosor_piso"]
+    z_piso = caja["z_piso"]
+    lg = caja["largo_lateral"]
+    alto_lateral = caja["alto_lateral"]
+    ancho_ext = caja["ancho_exterior"]
+    ancho_contra = caja["ancho_contra"]
+    alto_contra = caja["alto_contra"]
+    return (
+        f"Cajón Trinidad v2 ({tipo_corredera})\n"
+        f"Guía {guia['marca']}: LG={guia['lg']:.0f} mm "
+        f"({'auto' if guia['auto'] else 'manual'}, Δ={guia['delta']:.0f} mm)\n"
+        f"Caja ext: {ancho_ext:.0f} x {lg:.0f} x {alto_lateral:.0f} mm "
+        f"(G={g_caja:.0f})\n"
+        f"Contra-frente: {ancho_contra:.0f} x {alto_contra:.1f} mm "
+        f"({caja['montaje_trasera']})\n"
+        f"Piso: {caja['ancho_piso']:.0f} x {caja['largo_piso']:.0f} x "
+        f"{g_fondo:.0f} mm (z={z_piso:.1f})\n"
+        f"Fachada: {d['fachada']['ancho']:.0f} x {d['fachada']['alto']:.0f} x {d['fachada']['espesor']:.0f} mm ({sistema_apertura})\n"
+        f"Tipo corredera: {tipo_corredera}"
+    )
+
+
+def _normalizar_local_placement(fp):
+    """Restablece LocalPlacement si su base contiene valores no numéricos."""
+    lp = fp.LocalPlacement
+    base = lp.Base
+    if any(
+        not isinstance(v, (int, float))
+        or v != v  # NaN check
+        for v in (base.x, base.y, base.z)
+    ):
+        fp.LocalPlacement = _get_app().Placement(
+            _get_app().Vector(0.0, 0.0, 0.0), _get_app().Rotation())
 
 
 def make_cajon(doc, configuracion):
