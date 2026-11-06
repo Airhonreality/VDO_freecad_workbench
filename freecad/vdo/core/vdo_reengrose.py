@@ -1340,6 +1340,16 @@ def detectar_colision(a, b, tolerancia=1e-6):
     )
 
 
+#: Lado invadido -> (dimension que se reduce, desplazamiento que se aplica).
+#: Un lado fuera de la tabla no cambia el vano.
+_REDUCCION_VANO_POR_LADO = {
+    "izquierda": ("ancho", "x"),
+    "derecha": ("ancho", None),
+    "inferior": ("alto", "z"),
+    "superior": ("alto", None),
+}
+
+
 def calcular_vano_neto_con_reengrose(vano_original, division_con_reengrose):
     """Reduce el vano neto segun el lado invadido por el reengrose."""
     vano = dict(vano_original)
@@ -1351,16 +1361,17 @@ def calcular_vano_neto_con_reengrose(vano_original, division_con_reengrose):
 
     dx = 0.0
     dz = 0.0
-    if lado == "izquierda":
-        ancho = max(0.0, ancho - extra)
-        dx = extra
-    elif lado == "derecha":
-        ancho = max(0.0, ancho - extra)
-    elif lado == "inferior":
-        alto = max(0.0, alto - extra)
-        dz = extra
-    elif lado == "superior":
-        alto = max(0.0, alto - extra)
+    regla = _REDUCCION_VANO_POR_LADO.get(lado)
+    if regla is not None:
+        dimension, desplazamiento = regla
+        if dimension == "ancho":
+            ancho = max(0.0, ancho - extra)
+        else:
+            alto = max(0.0, alto - extra)
+        if desplazamiento == "x":
+            dx = extra
+        elif desplazamiento == "z":
+            dz = extra
 
     return {
         "ancho": ancho,
