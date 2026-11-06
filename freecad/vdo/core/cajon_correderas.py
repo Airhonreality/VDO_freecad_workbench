@@ -25,10 +25,9 @@ try:
     from freecad.vdo.core import hardware_hub as H
 except ImportError as exc:
     _LOG.debug("cajon_correderas: import opcional H no disponible: %s", exc)
-    H = None
+    H = None  # type: ignore[assignment] # import opcional: mypy no admite modulo y None en el mismo nombre
 
-
-def _mecanizado_corredera(tecnicos):
+def _mecanizado_corredera(tecnicos: dict[str, Any]) -> dict[str, Any]:
     """Parametros de mecanizado de una corredera oculta del catalogo."""
     return {
         "diam_taladro": float(
@@ -45,7 +44,7 @@ def _mecanizado_corredera(tecnicos):
     }
 
 
-def _marca_desde_catalogo(hw, marca_id):
+def _marca_desde_catalogo(hw: dict[str, Any], marca_id: str) -> dict[str, Any]:
     """Forma de entrada de manifest a partir de una entrada del catalogo."""
     tecnicos = hw["parametros_tecnicos"]
     return {
@@ -64,7 +63,7 @@ def _marca_desde_catalogo(hw, marca_id):
     }
 
 
-def _marcas_disponibles():
+def _marcas_disponibles() -> list[str]:
     """Marcas conocidas: catalogo de Capa H (si existe) y manifest, ordenadas."""
     disponibles = sorted(_MANIFEST.get("correderas_ocultas", {}).keys())
     if H is None:
