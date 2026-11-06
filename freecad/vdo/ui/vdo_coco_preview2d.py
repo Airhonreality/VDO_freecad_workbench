@@ -137,30 +137,6 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
         total_h = self._outer_h + margen + margen_sup
         scene.setSceneRect(0.0, 0.0, total_w, total_h)
 
-        self._dibujar_rotulos(scene, margen, total_w)
-        interior = self._dibujar_carcasa(scene, margen, margen_sup)
-
-        # Paneles físicos (carcasa + divisiones) bajo las celdas.
-        self._dibujar_paneles(scene)
-
-        self._dibujar_celdas(scene)
-
-        # Líneas de frentes de cajón (torre apilada)
-        self._dibujar_frentes_cajon(scene)
-
-        # Tiras de reengrose, sólo sobre su pieza dueña.
-        self._dibujar_tiras(scene)
-
-        # Aviso de overflow.
-        if self._resolved.overflow:
-            scene.addRect(
-                interior.adjusted(1, 1, -1, -1),
-                QtGui.QPen(COLOR_ERROR, 2.0))
-
-        self.fitInView(
-            scene.sceneRect(), QtCore.Qt.KeepAspectRatio)
-
-    def _dibujar_rotulos(self, scene, margen, total_w):
         # Etiqueta de frente local y ejes.
         etiqueta = QtWidgets.QGraphicsSimpleTextItem(VDO_FR.ETIQUETA_FRENTE)
         fuente = etiqueta.font()
@@ -180,7 +156,6 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
         ejes.setPos(total_w - margen - ancho_ejes, 7.0)
         scene.addItem(ejes)
 
-    def _dibujar_carcasa(self, scene, margen, margen_sup):
         # Carcasa exterior e interior.
         exterior = QtCore.QRectF(
             margen, margen_sup, self._outer_w, self._outer_h)
@@ -196,9 +171,9 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
             interior, QtGui.QPen(QtGui.QColor("#d0d0d0"), 1.0),
             QtGui.QBrush(COLOR_INTERIOR))
 
-        return interior
+        # Paneles físicos (carcasa + divisiones) bajo las celdas.
+        self._dibujar_paneles(scene)
 
-    def _dibujar_celdas(self, scene):
         # Celdas (transparentes, encima de los paneles para poder clicar).
         for cell in self._resolved.walk_cells():
             rect = self._rect(cell.x, cell.z, cell.w, cell.h)
@@ -225,3 +200,184 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
                 texto.setPos(
                     rect.center().x() - br.width() / 2.0,
                     rect.center().y() - br.height() / 2.0)
+
+        # Líneas de frentes de cajón (torre apilada)
+        self._dibujar_frentes_cajon(scene)
+
+        # Tiras de reengrose, sólo sobre su pieza dueña.
+        self._dibujar_tiras(scene)
+
+        # Aviso de overflow.
+        if self._resolved.overflow:
+            scene.addRect(
+                interior.adjusted(1, 1, -1, -1),
+                QtGui.QPen(COLOR_ERROR, 2.0))
+
+        self.fitInView(
+            scene.sceneRect(), QtCore.Qt.KeepAspectRatio)
+
+    def _dibujar_frentes_cajon(self, scene):
+        """Dibuja líneas horizontales de separación de frentes para cajones
+        apilados (torre de N cajones) dentro de cada celda."""
+        if not self._contenido_por_celda:
+            return
+        for cell in self._resolved.walk_cells():
+            try:
+                col_row = self._label_to_colrow.get(cell.label)
+                if col_row is None:
+                    continue
+                col, row = col_row
+            except (ValueError, TypeError, AttributeError):
+                continue
+            datos = self._contenido_por_celda.get((col, row))
+            if not datos or datos.get("tipo") != "cajon":
+                continue
+            cfg = datos.get("config", {})
+            cantidad = int(cfg.get("cantidad", 1))
+            if cantidad <= 1:
+                continue
+            h_util = float(cell.h)
+            calle = float(CALLE_ENTRE_FRENTES_DEFAULT)
+            h_frente = (h_util - (cantidad - 1) * calle) / cantidad
+            if h_frente <= 0:
+                continue
+            pen = QtGui.QPen(QtGui.QColor("#7a7a7a"), 1.0)
+            pen.setStyle(QtCore.Qt.DashLine)
+            for i in range(1, cantidad):
+                z_linea = float(cell.z) + i * (h_frente + calle)
+                r = self._rect(float(cell.x), z_linea, float(cell.w), 0.0)
+                # Línea horizontal: rect con altura 0 → dibujar como línea
+                linea = QtWidgets.QGraphicsLineItem(
+                    r.left(), r.top(), r.right(), r.top())
+                linea.setPen(pen)
+                linea.setZValue(15.0)
+                scene.addItem(linea)
+
+    def _dibujar_paneles(self, scene):
+        piezas = self._entities
+        if not piezas:
+            piezas = [{
+                "key": "",
+                "caja": {"x": piece.x, "z": piece.z,
+                         "w": piece.w, "d": piece.h},
+            } for piece in self._resolved.pieces]
+        for pieza in piezas:
+            clave = pieza.get("key", "")
+            caja = pieza.get("caja") or {}
+            if clave == "fondo":
+                continue
+            if caja.get("w", 0.0) <= 0 or caja.get("d", 0.0) <= 0:
+                continue
+            rect = self._rect_caja(caja)
+            item = QtWidgets.QGraphicsRectItem(rect)
+            item.setData(ROLE_KIND, "panel")
+            item.setData(ROLE_KEY, clave)
+            item.setPen(QtCore.Qt.NoPen)
+            item.setBrush(QtGui.QBrush(COLOR_PANEL))
+            item.setZValue(20.0)
+            item.setAcceptHoverEvents(True)
+            item.setToolTip(
+                f"{pieza.get('nombre', clave)}\n"
+                f"{caja.get('w', 0.0):.1f} × "
+                f"{caja.get('d', 0.0):.1f} mm")
+            scene.addItem(item)
+            if clave:
+                self._panel_items[clave] = item
+            if (self._selected_entity
+                    and self._selected_entity[0] == "panel"
+                    and self._selected_entity[1] == clave):
+                self._aplicar_estilo_panel(item, True)
+
+    def _dibujar_tiras(self, scene):
+        modulo = self._rect(
+            0.0, 0.0, self._resolved.inner_w, self._resolved.inner_h)
+        for pieza in self._entities:
+            clave = pieza.get("key", "")
+            datos = self._reengroses.get(clave)
+            if not clave or not datos:
+                continue
+            caja = pieza.get("caja") or {}
+            ejes = pieza.get("ejes")
+            try:
+                geo = VDO_RE_GEOMETRIA.calcular_geometria_caja(caja, datos, ejes)
+            except Exception:
+                continue
+            refs = geo.get("refuerzos") or []
+            if not refs:
+                continue
+            for ref in refs:
+                rect = self._rect_caja(ref)
+                rect = rect.intersected(modulo)
+                if rect.width() <= 0.0 or rect.height() <= 0.0:
+                    continue
+                item = QtWidgets.QGraphicsRectItem(rect)
+                item.setData(ROLE_KIND, "reengrose")
+                item.setData(ROLE_KEY, clave)
+                item.setPen(QtGui.QPen(COLOR_SELECCION, 1.0))
+                item.setBrush(QtGui.QBrush(COLOR_TIRA))
+                item.setZValue(30.0)
+                item.setAcceptHoverEvents(True)
+                item.setToolTip(
+                    f"Reengrose de {pieza.get('nombre', clave)}")
+                scene.addItem(item)
+                self._strip_items.setdefault(clave, []).append(item)
+                if (self._selected_entity
+                        and self._selected_entity[0] == "reengrose"
+                        and self._selected_entity[1] == clave):
+                    self._aplicar_estilo_tira(item, True)
+
+    def _aplicar_estilo(self, item, seleccionada):
+        if seleccionada:
+            pen = QtGui.QPen(COLOR_SELECCION, 2.2)
+            pen.setStyle(QtCore.Qt.SolidLine)
+            item.setBrush(QtGui.QBrush(
+                QtGui.QColor(230, 126, 34, 28)))
+        else:
+            pen = QtGui.QPen(COLOR_CELDA, 1.0)
+            pen.setStyle(QtCore.Qt.DashLine)
+            item.setBrush(QtCore.Qt.NoBrush)
+        item.setPen(pen)
+
+    def _aplicar_estilo_panel(self, item, seleccionada):
+        if seleccionada:
+            item.setPen(QtGui.QPen(COLOR_SELECCION, 2.2))
+        else:
+            item.setPen(QtCore.Qt.NoPen)
+
+    def _aplicar_estilo_tira(self, item, seleccionada):
+        if seleccionada:
+            item.setPen(QtGui.QPen(QtGui.QColor("#a04000"), 2.5))
+        else:
+            item.setPen(QtGui.QPen(COLOR_SELECCION, 1.0))
+
+    # -----------------------------------------------------------------
+    # Eventos
+    # -----------------------------------------------------------------
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+        if event.button() != QtCore.Qt.LeftButton:
+            return
+        item = self.itemAt(event.pos())
+        while item is not None:
+            kind = item.data(ROLE_KIND)
+            clave = item.data(ROLE_KEY)
+            if kind == "reengrose" and clave:
+                self.set_selected_entity("reengrose", str(clave))
+                self.reengroseClicked.emit(str(clave))
+                return
+            if kind == "panel" and clave:
+                self.set_selected_entity("panel", str(clave))
+                self.panelClicked.emit(str(clave))
+                return
+            if kind == "cell" and clave:
+                label = str(item.data(ROLE_LABEL) or clave)
+                self.set_selected(label)
+                self.cellClicked.emit(label)
+                return
+            item = item.parentItem()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if self.scene() is not None:
+            self.fitInView(
+                self.scene().sceneRect(), QtCore.Qt.KeepAspectRatio)
