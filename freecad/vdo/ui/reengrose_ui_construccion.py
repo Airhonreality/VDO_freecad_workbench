@@ -27,6 +27,23 @@ class ReengroseConstruccionMixin:
         grid.setHorizontalSpacing(8)
         grid.setVerticalSpacing(6)
 
+        self._construir_activo_y_bordes(grid)
+
+        self._construir_medidas(grid)
+
+        self._construir_largo(grid)
+
+        self._construir_preview(grid)
+
+        self._construir_sync_y_tabla(grid)
+
+        self._construir_fabricacion_choque_cara(grid)
+
+        self._construir_etiqueta_resumen(grid)
+
+        self._aplicar_estilo_botones()
+
+    def _construir_activo_y_bordes(self, grid):
         self.chk_activo = QtWidgets.QCheckBox(
             "Activar Reengrose en esta pieza")
         self.chk_activo.setToolTip(
@@ -52,6 +69,7 @@ class ReengroseConstruccionMixin:
         fila.addStretch()
         grid.addLayout(fila, 1, 0, 1, 4)
 
+    def _construir_medidas(self, grid):
         fila_medidas = QtWidgets.QHBoxLayout()
         self.chk_uniforme = QtWidgets.QCheckBox("🔗 Uniforme")
         self.chk_uniforme.setChecked(True)
@@ -81,6 +99,7 @@ class ReengroseConstruccionMixin:
         fila_medidas.addStretch()
         grid.addLayout(fila_medidas, 2, 0, 1, 4)
 
+    def _construir_largo(self, grid):
         fila_largo = QtWidgets.QHBoxLayout()
         fila_largo.addWidget(QtWidgets.QLabel("Largo de tira:"))
         self.combo_largo_tira = QtWidgets.QComboBox()
@@ -94,6 +113,7 @@ class ReengroseConstruccionMixin:
         fila_largo.addWidget(self.combo_largo_tira, 1)
         grid.addLayout(fila_largo, 3, 0, 1, 4)
 
+    def _construir_preview(self, grid):
         self.preview = VDOBoardPreview()
         caja_preview = QtWidgets.QVBoxLayout()
         caja_preview.setContentsMargins(0, 0, 0, 0)
@@ -112,6 +132,7 @@ class ReengroseConstruccionMixin:
         panel.addLayout(self._construir_rejilla_esquinas(), 1)
         grid.addLayout(panel, 4, 0, 1, 4)
 
+    def _construir_sync_y_tabla(self, grid):
         self.chk_sync_esquinas = QtWidgets.QCheckBox(
             "🔗 Sincronizar todas las esquinas")
         self.chk_sync_esquinas.setChecked(True)
@@ -123,6 +144,7 @@ class ReengroseConstruccionMixin:
         self.widget_custom = self._construir_tabla_bordes()
         grid.addWidget(self.widget_custom, 6, 0, 1, 4)
 
+    def _construir_fabricacion_choque_cara(self, grid):
         self.combo_fabricacion = QtWidgets.QComboBox()
         self.combo_fabricacion.addItem(
             "Pacha (bloque unificado)", "pacha")
@@ -152,14 +174,13 @@ class ReengroseConstruccionMixin:
         grid.addWidget(QtWidgets.QLabel("Cara de pegado:"), 9, 0)
         grid.addWidget(self.combo_cara, 9, 1, 1, 3)
 
+    def _construir_etiqueta_resumen(self, grid):
         self.lbl_resumen = QtWidgets.QLabel("Sin reengrose.")
         self.lbl_resumen.setWordWrap(True)
         self.lbl_resumen.setStyleSheet(
             "QLabel { background: #2b2b2b; color: #e0e0e0; padding: 5px; "
             "border: 1px solid #4a4a4a; }")
         grid.addWidget(self.lbl_resumen, 10, 0, 1, 4)
-
-        self._aplicar_estilo_botones()
 
     def _construir_rejilla_esquinas(self):
         grid = QtWidgets.QGridLayout()
