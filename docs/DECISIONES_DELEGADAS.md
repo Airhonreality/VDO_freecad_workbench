@@ -422,3 +422,7 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 ## D-28 (ola 16)
 
 - **D-28:** opción A completa. Rutas `factory` de `freecad/vdo/datos/modulos.json` y golden `tests/golden/module_specs.json` regenerados (el usuario confirmó que no hay documentos VDO). Import de `tests/test_single_dock_convergence.py` reapuntado (2 líneas; resto del archivo intacto). Revertir: `git revert` de esta ola.
+
+## D-29 (ola 17)
+
+- **D-29:** la última arista core→cad (`core.vdo_coco_spaces -> cad.geometria`, por `forma_ref`) se elimina separando plan de formas. En `core/vdo_coco_spaces.py` queda el cálculo puro: `planificar_divisiones_matriz` devuelve el plan (cajas con cortes, tiras, piezas como datos, resumen, resuelto) sin formas OCC. En `cad/coco_espacios.py` viven `_shape_caja`, `_punto_inglete`, `_prisma_inglete`, `_shape_tira` y `generar_divisiones_matriz`, que consume el plan y devuelve las mismas formas, con la misma firma y el mismo orden de operaciones. `resolver_tiras` se queda en core (no construye formas). Reapuntados los imports de `cad/coco.py`, `tests/test_coco_reengrose_avanzado.py`, `tests/test_smoke_l3_desk_assembly.py` (REQUIRED_API) y la ruta de reubicación de `tools/auditoria/golden.py` (`RELOCALIZADAS`) para el golden `coco_spaces`; `tests/golden/` no se toca. Revertir: `git revert` de los commits de esta ola.
