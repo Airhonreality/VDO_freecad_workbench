@@ -1,7 +1,8 @@
 """Datos y tipos del reengrose: constantes de dominio, BordeConfig, ReengroseDTO y
 validadores de valor."""
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
+from typing import Any
 
 
 class ReengroseError(ValueError):
@@ -60,9 +61,18 @@ class BordeConfig:
       - ``encuentro_esquinas``: como se resuelve el cruce con otro borde.
     """
 
-    def __init__(self, activo=False, ancho=70.0, distancia_al_canto=None,
-                 largo_tira=LARGO_TIRA_DEFAULT, espesor=None,
-                 encuentro_esquinas=None, offset_borde=None):
+    activo: bool
+    ancho: float
+    distancia_al_canto: float
+    largo_tira: str
+    encuentro_esquinas: str | None
+    espesor: float | None
+
+    def __init__(self, activo: object = False, ancho: float | str = 70.0,
+                 distancia_al_canto: float | str | None = None,
+                 largo_tira: str = LARGO_TIRA_DEFAULT, espesor: float | None = None,
+                 encuentro_esquinas: str | None = None,
+                 offset_borde: float | str | None = None) -> None:
         self.activo = bool(activo)
         self.ancho = float(ancho)
         if distancia_al_canto is None:
@@ -75,15 +85,15 @@ class BordeConfig:
         self.espesor = espesor
 
     @property
-    def offset_borde(self):
+    def offset_borde(self) -> float:
         """Alias retrocompatible de ``distancia_al_canto``."""
         return self.distancia_al_canto
 
     @offset_borde.setter
-    def offset_borde(self, valor):
+    def offset_borde(self, valor: float) -> None:
         self.distancia_al_canto = float(valor)
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             "activo": self.activo,
             "ancho": self.ancho,
@@ -95,7 +105,8 @@ class BordeConfig:
         }
 
     @classmethod
-    def from_dict(cls, datos):
+    # Any: datos es un dict de JSON o de UI, sin esquema fijo.
+    def from_dict(cls, datos: Any) -> "BordeConfig":
         datos = datos or {}
         return cls(
             activo=datos.get("activo", False),
@@ -110,9 +121,16 @@ class BordeConfig:
 class ReengroseDTO:
     """DTO universal de bordes 2D."""
 
-    def __init__(self, activo=False, esquinas="vertical_domina",
-                 fabricacion="pacha", choque_nucleo="retroceso",
-                 bordes=None):
+    activo: bool
+    esquinas: dict[str, str] | str
+    fabricacion: str
+    choque_nucleo: str
+    bordes: dict[str, BordeConfig]
+
+    def __init__(self, activo: object = False,
+                 esquinas: dict[str, str] | str = "vertical_domina",
+                 fabricacion: str = "pacha", choque_nucleo: str = "retroceso",
+                 bordes: Mapping[str, Any] | None = None) -> None:
         self.activo = bool(activo)
         self.esquinas = esquinas
         self.fabricacion = fabricacion
@@ -125,7 +143,7 @@ class ReengroseDTO:
             else:
                 self.bordes[borde] = BordeConfig.from_dict(cfg)
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             "activo": self.activo,
             "esquinas": self.esquinas,
@@ -156,7 +174,7 @@ PROPS = {
     "comportamiento_choque_nucleo": "VDO_Reengrose_ChoqueNucleo",
 }
 
-DEFAULTS = {
+DEFAULTS: dict[str, Any] = {
     "activo": False,
     "orientacion": "paralela",
     "ancho": 70.0,
@@ -171,7 +189,8 @@ DEFAULTS = {
 }
 
 
-def _a_float(valor, nombre, defecto=None):
+# Any: valor de UI o JSON, sin tipo fijo.
+def _a_float(valor: Any, nombre: str, defecto: float | None = None) -> float | None:
     if valor is None or valor == "":
         return defecto
     try:
@@ -181,7 +200,7 @@ def _a_float(valor, nombre, defecto=None):
             f"Valor numerico invalido para '{nombre}': {valor!r}.") from exc
 
 
-def _a_bool(valor):
+def _a_bool(valor: object) -> bool:
     if isinstance(valor, bool):
         return valor
     if isinstance(valor, str):
@@ -198,7 +217,7 @@ def _validar_enum(valor: object, nombre: str, validos: Sequence[str]) -> str:
     return texto
 
 
-def _normalizar_modo_choque(valor, nombre="comportamiento_choque_nucleo"):
+def _normalizar_modo_choque(valor: object, nombre: str = "comportamiento_choque_nucleo") -> str:
     texto = str(valor or "").strip().lower()
     try:
         return _MAPA_MODO_CHOQUE[texto]
