@@ -118,6 +118,7 @@ MODULOS_FUNCIONES: dict[str, list[str]] = {
 # docs/metricas/goldens_origen.md y en docs/DEUDA_TECNICA.md.
 RELOCALIZADAS: dict[tuple[str, str], str] = {
     ("module_props", "rotacion_z"): "freecad.vdo.core.vdo_helpers",
+    ("coco_spaces", "generar_divisiones_matriz"): "freecad.vdo.cad.coco_espacios",
 }
 
 # Módulos que cambiaron de capa después de b78de04. Se importa el primero que exista.
