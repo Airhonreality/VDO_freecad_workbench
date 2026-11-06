@@ -11,7 +11,7 @@ módulo es barato y no carga GUI.
 
 import FreeCAD as App
 
-from freecad.vdo.core.vdo_paths import ruta_icono
+from freecad.vdo.core.paths import ruta_icono
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 
@@ -58,7 +58,7 @@ class _ComandoCreacion(_ComandoBase):
         # Sin GUI no hay panel ni colocación: el caso de uso confirma en el origen.
         interfaz = {}
         if _gui_activa():
-            from freecad.vdo.ui.vdo_interfaz import abrir_panel, colocar
+            from freecad.vdo.ui.interfaz import abrir_panel, colocar
             interfaz = {"abrir_panel": abrir_panel, "colocar": colocar}
         crear_modulo_interactivo(self.MODULE_KEY, dict(self.CONFIG), **interfaz)
 
@@ -69,9 +69,9 @@ class CmdCrearHoja(_ComandoBase):
     ICONO = "vdo_workbench.svg"
 
     def Activated(self):
-        from freecad.vdo.cad.vdo_guardian import asegurar_documento
+        from freecad.vdo.cad.guardian import asegurar_documento
         doc = asegurar_documento()
-        from freecad.vdo.cad.vdo_guardian import vdo_guard
+        from freecad.vdo.cad.guardian import vdo_guard
         vdo_guard(doc)
         App.Console.PrintMessage(
             "[VDO] Entorno listo: [Params_Melamina] y [Params] garantizados por el Guardián.\n")
@@ -110,7 +110,7 @@ class CmdCoco4C(_ComandoCreacion):
     TOOLTIP = "Cajón 4 caras paramétrico"
     ICONO = "vdo_coco.svg"
     MODULE_KEY = "coco_4c"
-    CONFIG = {"nombre": "COCO_4C"}  # resto de valores: vdo_module_specs
+    CONFIG = {"nombre": "COCO_4C"}  # resto de valores: module_specs
 
 
 class CmdPanelDivision(_ComandoCreacion):
@@ -192,8 +192,8 @@ class CmdEditarVDO(_ComandoBase):
             return _error_sin_gui(self.MENU)
         import FreeCADGui as Gui
 
-        from freecad.vdo.core.vdo_view_base import diagnostico_viewprovider
-        from freecad.vdo.ui.vdo_view_providers import (
+        from freecad.vdo.core.view_base import diagnostico_viewprovider
+        from freecad.vdo.ui.view_providers import (
             abrir_panel_objeto,
             enfocar_inspector_universal,
         )
@@ -215,7 +215,7 @@ class CmdInspectorVDO(_ComandoBase):
     def Activated(self):
         if not _gui_activa():
             return _error_sin_gui(self.MENU)
-        from freecad.vdo.ui.vdo_inspector_dock import obtener_o_crear_dock_inspector
+        from freecad.vdo.ui.inspector_dock import obtener_o_crear_dock_inspector
         dock = obtener_o_crear_dock_inspector()
         if dock is not None:
             dock.setVisible(not dock.isVisible())
@@ -231,7 +231,7 @@ class CmdListaCorte(_ComandoBase):
     def Activated(self):
         if not _gui_activa():
             return _error_sin_gui(self.MENU)
-        from freecad.vdo.ui.vdo_cutting_list_menu import abrir_lista_corte
+        from freecad.vdo.ui.cutting_list_menu import abrir_lista_corte
         abrir_lista_corte()
 
 
@@ -243,7 +243,7 @@ class CmdOptimizador(_ComandoBase):
     def Activated(self):
         if not _gui_activa():
             return _error_sin_gui(self.MENU)
-        from freecad.vdo.ui.vdo_optimizer_dialog import abrir_optimizador
+        from freecad.vdo.ui.optimizer_dialog import abrir_optimizador
         abrir_optimizador()
 
 
@@ -256,11 +256,11 @@ class CmdNesting(_ComandoBase):
         if not _gui_activa():
             return _error_sin_gui(self.MENU)
         try:
-            from freecad.vdo.ui import vdo_nesting_workflow
+            from freecad.vdo.ui import nesting_workflow
         except ImportError as exc:
             App.Console.PrintError(f"[VDO] Nesting no disponible: {exc}\n")
             return
-        vdo_nesting_workflow.main()
+        nesting_workflow.main()
 
 
 class CmdHerrajes(_ComandoBase):
@@ -273,7 +273,7 @@ class CmdHerrajes(_ComandoBase):
             return _error_sin_gui(self.MENU)
         import FreeCADGui as Gui
 
-        from freecad.vdo.ui.vdo_hardware_manager import VDOHardwareManagerDialog
+        from freecad.vdo.ui.hardware_manager import VDOHardwareManagerDialog
         dlg = VDOHardwareManagerDialog(Gui.getMainWindow())
         dlg.exec()
 
@@ -302,7 +302,7 @@ class CmdAbrirVDO(_ComandoBase):
 
     Es la entrada equivalente a una tarjeta de la página de inicio. Esa página de FreeCAD
     tiene las tarjetas codificadas en C++ y no admite tarjetas de terceros, así que la
-    entrada se ofrece en el menú Archivo de BIM (ver freecad/vdo/ui/vdo_bim_bridge.py).
+    entrada se ofrece en el menú Archivo de BIM (ver freecad/vdo/ui/bim_bridge.py).
     """
     MENU = "Nuevo proyecto VDO"
     TOOLTIP = "Crea un documento y abre el workbench VDO con su vista 3D"

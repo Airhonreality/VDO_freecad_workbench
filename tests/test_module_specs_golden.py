@@ -16,7 +16,7 @@ GOLDEN = ROOT / "tests" / "golden" / "module_specs.json"
 
 
 def _vigente() -> dict:
-    from freecad.vdo.core import vdo_module_specs as MS
+    from freecad.vdo.core import module_specs as MS
 
     return MS.MODULE_SPECS
 

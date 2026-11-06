@@ -2,7 +2,7 @@
 # tests/test_facade_harmony.py
 # Suite de validación cruzada del Contrato Universal de Fachadas.
 # Verifica armonía entre Puertas (Agente 4) y Cajones (Agente 3)
-# mediante vdo_facade_contract.py como Fuente Única de Verdad.
+# mediante facade_contract.py como Fuente Única de Verdad.
 # =====================================================================
 
 import os
@@ -15,8 +15,8 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-from freecad.vdo.core import vdo_puerta_despiece as D_PUERTA
-from freecad.vdo.core.vdo_facade_contract import (
+from freecad.vdo.core import puerta_despiece as D_PUERTA
+from freecad.vdo.core.facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
@@ -204,11 +204,11 @@ class TestImportacionYEnums(unittest.TestCase):
     """Test de importación y consistencia de enums entre módulos."""
 
     def test_contrato_importable(self):
-        """vdo_facade_contract se importa sin errores."""
-        from freecad.vdo.core import vdo_facade_contract
+        """facade_contract se importa sin errores."""
+        from freecad.vdo.core import facade_contract
 
     def test_puerta_consume_contrato(self):
-        """vdo_puerta_despiece reexporta los enums del contrato."""
+        """puerta_despiece reexporta los enums del contrato."""
         self.assertEqual(D_PUERTA.APERTURA_TIRADOR, APERTURA_TIRADOR)
         self.assertEqual(D_PUERTA.APERTURA_GOLA, APERTURA_GOLA)
         self.assertEqual(D_PUERTA.APERTURA_45_GRADOS, APERTURA_45_GRADOS)
@@ -216,7 +216,7 @@ class TestImportacionYEnums(unittest.TestCase):
 
     def test_cajon_consume_contrato(self):
         """Los bloques de cálculo del cajón usan las funciones del contrato (sin reexportarlas, D-36)."""
-        from freecad.vdo.core import vdo_facade_contract as contrato
+        from freecad.vdo.core import facade_contract as contrato
         from freecad.vdo.core import cajon_calculo_bloques as D_BLOQUES
         self.assertIs(D_BLOQUES.aplicar_sistema_apertura, contrato.aplicar_sistema_apertura)
         self.assertIs(D_BLOQUES.calcular_fachada_base, contrato.calcular_fachada_base)
@@ -226,7 +226,7 @@ class TestImportacionYEnums(unittest.TestCase):
         for attr in ("APERTURA_TIRADOR", "APERTURA_GOLA",
                       "APERTURA_45_GRADOS", "APERTURA_PUSH_OPEN"):
             v_puerta = getattr(D_PUERTA, attr)
-            v_contrato = getattr(__import__("freecad.vdo.core.vdo_facade_contract", fromlist=["_"]), attr)
+            v_contrato = getattr(__import__("freecad.vdo.core.facade_contract", fromlist=["_"]), attr)
             self.assertEqual(v_puerta, v_contrato,
                              f"Discrepancia en {attr}: puerta={v_puerta}, "
                              f"contrato={v_contrato}")

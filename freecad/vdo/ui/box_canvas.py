@@ -1,6 +1,6 @@
-"""Canvas concentrico gestaltico. Parte de ui/vdo_box_controller.py (M7, D-44)."""
+"""Canvas concentrico gestaltico. Parte de ui/box_controller.py (M7, D-44)."""
 
-from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
 from freecad.vdo.ui.box_constantes import ESQUINAS, _SEGMENTO_MARGEN_SEL

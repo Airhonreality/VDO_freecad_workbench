@@ -39,8 +39,8 @@ def _registrar_gui():
     y no en Initialize(). Los imports son ligeros; el motor y la UI se cargan al usarlos.
     """
     from freecad.vdo.commands import register_all
-    from freecad.vdo.ui.vdo_bim_bridge import registrar_integracion_bim
-    from freecad.vdo.ui.vdo_registro import registrar_piezas
+    from freecad.vdo.ui.bim_bridge import registrar_integracion_bim
+    from freecad.vdo.ui.registro import registrar_piezas
 
     registrar_piezas()  # piezas de interfaz para el motor (D24)
     register_all()
@@ -70,13 +70,13 @@ class VDOWorkbench(Gui.Workbench):
             import FreeCAD
             FreeCAD.Console.PrintWarning(f"[VDO] No se pudo crear el documento: {exc}\n")
         try:
-            from freecad.vdo.ui.vdo_plano_cero import mostrar_plano_cero
+            from freecad.vdo.ui.plano_cero import mostrar_plano_cero
             mostrar_plano_cero()
         except Exception as exc:
             import FreeCAD
             FreeCAD.Console.PrintWarning(f"[VDO] Malla del plano 0 no disponible: {exc}\n")
         try:
-            from freecad.vdo.ui.vdo_inspector_dock import obtener_o_crear_dock_inspector
+            from freecad.vdo.ui.inspector_dock import obtener_o_crear_dock_inspector
             dock = obtener_o_crear_dock_inspector()
             if dock is not None:
                 dock.show()

@@ -14,7 +14,7 @@ from typing import Any
 
 from freecad.vdo.cad.propiedades import add_common_props as _cad_add_common_props
 from freecad.vdo.cad.propiedades import ocultar_vista as _cad_ocultar_vista
-from freecad.vdo.cad.vdo_guardian import vdo_guard
+from freecad.vdo.cad.guardian import vdo_guard
 from freecad.vdo.core.dto import (
     CajonDTO,
     CajonResultado,
@@ -31,10 +31,10 @@ from freecad.vdo.core.dto import (
 )
 from freecad.vdo.cad.cajon import make_cajon
 from freecad.vdo.cad.coco import make_coco
-from freecad.vdo.core.vdo_module_specs import get_spec
+from freecad.vdo.core.module_specs import get_spec
 from freecad.vdo.cad.panel import crear_pieza
 from freecad.vdo.cad.puerta import make_puerta
-from freecad.vdo.core.vdo_view_base import diagnostico_viewprovider
+from freecad.vdo.core.view_base import diagnostico_viewprovider
 from freecad.vdo.cad.zocalo import make_zocalo
 
 

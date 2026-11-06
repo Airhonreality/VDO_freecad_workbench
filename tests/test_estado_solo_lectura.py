@@ -12,7 +12,7 @@ from types import MappingProxyType
 class EstadoSoloLecturaTests(unittest.TestCase):
 
     def test_manifiesto_del_nucleo_es_solo_lectura(self):
-        from freecad.vdo.core import vdo_manifest as VM
+        from freecad.vdo.core import manifest as VM
 
         self.assertIsInstance(VM.VDO_MANIFEST, MappingProxyType)
         with self.assertRaises(TypeError):
@@ -20,7 +20,7 @@ class EstadoSoloLecturaTests(unittest.TestCase):
         self.assertIn("parametros_globales", VM.VDO_MANIFEST)
 
     def test_manifiesto_del_cajon_es_solo_lectura(self):
-        from freecad.vdo.core import vdo_cajon_correderas as CD
+        from freecad.vdo.core import cajon_correderas as CD
 
         self.assertIsInstance(CD._MANIFEST, MappingProxyType)
         with self.assertRaises(TypeError):

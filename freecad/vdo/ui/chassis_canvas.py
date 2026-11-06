@@ -1,4 +1,4 @@
-"""Canvas 2D de seccion transversal del chasis. Parte de ui/vdo_chassis_widget.py (M7, D-45)."""
+"""Canvas 2D de seccion transversal del chasis. Parte de ui/chassis_widget.py (M7, D-45)."""
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 

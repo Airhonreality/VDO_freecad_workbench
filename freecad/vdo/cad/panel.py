@@ -1,19 +1,19 @@
 # =====================================================================
 # panel.py
 # Capa cad: escritura FreeCAD del panel (PanelFeature, crear_pieza y
-# expresiones de propiedades). El cálculo vive en core/vdo_panel_core.py.
+# expresiones de propiedades). El cálculo vive en core/panel_core.py.
 # =====================================================================
 
 from freecad.vdo.cad.geometria import forma_ref
 from freecad.vdo.cad.propiedades import add_common_props
-from freecad.vdo.core import vdo_defaults as VDO_D
-from freecad.vdo.core import vdo_module_props as VDO_MOD
-from freecad.vdo.core import vdo_reengrose_geometria as VDO_RE_GEOMETRIA
-from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
-from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
-from freecad.vdo.core.vdo_finish import CANTOS_VALIDOS
-from freecad.vdo.core.vdo_helpers import _get_app, _get_part, rotacion_z
-from freecad.vdo.core.vdo_panel_core import (
+from freecad.vdo.core import defaults as VDO_D
+from freecad.vdo.core import module_props as VDO_MOD
+from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
+from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
+from freecad.vdo.core.finish import CANTOS_VALIDOS
+from freecad.vdo.core.helpers import _get_app, _get_part, rotacion_z
+from freecad.vdo.core.panel_core import (
     _validar_orientacion,
     expresiones_orientacion,
 )
@@ -78,7 +78,7 @@ def aplicar_mapeo_orientacion(obj, orientacion):
 
     `Largo`/`Ancho` son siempre las caras del tablero y `Espesor` su grosor
     (semántica de despiece), NO los ejes locales de la caja. El mapeo lo
-    calcula core/vdo_panel_core.expresiones_orientacion.
+    calcula core/panel_core.expresiones_orientacion.
     """
     param_largo, param_ancho, param_espesor = expresiones_orientacion(orientacion)
 

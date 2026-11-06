@@ -1,8 +1,8 @@
-"""Construccion visual, senales y redimensionado. Parte de ui/vdo_box_controller.py (M7, D-44)."""
+"""Construccion visual, senales y redimensionado. Parte de ui/box_controller.py (M7, D-44)."""
 
-from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.qt_compat import QtCore, QtWidgets
-from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
+from freecad.vdo.ui.qt import VDO_DoubleSpinBox
 
 from freecad.vdo.ui.box_canvas import _VDOConcentricCenterCanvas
 from freecad.vdo.ui.box_constantes import (

@@ -1,7 +1,7 @@
-"""Construccion de interfaz y senales del chasis. Parte de ui/vdo_chassis_widget.py (M7, D-45)."""
+"""Construccion de interfaz y senales del chasis. Parte de ui/chassis_widget.py (M7, D-45)."""
 
 from freecad.vdo.qt_compat import QtCore, QtWidgets
-from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
+from freecad.vdo.ui.qt import VDO_DoubleSpinBox
 
 from freecad.vdo.ui.chassis_canvas import _VDOChassisCrossSectionCanvas
 from freecad.vdo.ui.chassis_constantes import (

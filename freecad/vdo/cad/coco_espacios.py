@@ -1,14 +1,14 @@
 # =====================================================================
 # coco_espacios.py (cad)
 # Construye las formas OCC de las divisiones internas del COCO a partir
-# del plan calculado en core/vdo_coco_spaces.py (planificar_divisiones_matriz).
+# del plan calculado en core/coco_spaces.py (planificar_divisiones_matriz).
 # =====================================================================
 
 from __future__ import annotations
 
 from freecad.vdo.cad.geometria import forma_ref
-from freecad.vdo.core.vdo_coco_spaces import planificar_divisiones_matriz
-from freecad.vdo.core.vdo_helpers import _get_app, _get_part
+from freecad.vdo.core.coco_spaces import planificar_divisiones_matriz
+from freecad.vdo.core.helpers import _get_app, _get_part
 
 
 def _shape_caja(caja):

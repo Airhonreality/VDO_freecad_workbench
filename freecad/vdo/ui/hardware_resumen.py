@@ -1,6 +1,6 @@
 """Texto resumen de cotas de un herraje para la tabla del gestor (UI).
 
-Movido sin cambios desde ui/vdo_hardware_manager.py (M7, D-52).
+Movido sin cambios desde ui/hardware_manager.py (M7, D-52).
 """
 
 

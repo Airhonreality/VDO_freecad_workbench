@@ -13,14 +13,14 @@ app = None
 
 from freecad.vdo.cad import coco as C
 from freecad.vdo.cad import coco_espacios as S
-from freecad.vdo.core import vdo_reengrose_despiece as R_DESPIECE
-from freecad.vdo.core import vdo_reengrose_geometria as R_GEOMETRIA
-from freecad.vdo.core import vdo_reengrose_modelo as R_MODELO
-from freecad.vdo.core import vdo_reengrose_modificador as R_MODIFICADOR
-from freecad.vdo.core.vdo_layout_matriz import Layout
+from freecad.vdo.core import reengrose_despiece as R_DESPIECE
+from freecad.vdo.core import reengrose_geometria as R_GEOMETRIA
+from freecad.vdo.core import reengrose_modelo as R_MODELO
+from freecad.vdo.core import reengrose_modificador as R_MODIFICADOR
+from freecad.vdo.core.layout_matriz import Layout
 
 try:
-    from freecad.vdo.ui.vdo_coco_unified_task import CocoUnifiedTaskPanel
+    from freecad.vdo.ui.coco_unified_task import CocoUnifiedTaskPanel
 except BaseException:
     CocoUnifiedTaskPanel = None
 

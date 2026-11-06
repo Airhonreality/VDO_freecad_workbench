@@ -7,10 +7,10 @@
 
 import json
 
-from freecad.vdo.core import vdo_finish as VDO_FINISH
-from freecad.vdo.core import vdo_frames as VDO_FR
-from freecad.vdo.core.vdo_coco_core import _expandir_reengrose
-from freecad.vdo.core.vdo_helpers import _get_part
+from freecad.vdo.core import finish as VDO_FINISH
+from freecad.vdo.core import frames as VDO_FR
+from freecad.vdo.core.coco_core import _expandir_reengrose
+from freecad.vdo.core.helpers import _get_part
 
 
 def paneles_carcasa(fp, fondo, lat_height, espesor, base_length,

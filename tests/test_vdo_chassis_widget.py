@@ -25,7 +25,7 @@ except ImportError:
     except ImportError:
         from PySide2 import QtCore, QtWidgets
 
-from freecad.vdo.ui import vdo_chassis_widget as CW
+from freecad.vdo.ui import chassis_widget as CW
 
 # Asegurar QApplication para pruebas GUI en modo headless
 _app = qapplication()

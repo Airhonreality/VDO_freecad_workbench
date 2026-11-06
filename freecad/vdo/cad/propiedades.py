@@ -1,6 +1,6 @@
 """cad/propiedades.py — Escritura de propiedades comunes en objetos FreeCAD.
 
-Parte CAD del antiguo vdo_module_props.py. Escribe propiedades de
+Parte CAD del antiguo module_props.py. Escribe propiedades de
 colocación (rotación, anclaje, exposición) en objetos FeaturePython.
 No contiene lógica de dominio: solo adapta datos de core/ al documento.
 """
@@ -13,7 +13,7 @@ from typing import Any
 
 import FreeCAD as App
 
-from freecad.vdo.core import vdo_frames as VDO_FR
+from freecad.vdo.core import frames as VDO_FR
 
 # Tabla de anclajes: datos en freecad/vdo/datos/anclajes.json (MN-04).
 # Se carga aquí y en cad/propiedades.py. Unificar el cargador cuando core deje de

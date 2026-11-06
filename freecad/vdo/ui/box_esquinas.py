@@ -1,4 +1,4 @@
-"""Encuentros de esquina. Parte de ui/vdo_box_controller.py (M7, D-44)."""
+"""Encuentros de esquina. Parte de ui/box_controller.py (M7, D-44)."""
 
 from freecad.vdo.ui.box_constantes import (
     ENCUENTRO_TOOLTIPS,

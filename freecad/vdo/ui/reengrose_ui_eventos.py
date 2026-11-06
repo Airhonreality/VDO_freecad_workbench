@@ -1,6 +1,6 @@
 """Manejadores de eventos del editor de reengrose y sincronizacion de bordes/esquinas."""
 
-from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 
 
 class ReengroseEventosMixin:

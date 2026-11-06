@@ -1,4 +1,4 @@
-"""Constantes, tablas e iconos del chasis. Parte de ui/vdo_chassis_widget.py (M7, D-45)."""
+"""Constantes, tablas e iconos del chasis. Parte de ui/chassis_widget.py (M7, D-45)."""
 
 from freecad.vdo.ui.tema import LUCIDE_ICONS
 from freecad.vdo.ui.tema import get_svg_icon as _svg_icon

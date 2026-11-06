@@ -6,11 +6,11 @@
 # =====================================================================
 
 from freecad.vdo.cad.geometria import forma_ref
-from freecad.vdo.core import vdo_reengrose_geometria as VDO_RE_GEOMETRIA
-from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
-from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
-from freecad.vdo.core.vdo_coco_core import _modificador_mapa
-from freecad.vdo.core.vdo_helpers import _get_app
+from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
+from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
+from freecad.vdo.core.coco_core import _modificador_mapa
+from freecad.vdo.core.helpers import _get_app
 
 
 def _aplicar_shell(boxes, shell_info, shell_tiras, shell_refs, obstaculos,

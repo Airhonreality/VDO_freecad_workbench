@@ -25,11 +25,11 @@ except BaseException:
 
 try:
     from freecad.vdo.cad.coco import make_coco
-    from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
-    from freecad.vdo.ui.vdo_coco_unified_task import CocoUnifiedTaskPanel
-    from freecad.vdo.ui.vdo_inspector_dock import obtener_o_crear_dock_inspector
-    from freecad.vdo.ui.vdo_universal_inspector import VDOUniversalInspectorWidget
-    from freecad.vdo.ui.vdo_view_providers import (
+    from freecad.vdo.ui.chassis_widget import VDOChassisControllerWidget
+    from freecad.vdo.ui.coco_unified_task import CocoUnifiedTaskPanel
+    from freecad.vdo.ui.inspector_dock import obtener_o_crear_dock_inspector
+    from freecad.vdo.ui.universal_inspector import VDOUniversalInspectorWidget
+    from freecad.vdo.ui.view_providers import (
         ViewProviderCoco,
         abrir_panel_objeto,
         enfocar_inspector_universal,

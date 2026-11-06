@@ -42,7 +42,7 @@ golden = _cargar_golden()
 
 
 def _ruta_modulo(nombre: str) -> Path:
-    """'freecad.vdo.core.vdo_x' -> ruta del fichero .py dentro del repo."""
+    """'freecad.vdo.core.x' -> ruta del fichero .py dentro del repo."""
     return ROOT / Path(*nombre.split(".")).with_suffix(".py")
 
 
@@ -52,7 +52,7 @@ def _necesita_freecad(modulo: str) -> bool:
     Análisis AST de imports de nivel de módulo dentro de freecad.vdo. No ejecuta nada.
     """
     origenes = golden.AGREGADOS.get(modulo) or (
-        golden.UBICACIONES.get(modulo, (f"freecad.vdo.core.vdo_{modulo}",))[-1],)
+        golden.UBICACIONES.get(modulo, (f"freecad.vdo.core.{modulo}",))[-1],)
     pendientes = list(origenes)
     visitados: set[str] = set()
     while pendientes:
@@ -121,7 +121,7 @@ class GoldensEstructuraTests(unittest.TestCase):
 
 # Módulos cuyo golden necesita FreeCAD al ejecutarse, aunque su import sea puro.
 # Medido en el nivel 1 del runner: module_props falla con "False is not true" sin FreeCAD real.
-# Causa: rotacion_z reubicada a core/vdo_helpers construye App.Rotation en tiempo de llamada.
+# Causa: rotacion_z reubicada a core/helpers construye App.Rotation en tiempo de llamada.
 SOLO_NIVEL_2_POR_EJECUCION = {"module_props"}
 
 # Goldens que comparan formas OCC grabadas con FreeCAD real. Requisito declarado (D-30).

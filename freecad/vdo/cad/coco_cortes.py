@@ -4,8 +4,8 @@
 # frente a divisiones y núcleos del COCO. Extraído de coco.py (D-39).
 # =====================================================================
 
-from freecad.vdo.core import vdo_reengrose_encuentros as VDO_RE_ENCUENTROS
-from freecad.vdo.core.vdo_helpers import _get_part
+from freecad.vdo.core import reengrose_encuentros as VDO_RE_ENCUENTROS
+from freecad.vdo.core.helpers import _get_part
 
 
 def _cortar_shape(forma, recorte):
@@ -44,7 +44,7 @@ def resolver_tiras_divisiones(resuelto, shell_tiras, divisiones_piezas,
     """
     division_tiras = list(getattr(resuelto, "tiras", []) or [])
     from freecad.vdo.cad.coco_espacios import _shape_tira
-    from freecad.vdo.core.vdo_coco_spaces import resolver_tiras
+    from freecad.vdo.core.coco_spaces import resolver_tiras
 
     # Las tiras de carcasa con "interrumpir_tira" se segmentan
     # de forma controlada alrededor de las divisiones.

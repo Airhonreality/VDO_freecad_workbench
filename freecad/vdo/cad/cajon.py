@@ -8,7 +8,7 @@
 #   CORREDERA_TELESCOPICA - Piso delgado 5.5mm en ranura, holgura 12.7mm/lado
 #   CAJA_METALICA      - Sin laterales de madera (solo piso + trasera)
 #
-# Sistemas de apertura (vdo_facade_contract):
+# Sistemas de apertura (facade_contract):
 #   APERTURA_TIRADOR, APERTURA_GOLA, APERTURA_45_GRADOS, APERTURA_PUSH_OPEN
 #
 # Axioma: booleanos generados por prismas en coordenadas calculadas.
@@ -18,16 +18,16 @@
 import json
 
 from freecad.vdo.cad.propiedades import add_common_props
-from freecad.vdo.core import vdo_defaults as VDO_D
-from freecad.vdo.core import vdo_module_props as VDO_MOD
-from freecad.vdo.core.vdo_cajon_correderas import (
+from freecad.vdo.core import defaults as VDO_D
+from freecad.vdo.core import module_props as VDO_MOD
+from freecad.vdo.core.cajon_correderas import (
     CAJA_METALICA,
     CORREDERA_OCULTA,
     CORREDERA_TELESCOPICA,
     listar_marcas,
 )
-from freecad.vdo.core.vdo_cajon_calculo import calcular_despiece
-from freecad.vdo.core.vdo_facade_contract import (
+from freecad.vdo.core.cajon_calculo import calcular_despiece
+from freecad.vdo.core.facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
@@ -36,7 +36,7 @@ from freecad.vdo.core.vdo_facade_contract import (
     MONTAJE_PARCHE,
     MONTAJE_SEMIPARCHE,
 )
-from freecad.vdo.core.vdo_helpers import _get_app, _get_part
+from freecad.vdo.core.helpers import _get_app, _get_part
 from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR
 from freecad.vdo.cad.cajon_geometria import (
     _solidos_cajon)

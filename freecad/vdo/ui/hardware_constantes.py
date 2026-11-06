@@ -1,7 +1,7 @@
 """Tablas de presentación del gestor de herrajes (UI).
 
 Familias, etiquetas legibles de las claves técnicas y claves booleanas.
-Movido sin cambios desde ui/vdo_hardware_manager.py (M7, D-52).
+Movido sin cambios desde ui/hardware_manager.py (M7, D-52).
 """
 
 FAMILIAS = {

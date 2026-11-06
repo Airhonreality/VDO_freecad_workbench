@@ -8,7 +8,7 @@
 from freecad.vdo.datos.formularios import PUERTA_BLOQUES
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui.puerta_task_cabecera import PanelHeaderWidget
-from freecad.vdo.ui.vdo_form_builder import FormBuilder
+from freecad.vdo.ui.form_builder import FormBuilder
 from freecad.vdo.ui import tema
 
 # Estilos de presentacion referenciados por clave desde la especificacion.

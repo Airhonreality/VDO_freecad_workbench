@@ -2,9 +2,9 @@
 
 import json
 
-from freecad.vdo.core import vdo_frames as VDO_FR
-from freecad.vdo.core.vdo_module_props import ANCLAJE_DEFAULT
-from freecad.vdo.ui.vdo_task_base import cerrar_dialogo
+from freecad.vdo.core import frames as VDO_FR
+from freecad.vdo.core.module_props import ANCLAJE_DEFAULT
+from freecad.vdo.ui.task_base import cerrar_dialogo
 
 
 class CocoUnifiedValoresMixin:

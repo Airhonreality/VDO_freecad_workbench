@@ -4,13 +4,13 @@ Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
 
 import FreeCAD as App
 
-from freecad.vdo.core.vdo_facade_contract import (
+from freecad.vdo.core.facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
 )
-from freecad.vdo.core.vdo_layout_modelo import AXIS_X, LayoutError
+from freecad.vdo.core.layout_modelo import AXIS_X, LayoutError
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui.coco_arbol_pintado import ROLE_DATA
 

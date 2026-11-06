@@ -4,14 +4,14 @@
 # "Escritorio en L con dos cajoneras móviles (Arturitos)"
 # Ecosistema VDO - Headless (FreeCAD console, sin GUI)
 # =============================================================================
-# Cadena 1: Subdivisión en Torre de Cajones (vdo_layout / vdo_coco_spaces +
-#           CajonFeature + vdo_hardware_hub)
-# Cadena 2: Sistemas de Apertura en Fachadas (vdo_facade_contract + makeChamfer)
+# Cadena 1: Subdivisión en Torre de Cajones (vdo_layout / coco_spaces +
+#           CajonFeature + hardware_hub)
+# Cadena 2: Sistemas de Apertura en Fachadas (facade_contract + makeChamfer)
 # Cadena 3: Reengrose y Boleo de Cubierta (PanelFeature + vdo_reengrose +
 #           makeFillet, Shape.isValid())
-# Cadena 4: Pose y Duplicación en L (vdo_module_props / vdo_frames, matriz
+# Cadena 4: Pose y Duplicación en L (module_props / frames, matriz
 #           afín homogénea, common().Volume == 0)
-# Cadena 5: Lista de Materiales y Despiece Unificado (vdo_export_cutting_list)
+# Cadena 5: Lista de Materiales y Despiece Unificado (export_cutting_list)
 # =============================================================================
 
 import json
@@ -30,23 +30,23 @@ import Part
 
 from freecad.vdo.cad.geometria import forma_ref as VRS
 from freecad.vdo.cad import cajon as VCJ
-from freecad.vdo.core import vdo_cajon_correderas as VCD
-from freecad.vdo.core import vdo_facade_contract as VFC
+from freecad.vdo.core import cajon_correderas as VCD
+from freecad.vdo.core import facade_contract as VFC
 from freecad.vdo.cad import coco as VCC
-from freecad.vdo.core import vdo_coco_spaces as VCS
-from freecad.vdo.core import vdo_defaults as VD
-from freecad.vdo.core import vdo_facade_contract as VFC
-from freecad.vdo.core import vdo_frames as VFR
-from freecad.vdo.core import vdo_hardware_hub as HH
-from freecad.vdo.core import vdo_layout_matriz as VL_MATRIZ
-from freecad.vdo.core import vdo_layout_modelo as VL_MODELO
-from freecad.vdo.core import vdo_layout_resolucion as VL_RESOLUCION
-from freecad.vdo.core import vdo_module_props as VMOD
+from freecad.vdo.core import coco_spaces as VCS
+from freecad.vdo.core import defaults as VD
+from freecad.vdo.core import facade_contract as VFC
+from freecad.vdo.core import frames as VFR
+from freecad.vdo.core import hardware_hub as HH
+from freecad.vdo.core import layout_matriz as VL_MATRIZ
+from freecad.vdo.core import layout_modelo as VL_MODELO
+from freecad.vdo.core import layout_resolucion as VL_RESOLUCION
+from freecad.vdo.core import module_props as VMOD
 from freecad.vdo.cad import panel as VP
 from freecad.vdo.core.errores import VDOError
 from tests.soporte.requisitos import requiere_freecad
 try:
-    from freecad.vdo.ui import vdo_export_cutting_list as VEL
+    from freecad.vdo.ui import export_cutting_list as VEL
 except ImportError:
     VEL = None  # sin FreeCADGui el módulo se niega a cargar; la clase lo exige
 
@@ -141,34 +141,34 @@ def world_box_from_panel(largo, ancho, espesor, translation, rot_z_deg=0.0):
 # 0. Cobertura de API (detección de gaps)
 # =============================================================================
 REQUIRED_API = [
-    ("freecad.vdo.core.vdo_layout_matriz", "Layout"),
-    ("freecad.vdo.core.vdo_layout_resolucion", "resolve_layout"),
-    ("freecad.vdo.core.vdo_layout_modelo", "Track"),
+    ("freecad.vdo.core.layout_matriz", "Layout"),
+    ("freecad.vdo.core.layout_resolucion", "resolve_layout"),
+    ("freecad.vdo.core.layout_modelo", "Track"),
     ("freecad.vdo.cad.coco_espacios", "generar_divisiones_matriz"),
     ("freecad.vdo.cad.coco", "make_coco"),
     ("freecad.vdo.cad.cajon", "make_cajon"),
     ("freecad.vdo.cad.cajon", "CajonFeature"),
-    ("freecad.vdo.core.vdo_cajon_calculo", "calcular_despiece"),
-    ("freecad.vdo.core.vdo_cajon_correderas", "CORREDERA_OCULTA"),
-    ("freecad.vdo.core.vdo_cajon_correderas", "CORREDERA_TELESCOPICA"),
-    ("freecad.vdo.core.vdo_hardware_hub", "resolve_drawer_slide"),
+    ("freecad.vdo.core.cajon_calculo", "calcular_despiece"),
+    ("freecad.vdo.core.cajon_correderas", "CORREDERA_OCULTA"),
+    ("freecad.vdo.core.cajon_correderas", "CORREDERA_TELESCOPICA"),
+    ("freecad.vdo.core.hardware_hub", "resolve_drawer_slide"),
     ("freecad.vdo.cad.panel", "crear_pieza"),
     ("freecad.vdo.cad.panel", "PanelFeature"),
-    ("freecad.vdo.core.vdo_reengrose_modificador", "aplicar_a_objeto"),
-    ("freecad.vdo.core.vdo_reengrose_geometria", "calcular_geometria_reengrose"),
-    ("freecad.vdo.ui.vdo_export_cutting_list", "extraer_piezas_del_documento"),
-    ("freecad.vdo.ui.vdo_export_cutting_list", "generar_csv_opencutlist"),
+    ("freecad.vdo.core.reengrose_modificador", "aplicar_a_objeto"),
+    ("freecad.vdo.core.reengrose_geometria", "calcular_geometria_reengrose"),
+    ("freecad.vdo.ui.export_cutting_list", "extraer_piezas_del_documento"),
+    ("freecad.vdo.ui.export_cutting_list", "generar_csv_opencutlist"),
     ("freecad.vdo.cad.propiedades", "add_common_props"),
     ("freecad.vdo.cad.colocacion", "aplicar_rotacion"),
     ("freecad.vdo.cad.propiedades", "rotacion_z"),
-    ("freecad.vdo.core.vdo_frames", "normal"),
-    ("freecad.vdo.core.vdo_facade_contract", "calcular_fachada_base"),
-    ("freecad.vdo.core.vdo_facade_contract", "aplicar_sistema_apertura"),
-    ("freecad.vdo.core.vdo_facade_contract", "CALLE_ENTRE_FRENTES_DEFAULT"),
-    ("freecad.vdo.core.vdo_facade_contract", "necesita_bisel_45"),
-    ("freecad.vdo.core.vdo_facade_contract", "necesita_descuento_gola"),
-    ("freecad.vdo.core.vdo_facade_contract", "APERTURA_GOLA"),
-    ("freecad.vdo.core.vdo_facade_contract", "APERTURA_45_GRADOS"),
+    ("freecad.vdo.core.frames", "normal"),
+    ("freecad.vdo.core.facade_contract", "calcular_fachada_base"),
+    ("freecad.vdo.core.facade_contract", "aplicar_sistema_apertura"),
+    ("freecad.vdo.core.facade_contract", "CALLE_ENTRE_FRENTES_DEFAULT"),
+    ("freecad.vdo.core.facade_contract", "necesita_bisel_45"),
+    ("freecad.vdo.core.facade_contract", "necesita_descuento_gola"),
+    ("freecad.vdo.core.facade_contract", "APERTURA_GOLA"),
+    ("freecad.vdo.core.facade_contract", "APERTURA_45_GRADOS"),
 ]
 
 
@@ -489,7 +489,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
             contenedores = [o for o in self.doc.Objects
                             if getattr(o, "VDO_Tipo", None) == "contenedor"]
             n_cajones = len(contenedores)
-            record(cadena, "5.1 Ejecución vdo_export_cutting_list sobre el conjunto",
+            record(cadena, "5.1 Ejecución export_cutting_list sobre el conjunto",
                    len(piezas) > 0 and n_cajones == 3,
                    f"piezas={len(piezas)}, melamina={len(melamina)}, cajones(contenedores)={n_cajones}")
 

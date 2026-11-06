@@ -2,7 +2,7 @@
 
 Lee el anclaje y la rotación de un objeto y calcula su Placement a partir de
 un punto del espacio. Vive en cad/ porque lee Shape.BoundBox y escribe
-Placement. Movido desde core/vdo_module_props.py (F19.2-ter, regresión de
+Placement. Movido desde core/module_props.py (F19.2-ter, regresión de
 colocación): core/ no debe conocer objetos FreeCAD.
 """
 
@@ -15,7 +15,7 @@ import FreeCAD as App
 
 from freecad.vdo.cad.propiedades import rotacion_z
 from freecad.vdo.core.dto import ColocarModuloDTO, ColocarModuloResultado
-from freecad.vdo.core.vdo_module_props import ANCLAJE_DEFAULT
+from freecad.vdo.core.module_props import ANCLAJE_DEFAULT
 
 
 def leer_rotacion(obj: Any) -> float:
@@ -50,7 +50,7 @@ def ancla_local(obj: Any, anclaje: str | None = None) -> Any:
     superior = str(anclaje).startswith("superior_")
     centro_inferior = str(anclaje) == "centro_inferior"
 
-    from freecad.vdo.core.vdo_helpers import _get_app
+    from freecad.vdo.core.helpers import _get_app
     App = _get_app()
     if centro_inferior:
         return App.Vector((xmin + xmax) / 2.0, (ymin + ymax) / 2.0, zmin)

@@ -17,7 +17,7 @@ _LOCALES_PRUEBA = ("es_CO.UTF-8", "C")
 
 def _valores_del_manifiesto() -> dict:
     """Todos los parámetros que escribe el guardián, leídos del manifiesto (D-13)."""
-    from freecad.vdo.core import vdo_manifest as VM
+    from freecad.vdo.core import manifest as VM
 
     valores = {}
     valores.update(VM.VDO_MANIFEST["parametros_globales"])
@@ -45,7 +45,7 @@ class GuardianLocaleTests(unittest.TestCase):
     def _escribir_y_leer(self, nombre_locale: str, fila_valor: str) -> dict:
         import FreeCAD as App
 
-        from freecad.vdo.cad import vdo_guardian as G
+        from freecad.vdo.cad import guardian as G
 
         actual = locale.setlocale(locale.LC_NUMERIC)
         locale.setlocale(locale.LC_NUMERIC, nombre_locale)
@@ -80,7 +80,7 @@ class GuardianLocaleTests(unittest.TestCase):
                         )
 
     def test_valor_que_desborda_2_53_lanza_error(self):
-        from freecad.vdo.cad import vdo_guardian as G
+        from freecad.vdo.cad import guardian as G
         from freecad.vdo.core.errores import ParametroInvalido
 
         with self.assertRaises(ParametroInvalido):

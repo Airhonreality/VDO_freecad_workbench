@@ -1,7 +1,7 @@
 """API de carga y lectura del modificador de reengrose en el editor."""
 
-from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
-from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
+from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
 
 
 class ReengroseConfigMixin:

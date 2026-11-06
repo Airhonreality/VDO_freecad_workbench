@@ -1,5 +1,5 @@
 from freecad.vdo.ui import tema
-"""Hoja de estilos del chasis. Parte de ui/vdo_chassis_widget.py (M7, D-45)."""
+"""Hoja de estilos del chasis. Parte de ui/chassis_widget.py (M7, D-45)."""
 
 
 

@@ -3,17 +3,17 @@
 Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
 
 from freecad.vdo.core import (
-    vdo_finish as VDO_FIN,
-    vdo_reengrose_geometria as VDO_RE_GEOMETRIA,
-    vdo_reengrose_modificador as VDO_RE_MODIFICADOR,
+    finish as VDO_FIN,
+    reengrose_geometria as VDO_RE_GEOMETRIA,
+    reengrose_modificador as VDO_RE_MODIFICADOR,
 )
-from freecad.vdo.core.vdo_facade_contract import (
+from freecad.vdo.core.facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
 )
-from freecad.vdo.core.vdo_layout_modelo import AXIS_X, AXIS_Y
+from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui import tema
 

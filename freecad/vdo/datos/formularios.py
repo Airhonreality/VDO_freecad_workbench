@@ -5,12 +5,12 @@ FormBuilder.construir_grupo convierte en widgets. La fila de índice i ocupa la
 fila i de la rejilla del grupo.
 """
 
-from freecad.vdo.core import vdo_frames as VDO_FR
+from freecad.vdo.core import frames as VDO_FR
 from freecad.vdo.core.aperturas import ETIQUETAS
-from freecad.vdo.core.vdo_defaults import ORIENTACIONES_VALIDAS
-from freecad.vdo.core.vdo_finish import CANTOS_VALIDOS
-from freecad.vdo.core.vdo_module_props import ANCLAJE_LABELS, ANCLAJES
-from freecad.vdo.core.vdo_puerta_despiece import SISTEMAS_APERTURA
+from freecad.vdo.core.defaults import ORIENTACIONES_VALIDAS
+from freecad.vdo.core.finish import CANTOS_VALIDOS
+from freecad.vdo.core.module_props import ANCLAJE_LABELS, ANCLAJES
+from freecad.vdo.core.puerta_despiece import SISTEMAS_APERTURA
 
 ITEMS_ANCLAJE = [(ANCLAJE_LABELS.get(a, a), a) for a in ANCLAJES]
 
@@ -220,7 +220,7 @@ def cajon_bloques(marcas):
                          "Metálica: sin laterales de madera, solo piso y trasera.")},
             {"tipo": "combo", "clave": "sku", "etiqueta": "SKU comercial:", "items": [],
              "editable": True,
-             "tooltip": "SKU de la corredera (vía vdo_hardware_hub.py)."},
+             "tooltip": "SKU de la corredera (vía hardware_hub.py)."},
             {"tipo": "combo", "clave": "marca", "etiqueta": "Marca:",
              "items": [(m, None) for m in marcas],
              "tooltip": "Marca de corredera oculta (delta y cotas)."},

@@ -13,11 +13,11 @@ except BaseException:
 app = None
 
 from freecad.vdo.cad import coco as C
-from freecad.vdo.core.vdo_layout_matriz import Layout
+from freecad.vdo.core.layout_matriz import Layout
 
 try:
-    from freecad.vdo.ui import vdo_export_cutting_list as E
-    from freecad.vdo.ui.vdo_coco_unified_task import CocoUnifiedTaskPanel
+    from freecad.vdo.ui import export_cutting_list as E
+    from freecad.vdo.ui.coco_unified_task import CocoUnifiedTaskPanel
 except ImportError:
     E = None
     CocoUnifiedTaskPanel = None

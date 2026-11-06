@@ -6,7 +6,7 @@
 
 
 
-from freecad.vdo.core.vdo_facade_contract import (
+from freecad.vdo.core.facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
@@ -16,9 +16,9 @@ from freecad.vdo.core.vdo_facade_contract import (
     SOLAPE_PARCHE_NOMINAL,
     calcular_fachada_base,
 )
-from freecad.vdo.core.vdo_helpers import _get_app, _get_part
+from freecad.vdo.core.helpers import _get_app, _get_part
 from freecad.vdo.cad.propiedades import add_common_props
-from freecad.vdo.core.vdo_puerta_despiece import (
+from freecad.vdo.core.puerta_despiece import (
     CAZALETA_DIAMETRO,
     CAZALETA_PROFUNDIDAD,
     ajuste_altura_apertura,

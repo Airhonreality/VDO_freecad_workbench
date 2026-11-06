@@ -5,11 +5,11 @@ Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
 import json
 
 from freecad.vdo.core import (
-    vdo_reengrose_modelo as VDO_RE_MODELO,
-    vdo_reengrose_modificador as VDO_RE_MODIFICADOR,
+    reengrose_modelo as VDO_RE_MODELO,
+    reengrose_modificador as VDO_RE_MODIFICADOR,
 )
-from freecad.vdo.core.vdo_layout_matriz import Layout
-from freecad.vdo.core.vdo_layout_modelo import cavidad_interior
+from freecad.vdo.core.layout_matriz import Layout
+from freecad.vdo.core.layout_modelo import cavidad_interior
 from freecad.vdo.qt_compat import QtWidgets
 
 
@@ -17,7 +17,7 @@ class ReengroseDivisionesMixin:
     """Mixin de DivisionesEditor (ver coco_construccion_widgets.py)."""
 
     def _crear_grupo_reengrose(self):
-        from freecad.vdo.ui.vdo_box_controller import VDOBoxControllerWidget
+        from freecad.vdo.ui.box_controller import VDOBoxControllerWidget
         grupo = QtWidgets.QGroupBox("Reengrose / Refuerzo")
         grid = QtWidgets.QGridLayout(grupo)
         grid.setContentsMargins(6, 6, 6, 6)

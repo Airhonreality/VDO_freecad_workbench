@@ -3,14 +3,14 @@
 import json
 import FreeCAD as App
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui.vdo_selection_bridge import VDOSelectionBridge
+from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
 try:
-    from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
+    from freecad.vdo.ui.chassis_widget import VDOChassisControllerWidget
 except ImportError:  # pragma: no cover
     VDOChassisControllerWidget = None
 from freecad.vdo.cad.documento import recalcular
 from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades
-from freecad.vdo.core import vdo_hardware_hub as HH
+from freecad.vdo.core import hardware_hub as HH
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 from freecad.vdo.ui import tema
 

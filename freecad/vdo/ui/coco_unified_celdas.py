@@ -1,6 +1,6 @@
 """Pintado y edicion de celdas de la tabla de espacios."""
 
-from freecad.vdo.core.vdo_spaces import ESPACIO_FIJO, ESPACIO_IGUALES
+from freecad.vdo.core.spaces import ESPACIO_FIJO, ESPACIO_IGUALES
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 from freecad.vdo.ui.coco_unified_tabla import (
     COL_ACCIONES,

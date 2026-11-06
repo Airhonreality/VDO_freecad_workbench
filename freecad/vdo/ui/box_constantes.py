@@ -1,6 +1,6 @@
-"""Constantes, tablas e iconos. Parte de ui/vdo_box_controller.py (M7, D-44)."""
+"""Constantes, tablas e iconos. Parte de ui/box_controller.py (M7, D-44)."""
 
-from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.ui.tema import LUCIDE_ICONS, get_svg_icon as _svg_icon
 
 

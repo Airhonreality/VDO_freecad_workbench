@@ -4,7 +4,7 @@ import json
 import FreeCAD as App
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 try:
-    from freecad.vdo.ui.vdo_box_controller import VDOBoxControllerWidget
+    from freecad.vdo.ui.box_controller import VDOBoxControllerWidget
 except ImportError:  # pragma: no cover
     VDOBoxControllerWidget = None
 from freecad.vdo.cad.documento import recalcular

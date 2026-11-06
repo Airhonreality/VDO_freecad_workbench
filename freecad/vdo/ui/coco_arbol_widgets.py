@@ -5,14 +5,14 @@ Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
 import FreeCAD as App
 
 from freecad.vdo.core import (
-    vdo_finish as VDO_FIN,
-    vdo_frames as VDO_FR,
-    vdo_reengrose_despiece as VDO_RE_DESPIECE,
-    vdo_reengrose_geometria as VDO_RE_GEOMETRIA,
-    vdo_reengrose_modificador as VDO_RE_MODIFICADOR,
+    finish as VDO_FIN,
+    frames as VDO_FR,
+    reengrose_despiece as VDO_RE_DESPIECE,
+    reengrose_geometria as VDO_RE_GEOMETRIA,
+    reengrose_modificador as VDO_RE_MODIFICADOR,
 )
-from freecad.vdo.core.vdo_layout_modelo import AXIS_X, AXIS_Y
-from freecad.vdo.core.vdo_layout_resolucion import resolve_layout
+from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y
+from freecad.vdo.core.layout_resolucion import resolve_layout
 from freecad.vdo.ui.coco_arbol_pintado import ArbolPintadoMixin
 
 

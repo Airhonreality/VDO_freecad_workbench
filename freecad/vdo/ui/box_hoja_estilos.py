@@ -1,4 +1,4 @@
-"""Hoja de estilos oscura. Parte de ui/vdo_box_controller.py (M7, D-44)."""
+"""Hoja de estilos oscura. Parte de ui/box_controller.py (M7, D-44)."""
 
 
 # ----------------------------------------------------------------------

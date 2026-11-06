@@ -1,6 +1,6 @@
 """Altas, bajas, divisiones, jerarquia y orden de espacios."""
 
-from freecad.vdo.core.vdo_spaces import (
+from freecad.vdo.core.spaces import (
     ESPACIO_IGUALES,
     ESPACIO_RESTANTE,
     SpaceNode,

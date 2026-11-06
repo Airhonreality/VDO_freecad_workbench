@@ -1,8 +1,8 @@
-"""API publica de configuracion. Parte de ui/vdo_box_controller.py (M7, D-44)."""
+"""API publica de configuracion. Parte de ui/box_controller.py (M7, D-44)."""
 
 from freecad.vdo.core import (
-    vdo_reengrose_modelo as VDO_RE_MODELO,
-    vdo_reengrose_modificador as VDO_RE_MODIFICADOR,
+    reengrose_modelo as VDO_RE_MODELO,
+    reengrose_modificador as VDO_RE_MODIFICADOR,
 )
 
 from freecad.vdo.ui.box_constantes import ESQUINAS, obtener_svg_icon

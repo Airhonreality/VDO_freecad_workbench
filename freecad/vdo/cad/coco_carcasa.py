@@ -4,8 +4,8 @@
 # carcasa (laterales, base, techo y fondo). Extraído de coco.py (D-39).
 # =====================================================================
 
-from freecad.vdo.core import vdo_defaults as VDO_D
-from freecad.vdo.core.vdo_helpers import _get_app, _get_part
+from freecad.vdo.core import defaults as VDO_D
+from freecad.vdo.core.helpers import _get_app, _get_part
 
 
 def leer_parametros(fp):

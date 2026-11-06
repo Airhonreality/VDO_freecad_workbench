@@ -4,7 +4,7 @@ Antes de F19.2-ter, app/vdo_creacion.crear_modulo_interactivo no abría el panel
 ni llamaba a la colocación: el módulo quedaba oculto en el origen. Estos tests
 fijan el flujo: crear -> abrir panel -> aceptar -> colocar -> confirmar, y
 crear -> cancelar -> deshacer. La interfaz gráfica se sustituye por funciones
-que registran las llamadas; la colocación real (ui/vdo_placement) se ejecuta
+que registran las llamadas; la colocación real (ui/placement) se ejecuta
 sin GUI, donde debe cancelar y devolver False.
 """
 
@@ -20,7 +20,7 @@ from freecad.vdo.creacion import crear_modulo_interactivo
 from freecad.vdo.cad.coco import make_coco
 from freecad.vdo.cad.panel import crear_pieza
 from freecad.vdo.cad.zocalo import make_zocalo
-from freecad.vdo.ui.vdo_placement import iniciar_colocacion
+from freecad.vdo.ui.placement import iniciar_colocacion
 from tests.soporte.requisitos import requiere_freecad, requiere_qt
 
 
@@ -142,14 +142,14 @@ class PanelesResuelvenTests(unittest.TestCase):
     fallaba con ImportError porque SISTEMAS_APERTURA se había movido)."""
 
     def test_todas_las_specs_tienen_clase_de_panel(self):
-        from freecad.vdo.core.vdo_module_specs import MODULE_SPECS, get_spec
-        from freecad.vdo.ui import vdo_interfaz
+        from freecad.vdo.core.module_specs import MODULE_SPECS, get_spec
+        from freecad.vdo.ui import interfaz
 
         fallos = []
         for clave in MODULE_SPECS:
             ref = get_spec(clave)["panel_ref"]
             try:
-                vdo_interfaz._clase_panel(ref)
+                interfaz._clase_panel(ref)
             except (ImportError, AttributeError, KeyError) as exc:
                 fallos.append(f"{clave} -> {ref}: {exc}")
         self.assertEqual(fallos, [])

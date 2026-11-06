@@ -7,7 +7,7 @@ try:
     import FreeCAD as App
 
     from freecad.vdo.cad import zocalo as ZC
-    from freecad.vdo.core import vdo_zocalo_core as Z
+    from freecad.vdo.core import zocalo_core as Z
 except ImportError:
     App = None
     Z = None

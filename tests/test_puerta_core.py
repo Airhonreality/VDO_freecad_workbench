@@ -15,7 +15,7 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-from freecad.vdo.core import vdo_puerta_despiece as D
+from freecad.vdo.core import puerta_despiece as D
 from tests.soporte.requisitos import requiere_freecad
 
 

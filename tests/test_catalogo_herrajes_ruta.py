@@ -1,8 +1,8 @@
 """Una sola ruta para el catálogo de herrajes (M2, H-21).
 
-Antes, ui/vdo_hardware_manager.py calculaba su propia ruta (ui/vdo_hardware_catalog.json),
+Antes, ui/hardware_manager.py calculaba su propia ruta (ui/vdo_hardware_catalog.json),
 que no existe: leía un catálogo vacío y guardaba en un fichero que el hub nunca lee.
-La ruta vive ahora en core/vdo_hardware_hub.CATALOGO_PATH y la UI la importa.
+La ruta vive ahora en core/hardware_hub.CATALOGO_PATH y la UI la importa.
 """
 
 from __future__ import annotations
@@ -13,13 +13,13 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-MANAGER = ROOT / "freecad" / "vdo" / "ui" / "vdo_hardware_manager.py"
+MANAGER = ROOT / "freecad" / "vdo" / "ui" / "hardware_manager.py"
 
 
 class CatalogoHerrajesRutaTests(unittest.TestCase):
 
     def test_ruta_unica_apunta_a_un_fichero_existente(self):
-        from freecad.vdo.core import vdo_hardware_hub as H
+        from freecad.vdo.core import hardware_hub as H
 
         self.assertTrue(
             os.path.isfile(H.CATALOGO_PATH),

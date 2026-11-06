@@ -12,7 +12,7 @@ from freecad.vdo.cad.propiedades import (
     anadir_propiedad_texto,
     asignar_propiedades,
 )
-from freecad.vdo.core import vdo_frames as VDO_FR
+from freecad.vdo.core import frames as VDO_FR
 from freecad.vdo.datos.formularios import COCO_EXPOSICION
 
 

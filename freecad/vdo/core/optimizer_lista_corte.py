@@ -2,7 +2,7 @@
 
 import csv
 
-from freecad.vdo.core import vdo_defaults as _VDO_D
+from freecad.vdo.core import defaults as _VDO_D
 
 _CANTO_ESPESOR = {
     "FX": 0.0,

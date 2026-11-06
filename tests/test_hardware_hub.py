@@ -10,7 +10,7 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-from freecad.vdo.core import vdo_hardware_hub as H
+from freecad.vdo.core import hardware_hub as H
 
 
 class HardwareHubTests(unittest.TestCase):

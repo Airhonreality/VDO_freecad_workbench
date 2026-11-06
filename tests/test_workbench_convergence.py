@@ -7,7 +7,7 @@ Verifica:
      - Selección de COCO (Chasis) -> Página 0 (PAGE_CHASIS) con VDOChassisControllerWidget.
      - Selección de VANO -> Página 1 (PAGE_VANO) con Luz Neta y Dock de Habitantes.
      - Selección de PANEL (Tablero L1) -> Página 2 (PAGE_PIEZA) con PanelHeader y VDOBoxControllerWidget.
-     - Selección de PUERTA / CAJON -> Página 3 (PAGE_CIERRE) con datos comerciales de Capa H (vdo_hardware_hub).
+     - Selección de PUERTA / CAJON -> Página 3 (PAGE_CIERRE) con datos comerciales de Capa H (hardware_hub).
   2. Comportamiento interactivo sin excepciones:
      - Cambio de esquinas en VDOChassisControllerWidget emite diccionarios canónicos.
      - Cambio de bordes en VDOBoxControllerWidget emite configuración válida.
@@ -43,19 +43,19 @@ except ImportError:
 
 import contextlib
 
-from freecad.vdo.core import vdo_hardware_hub as HH
+from freecad.vdo.core import hardware_hub as HH
 from freecad.vdo.cad.cajon import CajonFeature
 from freecad.vdo.cad.coco import CocoFeature
 from freecad.vdo.cad.panel import PanelFeature
 from freecad.vdo.cad.puerta import PuertaFeature
-from freecad.vdo.ui.vdo_selection_bridge import VDOSelectionBridge
+from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
 from freecad.vdo.ui.inspector_paginas import (
     PAGE_CHASIS,
     PAGE_CIERRE,
     PAGE_PIEZA,
     PAGE_VANO,
 )
-from freecad.vdo.ui.vdo_universal_inspector import VDOUniversalInspectorWidget
+from freecad.vdo.ui.universal_inspector import VDOUniversalInspectorWidget
 
 
 def _get_qapp():

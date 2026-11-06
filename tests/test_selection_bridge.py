@@ -48,7 +48,7 @@ class SelectionBridgeTests(unittest.TestCase):
         cls.PuertaFeature = PuertaFeature
         cls.ZocaloFeature = ZocaloFeature
 
-        from freecad.vdo.ui.vdo_selection_bridge import VDOSelectionBridge
+        from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
         cls.VDOSelectionBridge = VDOSelectionBridge
 
         # Crear documento de prueba.

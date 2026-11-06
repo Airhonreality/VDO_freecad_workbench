@@ -1,4 +1,4 @@
-"""Manejadores de eventos del chasis. Parte de ui/vdo_chassis_widget.py (M7, D-45)."""
+"""Manejadores de eventos del chasis. Parte de ui/chassis_widget.py (M7, D-45)."""
 
 
 from freecad.vdo.ui.chassis_constantes import (

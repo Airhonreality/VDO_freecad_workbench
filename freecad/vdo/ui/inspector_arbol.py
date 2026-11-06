@@ -2,7 +2,7 @@
 
 import FreeCAD as App
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui.vdo_selection_bridge import VDOSelectionBridge
+from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
 from freecad.vdo.ui.inspector_paginas import (
     PAGE_CHASIS,
     PAGE_CIERRE,

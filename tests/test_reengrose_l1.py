@@ -10,14 +10,14 @@ except BaseException:
     QtWidgets = None
 
 from freecad.vdo.cad import panel as P
-from freecad.vdo.core import vdo_reengrose_modificador as R_MODIFICADOR
+from freecad.vdo.core import reengrose_modificador as R_MODIFICADOR
 try:
-    from freecad.vdo.ui import vdo_export_cutting_list as E
+    from freecad.vdo.ui import export_cutting_list as E
 except ImportError:
     E = None  # sin FreeCADGui el módulo se niega a cargar; los tests que lo usan lo exigen
 
 try:
-    from freecad.vdo.ui.vdo_panel_task import PanelTaskPanel
+    from freecad.vdo.ui.panel_task import PanelTaskPanel
 except ImportError:
     PanelTaskPanel = None
 

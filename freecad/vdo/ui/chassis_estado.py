@@ -1,4 +1,4 @@
-"""Sincronizacion visual del chasis con su estado. Parte de ui/vdo_chassis_widget.py (M7, D-45)."""
+"""Sincronizacion visual del chasis con su estado. Parte de ui/chassis_widget.py (M7, D-45)."""
 
 
 from freecad.vdo.ui.chassis_constantes import (

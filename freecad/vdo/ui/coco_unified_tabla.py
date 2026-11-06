@@ -1,6 +1,6 @@
 """Tabla de espacios: columnas, tipos y widget de tabla."""
 
-from freecad.vdo.core.vdo_spaces import (
+from freecad.vdo.core.spaces import (
     ESPACIO_FIJO,
     ESPACIO_IGUALES,
     ESPACIO_RESTANTE,

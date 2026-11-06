@@ -4,9 +4,9 @@
 #
 # Valida:
 #   - Despiece correcto para las 3 tipologías de corredera
-#   - Integración con vdo_facade_contract (gola, 45°, push_open)
+#   - Integración con facade_contract (gola, 45°, push_open)
 #   - Lógica de operaciones booleanas (mock de Part)
-#   - Integración con vdo_hardware_hub (resolve_drawer_slide)
+#   - Integración con hardware_hub (resolve_drawer_slide)
 #
 # Nota: La validación de Shape.isValid() y booleanos reales requiere
 # FreeCAD GUI (no disponible headless en este entorno). Los tests de
@@ -31,8 +31,8 @@ from tests.soporte.freecad_falso import instalado
 _instalado_ctx = instalado()
 _instalado_ctx.__enter__()
 
-from freecad.vdo.core import vdo_facade_contract as FC
-from freecad.vdo.core import vdo_hardware_hub as H
+from freecad.vdo.core import facade_contract as FC
+from freecad.vdo.core import hardware_hub as H
 from freecad.vdo.cad.cajon import (
     CAJA_METALICA as CC_MET,
 )
@@ -49,15 +49,15 @@ from freecad.vdo.cad.cajon_geometria import (
     _corte_pin_trasero,
     _corte_ranura_piso,
 )
-from freecad.vdo.core.vdo_cajon_correderas import (
+from freecad.vdo.core.cajon_correderas import (
     CAJA_METALICA,
     CORREDERA_OCULTA,
     CORREDERA_TELESCOPICA,
     listar_marcas,
     obtener_marca,
 )
-from freecad.vdo.core.vdo_cajon_calculo import calcular_despiece
-from freecad.vdo.core.vdo_facade_contract import (
+from freecad.vdo.core.cajon_calculo import calcular_despiece
+from freecad.vdo.core.facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
@@ -151,7 +151,7 @@ class TestDespieceTipologias(unittest.TestCase):
 # ---------------------------------------------------------------------
 
 class TestFacadeContractIntegracion(unittest.TestCase):
-    """Validación de la integración con vdo_facade_contract."""
+    """Validación de la integración con facade_contract."""
 
     def test_gola_descuenta_35mm_en_alto(self):
         """APERTURA_GOLA descuenta 35 mm de la altura de fachada."""

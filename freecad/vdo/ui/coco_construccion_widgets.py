@@ -2,15 +2,15 @@
 
 Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
 
-from freecad.vdo.core import vdo_defaults as VDO_D
-from freecad.vdo.core.vdo_layout_matriz import Layout
-from freecad.vdo.core.vdo_layout_modelo import AXIS_X, AXIS_Y
+from freecad.vdo.core import defaults as VDO_D
+from freecad.vdo.core.layout_matriz import Layout
+from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 from freecad.vdo.ui.coco_arbol_widgets import ArbolDivisionesMixin
 from freecad.vdo.ui.coco_edicion_widgets import EdicionDivisionesMixin
 from freecad.vdo.ui.coco_inspector_widgets import InspectorDivisionesMixin, PanelHeaderWidget
 from freecad.vdo.ui.coco_reengrose_widgets import ReengroseDivisionesMixin
-from freecad.vdo.ui.vdo_coco_preview2d import CocoPreview2D
+from freecad.vdo.ui.coco_preview2d import CocoPreview2D
 from freecad.vdo.ui import tema
 
 

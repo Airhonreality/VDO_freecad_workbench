@@ -1,8 +1,8 @@
 """Cabecera del inspector: migas de pan y micro-cabecera de dimensiones."""
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui.vdo_selection_bridge import VDOSelectionBridge
-from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
+from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
+from freecad.vdo.ui.qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.inspector_paginas import PAGE_CHASIS, PAGE_CIERRE, PAGE_PIEZA, PAGE_VANO
 from freecad.vdo.ui import tema
 

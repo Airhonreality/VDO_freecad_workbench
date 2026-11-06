@@ -117,28 +117,28 @@ MODULOS_FUNCIONES: dict[str, list[str]] = {
 # origen ya no tiene la función. Cada entrada debe quedar registrada en
 # docs/metricas/goldens_origen.md y en docs/DEUDA_TECNICA.md.
 RELOCALIZADAS: dict[tuple[str, str], str] = {
-    ("module_props", "rotacion_z"): "freecad.vdo.core.vdo_helpers",
+    ("module_props", "rotacion_z"): "freecad.vdo.core.helpers",
     ("coco_spaces", "generar_divisiones_matriz"): "freecad.vdo.cad.coco_espacios",
 }
 
 # Módulos que cambiaron de capa después de b78de04. Se importa el primero que exista.
 UBICACIONES: dict[str, tuple[str, ...]] = {
-    "guardian": ("freecad.vdo.core.vdo_guardian", "freecad.vdo.cad.vdo_guardian"),
+    "guardian": ("freecad.vdo.core.guardian", "freecad.vdo.cad.guardian"),
 }
 
 # Módulos de dominio repartidos en varios archivos (M7, D-34). Su golden sigue siendo
 # uno solo: cada función se busca en el primer módulo del grupo que la define.
 AGREGADOS: dict[str, tuple[str, ...]] = {
     "layout": tuple(
-        f"freecad.vdo.core.vdo_layout_{parte}"
+        f"freecad.vdo.core.layout_{parte}"
         for parte in ("modelo", "matriz", "resuelto", "resolucion")),
-    "optimizer_core": ("freecad.vdo.core.vdo_optimizer_core",
+    "optimizer_core": ("freecad.vdo.core.optimizer_core",
                        "freecad.vdo.core.optimizer_lista_corte"),
     "cajon_despiece": tuple(
-        f"freecad.vdo.core.vdo_cajon_{parte}"
+        f"freecad.vdo.core.cajon_{parte}"
         for parte in ("correderas", "calculo")),
     "reengrose": tuple(
-        f"freecad.vdo.core.vdo_reengrose_{parte}"
+        f"freecad.vdo.core.reengrose_{parte}"
         for parte in ("modelo", "modificador", "tiras", "geometria",
                       "despiece", "encuentros", "interferencias")),
 }
@@ -217,7 +217,7 @@ def _normalizar(salida):
 
 
 def _cargar_modulo(modulo: str):
-    """Importa el módulo de dominio freecad.vdo.core.vdo_<modulo> (o su ubicación conocida).
+    """Importa el módulo de dominio freecad.vdo.core.<modulo> (o su ubicación conocida).
 
     """
     if modulo in AGREGADOS:
@@ -234,7 +234,7 @@ def _cargar_modulo(modulo: str):
         if mod is None:
             raise ultimo_error  # type: ignore[misc]
         return mod
-    return importlib.import_module(f"freecad.vdo.core.vdo_{modulo}")
+    return importlib.import_module(f"freecad.vdo.core.{modulo}")
 
 
 def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
@@ -407,7 +407,7 @@ def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
             dict(base, tipo_corredera=mod.CORREDERA_TELESCOPICA),
             dict(base, tipo_corredera=mod.CAJA_METALICA,
                  sistema_apertura=importlib.import_module(
-                     "freecad.vdo.core.vdo_facade_contract").APERTURA_GOLA),
+                     "freecad.vdo.core.facade_contract").APERTURA_GOLA),
         ]
 
     elif modulo == "puerta_despiece":
@@ -611,7 +611,7 @@ def _ejecutar_guardian(mod, nombre_func: str, entrada: dict):
 
 def _ejecutar_funcion(mod, nombre_func: str, entrada: dict):
     """Ejecuta una función de dominio con una entrada y devuelve la salida."""
-    if mod.__name__.endswith("vdo_guardian"):
+    if mod.__name__.endswith("guardian"):
         return _ejecutar_guardian(mod, nombre_func, entrada)
     fn = getattr(mod, nombre_func)
     try:

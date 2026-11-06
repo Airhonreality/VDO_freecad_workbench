@@ -16,7 +16,7 @@ def aplicar_divisiones(fp, alto, ancho, espesor, fondo, tiene_fondo, f_y,
     divisiones_json = getattr(fp, "VDO_Divisiones", "")
     divisiones_piezas = []
 
-    from freecad.vdo.core.vdo_layout_modelo import cavidad_interior
+    from freecad.vdo.core.layout_modelo import cavidad_interior
     cavidad = cavidad_interior(alto, ancho, espesor)
     ancho_util = cavidad["ancho"]
     altura_util = cavidad["alto"]

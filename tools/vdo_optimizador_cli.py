@@ -13,7 +13,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from freecad.vdo.core.optimizer_lista_corte import expand_pieces, read_cutting_csv
-from freecad.vdo.core.vdo_optimizer_core import (
+from freecad.vdo.core.optimizer_core import (
     KERF_DEFAULT,
     MARGIN_DEFAULT,
     optimize_by_group,
@@ -66,7 +66,7 @@ def main():
     sheets = [s for g in groups for s in g["sheets"]]
     unplaced = [u for g in groups for u in g["unplaced"]]
 
-    from freecad.vdo.ui import vdo_optimizer_preview as preview  # capa de interfaz
+    from freecad.vdo.ui import optimizer_preview as preview  # capa de interfaz
     preview.render_svg(sheets, unplaced, args.out,
                        board_w=board_w, board_h=board_h,
                        kerf=args.kerf, margin=args.margin)

@@ -1,16 +1,16 @@
 # =====================================================================
 # zocalo.py
 # Aplicación FreeCAD del zócalo: ZocaloFeature (Part::FeaturePython)
-# y make_zocalo. El cálculo vive en core/vdo_zocalo_core.py.
+# y make_zocalo. El cálculo vive en core/zocalo_core.py.
 # =====================================================================
 
 import json
 
 from freecad.vdo.cad.propiedades import add_common_props
-from freecad.vdo.core import vdo_defaults as VDO_D
-from freecad.vdo.core import vdo_module_props as VDO_MOD
-from freecad.vdo.core.vdo_helpers import _get_app, _get_part, rotacion_z
-from freecad.vdo.core.vdo_zocalo_core import calcular_geometria_zocalo
+from freecad.vdo.core import defaults as VDO_D
+from freecad.vdo.core import module_props as VDO_MOD
+from freecad.vdo.core.helpers import _get_app, _get_part, rotacion_z
+from freecad.vdo.core.zocalo_core import calcular_geometria_zocalo
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 

@@ -17,8 +17,8 @@ from freecad.vdo.datos.formularios import (
     COCO_ROTACION_PASOS,
 )
 from freecad.vdo.qt_compat import QtWidgets
-from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
-from freecad.vdo.ui.vdo_form_builder import FormBuilder
+from freecad.vdo.ui.chassis_widget import VDOChassisControllerWidget
+from freecad.vdo.ui.form_builder import FormBuilder
 from freecad.vdo.ui.coco_construccion_widgets import DivisionesEditor
 from freecad.vdo.ui import tema
 

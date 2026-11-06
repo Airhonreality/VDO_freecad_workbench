@@ -61,7 +61,7 @@ class UniversalInspectorTests(unittest.TestCase):
         cls.PanelFeature = PanelFeature
 
         from freecad.vdo.ui.inspector_paginas import PAGE_CHASIS, PAGE_PIEZA
-        from freecad.vdo.ui.vdo_universal_inspector import VDOUniversalInspectorWidget
+        from freecad.vdo.ui.universal_inspector import VDOUniversalInspectorWidget
         cls.VDOUniversalInspectorWidget = VDOUniversalInspectorWidget
         cls.PAGE_CHASIS = PAGE_CHASIS
         cls.PAGE_PIEZA = PAGE_PIEZA

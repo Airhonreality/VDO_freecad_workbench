@@ -5,11 +5,11 @@
 # y se crean con FormBuilder (M6, MN-08, D-73).
 # =====================================================================
 
-from freecad.vdo.core.vdo_cajon_correderas import listar_marcas
+from freecad.vdo.core.cajon_correderas import listar_marcas
 from freecad.vdo.datos.formularios import cajon_bloques
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui.cajon_task_cabecera import PanelHeaderWidget
-from freecad.vdo.ui.vdo_form_builder import FormBuilder
+from freecad.vdo.ui.form_builder import FormBuilder
 from freecad.vdo.ui import tema
 
 

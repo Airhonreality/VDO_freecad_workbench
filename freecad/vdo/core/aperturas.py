@@ -2,8 +2,8 @@
 
 Cada sistema se define aquí una vez: clave del contrato, etiqueta de UI, operación de canto,
 si aplica descuento de gola, bisel a 45°, expulsor magnético, descuento de altura y los
-nombres legados que se aceptan. Los consumidores (vdo_facade_contract, vdo_cajon_despiece,
-vdo_puerta_despiece, ui/vdo_puerta_task) leen de esta tabla. Los motores de cálculo de
+nombres legados que se aceptan. Los consumidores (facade_contract, vdo_cajon_despiece,
+puerta_despiece, ui/puerta_task) leen de esta tabla. Los motores de cálculo de
 cajón y puerta siguen separados: solo se unifica la tabla de reglas.
 """
 

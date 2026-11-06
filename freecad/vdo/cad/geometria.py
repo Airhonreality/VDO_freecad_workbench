@@ -10,7 +10,7 @@ from __future__ import annotations
 import FreeCAD as App
 import Part
 
-from freecad.vdo.core.vdo_helpers import DIMENSION_POR_EJE
+from freecad.vdo.core.helpers import DIMENSION_POR_EJE
 
 
 def _extruir_poligono(puntos, eje, largo):

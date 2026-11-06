@@ -15,12 +15,12 @@ Términos de dominio VDO y su correspondencia con el código.
 | Golden master | `tests/golden/*.json` | Captura de salida de dominio para detección de regresiones |
 | Manifiesto | `core/vdo_manifest.json` | Fuente única de datos de materiales, herrajes, procesos |
 | Catálogo de herrajes | `core/vdo_hardware_catalog.json` | SKUs de herrajes (bisagras, correderas, etc.) |
-| Sistema de apertura | `core/vdo_facade_contract.py` | tirador, gola_aluminio, inglete_45, push_open |
-| Montaje | `core/vdo_facade_contract.py` | parche, semiparche, embebida |
+| Sistema de apertura | `core/facade_contract.py` | tirador, gola_aluminio, inglete_45, push_open |
+| Montaje | `core/facade_contract.py` | parche, semiparche, embebida |
 | Reengrose | `core/vdo_reengrose.py` | Refuerzos perimetrales en paneles |
-| COCO | `core/vdo_coco_core.py` | Contenedor Cohesivo: mueble con divisiones internas |
+| COCO | `core/coco_core.py` | Contenedor Cohesivo: mueble con divisiones internas |
 | Task Panel | `ui/vdo_*_task.py` | Panel de configuración de un módulo VDO |
-| ViewProvider | `ui/vdo_view_providers.py` | Proxy de FreeCAD para objetos VDO en la vista 3D |
+| ViewProvider | `ui/view_providers.py` | Proxy de FreeCAD para objetos VDO en la vista 3D |
 
 ## Términos de usuario
 

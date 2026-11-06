@@ -1,13 +1,13 @@
 # =====================================================================
 # espacios_cajas.py
 # Modelo de caja y clave de pieza para las divisiones internas del COCO.
-# Extraido de vdo_coco_spaces.py (D-48). Codigo sin cambios.
+# Extraido de coco_spaces.py (D-48). Codigo sin cambios.
 # Axioma 2: logica geometrica pura, sin dependencias de UI ni de FreeCAD.
 # =====================================================================
 
 
-from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
-from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
+from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
 
 
 def _clave_pieza(pieza):

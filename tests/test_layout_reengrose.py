@@ -1,9 +1,9 @@
 import os
 import unittest
 
-from freecad.vdo.core import vdo_reengrose_modificador as R_MODIFICADOR
-from freecad.vdo.core.vdo_layout_matriz import Layout
-from freecad.vdo.core.vdo_layout_resolucion import resolve_layout
+from freecad.vdo.core import reengrose_modificador as R_MODIFICADOR
+from freecad.vdo.core.layout_matriz import Layout
+from freecad.vdo.core.layout_resolucion import resolve_layout
 
 
 class LayoutReengroseTests(unittest.TestCase):

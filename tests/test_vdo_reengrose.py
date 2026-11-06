@@ -1,11 +1,11 @@
 import os
 import unittest
 
-from freecad.vdo.core import vdo_reengrose_despiece as R_DESPIECE
-from freecad.vdo.core import vdo_reengrose_geometria as R_GEOMETRIA
-from freecad.vdo.core import vdo_reengrose_interferencias as R_INTERFERENCIAS
-from freecad.vdo.core import vdo_reengrose_modelo as R_MODELO
-from freecad.vdo.core import vdo_reengrose_modificador as R_MODIFICADOR
+from freecad.vdo.core import reengrose_despiece as R_DESPIECE
+from freecad.vdo.core import reengrose_geometria as R_GEOMETRIA
+from freecad.vdo.core import reengrose_interferencias as R_INTERFERENCIAS
+from freecad.vdo.core import reengrose_modelo as R_MODELO
+from freecad.vdo.core import reengrose_modificador as R_MODIFICADOR
 
 
 class ReengrosePureTests(unittest.TestCase):

@@ -3,7 +3,7 @@
 # Capa cad: CocoFeature (Part::FeaturePython) y make_coco. El cuerpo de
 # execute se reparte en coco_carcasa, coco_shell, coco_divisiones,
 # coco_cortes y coco_propiedades (D-39). El cálculo de piezas vive en
-# core/vdo_coco_core.py.
+# core/coco_core.py.
 # =====================================================================
 
 import json
@@ -30,10 +30,10 @@ from freecad.vdo.cad.coco_cortes import (
     resolver_tiras_divisiones,
 )
 from freecad.vdo.cad.propiedades import add_common_props
-from freecad.vdo.core import vdo_defaults as VDO_D
-from freecad.vdo.core import vdo_frames as VDO_FR
-from freecad.vdo.core import vdo_module_props as VDO_MOD
-from freecad.vdo.core.vdo_helpers import _get_app, rotacion_z
+from freecad.vdo.core import defaults as VDO_D
+from freecad.vdo.core import frames as VDO_FR
+from freecad.vdo.core import module_props as VDO_MOD
+from freecad.vdo.core.helpers import _get_app, rotacion_z
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 

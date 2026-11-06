@@ -37,7 +37,7 @@ import contextlib
 
 from freecad.vdo.cad.coco import CocoFeature
 from freecad.vdo.cad.panel import PanelFeature
-from freecad.vdo.ui.vdo_inspector_dock import (
+from freecad.vdo.ui.inspector_dock import (
     PAGE_CHASIS,
     PAGE_CIERRE,
     PAGE_PIEZA,
@@ -45,7 +45,7 @@ from freecad.vdo.ui.vdo_inspector_dock import (
     VDOUniversalInspectorWidget,
     obtener_o_crear_dock_inspector,
 )
-from freecad.vdo.ui.vdo_view_providers import (
+from freecad.vdo.ui.view_providers import (
     ViewProviderCoco,
     abrir_panel_objeto,
     enfocar_inspector_universal,
