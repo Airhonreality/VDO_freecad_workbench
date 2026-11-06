@@ -6,6 +6,7 @@
 
 
 import logging
+from typing import Any
 
 from freecad.vdo.core import reengrose_despiece as VDO_RE_DESPIECE
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
@@ -16,7 +17,7 @@ from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 _LOG = logging.getLogger(__name__)
 
 
-def _modificador_mapa(mapa, clave):
+def _modificador_mapa(mapa: Any, clave: str) -> VDO_RE_MODIFICADOR.ReengroseModifier:
     datos = (mapa or {}).get(clave)
     if not datos:
         return VDO_RE_MODIFICADOR.ReengroseModifier()
