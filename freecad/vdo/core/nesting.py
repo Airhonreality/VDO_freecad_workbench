@@ -1,4 +1,4 @@
-"""app/casos_uso/nesting.py — Caso de uso: nesting automático."""
+"""core/nesting.py — Caso de uso: nesting automático."""
 
 from __future__ import annotations
 
