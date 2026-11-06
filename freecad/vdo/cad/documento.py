@@ -14,6 +14,11 @@ def recalcular(doc) -> None:
     doc.recompute()
 
 
+def crear_grupo(doc, nombre: str):
+    """Crea un grupo de objetos (App::DocumentObjectGroup) en el documento."""
+    return doc.addObject("App::DocumentObjectGroup", nombre)
+
+
 def recalcular_activo() -> None:
     """Recalcula el documento activo de FreeCAD."""
     App.ActiveDocument.recompute()

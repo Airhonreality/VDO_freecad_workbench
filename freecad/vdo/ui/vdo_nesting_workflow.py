@@ -11,6 +11,7 @@ from pathlib import Path
 import FreeCAD as App
 import FreeCADGui
 
+from freecad.vdo.cad.documento import crear_grupo, recalcular
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 
 try:
@@ -250,7 +251,7 @@ class NestingDialog(QtWidgets.QDialog):
 
             # Dibujar layouts en documento
             App.Console.PrintMessage("\n📐 Dibujando layouts...")
-            layout_group = doc.addObject("App::DocumentObjectGroup", "NestingLayout")
+            layout_group = crear_grupo(doc, "NestingLayout")
 
             for _sheet_idx, sheet in enumerate(sheets):
                 sheet.parent_group_name = layout_group.Name
@@ -261,7 +262,7 @@ class NestingDialog(QtWidgets.QDialog):
                     'label_size': 10
                 }, parent_group=layout_group)
 
-            doc.recompute()
+            recalcular(doc)
 
             App.Console.PrintMessage(f"\n📊 Layouts creados: {layout_group.Label}")
             App.Console.PrintMessage("   Puedes exportar a DXF si lo necesitas")
