@@ -13,6 +13,7 @@ from freecad.vdo.datos.formularios import (
     COCO_EXPOSICION,
     COCO_MEDIDAS,
     COCO_ROTACION,
+    COCO_ROTACION_PASOS,
 )
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
@@ -92,28 +93,26 @@ class CocoUnifiedConstruccionMixin:
         layout_rot = QtWidgets.QHBoxLayout()
         self.spin_rotacion = self.form_coco.crear(COCO_ROTACION)
         layout_rot.addWidget(self.spin_rotacion)
-        btn_rot_menos = QtWidgets.QPushButton("-90°")
-        btn_rot_menos.setMaximumWidth(50)
-        btn_rot_menos.setToolTip(
-            "Gira el mueble 90° en sentido horario.")
-        btn_rot_menos.clicked.connect(
-            lambda: self.spin_rotacion.setValue(
-                self.spin_rotacion.value() - 90.0))
-        layout_rot.addWidget(btn_rot_menos)
-        btn_rot_mas = QtWidgets.QPushButton("+90°")
-        btn_rot_mas.setMaximumWidth(50)
-        btn_rot_mas.setToolTip(
-            "Gira el mueble 90° en sentido antihorario.")
-        btn_rot_mas.clicked.connect(
-            lambda: self.spin_rotacion.setValue(
-                self.spin_rotacion.value() + 90.0))
-        layout_rot.addWidget(btn_rot_mas)
+        for paso in COCO_ROTACION_PASOS:
+            layout_rot.addWidget(self._crear_boton_giro(paso))
         grid_coloc.addLayout(layout_rot, 0, 1)
 
         self.form_coco.construir_celda(grid_coloc, 1, 0, COCO_ANCLAJE)
         self.combo_anclaje = self.form_coco.widget("anclaje")
 
         layout_medidas.addWidget(grupo_coloc)
+
+    def _crear_boton_giro(self, paso):
+        """Boton de giro de 90 grados, desde COCO_ROTACION_PASOS."""
+        boton = QtWidgets.QPushButton(paso["texto"])
+        boton.setMaximumWidth(50)
+        boton.setToolTip(paso["tooltip"])
+
+        def _girar(*_args, delta=paso["delta"]):
+            self.spin_rotacion.setValue(self.spin_rotacion.value() + delta)
+
+        boton.clicked.connect(_girar)
+        return boton
 
     def _crear_grupo_exposicion(self, layout_medidas):
         grupo_exp = QtWidgets.QGroupBox("Exposición")

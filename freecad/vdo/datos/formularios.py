@@ -298,6 +298,13 @@ COCO_ROTACION = {
     "tooltip": "Rotación de colocación alrededor de Z. No cambia las medidas del mueble.",
 }
 
+COCO_ROTACION_PASOS = (
+    {"texto": "-90°", "delta": -90.0,
+     "tooltip": "Gira el mueble 90° en sentido horario."},
+    {"texto": "+90°", "delta": 90.0,
+     "tooltip": "Gira el mueble 90° en sentido antihorario."},
+)
+
 COCO_ANCLAJE = {
     "tipo": "combo", "clave": "anclaje", "etiqueta": "Anclaje:",
     "items": ITEMS_ANCLAJE,
