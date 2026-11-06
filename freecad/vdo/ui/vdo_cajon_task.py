@@ -240,54 +240,54 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
         cerrar_dialogo()
 
     def accept(self):
-        """Aplicar cambios y cerrar el panel."""
         if not self.obj:
             return True
         try:
-            self._vdo_begin()
-            for spin in (self.spin_li, self.spin_prof,
-                         self.spin_ancho_mod, self.spin_alto_frente,
-                         self.spin_alto_caja, self.spin_g_caja,
-                         self.spin_g_fondo, self.spin_g_fachada,
-                         self.spin_guia, self.spin_rotacion):
-                spin.interpretText()
-            self.obj.AnchoLibre = self.spin_li.value()
-            self.obj.ProfLibre = self.spin_prof.value()
-            self.obj.AnchoModulo = self.spin_ancho_mod.value()
-            self.obj.AltoFrente = self.spin_alto_frente.value()
-            self.obj.AltoCaja = self.spin_alto_caja.value()
-            self.obj.GrosorCaja = self.spin_g_caja.value()
-            self.obj.GrosorFondo = self.spin_g_fondo.value()
-            self.obj.GrosorFachada = self.spin_g_fachada.value()
-            self.obj.MarcaCorredera = self.combo_marca.currentText()
-            self.obj.LongitudGuia = self.spin_guia.value()
-            self.obj.MontajeTrasera = self.combo_montaje.currentText()
-            self.obj.TipoCorredera = (
-                CORREDERA_OCULTA if self.combo_tipo.currentIndex() == 0
-                else CORREDERA_TELESCOPICA if self.combo_tipo.currentIndex() == 1
-                else CAJA_METALICA)
-            self.obj.SistemaApertura = (
-                APERTURA_TIRADOR if self.combo_apertura.currentIndex() == 0
-                else APERTURA_GOLA if self.combo_apertura.currentIndex() == 1
-                else APERTURA_45_GRADOS if self.combo_apertura.currentIndex() == 2
-                else APERTURA_PUSH_OPEN)
-            self.obj.TipoMontaje = self.combo_montaje_fachada.currentText()
-            sku_data = self.combo_sku.currentData()
-            if sku_data:
-                self.obj.VDO_Herraje_Ref = str(sku_data)
-            else:
-                self.obj.VDO_Herraje_Ref = self.combo_marca.currentText()
-            anclaje = self.combo_anclaje.currentData()
-            if anclaje:
-                self.obj.VDO_Anclaje = anclaje
-            aplicar_rotacion(self.obj, self.spin_rotacion.value())
-            recalcular_activo()
-            self._vdo_commit()
-            self._vdo_aceptado = True
-            self._vdo_call_accept()
+            self._transaccion_cajon()
             return True
         except Exception as e:
             self._vdo_abort()
             App.Console.PrintError(f"[VDO] Error aceptando cambios: {e}\n")
             return False
+
+    def _transaccion_cajon(self):
+        self._vdo_begin()
+        self._escribir_cajon()
+        self._vdo_commit()
+        self._vdo_aceptado = True
+        self._vdo_call_accept()
+
+    def _escribir_cajon(self):
+        self._form_builder.interpretar_texto()
+        self.obj.AnchoLibre = self.spin_li.value()
+        self.obj.ProfLibre = self.spin_prof.value()
+        self.obj.AnchoModulo = self.spin_ancho_mod.value()
+        self.obj.AltoFrente = self.spin_alto_frente.value()
+        self.obj.AltoCaja = self.spin_alto_caja.value()
+        self.obj.GrosorCaja = self.spin_g_caja.value()
+        self.obj.GrosorFondo = self.spin_g_fondo.value()
+        self.obj.GrosorFachada = self.spin_g_fachada.value()
+        self.obj.MarcaCorredera = self.combo_marca.currentText()
+        self.obj.LongitudGuia = self.spin_guia.value()
+        self.obj.MontajeTrasera = self.combo_montaje.currentText()
+        self.obj.TipoCorredera = (
+            CORREDERA_OCULTA if self.combo_tipo.currentIndex() == 0
+            else CORREDERA_TELESCOPICA if self.combo_tipo.currentIndex() == 1
+            else CAJA_METALICA)
+        self.obj.SistemaApertura = (
+            APERTURA_TIRADOR if self.combo_apertura.currentIndex() == 0
+            else APERTURA_GOLA if self.combo_apertura.currentIndex() == 1
+            else APERTURA_45_GRADOS if self.combo_apertura.currentIndex() == 2
+            else APERTURA_PUSH_OPEN)
+        self.obj.TipoMontaje = self.combo_montaje_fachada.currentText()
+        sku_data = self.combo_sku.currentData()
+        if sku_data:
+            self.obj.VDO_Herraje_Ref = str(sku_data)
+        else:
+            self.obj.VDO_Herraje_Ref = self.combo_marca.currentText()
+        anclaje = self.combo_anclaje.currentData()
+        if anclaje:
+            self.obj.VDO_Anclaje = anclaje
+        aplicar_rotacion(self.obj, self.spin_rotacion.value())
+        recalcular_activo()
 

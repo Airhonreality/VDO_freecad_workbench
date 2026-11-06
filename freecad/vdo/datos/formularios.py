@@ -195,3 +195,69 @@ PUERTA_BLOQUES = (
          "items": ITEMS_ANCLAJE, "estilo": "texto"},
     )),
 )
+
+
+def cajon_bloques(marcas):
+    """Especificación del panel de cajón (M6, D-73). `marcas` viene de listar_marcas()."""
+    return (
+        ("espacio", "Espacio interior (datos de partida)", (
+            {"tipo": "vdo_double_spin", "clave": "li", "etiqueta": "Ancho libre LI (mm):",
+             "rango": (1, 3000), "decimales": 1, "sufijo": " mm"},
+            {"tipo": "vdo_double_spin", "clave": "prof", "etiqueta": "Profundidad libre (mm):",
+             "rango": (1, 1500), "decimales": 1, "sufijo": " mm"},
+            {"tipo": "vdo_double_spin", "clave": "ancho_mod", "etiqueta": "Ancho módulo (fachada):",
+             "rango": (1, 3000), "decimales": 1, "sufijo": " mm"},
+            {"tipo": "vdo_double_spin", "clave": "alto_frente", "etiqueta": "Alto frente (mm):",
+             "rango": (1, 800), "decimales": 1, "sufijo": " mm"},
+        )),
+        ("herraje", "Corredera y herraje", (
+            {"tipo": "combo", "clave": "tipo", "etiqueta": "Tipo de corredera:",
+             "items": [(t, None) for t in ("Oculta (Blum Tandem / Genérica)",
+                                           "Telescópica", "Metálica (Slim Box / Tandembox)")],
+             "tooltip": ("Oculta: corredera bajo cajón con notch y pin.\n"
+                         "Telescópica: guía lateral con piso delgado en ranura.\n"
+                         "Metálica: sin laterales de madera, solo piso y trasera.")},
+            {"tipo": "combo", "clave": "sku", "etiqueta": "SKU comercial:", "items": [],
+             "editable": True,
+             "tooltip": "SKU de la corredera (vía vdo_hardware_hub.py)."},
+            {"tipo": "combo", "clave": "marca", "etiqueta": "Marca:",
+             "items": [(m, None) for m in marcas],
+             "tooltip": "Marca de corredera oculta (delta y cotas)."},
+            {"tipo": "vdo_double_spin", "clave": "guia", "etiqueta": "Longitud guía (mm):",
+             "rango": (0, 800), "decimales": 0, "sufijo": " mm",
+             "texto_especial": "Auto (según profundidad)"},
+            {"tipo": "combo", "clave": "montaje", "etiqueta": "Montaje trasera:",
+             "items": [(m, None) for m in ("entre_laterales", "testa")]},
+        )),
+        ("apertura", "Sistema de apertura (fachada)", (
+            {"tipo": "combo", "clave": "apertura", "etiqueta": "Sistema:",
+             "items": [(a, None) for a in ("Tirador", "Gola aluminio (−35 mm altura)",
+                                           "45° (bisel en arista superior)",
+                                           "Push open (expulsor magnético)")],
+             "tooltip": ("Tirador: manija postiza, altura completa.\n"
+                         "Gola: perfil C/L integrado, descuenta 35 mm en altura.\n"
+                         "45°: bisel paramétrico en arista superior frontal.\n"
+                         "Push open: émbolo magnético, holgura perimetral ajustada.")},
+            {"tipo": "combo", "clave": "montaje_fachada", "etiqueta": "Montaje fachada:",
+             "items": [(m, None) for m in ("Parche", "Semiparche", "Embebida")],
+             "tooltip": ("Parche: solapa sobre los cantos del vano.\n"
+                         "Semiparche: comparte montante central.\n"
+                         "Embebida: a ras dentro del vano (deja cantos vistos).")},
+        )),
+        ("caja", "Caja y fachada", (
+            {"tipo": "vdo_double_spin", "clave": "alto_caja", "etiqueta": "Alto caja (mm):",
+             "rango": (1, 300), "decimales": 1, "sufijo": " mm"},
+            {"tipo": "spin", "clave": "g_caja", "etiqueta": "Grosor caja (mm):",
+             "rango": (1, 25), "sufijo": " mm"},
+            {"tipo": "spin", "clave": "g_fondo", "etiqueta": "Grosor piso (mm):",
+             "rango": (1, 12), "sufijo": " mm"},
+            {"tipo": "spin", "clave": "g_fachada", "etiqueta": "Grosor fachada (mm):",
+             "rango": (1, 30), "sufijo": " mm"},
+        )),
+        ("colocacion", "Colocación", (
+            {"tipo": "vdo_double_spin", "clave": "rotacion", "etiqueta": "Rotación Z:",
+             "rango": (-360.0, 360.0), "decimales": 1, "sufijo": " °", "wrapping": True},
+            {"tipo": "combo", "clave": "anclaje", "etiqueta": "Anclaje:",
+             "items": ITEMS_ANCLAJE},
+        )),
+    )

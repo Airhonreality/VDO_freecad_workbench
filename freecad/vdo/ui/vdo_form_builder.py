@@ -25,6 +25,8 @@
 #     "ajustar_texto": bool,     # setWordWrap (labels)
 #     "sin_etiqueta": bool,      # celda sin etiqueta propia
 #     "colspan": int,            # columnas que ocupa el widget
+#     "editable": bool,          # combo editable (combo)
+#     "texto_especial": str|None,# texto del valor minimo (double_spin)
 #   }
 # =====================================================================
 
@@ -74,6 +76,8 @@ def _crear_double_spin(campo, parent, clase=None):
         w.setDecimals(campo.decimales)
     if campo.sufijo:
         w.setSuffix(campo.sufijo)
+    if campo.texto_especial:
+        w.setSpecialValueText(campo.texto_especial)
     w.setValue(float(campo.valor_defecto or 0.0))
     return w
 
@@ -96,6 +100,8 @@ def _crear_checkbox(campo, parent):
 
 def _crear_combo(campo, parent):
     w = QtWidgets.QComboBox(parent)
+    if campo.editable:
+        w.setEditable(True)
     for label, data in (campo.items or []):
         w.addItem(label, data)
     w.setCurrentIndex(0)
@@ -144,6 +150,8 @@ class FormField:
         self.sufijo = espec.get("sufijo")
         self.tooltip = espec.get("tooltip")
         self.items = espec.get("items")
+        self.editable = espec.get("editable", False)
+        self.texto_especial = espec.get("texto_especial")
         self.widget = None
 
     def crear_widget(self, parent=None):
