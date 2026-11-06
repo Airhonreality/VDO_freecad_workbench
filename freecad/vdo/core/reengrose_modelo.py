@@ -1,6 +1,9 @@
 """Datos y tipos del reengrose: constantes de dominio, BordeConfig, ReengroseDTO y
 validadores de valor."""
 
+from collections.abc import Sequence
+
+
 class ReengroseError(ValueError):
     """Error de validacion del modificador de reengrose."""
 
@@ -186,7 +189,7 @@ def _a_bool(valor):
     return bool(valor)
 
 
-def _validar_enum(valor, nombre, validos):
+def _validar_enum(valor: object, nombre: str, validos: Sequence[str]) -> str:
     texto = str(valor or "").strip().lower()
     if texto not in validos:
         raise ReengroseError(
