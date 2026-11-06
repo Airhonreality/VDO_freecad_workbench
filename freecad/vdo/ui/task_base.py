@@ -20,6 +20,13 @@ def cerrar_dialogo():
         App.Console.PrintWarning("[VDO] No se pudo cerrar el diálogo activo")
 
 
+# Acción de cierre -> (método de Document, verbo del aviso de error).
+_CIERRE_TRANSACCION = {
+    "commit": ("commitTransaction", "confirmar"),
+    "abort": ("abortTransaction", "abortar"),
+}
+
+
 class VDOTransactionMixin:
     """Mixin para Task Panels VDO.
 
@@ -95,29 +102,18 @@ class VDOTransactionMixin:
             self._vdo_tx_open = False
             return False
 
-    def _vdo_commit(self):
+    def _vdo_cerrar(self, accion):
+        """Confirma ("commit") o aborta ("abort") la transacción abierta."""
         if not self.auto_transaction or not self._vdo_tx_open:
             return
+        metodo, verbo = _CIERRE_TRANSACCION[accion]
         doc = App.ActiveDocument
         try:
             if doc is not None:
-                doc.commitTransaction()
+                getattr(doc, metodo)()
         except Exception as exc:
             App.Console.PrintWarning(
-                f"[VDO] No se pudo confirmar transacción: {exc}\n")
-        finally:
-            self._vdo_tx_open = False
-
-    def _vdo_abort(self):
-        if not self.auto_transaction or not self._vdo_tx_open:
-            return
-        doc = App.ActiveDocument
-        try:
-            if doc is not None:
-                doc.abortTransaction()
-        except Exception as exc:
-            App.Console.PrintWarning(
-                f"[VDO] No se pudo abortar transacción: {exc}\n")
+                f"[VDO] No se pudo {verbo} transacción: {exc}\n")
         finally:
             self._vdo_tx_open = False
 
@@ -148,7 +144,7 @@ class VDOTransactionMixin:
         """Rechaza cambios: aborta transacción, avisa al flujo y cierra."""
         if getattr(self, "_vdo_aceptado", False):
             return True
-        self._vdo_abort()
+        self._vdo_cerrar("abort")
         self._vdo_call_cancel()
         return True
 

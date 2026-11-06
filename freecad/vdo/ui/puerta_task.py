@@ -211,12 +211,12 @@ class PuertaTaskPanel(PuertaTaskConstruccionMixin, VDOTransactionMixin):
         try:
             self._vdo_begin()
             self._escribir_puerta()
-            self._vdo_commit()
+            self._vdo_cerrar("commit")
             self._vdo_aceptado = True
             self._vdo_call_accept()
             return True
         except Exception as e:
-            self._vdo_abort()
+            self._vdo_cerrar("abort")
             restaurar_propiedades(self.obj, foto)
             App.Console.PrintError(f"[VDO Puerta] Error aceptando: {e}\n")
             return False

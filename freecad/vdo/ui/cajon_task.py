@@ -231,7 +231,7 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
             self._transaccion_cajon()
             return True
         except Exception as e:
-            self._vdo_abort()
+            self._vdo_cerrar("abort")
             restaurar_propiedades(self.obj, foto)
             App.Console.PrintError(f"[VDO] Error aceptando cambios: {e}\n")
             return False
@@ -239,7 +239,7 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
     def _transaccion_cajon(self):
         self._vdo_begin()
         self._escribir_cajon()
-        self._vdo_commit()
+        self._vdo_cerrar("commit")
         self._vdo_aceptado = True
         self._vdo_call_accept()
 

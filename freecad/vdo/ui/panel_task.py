@@ -233,15 +233,15 @@ class PanelTaskPanel(VDOTransactionMixin):
         try:
             self._vdo_begin()
             if not self._escribir_panel():
-                self._vdo_abort()
+                self._vdo_cerrar("abort")
                 restaurar_propiedades(self.obj, foto)
                 return False
-            self._vdo_commit()
+            self._vdo_cerrar("commit")
             self._vdo_aceptado = True
             self._vdo_call_accept()
             return True
         except Exception as exc:
-            self._vdo_abort()
+            self._vdo_cerrar("abort")
             restaurar_propiedades(self.obj, foto)
             App.Console.PrintError(
                 f"[VDO] Error aceptando panel: {exc}\n")

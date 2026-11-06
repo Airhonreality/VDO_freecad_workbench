@@ -323,18 +323,18 @@ class CocoUnifiedTaskPanel(
             self.form, "Divisiones VDO",
             "Las medidas fijas no caben en la cavidad interior.\n"
             "Reduce alguna medida antes de aplicar.")
-        self._vdo_abort()
+        self._vdo_cerrar("abort")
         return False
 
     def _confirmar(self):
         recalcular_activo()
-        self._vdo_commit()
+        self._vdo_cerrar("commit")
         self._vdo_aceptado = True
         self._vdo_call_accept()
         return True
 
     def _fallar_accept(self, exc):
-        self._vdo_abort()
+        self._vdo_cerrar("abort")
         App.Console.PrintError(
             f"[VDO] Error aceptando COCO: {exc}\n")
         import traceback
