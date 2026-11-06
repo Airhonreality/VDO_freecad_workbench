@@ -20,12 +20,14 @@ import FreeCAD as App
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
+_LOG = logging.getLogger(__name__)
+
 try:
     import FreeCADGui as Gui
 except ImportError as exc:  # pragma: no cover
     _LOG.debug("universal_inspector: Gui no disponible: %s", exc)
     Gui = None
-from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
+from freecad.vdo.ui.selection_bridge import VDOSelectionBridge  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
 
 try:
     from freecad.vdo.ui.coco_preview2d import CocoPreview2D
@@ -41,15 +43,13 @@ except ImportError as exc:  # pragma: no cover
     Layout = None
     resolve_layout = None
     cavidad_interior = None
-from freecad.vdo.ui import tema
-from freecad.vdo.ui.inspector_acciones import AccionesInspectorMixin
-from freecad.vdo.ui.inspector_arbol import ArbolInspectorMixin
-from freecad.vdo.ui.inspector_cabecera import _BreadcrumbBar, _MicroHeaderWidget
-from freecad.vdo.ui.inspector_pagina_pieza import PaginaPieza
-from freecad.vdo.ui.inspector_pagina_vano import PaginaVano
-from freecad.vdo.ui.inspector_paginas import PAGE_CHASIS, PaginaChasis, PaginaCierre, _float_seguro
-
-_LOG = logging.getLogger(__name__)
+from freecad.vdo.ui import tema  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
+from freecad.vdo.ui.inspector_acciones import AccionesInspectorMixin  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
+from freecad.vdo.ui.inspector_arbol import ArbolInspectorMixin  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
+from freecad.vdo.ui.inspector_cabecera import _BreadcrumbBar, _MicroHeaderWidget  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
+from freecad.vdo.ui.inspector_pagina_pieza import PaginaPieza  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
+from freecad.vdo.ui.inspector_pagina_vano import PaginaVano  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
+from freecad.vdo.ui.inspector_paginas import PAGE_CHASIS, PaginaChasis, PaginaCierre, _float_seguro  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
 
 
 class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, QtWidgets.QWidget):

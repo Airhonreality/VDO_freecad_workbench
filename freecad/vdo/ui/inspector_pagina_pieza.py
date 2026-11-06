@@ -7,17 +7,17 @@ import FreeCAD as App
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
+_LOG = logging.getLogger(__name__)
+
 try:
     from freecad.vdo.ui.box_controller import VDOBoxControllerWidget
 except ImportError as exc:  # pragma: no cover
     _LOG.debug("inspector_pagina_pieza: controlador no disponible: %s", exc)
     VDOBoxControllerWidget = None
-from freecad.vdo.cad.documento import recalcular
-from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades
-from freecad.vdo.ui import tema
-from freecad.vdo.ui.inspector_paginas import _float_seguro, _PaginaBase, _str_seguro
-
-_LOG = logging.getLogger(__name__)
+from freecad.vdo.cad.documento import recalcular  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
+from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
+from freecad.vdo.ui import tema  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
+from freecad.vdo.ui.inspector_paginas import _float_seguro, _PaginaBase, _str_seguro  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
 
 
 # ----------------------------------------------------------------------

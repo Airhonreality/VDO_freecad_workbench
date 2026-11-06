@@ -5,6 +5,8 @@ import logging
 
 import FreeCAD as App
 
+_LOG = logging.getLogger(__name__)
+
 try:
     from freecad.vdo.core.layout_matriz import Layout
     from freecad.vdo.core.layout_modelo import cavidad_interior
@@ -14,15 +16,13 @@ except ImportError as exc:  # pragma: no cover
     Layout = None
     resolve_layout = None
     cavidad_interior = None
-from freecad.vdo.cad.documento import recalcular
-from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades
-from freecad.vdo.ui.inspector_cabecera import (
+from freecad.vdo.cad.documento import recalcular  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
+from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
+from freecad.vdo.ui.inspector_cabecera import (  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
     _CLAVE_BREADCRUMB_A_NIVEL,
     _RUTA_BREADCRUMB_DEFECTO,
     _RUTA_BREADCRUMB_POR_TARGET,
 )
-
-_LOG = logging.getLogger(__name__)
 
 
 class AccionesInspectorMixin:
