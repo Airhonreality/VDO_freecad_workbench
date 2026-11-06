@@ -23,83 +23,16 @@ class BoxConfigMixin:
 
         self._cargando = True
         try:
-            # 1. Activo
-            activo = bool(cfg.get("activo", False))
-            self.chk_activo.setChecked(activo)
-
-            # 2. Esquinas
-            esquinas_raw = cfg.get("esquinas", VDO_RE_MODELO.ENCUENTRO_ESQUINAS_DEFAULT)
-            esquinas_norm = VDO_RE_MODIFICADOR._normalizar_encuentro(esquinas_raw)
-            for e in ESQUINAS:
-                tipo = esquinas_norm.get(e, "vertical_domina")
-                self._esquinas[e] = tipo
-                self._set_combo_silencioso(self.combo_esquina[e], tipo)
-
-            esquinas_unicas = len(set(self._esquinas.values())) == 1
-            self.chk_sync_esquinas.setChecked(esquinas_unicas)
-            self._actualizar_iconos_esquinas()
-
-            # 3. Bordes
-            bordes_data = cfg.get("bordes", {})
-            activos = []
-            for b in VDO_RE_MODELO.BORDES_2D:
-                b_cfg = bordes_data.get(b, {})
-                if hasattr(b_cfg, "to_dict"):
-                    b_cfg = b_cfg.to_dict()
-                b_activo = bool(b_cfg.get("activo", False))
-                w = float(b_cfg.get("ancho", cfg.get("ancho", 70.0)))
-                d = float(b_cfg.get("distancia_al_canto",
-                                   b_cfg.get("offset_borde",
-                                             cfg.get("offset", 0.0))))
-
-                self.btn_borde[b].setChecked(b_activo)
-                if b_activo:
-                    activos.append(b)
-
-                self._valores_bordes[b]["ancho"] = w
-                self._valores_bordes[b]["offset"] = d
-                self.spin_ancho_borde[b].setValue(w)
-                self.spin_offset_borde[b].setValue(d)
-
+            activo = self._aplicar_activo(cfg)
+            self._aplicar_esquinas(cfg)
+            bordes_data, activos = self._aplicar_bordes(cfg)
             # Formato legacy sin bordes explícitos
             if not bordes_data and activo:
                 self.btn_borde["frente"].setChecked(True)
                 activos.append("frente")
 
-            # 4. Modo Uniforme
-            es_uniforme = cfg.get("uniforme")
-            if es_uniforme is None:
-                if activos:
-                    w0 = self._valores_bordes[activos[0]]["ancho"]
-                    d0 = self._valores_bordes[activos[0]]["offset"]
-                    es_uniforme = all(
-                        abs(self._valores_bordes[b]["ancho"] - w0) < 1e-4
-                        and abs(self._valores_bordes[b]["offset"] - d0) < 1e-4
-                        for b in activos
-                    )
-                else:
-                    es_uniforme = True
-
-            self.btn_centro.setChecked(es_uniforme)
-            if es_uniforme:
-                self.btn_centro.setText(" Uniforme")
-                self.btn_centro.setIcon(obtener_svg_icon("link"))
-            else:
-                self.btn_centro.setText(" Individual")
-                self.btn_centro.setIcon(obtener_svg_icon("unlink"))
-
-            primero = activos[0] if activos else "frente"
-            ancho_ref = self._valores_bordes[primero]["ancho"]
-            dist_ref = self._valores_bordes[primero]["offset"]
-            self.spin_ancho.setValue(float(cfg.get("ancho_uniforme", ancho_ref)))
-            self.spin_offset.setValue(float(cfg.get("distancia_uniforme", dist_ref)))
-
-            # 5. Espesor y parámetros de fabricación
-            esp = cfg.get("espesor")
-            self.spin_espesor.setValue(0.0 if esp is None else float(esp))
-            self._fabricacion = cfg.get("fabricacion", "pacha")
-            self._choque_nucleo = cfg.get("choque_nucleo", "retroceso")
-            self._cara = cfg.get("cara", "cara_a")
+            self._aplicar_modo_uniforme(cfg, activos)
+            self._aplicar_fabricacion(cfg)
 
             self._seleccionar_margen(self._margen_seleccionado)
             self._actualizar_estado_all()
@@ -109,6 +42,86 @@ class BoxConfigMixin:
 
         finally:
             self._cargando = False
+
+    def _aplicar_activo(self, cfg):
+        # 1. Activo
+        activo = bool(cfg.get("activo", False))
+        self.chk_activo.setChecked(activo)
+        return activo
+
+    def _aplicar_esquinas(self, cfg):
+        # 2. Esquinas
+        esquinas_raw = cfg.get("esquinas", VDO_RE_MODELO.ENCUENTRO_ESQUINAS_DEFAULT)
+        esquinas_norm = VDO_RE_MODIFICADOR._normalizar_encuentro(esquinas_raw)
+        for e in ESQUINAS:
+            tipo = esquinas_norm.get(e, "vertical_domina")
+            self._esquinas[e] = tipo
+            self._set_combo_silencioso(self.combo_esquina[e], tipo)
+
+        esquinas_unicas = len(set(self._esquinas.values())) == 1
+        self.chk_sync_esquinas.setChecked(esquinas_unicas)
+        self._actualizar_iconos_esquinas()
+
+    def _aplicar_bordes(self, cfg):
+        # 3. Bordes
+        bordes_data = cfg.get("bordes", {})
+        activos = []
+        for b in VDO_RE_MODELO.BORDES_2D:
+            b_cfg = bordes_data.get(b, {})
+            if hasattr(b_cfg, "to_dict"):
+                b_cfg = b_cfg.to_dict()
+            b_activo = bool(b_cfg.get("activo", False))
+            w = float(b_cfg.get("ancho", cfg.get("ancho", 70.0)))
+            d = float(b_cfg.get("distancia_al_canto",
+                               b_cfg.get("offset_borde",
+                                         cfg.get("offset", 0.0))))
+
+            self.btn_borde[b].setChecked(b_activo)
+            if b_activo:
+                activos.append(b)
+
+            self._valores_bordes[b]["ancho"] = w
+            self._valores_bordes[b]["offset"] = d
+            self.spin_ancho_borde[b].setValue(w)
+            self.spin_offset_borde[b].setValue(d)
+        return bordes_data, activos
+
+    def _aplicar_modo_uniforme(self, cfg, activos):
+        # 4. Modo Uniforme
+        es_uniforme = cfg.get("uniforme")
+        if es_uniforme is None:
+            if activos:
+                w0 = self._valores_bordes[activos[0]]["ancho"]
+                d0 = self._valores_bordes[activos[0]]["offset"]
+                es_uniforme = all(
+                    abs(self._valores_bordes[b]["ancho"] - w0) < 1e-4
+                    and abs(self._valores_bordes[b]["offset"] - d0) < 1e-4
+                    for b in activos
+                )
+            else:
+                es_uniforme = True
+
+        self.btn_centro.setChecked(es_uniforme)
+        if es_uniforme:
+            self.btn_centro.setText(" Uniforme")
+            self.btn_centro.setIcon(obtener_svg_icon("link"))
+        else:
+            self.btn_centro.setText(" Individual")
+            self.btn_centro.setIcon(obtener_svg_icon("unlink"))
+
+        primero = activos[0] if activos else "frente"
+        ancho_ref = self._valores_bordes[primero]["ancho"]
+        dist_ref = self._valores_bordes[primero]["offset"]
+        self.spin_ancho.setValue(float(cfg.get("ancho_uniforme", ancho_ref)))
+        self.spin_offset.setValue(float(cfg.get("distancia_uniforme", dist_ref)))
+
+    def _aplicar_fabricacion(self, cfg):
+        # 5. Espesor y parámetros de fabricación
+        esp = cfg.get("espesor")
+        self.spin_espesor.setValue(0.0 if esp is None else float(esp))
+        self._fabricacion = cfg.get("fabricacion", "pacha")
+        self._choque_nucleo = cfg.get("choque_nucleo", "retroceso")
+        self._cara = cfg.get("cara", "cara_a")
 
     def getConfig(self) -> dict:
         """Retorna la estructura compatible con vdo_reengrose.py."""
