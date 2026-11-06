@@ -484,3 +484,8 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 
 - **D-43:** M7 ui/vdo_coco_unified_task partido por concepto. Verificación visual pendiente (M10).
 - Decisión de implementación: la clase `CocoUnifiedTaskPanel` se reparte en mixins por concepto (`coco_unified_construccion`, `coco_unified_pestanas`, `coco_unified_valores`, `coco_unified_celdas`, `coco_unified_espacios`, `coco_unified_aplicar`), sin cambios de código en los métodos. La tabla de espacios (constantes, `EspacioRow`, `SpacesTableWidget`) va a `coco_unified_tabla`. El original queda como clase raíz con `__init__` (menos de 400 líneas), sin reexportaciones (P6); sus consumidores no cambian.
+
+## D-44
+
+- **D-44:** M7 ui/vdo_box_controller partido por concepto. Verificación visual pendiente (M10).
+- Decisión de implementación: la clase `VDOBoxControllerWidget` queda como raíz en `ui/vdo_box_controller.py` y hereda de mixins por concepto (`box_construccion`, `box_margen`, `box_esquinas`, `box_estado`, `box_config`), sin cambios de código. Constantes, hoja de estilos y canvas van a `box_constantes`, `box_hoja_estilos` y `box_canvas`. Sin reexportaciones (P6). Los alias de clase (`get_config`, `set_config`, `seleccionar_margen`) se quedan en el mismo mixin que su destino. Ningún consumidor cambia: `coco_reengrose_widgets.py` e `inspector_pagina_pieza.py` solo importan `VDOBoxControllerWidget`.
