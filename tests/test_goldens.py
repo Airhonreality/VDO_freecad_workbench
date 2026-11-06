@@ -123,9 +123,14 @@ class GoldensEstructuraTests(unittest.TestCase):
 # Causa: rotacion_z reubicada a core/vdo_helpers construye App.Rotation en tiempo de llamada.
 SOLO_NIVEL_2_POR_EJECUCION = {"module_props"}
 
+# Goldens que comparan formas OCC grabadas con FreeCAD real. Requisito declarado (D-30).
+GOLDEN_FORMAS_OCC = {"coco_spaces"}
+
 
 def _crear_test_verificacion(modulo: str):
     def test(self):
+        if modulo in GOLDEN_FORMAS_OCC and _freecad_real() is None:
+            raise unittest.SkipTest(f"{modulo} requiere FreeCAD real (formas OCC)")
         necesita = _necesita_freecad(modulo) or modulo in SOLO_NIVEL_2_POR_EJECUCION
         if _freecad_real() is None and necesita:
             if modulo in SOLO_NIVEL_2_POR_EJECUCION:
