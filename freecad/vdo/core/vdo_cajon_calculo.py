@@ -183,6 +183,41 @@ def _sistema_apertura(config, alto_fachada_nominal):
     return sistema_apertura, alto_fachada, operacion_canto, cantos_fachada
 
 
+def _posiciones(ancho_ext, g_caja, lg, alto_lateral, ancho_contra, montaje, y_trasera,
+    z_piso, g_fondo, alto_contra, alto_frente_int, pen_ranura, ancho_piso,
+    largo_piso, g_fachada, ancho_fachada, alto_fachada):
+    """Coordenadas 3D locales de las piezas de la caja y de la fachada."""
+    # --- 7. Posiciones 3D (origen = esquina frontales-inferior-izquierda
+    #        exterior de la caja, coordenadas puramente locales al cajón) ---
+    # Nota: el centrado del cajón dentro del vano se resuelve exclusivamente
+    # mediante LocalPlacement en _construir_cajones(); aquí no hay offset
+    # de centrado X para evitar el doble desplazamiento.
+    posiciones = {
+        "lateral_izquierdo": {"x": 0.0, "y": 0.0, "z": 0.0,
+                              "largo_x": g_caja, "largo_y": lg,
+                              "largo_z": alto_lateral},
+        "lateral_derecho": {"x": ancho_ext - g_caja, "y": 0.0, "z": 0.0,
+                            "largo_x": g_caja, "largo_y": lg,
+                            "largo_z": alto_lateral},
+        "contra_frente": {"x": g_caja if montaje == "entre_laterales" else 0.0,
+                          "y": y_trasera, "z": z_piso + g_fondo,
+                          "largo_x": ancho_contra, "largo_y": g_caja,
+                          "largo_z": alto_contra},
+        "frente_interior": {"x": g_caja, "y": 0.0, "z": z_piso + g_fondo,
+                            "largo_x": ancho_contra,
+                            "largo_y": g_caja,
+                            "largo_z": alto_frente_int},
+        "piso": {"x": g_caja - pen_ranura, "y": 0.0, "z": z_piso,
+                 "largo_x": ancho_piso, "largo_y": largo_piso,
+                 "largo_z": g_fondo},
+        "fachada": {"x": (ancho_ext - ancho_fachada) / 2.0, "y": -g_fachada,
+                    "z": 0.0,
+                    "largo_x": ancho_fachada, "largo_y": g_fachada,
+                    "largo_z": alto_fachada},
+    }
+    return posiciones
+
+
 def calcular_despiece(config):
     """Calcula el despiece completo del cajón con corredera oculta.
 
@@ -236,34 +271,10 @@ def calcular_despiece(config):
     (sistema_apertura, alto_fachada, operacion_canto,
      cantos_fachada) = _sistema_apertura(config, alto_fachada_nominal)
 
-    # --- 7. Posiciones 3D (origen = esquina frontales-inferior-izquierda
-    #        exterior de la caja, coordenadas puramente locales al cajón) ---
-    # Nota: el centrado del cajón dentro del vano se resuelve exclusivamente
-    # mediante LocalPlacement en _construir_cajones(); aquí no hay offset
-    # de centrado X para evitar el doble desplazamiento.
-    posiciones = {
-        "lateral_izquierdo": {"x": 0.0, "y": 0.0, "z": 0.0,
-                              "largo_x": g_caja, "largo_y": lg,
-                              "largo_z": alto_lateral},
-        "lateral_derecho": {"x": ancho_ext - g_caja, "y": 0.0, "z": 0.0,
-                            "largo_x": g_caja, "largo_y": lg,
-                            "largo_z": alto_lateral},
-        "contra_frente": {"x": g_caja if montaje == "entre_laterales" else 0.0,
-                          "y": y_trasera, "z": z_piso + g_fondo,
-                          "largo_x": ancho_contra, "largo_y": g_caja,
-                          "largo_z": alto_contra},
-        "frente_interior": {"x": g_caja, "y": 0.0, "z": z_piso + g_fondo,
-                            "largo_x": ancho_contra,
-                            "largo_y": g_caja,
-                            "largo_z": alto_frente_int},
-        "piso": {"x": g_caja - pen_ranura, "y": 0.0, "z": z_piso,
-                 "largo_x": ancho_piso, "largo_y": largo_piso,
-                 "largo_z": g_fondo},
-        "fachada": {"x": (ancho_ext - ancho_fachada) / 2.0, "y": -g_fachada,
-                    "z": 0.0,
-                    "largo_x": ancho_fachada, "largo_y": g_fachada,
-                    "largo_z": alto_fachada},
-    }
+    posiciones = _posiciones(
+        ancho_ext, g_caja, lg, alto_lateral, ancho_contra, montaje, y_trasera,
+        z_piso, g_fondo, alto_contra, alto_frente_int, pen_ranura, ancho_piso,
+        largo_piso, g_fachada, ancho_fachada, alto_fachada)
 
     # --- 8. Mecanizados (cotas de la ficha técnica) ---
     diam_t = float(mecanizado.get("diam_taladro", 6))
