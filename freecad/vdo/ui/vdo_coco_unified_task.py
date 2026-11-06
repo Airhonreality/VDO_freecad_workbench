@@ -10,7 +10,8 @@ import FreeCAD as App
 import FreeCADGui as Gui
 
 from freecad.vdo.cad.colocacion import aplicar_rotacion
-from freecad.vdo.cad.propiedades import add_common_props
+from freecad.vdo.cad.documento import crear_objeto, recalcular, recalcular_activo
+from freecad.vdo.cad.propiedades import add_common_props, anadir_propiedad_texto
 from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core import vdo_module_props
 from freecad.vdo.cad.cajon import make_cajon
@@ -176,14 +177,14 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
         if obj:
             add_common_props(obj)
             if not hasattr(obj, "VDO_Reengrose_JSON"):
-                obj.addProperty(
-                    "App::PropertyString", "VDO_Reengrose_JSON",
+                anadir_propiedad_texto(
+                    obj, "VDO_Reengrose_JSON",
                     "Reengrose",
                     "Modificadores de reengrose por pieza (JSON)"
                 ).VDO_Reengrose_JSON = "{}"
             if not hasattr(obj, "VDO_Contenido_JSON"):
-                obj.addProperty(
-                    "App::PropertyString", "VDO_Contenido_JSON",
+                anadir_propiedad_texto(
+                    obj, "VDO_Contenido_JSON",
                     "Contenido",
                     "Contenido de vanos (puertas, cajones) (JSON)"
                 ).VDO_Contenido_JSON = "{}"
@@ -402,8 +403,8 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                 if hasattr(self.obj, "VDO_Chassis_JSON"):
                     self.obj.VDO_Chassis_JSON = json.dumps(cfg)
                 elif hasattr(self.obj, "addProperty"):
-                    self.obj.addProperty("App::PropertyString", "VDO_Chassis_JSON", "VDO",
-                                        "Configuración semiótica de Capa 1")
+                    anadir_propiedad_texto(self.obj, "VDO_Chassis_JSON", "VDO",
+                                           "Configuración semiótica de Capa 1")
                     self.obj.VDO_Chassis_JSON = json.dumps(cfg)
             except Exception:
                 App.Console.PrintWarning(
@@ -412,7 +413,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
             doc = getattr(self.obj, "Document", None)
             if doc is not None:
                 try:
-                    doc.recompute()
+                    recalcular(doc)
                 except Exception:
                     App.Console.PrintWarning(
                         "[VDO] No se pudo recomputar el documento")
@@ -1114,7 +1115,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                 break
 
         if existente is None:
-            existente = doc.addObject("Part::FeaturePython", nombre)
+            existente = crear_objeto(doc, "Part::FeaturePython", nombre)
             from freecad.vdo.cad.puerta import PuertaFeature
             PuertaFeature(existente)
             if App.GuiUp:
@@ -1184,7 +1185,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                     break
 
             if existente is None:
-                existente = doc.addObject("Part::FeaturePython", nombre)
+                existente = crear_objeto(doc, "Part::FeaturePython", nombre)
                 from freecad.vdo.cad.cajon import CajonFeature
                 CajonFeature(existente)
                 if App.GuiUp:
@@ -1256,8 +1257,8 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                     if hasattr(self.obj, "VDO_Chassis_JSON"):
                         self.obj.VDO_Chassis_JSON = json.dumps(cfg)
                     elif hasattr(self.obj, "addProperty"):
-                        self.obj.addProperty("App::PropertyString", "VDO_Chassis_JSON", "VDO",
-                                            "Configuración semiótica de Capa 1")
+                        anadir_propiedad_texto(self.obj, "VDO_Chassis_JSON", "VDO",
+                                           "Configuración semiótica de Capa 1")
                         self.obj.VDO_Chassis_JSON = json.dumps(cfg)
                 except Exception:
                     App.Console.PrintWarning(
@@ -1287,8 +1288,8 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
             VDO_FR.guardar_exposicion(self.obj, vistos, apoyados)
 
             if not hasattr(self.obj, "VDO_Divisiones"):
-                self.obj.addProperty(
-                    "App::PropertyString", "VDO_Divisiones", "Divisiones",
+                anadir_propiedad_texto(
+                    self.obj, "VDO_Divisiones", "Divisiones",
                     "Matriz de vanos v2 (JSON)")
             self.obj.VDO_Divisiones = self.editor_divisiones.dumps()
             self.obj.VDO_Reengrose_JSON = (
@@ -1299,7 +1300,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
             # --- Construir insertos solo al aceptar (ciclo transaccional) ---
             self._construir_insertos(self.obj)
 
-            App.ActiveDocument.recompute()
+            recalcular_activo()
             self._vdo_commit()
             self._vdo_aceptado = True
             self._vdo_call_accept()

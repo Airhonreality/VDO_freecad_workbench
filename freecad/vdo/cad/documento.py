@@ -14,6 +14,11 @@ def recalcular(doc) -> None:
     doc.recompute()
 
 
+def crear_objeto(doc, tipo: str, nombre: str):
+    """Crea un objeto de FreeCAD de tipo ``tipo`` en el documento."""
+    return doc.addObject(tipo, nombre)
+
+
 def crear_grupo(doc, nombre: str):
     """Crea un grupo de objetos (App::DocumentObjectGroup) en el documento."""
     return doc.addObject("App::DocumentObjectGroup", nombre)
