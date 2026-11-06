@@ -10,8 +10,11 @@
 # en la próxima fase de saneamiento.
 # =====================================================================
 
+from __future__ import annotations
+
 import json
 import logging
+from typing import Any
 
 _LOG = logging.getLogger(__name__)
 
@@ -28,17 +31,19 @@ class SpaceNode:
     en el eje opuesto (recursividad bidimensional).
     """
 
-    def __init__(self, space_type=ESPACIO_FIJO, value=0.0, children=None,
-                 space_id=None, parent_id=None, axis=None):
+    def __init__(self, space_type: str = ESPACIO_FIJO, value: float = 0.0,
+                 children: list[SpaceNode] | None = None,
+                 space_id: str | None = None, parent_id: str | None = None,
+                 axis: str | None = None) -> None:
         self.space_type = space_type
         self.value = value
-        self.children = children or []
+        self.children: list[SpaceNode] = children or []
         self.space_id = space_id or "auto"
         self.parent_id = parent_id or ""
         self.axis = axis
 
-    def to_dict(self):
-        d = {
+    def to_dict(self) -> dict[str, Any]:
+        d: dict[str, Any] = {
             "type": self.space_type,
             "id": self.space_id,
             "parent": self.parent_id,
@@ -56,7 +61,7 @@ class SpaceNode:
         return d
 
     @classmethod
-    def from_dict(cls, d):
+    def from_dict(cls, d: dict[str, Any]) -> SpaceNode:
         node = cls(
             space_type=d.get("type", ESPACIO_FIJO),
             value=d.get("value", 0.0),
@@ -73,12 +78,12 @@ class SpaceNode:
             node.children.append(child)
         return node
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (f"SpaceNode(type={self.space_type}, value={self.value}, "
                 f"id={self.space_id}, children={len(self.children)})")
 
 
-def serializar_espacios(nodes):
+def serializar_espacios(nodes: list[SpaceNode]) -> str:
     """Serializa una lista de SpaceNode a JSON para PropertyStringList.
 
     Una lista vacía se serializa como cadena vacía para que el motor
@@ -89,7 +94,7 @@ def serializar_espacios(nodes):
     return json.dumps([n.to_dict() for n in nodes], ensure_ascii=False)
 
 
-def deserializar_espacios(json_str):
+def deserializar_espacios(json_str: str) -> list[SpaceNode]:
     """Deserializa JSON a lista de SpaceNode."""
     if not json_str or not json_str.strip():
         return []
@@ -101,7 +106,8 @@ def deserializar_espacios(json_str):
         return []
 
 
-def _division_iguales(nodes, espacio_total, espesor):
+def _division_iguales(nodes: list[SpaceNode], espacio_total: float,
+                      espesor: float) -> tuple[float, float]:
     """Espacio disponible y ancho de cada división de los nodos 'iguales'."""
     espacio_disponible = espacio_total
 
@@ -131,10 +137,11 @@ def _division_iguales(nodes, espacio_total, espesor):
     return espacio_disponible, espacio_cada_div
 
 
-def _nodo_fijo(node, cursor, espacio_disponible, espesor):
+def _nodo_fijo(node: SpaceNode, cursor: float, espacio_disponible: float,
+               espesor: float) -> tuple[dict[str, Any], float]:
     """Resuelve un nodo 'fijo'. Devuelve (resuelto, nuevo_cursor)."""
     libre = min(node.value, max(0, espacio_disponible - cursor))
-    resuelto = {
+    resuelto: dict[str, Any] = {
         "id": node.space_id,
         "inicio": cursor,
         "fin": cursor + libre,
@@ -148,12 +155,13 @@ def _nodo_fijo(node, cursor, espacio_disponible, espesor):
     return resuelto, cursor + libre
 
 
-def _nodo_iguales(node, cursor, espacio_cada_div, espesor):
+def _nodo_iguales(node: SpaceNode, cursor: float, espacio_cada_div: float,
+                  espesor: float) -> tuple[dict[str, Any], float]:
     """Resuelve un nodo 'iguales' en N subespacios. Devuelve (resuelto, nuevo_cursor)."""
     n_sub = max(1, int(node.value))
     espacio_total_este = espacio_cada_div * n_sub
     sub_cursor = cursor
-    sub_spaces = []
+    sub_spaces: list[dict[str, Any]] = []
     for j in range(n_sub):
         sub_spaces.append({
             "id": f"{node.space_id}_{j+1}",
@@ -167,7 +175,7 @@ def _nodo_iguales(node, cursor, espacio_cada_div, espesor):
         if j < n_sub - 1:
             sub_cursor += espesor
 
-    resuelto = {
+    resuelto: dict[str, Any] = {
         "id": node.space_id,
         "inicio": cursor,
         "fin": sub_cursor,
@@ -178,10 +186,11 @@ def _nodo_iguales(node, cursor, espacio_cada_div, espesor):
     return resuelto, sub_cursor
 
 
-def _nodo_restante(node, cursor, espacio_disponible, espesor):
+def _nodo_restante(node: SpaceNode, cursor: float, espacio_disponible: float,
+                   espesor: float) -> tuple[dict[str, Any], float]:
     """Resuelve un nodo 'restante'. Devuelve (resuelto, nuevo_cursor)."""
     libre = max(0, espacio_disponible - cursor)
-    resuelto = {
+    resuelto: dict[str, Any] = {
         "id": node.space_id,
         "inicio": cursor,
         "fin": cursor + libre,
@@ -195,7 +204,9 @@ def _nodo_restante(node, cursor, espacio_disponible, espesor):
     return resuelto, cursor + libre
 
 
-def _resolver_nodo(node, cursor, espacio_disponible, espacio_cada_div, espesor):
+def _resolver_nodo(node: SpaceNode, cursor: float, espacio_disponible: float,
+                   espacio_cada_div: float,
+                   espesor: float) -> tuple[dict[str, Any] | None, float]:
     """Despacha un nodo a su resolutor. Tipo desconocido: (None, cursor)."""
     if node.space_type == ESPACIO_FIJO:
         return _nodo_fijo(node, cursor, espacio_disponible, espesor)
@@ -206,7 +217,8 @@ def _resolver_nodo(node, cursor, espacio_disponible, espacio_cada_div, espesor):
     return None, cursor
 
 
-def resolver_espacios_eje(nodes, espacio_total, espesor):
+def resolver_espacios_eje(nodes: list[SpaceNode], espacio_total: float,
+                          espesor: float) -> list[dict[str, Any]]:
     """Resuelve una lista de nodos en posiciones físicas a lo largo de un eje.
 
     Args:
@@ -235,7 +247,7 @@ def resolver_espacios_eje(nodes, espacio_total, espesor):
     espacio_disponible, espacio_cada_div = _division_iguales(
         nodes, espacio_total, espesor)
 
-    resultado = []
+    resultado: list[dict[str, Any]] = []
     cursor = 0.0
 
     for i, node in enumerate(nodes):
@@ -250,7 +262,8 @@ def resolver_espacios_eje(nodes, espacio_total, espesor):
     return resultado
 
 
-def _reparto_iguales(children, espacio_libre, espesor):
+def _reparto_iguales(children: list[SpaceNode], espacio_libre: float,
+                     espesor: float) -> float:
     """Espacio que recibe cada division de los nodos ESPACIO_IGUALES del nivel."""
     espacio_disponible = espacio_libre
     fijos = [c for c in children if c.space_type == ESPACIO_FIJO]
@@ -266,7 +279,8 @@ def _reparto_iguales(children, espacio_libre, espesor):
     return espacio_para_dividir / n_div if n_div > 0 else 0
 
 
-def _entrada_libre(child, cursor, libre, espesor):
+def _entrada_libre(child: SpaceNode, cursor: float, libre: float,
+                   espesor: float) -> dict[str, Any]:
     """Entrada de un nodo fijo o restante cuyo espacio libre ya esta resuelto."""
     return {
         "id": child.space_id,
@@ -279,11 +293,12 @@ def _entrada_libre(child, cursor, libre, espesor):
     }
 
 
-def _entrada_iguales(child, cursor, espacio_cada, espesor):
+def _entrada_iguales(child: SpaceNode, cursor: float, espacio_cada: float,
+                     espesor: float) -> tuple[dict[str, Any], float]:
     """Entrada de un nodo ESPACIO_IGUALES. Devuelve (entrada, cursor nuevo)."""
     n_sub = max(1, int(child.value))
     sub_cursor = cursor
-    sub_spaces = []
+    sub_spaces: list[dict[str, Any]] = []
     for j in range(n_sub):
         sub_spaces.append({
             "id": f"{child.space_id}_{j+1}",
@@ -296,7 +311,7 @@ def _entrada_iguales(child, cursor, espacio_cada, espesor):
         sub_cursor += espacio_cada
         if j < n_sub - 1:
             sub_cursor += espesor
-    entrada = {
+    entrada: dict[str, Any] = {
         "id": child.space_id,
         "inicio": cursor,
         "fin": sub_cursor,
@@ -307,7 +322,8 @@ def _entrada_iguales(child, cursor, espacio_cada, espesor):
     return entrada, sub_cursor
 
 
-def _resolver_subespacios(children, espacio_libre, espesor):
+def _resolver_subespacios(children: list[SpaceNode], espacio_libre: float,
+                          espesor: float) -> list[dict[str, Any]]:
     """Resuelve sub-espacios recursivamente en el eje opuesto."""
     if not children or espacio_libre <= 0:
         return []
@@ -315,7 +331,7 @@ def _resolver_subespacios(children, espacio_libre, espesor):
     espacio_disponible = espacio_libre
     espacio_cada = _reparto_iguales(children, espacio_libre, espesor)
 
-    resultado = []
+    resultado: list[dict[str, Any]] = []
     cursor = 0.0
 
     for i, child in enumerate(children):
@@ -340,9 +356,9 @@ def _resolver_subespacios(children, espacio_libre, espesor):
     return resultado
 
 
-def generar_texto_resumen(espacios_resueltos, eje_label="X"):
+def generar_texto_resumen(espacios_resueltos: list[dict[str, Any]], eje_label: str = "X") -> str:
     """Genera un texto legible del resultado de la resolución de espacios."""
-    lineas = []
+    lineas: list[str] = []
     for esp in espacios_resueltos:
         libre = esp["libre"]
         tipo = esp["tipo"]
@@ -360,7 +376,8 @@ def generar_texto_resumen(espacios_resueltos, eje_label="X"):
     return f"Eje {eje_label}:\n" + "\n".join(lineas) if lineas else ""
 
 
-def calcular_espacio_libre(espacios_json, espacio_total, espesor):
+def calcular_espacio_libre(espacios_json: str, espacio_total: float,
+                           espesor: float) -> dict[str, Any]:
     """Calcula el espacio libre total y el último vano remanente.
 
     Returns:
