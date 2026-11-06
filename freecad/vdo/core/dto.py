@@ -1,4 +1,4 @@
-"""app/dto.py — Objetos de transferencia de datos (DTO) para los casos de uso.
+"""core/dto.py — Objetos de transferencia de datos (DTO) para los casos de uso.
 
 Todos los DTOs son dataclasses frozen (inmutables) para garantizar que la UI
 no pueda modificar el estado de dominio. Los casos de uso reciben un DTO de
