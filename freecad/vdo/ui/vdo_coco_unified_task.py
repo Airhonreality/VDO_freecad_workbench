@@ -52,7 +52,7 @@ from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
-from freecad.vdo.ui.vdo_widgets_coco import DivisionesEditor
+from freecad.vdo.ui.coco_construccion_widgets import DivisionesEditor
 
 COL_TIPO = 0
 COL_VALOR = 1
