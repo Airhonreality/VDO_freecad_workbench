@@ -26,6 +26,11 @@ class PaginaVano(_PaginaBase):
         self.lbl_luz_d = self._add_dato("Luz neta D", "—")
         self.lbl_subdiv = self._add_dato("Subdivisión", "—")
 
+        self._crear_banner_luz()
+        self._crear_dock_habitantes()
+        self._crear_stack_dock()
+
+    def _crear_banner_luz(self):
         # -------------------------------------------------------------
         # Banner de Luz Libre Real
         # -------------------------------------------------------------
@@ -41,6 +46,7 @@ class PaginaVano(_PaginaBase):
         lay_b.addWidget(self.lbl_luz_banner)
         self.contenedor_datos.addWidget(self.banner_luz)
 
+    def _crear_dock_habitantes(self):
         # -------------------------------------------------------------
         # Dock Táctil de Habitantes (4 Acciones)
         # -------------------------------------------------------------
@@ -91,12 +97,21 @@ class PaginaVano(_PaginaBase):
         self.btn_dock["vacio"].setChecked(True)
         self.contenedor_datos.addLayout(fila_dock)
 
+    def _crear_stack_dock(self):
         # -------------------------------------------------------------
         # Sub-paneles Contextuales del Dock
         # -------------------------------------------------------------
         self.stack_dock = QtWidgets.QStackedWidget()
         self.stack_dock.setStyleSheet("background-color: #1a1a1a; border-radius: 4px;")
+        self._crear_panel_subdivision()
+        self._crear_panel_cajon()
+        self._crear_panel_puerta()
+        self._crear_panel_vacio()
 
+        self.stack_dock.setCurrentIndex(3)
+        self.contenedor_datos.addWidget(self.stack_dock)
+
+    def _crear_panel_subdivision(self):
         # 0. Subdividir
         panel_subdiv = QtWidgets.QWidget()
         lay_sub = QtWidgets.QVBoxLayout(panel_subdiv)
@@ -131,6 +146,7 @@ class PaginaVano(_PaginaBase):
         lay_sub.addWidget(btn_ap_sub)
         self.stack_dock.addWidget(panel_subdiv)
 
+    def _crear_panel_cajon(self):
         # 1. Cajón
         panel_cajon = QtWidgets.QWidget()
         lay_caj = QtWidgets.QVBoxLayout(panel_cajon)
@@ -169,6 +185,7 @@ class PaginaVano(_PaginaBase):
         lay_caj.addWidget(btn_ap_caj)
         self.stack_dock.addWidget(panel_cajon)
 
+    def _crear_panel_puerta(self):
         # 2. Puerta
         panel_puerta = QtWidgets.QWidget()
         lay_pue = QtWidgets.QVBoxLayout(panel_puerta)
@@ -206,6 +223,7 @@ class PaginaVano(_PaginaBase):
         lay_pue.addWidget(btn_ap_pue)
         self.stack_dock.addWidget(panel_puerta)
 
+    def _crear_panel_vacio(self):
         # 3. Vacío
         panel_vacio = QtWidgets.QWidget()
         lay_vac = QtWidgets.QVBoxLayout(panel_vacio)
@@ -219,8 +237,6 @@ class PaginaVano(_PaginaBase):
         lay_vac.addWidget(btn_ap_vac)
         self.stack_dock.addWidget(panel_vacio)
 
-        self.stack_dock.setCurrentIndex(3)
-        self.contenedor_datos.addWidget(self.stack_dock)
 
     def _on_dock_clicked(self, habitante):
         for k, btn in self.btn_dock.items():
