@@ -604,3 +604,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-70
 
 - **D-70:** M6 usa vdo_form_builder.FormBuilder como constructor genérico (no se duplica). El panel de zócalo se migra a especificación.
+
+## D-71
+
+- **D-71:** M6 panel de paneles migrado a especificación. Árbol de widgets idéntico (361 nodos). Visual pendiente (M10, usuario). FormBuilder gana los tipos texto, expresion y vdo_double_spin, y la marca sin_etiqueta (celda sin etiqueta); el zócalo no cambia. Accept en normal y error (reengrose inválido) igual que la versión anterior. Revertir: git revert del commit.

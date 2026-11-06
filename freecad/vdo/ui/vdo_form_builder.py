@@ -25,6 +25,10 @@
 # =====================================================================
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox, VDO_ExpressionInput
+
+# tipos cuyo widget es numerico (value(), interpretText())
+_TIPOS_NUMERICOS = ("double_spin", "vdo_double_spin", "spin")
 
 
 def _asignar_numero(widget, valor):
@@ -52,11 +56,14 @@ _ASIGNADORES_VALOR = {
     "checkbox": _asignar_check,
     "combo": _asignar_combo,
     "label": _asignar_texto,
+    "texto": _asignar_texto,
+    "expresion": _asignar_texto,
+    "vdo_double_spin": _asignar_numero,
 }
 
 
-def _crear_double_spin(campo, parent):
-    w = QtWidgets.QDoubleSpinBox(parent)
+def _crear_double_spin(campo, parent, clase=None):
+    w = (clase or QtWidgets.QDoubleSpinBox)(parent)
     if campo.rango:
         w.setRange(*campo.rango)
     if campo.decimales is not None:
@@ -95,13 +102,28 @@ def _crear_label(campo, parent):
     return QtWidgets.QLabel(str(campo.valor_defecto or ""), parent)
 
 
+def _crear_texto(campo, parent):
+    return QtWidgets.QLineEdit(parent)
+
+
+def _crear_expresion(campo, parent):
+    return VDO_ExpressionInput(parent, numeric_only=False)
+
+
+def _crear_vdo_double_spin(campo, parent):
+    return _crear_double_spin(campo, parent, VDO_DoubleSpinBox)
+
+
 # tipo de campo -> funcion que crea el widget Qt (campo, parent)
 _CONSTRUCTORES_WIDGET = {
     "double_spin": _crear_double_spin,
+    "vdo_double_spin": _crear_vdo_double_spin,
     "spin": _crear_spin,
     "checkbox": _crear_checkbox,
     "combo": _crear_combo,
     "label": _crear_label,
+    "texto": _crear_texto,
+    "expresion": _crear_expresion,
 }
 
 
@@ -138,14 +160,16 @@ class FormField:
     def valor(self):
         if self.widget is None:
             return self.valor_defecto
-        if self.tipo in ("double_spin", "spin"):
+        if self.tipo in _TIPOS_NUMERICOS:
             return self.widget.value()
         if self.tipo == "checkbox":
             return self.widget.isChecked()
         if self.tipo == "combo":
             return self.widget.currentData()
-        if self.tipo == "label":
+        if self.tipo in ("label", "texto"):
             return self.widget.text()
+        if self.tipo == "expresion":
+            return self.widget.value()
         return self.valor_defecto
 
     def set_valor(self, valor):
@@ -203,6 +227,9 @@ class FormBuilder:
             w = campo.crear_widget()
             if espec.get("wrapping"):
                 w.setWrapping(True)
+            if espec.get("sin_etiqueta"):
+                grid.addWidget(w, fila, 0, 1, espec.get("colspan", 1))
+                continue
             grid.addWidget(QtWidgets.QLabel(campo.etiqueta), fila, 0)
             grid.addWidget(w, fila, 1, 1, espec.get("colspan", 1))
         main_layout.addWidget(grupo)
@@ -212,7 +239,7 @@ class FormBuilder:
         """Interpreta el texto escrito en los spinners antes de leer valores."""
         for clave in self.orden:
             campo = self.campos[clave]
-            if campo.tipo in ("double_spin", "spin") and campo.widget is not None:
+            if campo.tipo in _TIPOS_NUMERICOS and campo.widget is not None:
                 campo.widget.interpretText()
 
 

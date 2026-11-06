@@ -5,9 +5,18 @@ FormBuilder.construir_grupo convierte en widgets. La fila de índice i ocupa la
 fila i de la rejilla del grupo.
 """
 
+from freecad.vdo.core.vdo_defaults import ORIENTACIONES_VALIDAS
+from freecad.vdo.core.vdo_finish import CANTOS_VALIDOS
 from freecad.vdo.core.vdo_module_props import ANCLAJE_LABELS, ANCLAJES
 
 ITEMS_ANCLAJE = [(ANCLAJE_LABELS.get(a, a), a) for a in ANCLAJES]
+
+AYUDA_CANTO = {
+    "Norte": "Borde norte del tablero visto desde la cara A.",
+    "Sur": "Borde sur del tablero visto desde la cara A.",
+    "Este": "Borde este del tablero visto desde la cara A.",
+    "Oeste": "Borde oeste del tablero visto desde la cara A.",
+}
 
 # clave del campo -> propiedad del objeto FreeCAD que la guarda
 PROPIEDAD_ZOCALO = {
@@ -70,5 +79,58 @@ ZOCALO_GRUPOS = (
         {"tipo": "combo", "clave": "anclaje", "etiqueta": "Anclaje:",
          "items": ITEMS_ANCLAJE,
          "tooltip": "Esquina del zócalo que se apoya en el punto de colocación."},
+    )),
+)
+
+
+# --- Panel VDO (M6, MN-08, D-71) -------------------------------------------
+# El panel se construye en dos tramos: los grupos antes del bloque de
+# reengrose (que es un editor propio) y los grupos despues de el.
+
+PANEL_GRUPOS_ANTES = (
+    ("Panel", (
+        {"tipo": "texto", "clave": "etiqueta", "etiqueta": "Etiqueta:",
+         "tooltip": "Nombre visible de la pieza en el árbol y en la lista de corte."},
+        {"tipo": "combo", "clave": "orientacion", "etiqueta": "Orientación:",
+         "items": [(o, None) for o in ORIENTACIONES_VALIDAS],
+         "tooltip": "Horizontal: el largo corre a lo ancho del mueble. "
+                    "Vertical: el largo corre en altura."},
+        {"tipo": "texto", "clave": "material", "etiqueta": "Material:",
+         "tooltip": "Referencia de material del manifiesto, por ejemplo "
+                    "melamina_standar."},
+    )),
+    ("Dimensiones", (
+        {"tipo": "combo", "clave": "modo", "sin_etiqueta": True, "colspan": 2,
+         "items": [("Directo", None), ("Expresión (fórmula)", None)],
+         "tooltip": "Directo: valor numérico libre. "
+                    "Expresión (fórmula): expresión nativa de FreeCAD que enlaza "
+                    "cualquier propiedad del proyecto (p. ej. Params.Largo / 2)."},
+        {"tipo": "expresion", "clave": "largo", "etiqueta": "Largo (mm):",
+         "tooltip": "Largo real de la cara del tablero, no la diagonal ni el desarrollo."},
+        {"tipo": "expresion", "clave": "ancho", "etiqueta": "Ancho (mm):",
+         "tooltip": "Ancho de la cara del tablero. En un lateral vertical suele ser "
+                    "la profundidad del mueble."},
+        {"tipo": "expresion", "clave": "espesor", "etiqueta": "Espesor (mm):",
+         "tooltip": "Espesor del tablero. El reengrose usa este valor por defecto."},
+    )),
+    ("Cantos", tuple(
+        {"tipo": "combo", "clave": f"canto_{d.lower()}", "etiqueta": f"{d}:",
+         "items": [(c, None) for c in CANTOS_VALIDOS],
+         "tooltip": AYUDA_CANTO[d] + " RIG = canto rígido, SMRG = semi-rígido, "
+                    "FX = sin canto."}
+        for d in ("Norte", "Sur", "Este", "Oeste")
+    )),
+)
+
+PANEL_GRUPOS_DESPUES = (
+    ("Colocación", (
+        {"tipo": "vdo_double_spin", "clave": "rotacion", "etiqueta": "Rotación Z:",
+         "valor_defecto": 0.0, "rango": (-360.0, 360.0), "decimales": 1,
+         "sufijo": " °", "wrapping": True,
+         "tooltip": "Rotación de colocación alrededor de Z. No cambia las medidas "
+                    "del tablero."},
+        {"tipo": "combo", "clave": "anclaje", "etiqueta": "Anclaje:",
+         "items": ITEMS_ANCLAJE,
+         "tooltip": "Esquina del panel que se apoya en el punto de colocación."},
     )),
 )
