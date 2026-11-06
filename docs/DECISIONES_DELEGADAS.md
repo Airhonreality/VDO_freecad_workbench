@@ -385,3 +385,9 @@ $ minimalismo.py fachadas   -> 0
 - **Documentos con `0` en la otra máquina:** U-04.
 - **Registro en `PROGRESO_MINIMALISMO.md` y `PENDIENTES_HUMANO.md`:** pendiente, por conflicto potencial con otras sesiones activas.
 - **Ruff 294:** el desglose por carpeta no se ha vuelto a medir en esta sesión. `F821` en `tests/test_single_dock_convergence.py:218` pertenece a P-04, de la otra sesión.
+
+## D-19 a D-21 (ola 1 a 3 del director)
+
+- **D-19:** el gate de literales cubre el paquete de primer nivel (`commands.py`, `Init.py`, `InitGui.py`). No cubre `tools/` ni `tests/`. Razón: D-16 exige 0 en el paquete; `tools/` y `tests/` usan literales a propósito.
+- **D-20:** se elimina el alias de reexportación `APERTURA_DESCUENTO_ALTO` en `vdo_puerta_despiece.py`. Sin usos externos.
+- **D-21:** M4.3 `generar_tiras_perimetrales` se reescribe como tabla de lados y reglas. Gates: goldens reengrose y zocalo_core OK; equivalencia exacta 20000/20000 con script fuera del repo. **El gate "ramas baja en 1" NO se cumple:** la función nunca contó en el auditor (su cadena if/elif máxima era de 3 ramas). Se acepta porque el criterio real del plan es comportamiento congelado, no la cifra del auditor. Revertir: `git revert e28e5e0`.
