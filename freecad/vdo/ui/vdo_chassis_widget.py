@@ -65,6 +65,74 @@ TIPOS_FONDO = [
 
 ESTRATEGIAS_BASE = ("zocalo", "suspendido", "patas")
 
+# nombre del arquetipo -> configuracion del chasis que aplica
+_ARQUETIPOS = {
+    "COCO": {
+        "caras": {
+            "superior": {"activa": True, "tipo": "estructural"},
+            "inferior": {"activa": True, "tipo": "estructural"},
+            "izquierda": {"activa": True, "tipo": "estructural"},
+            "derecha": {"activa": True, "tipo": "estructural"},
+            "fondo": {"activa": True, "tipo": "ranurado_5mm"},
+        },
+        "encuentros": {
+            "superior_izq": "tapa_domina",
+            "superior_der": "tapa_domina",
+            "inferior_izq": "lateral_domina",
+            "inferior_der": "lateral_domina",
+        },
+        "base": {"estrategia": "zocalo", "altura": 100.0, "separacion_frente": 50.0},
+    },
+    "Mesa": {
+        "caras": {
+            "superior": {"activa": True, "tipo": "estructural"},
+            "inferior": {"activa": False, "tipo": "estructural"},
+            "izquierda": {"activa": True, "tipo": "estructural"},
+            "derecha": {"activa": True, "tipo": "estructural"},
+            "fondo": {"activa": True, "tipo": "atornillado"},
+        },
+        "encuentros": {
+            "superior_izq": "tapa_domina",
+            "superior_der": "tapa_domina",
+            "inferior_izq": "lateral_domina",
+            "inferior_der": "lateral_domina",
+        },
+        "base": {"estrategia": "patas", "altura": 20.0, "separacion_frente": 0.0},
+    },
+    "Estante": {
+        "caras": {
+            "superior": {"activa": False, "tipo": "estructural"},
+            "inferior": {"activa": True, "tipo": "estructural"},
+            "izquierda": {"activa": True, "tipo": "estructural"},
+            "derecha": {"activa": True, "tipo": "estructural"},
+            "fondo": {"activa": False, "tipo": "abierto"},
+        },
+        "encuentros": {
+            "superior_izq": "lateral_domina",
+            "superior_der": "lateral_domina",
+            "inferior_izq": "lateral_domina",
+            "inferior_der": "lateral_domina",
+        },
+        "base": {"estrategia": "zocalo", "altura": 80.0, "separacion_frente": 0.0},
+    },
+    "Aéreo": {
+        "caras": {
+            "superior": {"activa": True, "tipo": "estructural"},
+            "inferior": {"activa": True, "tipo": "estructural"},
+            "izquierda": {"activa": True, "tipo": "estructural"},
+            "derecha": {"activa": True, "tipo": "estructural"},
+            "fondo": {"activa": True, "tipo": "ranurado_5mm"},
+        },
+        "encuentros": {
+            "superior_izq": "lateral_domina",
+            "superior_der": "lateral_domina",
+            "inferior_izq": "lateral_domina",
+            "inferior_der": "lateral_domina",
+        },
+        "base": {"estrategia": "suspendido", "altura": 300.0, "separacion_frente": 0.0},
+    },
+}
+
 
 # ----------------------------------------------------------------------
 # Canvas 2D de Sección Transversal
@@ -832,75 +900,8 @@ class VDOChassisControllerWidget(QtWidgets.QWidget):
         if self._cargando:
             return
 
-        if nombre == "COCO":
-            cfg = {
-                "caras": {
-                    "superior": {"activa": True, "tipo": "estructural"},
-                    "inferior": {"activa": True, "tipo": "estructural"},
-                    "izquierda": {"activa": True, "tipo": "estructural"},
-                    "derecha": {"activa": True, "tipo": "estructural"},
-                    "fondo": {"activa": True, "tipo": "ranurado_5mm"},
-                },
-                "encuentros": {
-                    "superior_izq": "tapa_domina",
-                    "superior_der": "tapa_domina",
-                    "inferior_izq": "lateral_domina",
-                    "inferior_der": "lateral_domina",
-                },
-                "base": {"estrategia": "zocalo", "altura": 100.0, "separacion_frente": 50.0},
-            }
-        elif nombre == "Mesa":
-            cfg = {
-                "caras": {
-                    "superior": {"activa": True, "tipo": "estructural"},
-                    "inferior": {"activa": False, "tipo": "estructural"},
-                    "izquierda": {"activa": True, "tipo": "estructural"},
-                    "derecha": {"activa": True, "tipo": "estructural"},
-                    "fondo": {"activa": True, "tipo": "atornillado"},
-                },
-                "encuentros": {
-                    "superior_izq": "tapa_domina",
-                    "superior_der": "tapa_domina",
-                    "inferior_izq": "lateral_domina",
-                    "inferior_der": "lateral_domina",
-                },
-                "base": {"estrategia": "patas", "altura": 20.0, "separacion_frente": 0.0},
-            }
-        elif nombre == "Estante":
-            cfg = {
-                "caras": {
-                    "superior": {"activa": False, "tipo": "estructural"},
-                    "inferior": {"activa": True, "tipo": "estructural"},
-                    "izquierda": {"activa": True, "tipo": "estructural"},
-                    "derecha": {"activa": True, "tipo": "estructural"},
-                    "fondo": {"activa": False, "tipo": "abierto"},
-                },
-                "encuentros": {
-                    "superior_izq": "lateral_domina",
-                    "superior_der": "lateral_domina",
-                    "inferior_izq": "lateral_domina",
-                    "inferior_der": "lateral_domina",
-                },
-                "base": {"estrategia": "zocalo", "altura": 80.0, "separacion_frente": 0.0},
-            }
-        elif nombre == "Aéreo":
-            cfg = {
-                "caras": {
-                    "superior": {"activa": True, "tipo": "estructural"},
-                    "inferior": {"activa": True, "tipo": "estructural"},
-                    "izquierda": {"activa": True, "tipo": "estructural"},
-                    "derecha": {"activa": True, "tipo": "estructural"},
-                    "fondo": {"activa": True, "tipo": "ranurado_5mm"},
-                },
-                "encuentros": {
-                    "superior_izq": "lateral_domina",
-                    "superior_der": "lateral_domina",
-                    "inferior_izq": "lateral_domina",
-                    "inferior_der": "lateral_domina",
-                },
-                "base": {"estrategia": "suspendido", "altura": 300.0, "separacion_frente": 0.0},
-            }
-        else:
+        cfg = _ARQUETIPOS.get(nombre)
+        if cfg is None:
             return
 
         self.setChassisConfig(cfg)
