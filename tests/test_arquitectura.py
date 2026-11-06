@@ -79,7 +79,7 @@ def _tiene_escritura_freecad(src: str) -> bool:
             # Solo cuenta si es asignación (target de Assign)
             pass
     import re
-    if re.search(r"\.(Ancho|Alto|Largo)\s*=", src):
+    if re.search(r"\.(Ancho|Alto|Largo|Espesor|LocalPlacement|Placement)\s*=[^=]", src):
         return True
     if re.search(r"\bApp\.\w+", src):
         return True
