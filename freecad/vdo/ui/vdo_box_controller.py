@@ -77,6 +77,14 @@ _TEXTO_BOTON_BORDE = {
     "derecha": lambda w, t: f"DER ►\n{w:.0f}mm\n{t}",
 }
 
+# margen seleccionado -> segmento (x1, y1, x2, y2) de la linea de resaltado
+_SEGMENTO_MARGEN_SEL = {
+    "fondo": lambda x0, y0, bw, bh: (x0, y0, x0 + bw, y0),
+    "frente": lambda x0, y0, bw, bh: (x0, y0 + bh, x0 + bw, y0 + bh),
+    "izquierda": lambda x0, y0, bw, bh: (x0, y0, x0, y0 + bh),
+    "derecha": lambda x0, y0, bw, bh: (x0 + bw, y0, x0 + bw, y0 + bh),
+}
+
 
 # ----------------------------------------------------------------------
 # Hoja de estilos oscura (Figma Dark Theme)
@@ -283,14 +291,10 @@ class _VDOConcentricCenterCanvas(QtWidgets.QWidget):
         # Resaltado del margen seleccionado en Calibre 1.5px Cyan
         pen_sel = QtGui.QPen(QtGui.QColor("#007acc"), 1.8, QtCore.Qt.SolidLine)
         p.setPen(pen_sel)
-        if self.margen_sel == "fondo":
-            p.drawLine(QtCore.QPointF(x0, y0), QtCore.QPointF(x0 + bw, y0))
-        elif self.margen_sel == "frente":
-            p.drawLine(QtCore.QPointF(x0, y0 + bh), QtCore.QPointF(x0 + bw, y0 + bh))
-        elif self.margen_sel == "izquierda":
-            p.drawLine(QtCore.QPointF(x0, y0), QtCore.QPointF(x0, y0 + bh))
-        elif self.margen_sel == "derecha":
-            p.drawLine(QtCore.QPointF(x0 + bw, y0), QtCore.QPointF(x0 + bw, y0 + bh))
+        segmento = _SEGMENTO_MARGEN_SEL.get(self.margen_sel)
+        if segmento is not None:
+            x1, y1, x2, y2 = segmento(x0, y0, bw, bh)
+            p.drawLine(QtCore.QPointF(x1, y1), QtCore.QPointF(x2, y2))
 
         # 3. Brechas y Calibre 3px: Tiras de Melamina
         # Si offset == 0: gap = 3 px (al ras)
