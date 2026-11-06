@@ -242,6 +242,46 @@ def _cotas_mecanizado(mecanizado, marca_id, z_piso, g_fondo):
     return mecanizados_resumen, diam_t, prof_t, dist_t_tras, prof_ranura, notch_ancho, notch_alto
 
 
+def _piezas_laterales(largo_lateral, alto_lateral, g_caja, material_ref, z_piso, g_fondo, lg,
+    prof_ranura, diam_t, prof_t, dist_t_tras):
+    """Paneles laterales izquierdo y derecho de la caja, para la lista de corte."""
+    piezas = [
+        {
+            "nombre": "Cajon_Lateral_Izq",
+            "tipo": "panel",
+            "largo": largo_lateral,
+            "ancho": alto_lateral,
+            "espesor": g_caja,
+            "cantidad": 1,
+            "material_ref": material_ref,
+            "mecanizados": [
+                {"tipo": "ranura_piso", "cara": "interna",
+                 "z_base": z_piso, "ancho": g_fondo,
+                 "prof": prof_ranura, "largo": lg},
+                {"tipo": "taladro_fondo", "ø": diam_t, "prof": prof_t,
+                 "y_desde_trasero": dist_t_tras, "x_centrada": True},
+            ],
+        },
+        {
+            "nombre": "Cajon_Lateral_Der",
+            "tipo": "panel",
+            "largo": largo_lateral,
+            "ancho": alto_lateral,
+            "espesor": g_caja,
+            "cantidad": 1,
+            "material_ref": material_ref,
+            "mecanizados": [
+                {"tipo": "ranura_piso", "cara": "interna",
+                 "z_base": z_piso, "ancho": g_fondo,
+                 "prof": prof_ranura, "largo": lg},
+                {"tipo": "taladro_fondo", "ø": diam_t, "prof": prof_t,
+                 "y_desde_trasero": dist_t_tras, "x_centrada": True},
+            ],
+        },
+    ]
+    return piezas
+
+
 def calcular_despiece(config):
     """Calcula el despiece completo del cajón con corredera oculta.
 
@@ -305,39 +345,9 @@ def calcular_despiece(config):
      z_piso, g_fondo)
 
     # --- 9. Piezas para cutting list (VDO_Paneles_JSON) ---
-    piezas = [
-        {
-            "nombre": "Cajon_Lateral_Izq",
-            "tipo": "panel",
-            "largo": largo_lateral,
-            "ancho": alto_lateral,
-            "espesor": g_caja,
-            "cantidad": 1,
-            "material_ref": material_ref,
-            "mecanizados": [
-                {"tipo": "ranura_piso", "cara": "interna",
-                 "z_base": z_piso, "ancho": g_fondo,
-                 "prof": prof_ranura, "largo": lg},
-                {"tipo": "taladro_fondo", "ø": diam_t, "prof": prof_t,
-                 "y_desde_trasero": dist_t_tras, "x_centrada": True},
-            ],
-        },
-        {
-            "nombre": "Cajon_Lateral_Der",
-            "tipo": "panel",
-            "largo": largo_lateral,
-            "ancho": alto_lateral,
-            "espesor": g_caja,
-            "cantidad": 1,
-            "material_ref": material_ref,
-            "mecanizados": [
-                {"tipo": "ranura_piso", "cara": "interna",
-                 "z_base": z_piso, "ancho": g_fondo,
-                 "prof": prof_ranura, "largo": lg},
-                {"tipo": "taladro_fondo", "ø": diam_t, "prof": prof_t,
-                 "y_desde_trasero": dist_t_tras, "x_centrada": True},
-            ],
-        },
+    piezas = _piezas_laterales(largo_lateral, alto_lateral, g_caja,
+                               material_ref, z_piso, g_fondo, lg, prof_ranura,
+                               diam_t, prof_t, dist_t_tras) + [
         {
             "nombre": "Cajon_Contrafrente",
             "tipo": "panel",
