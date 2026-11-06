@@ -8,6 +8,7 @@ entrada y devuelven un DTO de salida.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR, OCULTA, TIRADOR
 
@@ -20,7 +21,7 @@ class PanelDTO:
     largo: float
     ancho: float
     espesor: float
-    cantos: dict  # {"norte": str, "sur": str, "este": str, "oeste": str}
+    cantos: dict[str, str]  # {"norte": str, "sur": str, "este": str, "oeste": str}
     material_ref: str = MELAMINA_ESTANDAR
     usar_params: bool = True
     rotacion: float = 0.0
@@ -43,11 +44,11 @@ class CocoDTO:
     tiene_fondo: bool = True
     calibre_fondo: float = 6.0
     divisiones: str = ""
-    reengroses: dict | None = None
+    reengroses: dict[str, Any] | None = None  # estructura por modulo, sin tipo fijo aqui
     rotacion: float = 0.0
     anclaje: str = "inferior_izquierda_frente"
-    lados_vistos: list | None = None
-    lados_apoyados: list | None = None
+    lados_vistos: list[Any] | None = None  # contenido sin tipo fijo aqui
+    lados_apoyados: list[Any] | None = None  # contenido sin tipo fijo aqui
 
 
 @dataclass(frozen=True)
@@ -139,7 +140,7 @@ class HojaResultado:
 @dataclass(frozen=True)
 class EditarModuloDTO:
     nombre: str
-    cambios: dict
+    cambios: dict[str, Any]  # payload JSON de cambios, sin tipo fijo aqui
 
 
 @dataclass(frozen=True)
@@ -177,7 +178,7 @@ class ExportarListaCorteResultado:
 
 @dataclass(frozen=True)
 class OptimizarCorteDTO:
-    modulos: list
+    modulos: list[Any]  # filas de modulo, sin tipo fijo aqui
     ancho_tablero: float
     alto_tablero: float
 
@@ -190,7 +191,7 @@ class OptimizarCorteResultado:
 
 @dataclass(frozen=True)
 class NestingDTO:
-    piezas: list
+    piezas: list[Any]  # filas de pieza, sin tipo fijo aqui
 
 
 @dataclass(frozen=True)
@@ -205,7 +206,7 @@ class ConsultarHerrajesDTO:
 
 @dataclass(frozen=True)
 class ConsultarHerrajesResultado:
-    herrajes: list
+    herrajes: list[Any]  # filas de herraje, sin tipo fijo aqui
 
 
 @dataclass(frozen=True)
