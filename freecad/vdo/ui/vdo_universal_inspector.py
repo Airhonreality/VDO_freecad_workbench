@@ -182,22 +182,40 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
         ancho = _float_seguro(getattr(obj, "Ancho", None), 600.0)
         fondo = _float_seguro(getattr(obj, "FondoModulo", None), 580.0)
         espesor = _float_seguro(getattr(obj, "Espesor", None), 18.0)
+        layout = self._leer_layout(obj)
+        reengroses = self._leer_reengroses(obj)
+        contenido_por_celda = self._leer_contenido(obj)
+        resolved = self._resolver_layout(layout, alto, ancho, espesor, reengroses)
+        self._resolved_layout = resolved
+        piezas = self._piezas_estructura(alto, ancho, fondo, espesor)
+        piezas = self._agregar_divisiones(piezas, resolved, fondo, espesor)
+        self._piezas_calculadas = piezas
+        self._actualizar_preview(resolved, ancho, alto, piezas, fondo, reengroses)
+        # 5. Regenerar Árbol Maestro
+        self._regenerar_arbol_maestro(obj, piezas, resolved, contenido_por_celda)
 
+    def _leer_layout(self, obj):
         texto_div = getattr(obj, "VDO_Divisiones", "") or ""
         layout = Layout.loads(texto_div) if Layout is not None else None
+        return layout
 
+    def _leer_reengroses(self, obj):
         texto_reeng = getattr(obj, "VDO_Reengrose_JSON", "{}") or "{}"
         try:
             reengroses = json.loads(texto_reeng) if isinstance(texto_reeng, str) else dict(texto_reeng)
         except Exception:
             reengroses = {}
+        return reengroses
 
+    def _leer_contenido(self, obj):
         texto_contenido = getattr(obj, "VDO_Contenido_JSON", "{}") or "{}"
         try:
             contenido_por_celda = json.loads(texto_contenido) if isinstance(texto_contenido, str) else dict(texto_contenido)
         except Exception:
             contenido_por_celda = {}
+        return contenido_por_celda
 
+    def _resolver_layout(self, layout, alto, ancho, espesor, reengroses):
         resolved = None
         if layout is not None and resolve_layout is not None and cavidad_interior is not None:
             cavidad = cavidad_interior(alto, ancho, espesor)
@@ -208,8 +226,9 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
                 espesor,
                 reengroses=reengroses
             )
-        self._resolved_layout = resolved
+        return resolved
 
+    def _piezas_estructura(self, alto, ancho, fondo, espesor):
         # Calcular lista de piezas físicas
         cav_w = (ancho - 2.0 * espesor) if ancho > 2.0 * espesor else ancho
         (alto - 2.0 * espesor) if alto > 2.0 * espesor else alto
@@ -252,7 +271,9 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
                 "cantos": {"norte": "RIG", "sur": "RIG", "este": "FX", "oeste": "FX"},
             },
         ]
+        return piezas
 
+    def _agregar_divisiones(self, piezas, resolved, fondo, espesor):
         # Agregar divisiones de layout si existen
         if resolved is not None:
             for idx, p in enumerate(resolved.pieces):
@@ -265,9 +286,9 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
                     "caja": {"x": p.x, "y": 0.0, "z": p.z, "w": p.w, "h": fondo, "d": p.h},
                     "cantos": {"norte": "FX", "sur": "FX", "este": "FX", "oeste": "FX"},
                 })
+        return piezas
 
-        self._piezas_calculadas = piezas
-
+    def _actualizar_preview(self, resolved, ancho, alto, piezas, fondo, reengroses):
         # 4. Actualizar Visor 2D (CocoPreview2D)
         if self.preview is not None and resolved is not None:
             try:
@@ -283,8 +304,6 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
                 App.Console.PrintWarning(
                     "[VDO] No se pudo actualizar el visor 2D")
 
-        # 5. Regenerar Árbol Maestro
-        self._regenerar_arbol_maestro(obj, piezas, resolved, contenido_por_celda)
     # ------------------------------------------------------------------
     # API pública y Ciclo de Vida
     # ------------------------------------------------------------------
