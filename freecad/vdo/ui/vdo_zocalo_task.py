@@ -13,6 +13,7 @@ from freecad.vdo.core.vdo_module_props import (
     ANCLAJES,
 )
 from freecad.vdo.cad.propiedades import add_common_props
+from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.core.vdo_zocalo_core import ZocaloError, calcular_geometria_zocalo
 from freecad.vdo.qt_compat import QtGui, QtWidgets
 from freecad.vdo.ui.vdo_form_builder import FormBuilder
@@ -297,7 +298,7 @@ class ZocaloTaskPanel(VDOTransactionMixin):
             if anclaje:
                 self.obj.VDO_Anclaje = anclaje
             aplicar_rotacion(self.obj, self.spin_rotacion.value())
-            App.ActiveDocument.recompute()
+            recalcular_activo()
             self._vdo_commit()
             self._vdo_aceptado = True
             self._vdo_call_accept()
