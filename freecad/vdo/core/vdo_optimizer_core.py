@@ -187,6 +187,88 @@ def _pack_all(usable_w, usable_h, items, allow_rotation, score_func):
 # ----------------------------------------------------------------------
 # 3. Optimización completa (múltiples tableros)
 # ----------------------------------------------------------------------
+def _validar_tablero(board_w, board_h, margin):
+    """Devuelve las dimensiones utiles del tablero; rechaza margen excesivo."""
+    usable_w = board_w - 2 * margin
+    usable_h = board_h - 2 * margin
+    if usable_w <= 0 or usable_h <= 0:
+        raise ValueError("El margen es mayor que el tablero.")
+    return usable_w, usable_h
+
+
+def _inflar_piezas(pieces, kerf, descontar_cantos):
+    """Infla cada pieza por el kerf: garantiza separacion de corte."""
+    inflated = []
+    for p in pieces:
+        w, h = _medidas_corte(p, descontar_cantos)
+        inflated.append({"name": p["name"], "material": p["material"],
+                         "thickness": p.get("thickness"),
+                         "w": w + kerf, "h": h + kerf})
+    return inflated
+
+
+def _mejor_empaquetado(usable_w, usable_h, inflated, allow_rotation):
+    """Prueba heuristica x orden y devuelve (boards, pending, frees) del mejor."""
+    best = None
+    for _hname, score_func in _HEURISTICS.items():
+        for _sname, skey in _SORTERS.items():
+            ordered = sorted(inflated, key=skey, reverse=True)
+            boards, pending, frees = _pack_all(usable_w, usable_h, ordered,
+                                               allow_rotation, score_func)
+            placed_area = sum(pl["w"] * pl["h"] for b in boards for pl in b)
+            key = (len(boards) if boards else 10 ** 9, -placed_area)
+            if best is None or key < best[0]:
+                best = (key, boards, pending, frees)
+    return best[1], best[2], best[3]
+
+
+def _placements_tablero(placed, margin, kerf):
+    """Piezas colocadas en un tablero, con coordenadas reales del tablero."""
+    placements = []
+    for pl in placed:
+        it = pl["item"]
+        placements.append({
+            "name": it["name"],
+            "material": it["material"],
+            "thickness": it["thickness"],
+            "x": pl["x"] + margin,
+            "y": pl["y"] + margin,
+            "w": it["w"] - kerf,
+            "h": it["h"] - kerf,
+            "rotated": pl["rotated"],
+        })
+    return placements
+
+
+def _retales_tablero(frees, margin):
+    """Rectangulos libres del tablero (sobrante reutilizable) en mm reales."""
+    offcuts = []
+    for fr in frees:
+        if fr[2] > 1e-6 and fr[3] > 1e-6:
+            offcuts.append({
+                "x": fr[0] + margin,
+                "y": fr[1] + margin,
+                "w": fr[2],
+                "h": fr[3],
+            })
+    return offcuts
+
+
+def _hoja_tablero(idx, board_w, board_h, placements, offcuts):
+    """Dict de salida de un tablero con su eficiencia."""
+    board_area = board_w * board_h
+    used = sum(pl["w"] * pl["h"] for pl in placements)
+    return {
+        "index": idx + 1,
+        "board_w": board_w,
+        "board_h": board_h,
+        "placements": placements,
+        "offcuts": offcuts,
+        "used_area": used,
+        "efficiency": (used / board_area * 100.0) if board_area else 0.0,
+    }
+
+
 def optimize(pieces, board_w, board_h,
              kerf=KERF_DEFAULT, margin=MARGIN_DEFAULT,
              allow_rotation=True, descontar_cantos=False):
@@ -202,74 +284,17 @@ def optimize(pieces, board_w, board_h,
         sheets: lista de dicts por tablero con sus 'placements' y eficiencia.
         unplaced: piezas que no caben ni en un tablero vacío.
     """
-    usable_w = board_w - 2 * margin
-    usable_h = board_h - 2 * margin
-    if usable_w <= 0 or usable_h <= 0:
-        raise ValueError("El margen es mayor que el tablero.")
+    usable_w, usable_h = _validar_tablero(board_w, board_h, margin)
+    inflated = _inflar_piezas(pieces, kerf, descontar_cantos)
+    boards, pending, frees = _mejor_empaquetado(
+        usable_w, usable_h, inflated, allow_rotation)
 
-    # Inflar cada pieza por el kerf: garantiza separación de corte.
-    def inflate(p):
-        w, h = _medidas_corte(p, descontar_cantos)
-        return {"name": p["name"], "material": p["material"],
-                "thickness": p.get("thickness"),
-                "w": w + kerf, "h": h + kerf}
-
-    inflated = [inflate(p) for p in pieces]
-
-    # Multi-estrategia: probar combinaciones de heurística × orden y
-    # quedarse con la que use menos tableros (y coloque más área).
-    best = None
-    for _hname, score_func in _HEURISTICS.items():
-        for _sname, skey in _SORTERS.items():
-            ordered = sorted(inflated, key=skey, reverse=True)
-            boards, pending, frees = _pack_all(usable_w, usable_h, ordered,
-                                               allow_rotation, score_func)
-            placed_area = sum(pl["w"] * pl["h"] for b in boards for pl in b)
-            key = (len(boards) if boards else 10 ** 9, -placed_area)
-            if best is None or key < best[0]:
-                best = (key, boards, pending, frees)
-
-    _, boards, pending, frees = best
-
-    board_area = board_w * board_h
     sheets = []
     for idx, placed in enumerate(boards):
-        placements = []
-        for pl in placed:
-            it = pl["item"]
-            placements.append({
-                "name": it["name"],
-                "material": it["material"],
-                "thickness": it["thickness"],
-                "x": pl["x"] + margin,
-                "y": pl["y"] + margin,
-                "w": it["w"] - kerf,
-                "h": it["h"] - kerf,
-                "rotated": pl["rotated"],
-            })
-        used = sum(pl["w"] * pl["h"] for pl in placements)
-
-        # Retales: rectángulos libres que dejó el packer (coords ya en
-        # mm reales del tablero). Representan sobrante reutilizable.
-        offcuts = []
-        for fr in frees[idx]:
-            if fr[2] > 1e-6 and fr[3] > 1e-6:
-                offcuts.append({
-                    "x": fr[0] + margin,
-                    "y": fr[1] + margin,
-                    "w": fr[2],
-                    "h": fr[3],
-                })
-
-        sheets.append({
-            "index": idx + 1,
-            "board_w": board_w,
-            "board_h": board_h,
-            "placements": placements,
-            "offcuts": offcuts,
-            "used_area": used,
-            "efficiency": (used / board_area * 100.0) if board_area else 0.0,
-        })
+        placements = _placements_tablero(placed, margin, kerf)
+        offcuts = _retales_tablero(frees[idx], margin)
+        sheets.append(_hoja_tablero(
+            idx, board_w, board_h, placements, offcuts))
 
     unplaced = [{"name": p["name"], "w": p["w"] - kerf, "h": p["h"] - kerf,
                 "material": p["material"]} for p in pending]
