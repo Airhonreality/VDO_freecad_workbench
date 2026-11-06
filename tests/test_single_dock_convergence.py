@@ -23,7 +23,7 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-import FreeCAD as App
+import FreeCAD as App  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
 try:
     from PySide6 import QtCore, QtWidgets
@@ -33,11 +33,11 @@ except ImportError:
     except ImportError:
         from PySide import QtCore, QtWidgets
 
-import contextlib
+import contextlib  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
-from freecad.vdo.cad.coco import CocoFeature
-from freecad.vdo.cad.panel import PanelFeature
-from freecad.vdo.ui.inspector_dock import (
+from freecad.vdo.cad.coco import CocoFeature  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.cad.panel import PanelFeature  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.ui.inspector_dock import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
     PAGE_CHASIS,
     PAGE_CIERRE,
     PAGE_PIEZA,
@@ -45,7 +45,7 @@ from freecad.vdo.ui.inspector_dock import (
     VDOUniversalInspectorWidget,
     obtener_o_crear_dock_inspector,
 )
-from freecad.vdo.ui.view_providers import (
+from freecad.vdo.ui.view_providers import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
     ViewProviderCoco,
     abrir_panel_objeto,
     enfocar_inspector_universal,

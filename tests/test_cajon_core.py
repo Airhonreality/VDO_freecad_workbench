@@ -24,46 +24,46 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-from tests.soporte.freecad_falso import instalado
+from tests.soporte.freecad_falso import instalado  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
 # Instalar mocks de FreeCAD/Part antes de importar core (que los necesita a nivel
 # de módulo). Se restauran al terminar el proceso.
 _instalado_ctx = instalado()
 _instalado_ctx.__enter__()
 
-from freecad.vdo.cad.cajon import (
+from freecad.vdo.cad.cajon import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
     CAJA_METALICA as CC_MET,
 )
-from freecad.vdo.cad.cajon import (
+from freecad.vdo.cad.cajon import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
     CORREDERA_OCULTA as CC_OCU,
 )
-from freecad.vdo.cad.cajon import (
+from freecad.vdo.cad.cajon import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
     CORREDERA_TELESCOPICA as CC_TEL,
 )
-from freecad.vdo.cad.cajon_geometria import (
+from freecad.vdo.cad.cajon_geometria import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
     _aplicar_bisel_45_fachada,
     _aplicar_corte,
     _corte_notch_lateral,
     _corte_pin_trasero,
     _corte_ranura_piso,
 )
-from freecad.vdo.core import facade_contract as FC
-from freecad.vdo.core import hardware_hub as H
-from freecad.vdo.core.cajon_calculo import calcular_despiece
-from freecad.vdo.core.cajon_correderas import (
+from freecad.vdo.core import facade_contract as FC  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import hardware_hub as H  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core.cajon_calculo import calcular_despiece  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core.cajon_correderas import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
     CAJA_METALICA,
     CORREDERA_OCULTA,
     CORREDERA_TELESCOPICA,
     listar_marcas,
     obtener_marca,
 )
-from freecad.vdo.core.facade_contract import (
+from freecad.vdo.core.facade_contract import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
 )
-from tests.soporte.freecad_falso import instalado
+from tests.soporte.freecad_falso import instalado  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
 # ---------------------------------------------------------------------
 # Configuración base de prueba

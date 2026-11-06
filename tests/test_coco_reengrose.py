@@ -12,8 +12,8 @@ except BaseException:
 
 app = None
 
-from freecad.vdo.cad import coco as C
-from freecad.vdo.core.layout_matriz import Layout
+from freecad.vdo.cad import coco as C  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
+from freecad.vdo.core.layout_matriz import Layout  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
 
 try:
     from freecad.vdo.ui import export_cutting_list as E
@@ -22,8 +22,8 @@ except ImportError:
     E = None
     CocoUnifiedTaskPanel = None
 
-from tests.soporte.qt import qapplication
-from tests.soporte.requisitos import requiere_freecad, requiere_gui, requiere_qt
+from tests.soporte.qt import qapplication  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
+from tests.soporte.requisitos import requiere_freecad, requiere_gui, requiere_qt  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
 
 
 def max_common(shape):

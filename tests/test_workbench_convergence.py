@@ -28,9 +28,9 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-import FreeCAD as App
+import FreeCAD as App  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
-from tests.soporte.requisitos import requiere_gui
+from tests.soporte.requisitos import requiere_gui  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
 try:
     from PySide6 import QtWidgets
@@ -40,21 +40,21 @@ except ImportError:
     except ImportError:
         from PySide import QtWidgets
 
-import contextlib
+import contextlib  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
-from freecad.vdo.cad.cajon import CajonFeature
-from freecad.vdo.cad.coco import CocoFeature
-from freecad.vdo.cad.panel import PanelFeature
-from freecad.vdo.cad.puerta import PuertaFeature
-from freecad.vdo.core import hardware_hub as HH
-from freecad.vdo.ui.inspector_paginas import (
+from freecad.vdo.cad.cajon import CajonFeature  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.cad.coco import CocoFeature  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.cad.panel import PanelFeature  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.cad.puerta import PuertaFeature  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import hardware_hub as HH  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.ui.inspector_paginas import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
     PAGE_CHASIS,
     PAGE_CIERRE,
     PAGE_PIEZA,
     PAGE_VANO,
 )
-from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
-from freecad.vdo.ui.universal_inspector import VDOUniversalInspectorWidget
+from freecad.vdo.ui.selection_bridge import VDOSelectionBridge  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.ui.universal_inspector import VDOUniversalInspectorWidget  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
 
 def _get_qapp():

@@ -25,25 +25,25 @@ _MACRO_DIR = os.environ.get(
     os.path.join(os.path.expanduser("~"), ".local", "share", "FreeCAD", "Macro"),
 )
 
-import FreeCAD as App
-import Part
+import FreeCAD as App  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+import Part  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
-from freecad.vdo.cad import cajon as VCJ
-from freecad.vdo.cad import coco as VCC
-from freecad.vdo.cad import panel as VP
-from freecad.vdo.cad.geometria import forma_ref as VRS
-from freecad.vdo.core import cajon_correderas as VCD
-from freecad.vdo.core import coco_spaces as VCS
-from freecad.vdo.core import defaults as VD
-from freecad.vdo.core import facade_contract as VFC
-from freecad.vdo.core import frames as VFR
-from freecad.vdo.core import hardware_hub as HH
-from freecad.vdo.core import layout_matriz as VL_MATRIZ
-from freecad.vdo.core import layout_modelo as VL_MODELO
-from freecad.vdo.core import layout_resolucion as VL_RESOLUCION
-from freecad.vdo.core import module_props as VMOD
-from freecad.vdo.core.errores import VDOError
-from tests.soporte.requisitos import requiere_freecad
+from freecad.vdo.cad import cajon as VCJ  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.cad import coco as VCC  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.cad import panel as VP  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.cad.geometria import forma_ref as VRS  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import cajon_correderas as VCD  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import coco_spaces as VCS  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import defaults as VD  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import facade_contract as VFC  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import frames as VFR  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import hardware_hub as HH  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import layout_matriz as VL_MATRIZ  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import layout_modelo as VL_MODELO  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import layout_resolucion as VL_RESOLUCION  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import module_props as VMOD  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core.errores import VDOError  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from tests.soporte.requisitos import requiere_freecad  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
 try:
     from freecad.vdo.ui import export_cutting_list as VEL

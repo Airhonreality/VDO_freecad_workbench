@@ -15,20 +15,20 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-from freecad.vdo.core import layout_matriz as VDO_LAYOUT_MATRIZ
-from freecad.vdo.core import layout_modelo as VDO_LAYOUT_MODELO
-from freecad.vdo.core import layout_resolucion as VDO_LAYOUT_RESOLUCION
-from freecad.vdo.core import layout_resuelto as VDO_LAYOUT_RESUELTO
-from freecad.vdo.core import reengrose_despiece as VDO_RE_DESPIECE
-from freecad.vdo.core import reengrose_encuentros as VDO_RE_ENCUENTROS
-from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
-from freecad.vdo.core import reengrose_interferencias as VDO_RE_INTERFERENCIAS
-from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
-from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
-from freecad.vdo.core import reengrose_tiras as VDO_RE_TIRAS
-from freecad.vdo.core.layout_matriz import Layout
-from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y, Track
-from freecad.vdo.core.layout_resolucion import resolve_layout
+from freecad.vdo.core import layout_matriz as VDO_LAYOUT_MATRIZ  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import layout_modelo as VDO_LAYOUT_MODELO  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import layout_resolucion as VDO_LAYOUT_RESOLUCION  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import layout_resuelto as VDO_LAYOUT_RESUELTO  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import reengrose_despiece as VDO_RE_DESPIECE  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import reengrose_encuentros as VDO_RE_ENCUENTROS  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import reengrose_interferencias as VDO_RE_INTERFERENCIAS  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import reengrose_tiras as VDO_RE_TIRAS  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core.layout_matriz import Layout  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y, Track  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core.layout_resolucion import resolve_layout  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
 TOL = 1e-6
 _MODULOS_GUI = (

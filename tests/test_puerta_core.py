@@ -15,8 +15,8 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-from freecad.vdo.core import puerta_despiece as D
-from tests.soporte.requisitos import requiere_freecad
+from freecad.vdo.core import puerta_despiece as D  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from tests.soporte.requisitos import requiere_freecad  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
 
 class DespieceBatienteTests(unittest.TestCase):

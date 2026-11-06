@@ -15,8 +15,8 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-from freecad.vdo.core import puerta_despiece as D_PUERTA
-from freecad.vdo.core.facade_contract import (
+from freecad.vdo.core import puerta_despiece as D_PUERTA  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core.facade_contract import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,

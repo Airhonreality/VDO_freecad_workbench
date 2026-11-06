@@ -11,21 +11,21 @@ except BaseException:
 
 app = None
 
-from freecad.vdo.cad import coco as C
-from freecad.vdo.cad import coco_espacios as S
-from freecad.vdo.core import reengrose_despiece as R_DESPIECE
-from freecad.vdo.core import reengrose_geometria as R_GEOMETRIA
-from freecad.vdo.core import reengrose_modelo as R_MODELO
-from freecad.vdo.core import reengrose_modificador as R_MODIFICADOR
-from freecad.vdo.core.layout_matriz import Layout
+from freecad.vdo.cad import coco as C  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
+from freecad.vdo.cad import coco_espacios as S  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
+from freecad.vdo.core import reengrose_despiece as R_DESPIECE  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
+from freecad.vdo.core import reengrose_geometria as R_GEOMETRIA  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
+from freecad.vdo.core import reengrose_modelo as R_MODELO  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
+from freecad.vdo.core import reengrose_modificador as R_MODIFICADOR  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
+from freecad.vdo.core.layout_matriz import Layout  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
 
 try:
     from freecad.vdo.ui.coco_unified_task import CocoUnifiedTaskPanel
 except BaseException:
     CocoUnifiedTaskPanel = None
 
-from tests.soporte.qt import qapplication
-from tests.soporte.requisitos import requiere_freecad, requiere_gui, requiere_qt
+from tests.soporte.qt import qapplication  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
+from tests.soporte.requisitos import requiere_freecad, requiere_gui, requiere_qt  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
 
 
 def max_common(shape):

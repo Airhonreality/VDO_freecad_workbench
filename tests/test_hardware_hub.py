@@ -10,7 +10,7 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-from freecad.vdo.core import hardware_hub as H
+from freecad.vdo.core import hardware_hub as H  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
 
 class HardwareHubTests(unittest.TestCase):

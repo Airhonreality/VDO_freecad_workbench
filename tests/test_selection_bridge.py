@@ -20,7 +20,7 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-from tests.soporte.requisitos import requiere_gui
+from tests.soporte.requisitos import requiere_gui  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
 
 @requiere_gui

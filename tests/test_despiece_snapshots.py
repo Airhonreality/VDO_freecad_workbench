@@ -19,14 +19,14 @@ except NameError:
     _AQUI = os.getcwd()
 _RAIZ = os.path.dirname(_AQUI)
 
-from freecad.vdo.core import puerta_despiece as D
-from freecad.vdo.core.cajon_calculo import calcular_despiece
-from freecad.vdo.core.cajon_correderas import (
+from freecad.vdo.core import puerta_despiece as D  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core.cajon_calculo import calcular_despiece  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core.cajon_correderas import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
     CAJA_METALICA,
     CORREDERA_OCULTA,
     CORREDERA_TELESCOPICA,
 )
-from freecad.vdo.core.facade_contract import (
+from freecad.vdo.core.facade_contract import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
