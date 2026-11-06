@@ -25,6 +25,8 @@
 
 
 import logging
+from collections.abc import Iterable
+from typing import Any
 
 _LOG = logging.getLogger(__name__)
 
@@ -38,7 +40,7 @@ class LayoutError(ValueError):
     """Error de validación de la matriz de vanos."""
 
 
-def _to_float(valor):
+def _to_float(valor: Any) -> float | None:  # Any: valor de usuario o JSON, de tipo no fijo
     if valor is None or valor == "":
         return None
     try:
@@ -48,14 +50,14 @@ def _to_float(valor):
         return None
 
 
-def _sufijo_id(track_id, prefijo):
+def _sufijo_id(track_id: object, prefijo: str) -> str:
     texto = str(track_id or "")
     if texto.startswith(prefijo):
         texto = texto[len(prefijo):]
     return texto or "1"
 
 
-def _id_unico(prefijo, existentes):
+def _id_unico(prefijo: str, existentes: Iterable[object]) -> str:
     usados = {str(x) for x in existentes}
     n = 1
     while f"{prefijo}{n}" in usados:
@@ -63,7 +65,7 @@ def _id_unico(prefijo, existentes):
     return f"{prefijo}{n}"
 
 
-def cavidad_interior(alto, ancho, espesor):
+def cavidad_interior(alto: float, ancho: float, espesor: float) -> dict[str, float]:
     """Devuelve la cavidad libre interior del COCO.
 
     Laterales, base y tapa consumen un espesor por cada cara, independiente
@@ -83,15 +85,19 @@ def cavidad_interior(alto, ancho, espesor):
 class Track:
     """Columna o fila de la matriz raíz."""
 
-    def __init__(self, track_id, fixed=None):
+    id: str
+    fixed: float | None
+
+    def __init__(self, track_id: object, fixed: object = None) -> None:
         self.id = str(track_id)
         self.fixed = _to_float(fixed)
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {"id": self.id, "fixed": self.fixed}
 
+    # Any: data es un dict de JSON sin esquema fijo.
     @classmethod
-    def from_dict(cls, data, prefijo, indice):
+    def from_dict(cls, data: Any, prefijo: str, indice: int) -> "Track":
         if isinstance(data, str):
             return cls(data)
         return cls(
@@ -99,15 +105,22 @@ class Track:
             data.get("fixed"),
         )
 
-    def copy(self):
+    def copy(self) -> "Track":
         return Track(self.id, self.fixed)
 
 
 class Cell:
     """Vano de la matriz y, recursivamente, sus subdivisiones."""
 
-    def __init__(self, px="1", py="1", fixed=None, axis=None,
-                 children=None):
+    px: str
+    py: str
+    fixed: float | None
+    axis: str | None
+    children: list["Cell"]
+
+    def __init__(self, px: object = "1", py: object = "1", fixed: object = None,
+                 axis: str | None = None,
+                 children: Iterable["Cell"] | None = None) -> None:
         self.px = str(px)
         self.py = str(py)
         self.fixed = _to_float(fixed)
@@ -115,11 +128,11 @@ class Cell:
         self.children = list(children or [])
 
     @property
-    def label(self):
+    def label(self) -> str:
         return f"(x{self.px}, y{self.py})"
 
-    def to_dict(self):
-        data = {
+    def to_dict(self) -> dict[str, Any]:
+        data: dict[str, Any] = {
             "px": self.px,
             "py": self.py,
             "fixed": self.fixed,
@@ -130,7 +143,7 @@ class Cell:
         return data
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data: Any) -> "Cell":  # Any: dict de JSON, sin esquema
         if not isinstance(data, dict):
             return cls()
         children = [
@@ -150,5 +163,5 @@ class Cell:
             children=children,
         )
 
-    def copy(self):
+    def copy(self) -> "Cell":
         return Cell.from_dict(self.to_dict())
