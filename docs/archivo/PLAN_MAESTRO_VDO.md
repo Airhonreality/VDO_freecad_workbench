@@ -1,3 +1,5 @@
+Sustituido por docs/PLAN_MINIMALISMO_VDO.md
+
 > **SUSTITUIDO** por `docs/PLAN_MINIMALISMO_VDO.md`. No ejecutar este documento.
 
 # Plan maestro VDO — de 5,5 a 10/10

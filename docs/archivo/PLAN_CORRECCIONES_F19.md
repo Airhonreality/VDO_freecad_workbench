@@ -1,3 +1,5 @@
+Sustituido por docs/PLAN_MINIMALISMO_VDO.md
+
 > **SUSTITUIDO** por `docs/PLAN_MINIMALISMO_VDO.md`. No ejecutar este documento.
 
 # Plan de correcciones F19
