@@ -18,7 +18,28 @@ def mostrar_menu():
     dialog.setMinimumWidth(400)
 
     layout = QtWidgets.QVBoxLayout()
+    _agregar_titulo(layout)
+    radio_todo, radio_seleccion, radio_grupo = _crear_opciones(layout)
+    _agregar_info(layout)
+    _agregar_botones(dialog, layout)
 
+    dialog.setLayout(layout)
+
+    # Mostrar y obtener resultado
+    if dialog.exec() != QtWidgets.QDialog.Accepted:
+        App.Console.PrintMessage("❌ Cancelado")
+        return None
+
+    # Determinar modo seleccionado
+    if radio_seleccion.isChecked():
+        return "seleccion"
+    elif radio_grupo.isChecked():
+        return "grupo"
+    else:
+        return "todo"
+
+
+def _agregar_titulo(layout):
     # Título
     titulo = QtWidgets.QLabel("¿Qué piezas deseas exportar?")
     titulo.setStyleSheet("font-size: 14px; font-weight: bold;")
@@ -26,6 +47,8 @@ def mostrar_menu():
 
     layout.addSpacing(10)
 
+
+def _crear_opciones(layout):
     # Opciones
     radio_todo = QtWidgets.QRadioButton("📋 EXPORTAR TODO el documento")
     radio_seleccion = QtWidgets.QRadioButton("✋ EXPORTAR SELECCIÓN (objetos marcados)")
@@ -43,7 +66,10 @@ def mostrar_menu():
     layout.addWidget(radio_grupo)
 
     layout.addSpacing(15)
+    return radio_todo, radio_seleccion, radio_grupo
 
+
+def _agregar_info(layout):
     # Info
     info = QtWidgets.QLabel(
         "ℹ️ Se exportarán SOLO paneles de melamina\n"
@@ -56,6 +82,8 @@ def mostrar_menu():
 
     layout.addSpacing(15)
 
+
+def _agregar_botones(dialog, layout):
     # Botones
     btn_layout = QtWidgets.QHBoxLayout()
 
@@ -69,21 +97,6 @@ def mostrar_menu():
     btn_layout.addWidget(btn_ok)
 
     layout.addLayout(btn_layout)
-
-    dialog.setLayout(layout)
-
-    # Mostrar y obtener resultado
-    if dialog.exec() != QtWidgets.QDialog.Accepted:
-        App.Console.PrintMessage("❌ Cancelado")
-        return None
-
-    # Determinar modo seleccionado
-    if radio_seleccion.isChecked():
-        return "seleccion"
-    elif radio_grupo.isChecked():
-        return "grupo"
-    else:
-        return "todo"
 
 
 def abrir_lista_corte():
