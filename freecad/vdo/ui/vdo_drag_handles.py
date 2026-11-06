@@ -63,6 +63,19 @@ class DragableViewProvider(VDOViewProviderBase):
         # Crear nodo raíz para handles
         self._root = coin.SoSeparator()
 
+        handles_def = self._definir_handles(ancho, fondo, alto)
+
+        self._crear_esferas(handles_def)
+
+        # Agregar el grupo de handles al RootNode del ViewProvider
+        try:
+            self.vobj.RootNode.addChild(self._root)
+            App.Console.PrintMessage("[VDO] Handles visuales creados.\n")
+        except Exception as e:
+            App.Console.PrintError(
+                f"[VDO] Error agregando handles a RootNode: {e}\n")
+
+    def _definir_handles(self, ancho, fondo, alto):
         # Definir los 3 handles principales en esquinas
         # Handle X: esquina superior-derecha (controla Ancho)
         handle_x = {
@@ -89,7 +102,9 @@ class DragableViewProvider(VDOViewProviderBase):
         }
 
         handles_def = [handle_x, handle_y, handle_z]
+        return handles_def
 
+    def _crear_esferas(self, handles_def):
         # Crear esferas para cada handle
         for h_def in handles_def:
             sphere_sep = coin.SoSeparator()
@@ -120,14 +135,6 @@ class DragableViewProvider(VDOViewProviderBase):
             }
 
             self._root.addChild(sphere_sep)
-
-        # Agregar el grupo de handles al RootNode del ViewProvider
-        try:
-            self.vobj.RootNode.addChild(self._root)
-            App.Console.PrintMessage("[VDO] Handles visuales creados.\n")
-        except Exception as e:
-            App.Console.PrintError(
-                f"[VDO] Error agregando handles a RootNode: {e}\n")
 
     def _destruir_handles_visuales(self):
         """Destruye las esferas visuales de los handles."""
