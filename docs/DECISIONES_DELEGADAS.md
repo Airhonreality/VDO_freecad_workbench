@@ -546,3 +546,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-56
 
 - **D-56:** funciones de cad/ puerta.execute, panel.crear_pieza y panel.add_reengrose_props divididas en bloques. Mismo criterio que D-55.
+
+## D-56 verificación (ola 46)
+
+- **Verificación de D-56 en FreeCAD real:** PuertaFeature.execute anterior (6db54e2) y nuevo (69a4674 y HEAD 6bb3bbf) producen cifras crudas idénticas (volumen, área, sólidos, caras, cilindros de cazoleta, placements y todas las propiedades) para 10 configuraciones: control (Batiente Vertical, Izquierda, Parche), Derecha (Parche y Embebida/45°), Doble (Parche y Semiparche/gola), Corrediza (2 hojas tirador, 2 hojas 45°, 3 hojas Doble) y Basculante Horizontal (gola y tirador). Sin diferencias. Script fuera del repo (/tmp/ola46_eq/extraer_puertas.py).
