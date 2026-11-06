@@ -7,11 +7,13 @@
 # =====================================================================
 
 import json
+from collections.abc import Mapping
+from typing import Any, Final
 
 from freecad.vdo.core.helpers import _get_app
 
 # Presets estándar del taller (2440x1830 es estándar EN)
-DEFAULT_PRESETS = {
+DEFAULT_PRESETS: Final[Mapping[str, Mapping[str, int]]] = {
     "Estándar EN": {"width": 2440, "height": 1830, "spacing": 15, "thickness": 3},
     "Medio Horizontal": {"width": 1220, "height": 2440, "spacing": 15, "thickness": 3},
     "Pequeño": {"width": 1200, "height": 900, "spacing": 12, "thickness": 3},
@@ -19,7 +21,7 @@ DEFAULT_PRESETS = {
     "Larguero": {"width": 3000, "height": 600, "spacing": 15, "thickness": 3},
 }
 
-PREFS_PATH = "User parameter:BaseApp/Preferences/NestingWorkbench/VDO"
+PREFS_PATH: Final = "User parameter:BaseApp/Preferences/NestingWorkbench/VDO"
 
 
 class NestingPresetManager:
@@ -28,12 +30,12 @@ class NestingPresetManager:
     PREFS_PATH = PREFS_PATH
 
     @staticmethod
-    def get_prefs():
+    def get_prefs() -> Any:  # ParamGet de FreeCAD: sin tipos
         """Obtiene el objeto de preferencias."""
         return _get_app().ParamGet(NestingPresetManager.PREFS_PATH)
 
     @staticmethod
-    def initialize_defaults():
+    def initialize_defaults() -> None:
         """Inicializa presets por defecto si no existen."""
         prefs = NestingPresetManager.get_prefs()
 
@@ -47,21 +49,23 @@ class NestingPresetManager:
                 "[VDO Nesting] Presets inicializados con valores por defecto")
 
     @staticmethod
-    def get_all_presets():
+    def get_all_presets() -> dict[str, Any]:
         """Obtiene todos los presets disponibles."""
         prefs = NestingPresetManager.get_prefs()
         presets_json = prefs.GetString("Presets", "{}")
         data = json.loads(presets_json)
-        return data.get("presets", DEFAULT_PRESETS)
+        presets: dict[str, Any] = data.get("presets", DEFAULT_PRESETS)
+        return presets
 
     @staticmethod
-    def get_preset(name):
+    def get_preset(name: str) -> Any:
         """Obtiene un preset específico."""
         presets = NestingPresetManager.get_all_presets()
         return presets.get(name, None)
 
     @staticmethod
-    def save_preset(name, width, height, spacing=15, thickness=3):
+    def save_preset(name: str, width: int, height: int,
+                    spacing: int = 15, thickness: int = 3) -> None:
         """Guarda un nuevo preset."""
         prefs = NestingPresetManager.get_prefs()
         presets_json = prefs.GetString("Presets", "{}")
@@ -87,7 +91,7 @@ class NestingPresetManager:
             f"[VDO Nesting] Preset '{name}' guardado")
 
     @staticmethod
-    def delete_preset(name):
+    def delete_preset(name: str) -> bool:
         """Elimina un preset."""
         prefs = NestingPresetManager.get_prefs()
         presets_json = prefs.GetString("Presets", "{}")
@@ -105,13 +109,13 @@ class NestingPresetManager:
         return True
 
     @staticmethod
-    def get_preset_names():
+    def get_preset_names() -> list[str]:
         """Obtiene lista de nombres de presets."""
         presets = NestingPresetManager.get_all_presets()
         return list(presets.keys())
 
     @staticmethod
-    def export_presets_to_json(filepath):
+    def export_presets_to_json(filepath: str) -> None:
         """Exporta todos los presets a un archivo JSON."""
         presets = NestingPresetManager.get_all_presets()
         with open(filepath, 'w', encoding='utf-8') as f:
@@ -120,7 +124,7 @@ class NestingPresetManager:
             f"[VDO Nesting] Presets exportados a: {filepath}")
 
     @staticmethod
-    def import_presets_from_json(filepath):
+    def import_presets_from_json(filepath: str) -> bool:
         """Importa presets desde un archivo JSON."""
         with open(filepath, encoding='utf-8') as f:
             new_presets = json.load(f)
