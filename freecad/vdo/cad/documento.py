@@ -6,25 +6,27 @@ estas funciones. El comportamiento es el mismo que la llamada original.
 
 from __future__ import annotations
 
-import FreeCAD as App
+from typing import Any
+
+import FreeCAD as App  # doc y objetos de FreeCAD: Any, sin tipo estatico
 
 
-def recalcular(doc) -> None:
+def recalcular(doc: Any) -> None:
     """Recalcula el documento indicado."""
     doc.recompute()
 
 
-def crear_objeto(doc, tipo: str, nombre: str):
+def crear_objeto(doc: Any, tipo: str, nombre: str) -> Any:
     """Crea un objeto de FreeCAD de tipo ``tipo`` en el documento."""
     return doc.addObject(tipo, nombre)
 
 
-def eliminar_objeto(doc, nombre: str) -> None:
+def eliminar_objeto(doc: Any, nombre: str) -> None:
     """Elimina del documento el objeto de nombre ``nombre``."""
     doc.removeObject(nombre)
 
 
-def crear_grupo(doc, nombre: str):
+def crear_grupo(doc: Any, nombre: str) -> Any:
     """Crea un grupo de objetos (App::DocumentObjectGroup) en el documento."""
     return doc.addObject("App::DocumentObjectGroup", nombre)
 
