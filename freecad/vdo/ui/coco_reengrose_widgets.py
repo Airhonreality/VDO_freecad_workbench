@@ -262,22 +262,6 @@ class ReengroseDivisionesMixin:
         self._actualizar_estado_reengrose()
 
     @staticmethod
-    def _etiquetas_caras(clave):
-        if clave == "lateral_izquierdo":
-            return ("Interna (+)", "Externa (−)")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
-        if clave == "lateral_derecho":
-            return ("Externa (+)", "Interna (−)")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
-        if clave == "base":
-            return ("Superior / interna (+)", "Inferior / externa (−)")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
-        if clave == "techo":
-            return ("Superior / externa (+)", "Inferior / interna (−)")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
-        if clave == "fondo":
-            return ("Trasera (+)", "Delantera (−)")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
-        if str(clave).startswith("division_x:"):
-            return ("Lado derecho (+)", "Lado izquierdo (−)")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
-        return ("Superior (+)", "Inferior (−)")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
-
-    @staticmethod
     def _set_combo_data(combo, valor):
         idx = combo.findData(valor)
         if idx >= 0:

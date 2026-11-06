@@ -173,44 +173,6 @@ class EdicionDivisionesMixin:
 
     # -----------------------------------------------------------------
     # Acciones de matriz
-    def _agregar_columna(self):
-        self.layout.add_column()
-        self._selected_key = ("cell",
-                              self.layout.columns[-1].id,
-                              self.layout.rows[0].id)
-        self._rebuild_y_avisar()
-    def _quitar_columna(self):
-        if len(self.layout.columns) <= 1:
-            return
-        if (self.layout.column_has_subtree(len(self.layout.columns) - 1)
-                and not self._confirmar(
-                    "La última columna contiene subdivisiones.\n"
-                    "¿Eliminarla con todo su contenido?")):
-            return
-        self.layout.remove_column()
-        self._selected_key = ("cell",
-                              self.layout.columns[-1].id,
-                              self.layout.rows[0].id)
-        self._rebuild_y_avisar()
-    def _agregar_fila(self):
-        self.layout.add_row()
-        self._selected_key = ("cell",
-                              self.layout.columns[0].id,
-                              self.layout.rows[-1].id)
-        self._rebuild_y_avisar()
-    def _quitar_fila(self):
-        if len(self.layout.rows) <= 1:
-            return
-        if (self.layout.row_has_subtree(len(self.layout.rows) - 1)
-                and not self._confirmar(
-                    "La última fila contiene subdivisiones.\n"
-                    "¿Eliminarla con todo su contenido?")):
-            return
-        self.layout.remove_row()
-        self._selected_key = ("cell",
-                              self.layout.columns[0].id,
-                              self.layout.rows[-1].id)
-        self._rebuild_y_avisar()
 
     # -----------------------------------------------------------------
     # Acciones del inspector

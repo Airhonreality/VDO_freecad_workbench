@@ -102,9 +102,6 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
     def set_selected_panel(self, clave):
         self.set_selected_entity("panel", clave)
 
-    def set_selected_reengrose(self, clave):
-        self.set_selected_entity("reengrose", clave)
-
     def selected(self):
         return self._selected
 

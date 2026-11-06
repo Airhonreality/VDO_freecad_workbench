@@ -85,9 +85,6 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
         self.lbl_dimensiones.setText("—")
         self.lbl_cantos.setText("")
 
-    def cantos_texto(self):
-        return self.lbl_cantos.text()
-
 
 class InspectorDivisionesMixin:
     """Mixin de DivisionesEditor (ver coco_construccion_widgets.py)."""

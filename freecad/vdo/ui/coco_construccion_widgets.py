@@ -378,5 +378,3 @@ class DivisionesEditor(
             QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
             QtWidgets.QMessageBox.No)
         return respuesta == QtWidgets.QMessageBox.Yes
-    def _mostrar_error(self, texto):
-        self.lbl_aviso.setText("⚠ " + texto)

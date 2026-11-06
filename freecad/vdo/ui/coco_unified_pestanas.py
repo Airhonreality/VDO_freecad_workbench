@@ -1,25 +1,11 @@
-"""Pestanas de espacios, botones y grupo de hijos del panel COCO."""
+"""Pestanas de espacios y botones del panel COCO."""
 
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui.coco_unified_tabla import SpacesTableWidget
 
 
 class CocoUnifiedPestanasMixin:
-    """Mixin del panel COCO: Pestanas de espacios, botones y grupo de hijos del panel COCO."""
-
-    def _crear_tab_espacios(self, layout, axis):
-        """Crea la UI para un eje (X o Y)."""
-        table = SpacesTableWidget(
-            reorder_callback=lambda ids, a=axis: self._reordenar_raiz(a, ids))
-        table.cellChanged.connect(
-            lambda r, c, a=axis: self._on_cell_changed(r, c, a))
-        if axis == "X":
-            self.table_x = table
-        else:
-            self.table_y = table
-        layout.addWidget(table)
-        self._crear_botones_espacios(layout, axis)
-        self._crear_grupo_hijos(layout, axis)
+    """Mixin del panel COCO: pestanas de espacios y botones."""
 
     def _crear_botones_espacios(self, layout, axis):
         """Botones de acción para la tabla principal de espacios."""
@@ -59,28 +45,6 @@ class CocoUnifiedPestanasMixin:
         layout_botones.addWidget(btn_nest)
 
         layout.addLayout(layout_botones)
-
-    def _crear_grupo_hijos(self, layout, axis):
-        """Grupo para sub-configuración recursiva de hijos."""
-        group = QtWidgets.QGroupBox("Sub-dividir vano seleccionado")
-        group.setVisible(False)
-        group_layout = QtWidgets.QVBoxLayout(group)
-
-        lbl = QtWidgets.QLabel("")
-        lbl.setWordWrap(True)
-        group_layout.addWidget(lbl)
-
-        lbl_eje = QtWidgets.QLabel("Eje de sub-división:")
-        group_layout.addWidget(lbl_eje)
-
-        table = self._crear_tabla_hijos(axis, group_layout)
-
-        btn_back = self._crear_botones_hijos(axis, group_layout)
-        layout.addWidget(group)
-
-        self._registrar_widgets_hijos(axis, group, lbl, lbl_eje, table, btn_back)
-
-        return group
 
     def _crear_tabla_hijos(self, axis, group_layout):
         table = SpacesTableWidget(
