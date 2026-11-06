@@ -396,3 +396,7 @@ $ minimalismo.py fachadas   -> 0
 
 - **D-22:** se eliminan los stubs `app/casos_uso/exportar_lista_corte.py` y `app/casos_uso/recargar_catalogo.py` (sin lógica). La regla R4 de tools/auditoria/verificar.py exige su existencia y pasará a FALLO. Razón: MN-01 elimina app/, y el plan §5 declara que verificar.py es solo referencia; el cierre de fase se decide con minimalismo.py. Revertir: git revert del commit de T2.
 
+
+## D-23 (ola 8)
+
+- **D-23:** los DTO de app/dto.py (dataclasses inmutables, sin FreeCAD ni cálculo) pasan a core/dto.py. Razón: plan §3, TIPOS de core/cad; MN-03 permite que cad/ e ui/ importen core/. Revertir: git revert de T5.
