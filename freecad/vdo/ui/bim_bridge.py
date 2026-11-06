@@ -51,7 +51,8 @@ def _al_cambiar_workbench(*_args):
     """Actualiza el estado y, si cambia, recarga el workbench activo en el siguiente ciclo."""
     try:
         nuevo = _nombre_workbench_activo() == _NOMBRE_BIM
-    except Exception:
+    except Exception as exc:
+        App.Console.PrintWarning(f"[VDO] bim_bridge: estado BIM no leido, sin cambio: {exc}\n")
         return
     if nuevo == ESTADO_BIM.bim:
         return

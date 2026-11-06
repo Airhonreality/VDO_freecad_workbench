@@ -90,7 +90,8 @@ class AccionesInspectorMixin:
         texto_contenido = getattr(obj, "VDO_Contenido_JSON", "{}") or "{}"
         try:
             contenido = json.loads(texto_contenido) if isinstance(texto_contenido, str) else dict(texto_contenido)
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] inspector_acciones: contenido no leido, usa vacio: {exc}\n")
             contenido = {}
 
         if tipo_hab == "subdividir":

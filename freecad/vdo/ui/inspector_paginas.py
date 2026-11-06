@@ -37,7 +37,8 @@ def _float_seguro(valor, default=0.0):
         if valor is None:
             return default
         return float(valor)
-    except (TypeError, ValueError, AttributeError):
+    except (TypeError, ValueError, AttributeError) as exc:
+        App.Console.PrintWarning(f"[VDO] inspector_paginas: valor no convertible, usa defecto: {exc}\n")
         return default
 
 
@@ -46,7 +47,8 @@ def _str_seguro(valor, default=""):
         if valor is None:
             return default
         return str(valor)
-    except Exception:
+    except Exception as exc:
+        App.Console.PrintWarning(f"[VDO] inspector_paginas: valor no leido, usa defecto: {exc}\n")
         return default
 
 

@@ -58,7 +58,8 @@ def obtener_o_crear_dock_inspector(mw=None):
     if mw is None:
         try:
             mw = Gui.getMainWindow()
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] inspector_dock: ventana principal no obtenida: {exc}\n")
             mw = None
     if mw is None:
         return None

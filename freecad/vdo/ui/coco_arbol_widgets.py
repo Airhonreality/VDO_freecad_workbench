@@ -95,7 +95,8 @@ class ArbolDivisionesMixin(ArbolPintadoMixin):
         try:
             cantos = VDO_FIN.cantos_para_rol(
                 rol, self._vistos(), tapa=self._tapa, base=self._base)
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] coco_arbol_widgets: cantos no calculados, usa FX: {exc}\n")
             cantos = {borde: "FX" for borde in VDO_FIN.BORDES}
         if es_reengrose and clave:
             datos = self.reengroses.get(clave)

@@ -133,7 +133,8 @@ class PanelTaskPanel(VDOTransactionMixin):
     def _tiene_expresiones(self, obj):
         try:
             return bool(dict(obj.ExpressionEngine or []).get("Largo"))
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] panel_task: comprobacion de expresiones fallida, devuelve True: {exc}\n")
             return True
 
     def _cargar_valores(self, obj):

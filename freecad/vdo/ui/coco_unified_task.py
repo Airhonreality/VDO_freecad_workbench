@@ -115,7 +115,8 @@ class CocoUnifiedTaskPanel(
         texto = getattr(coco_obj, "VDO_Contenido_JSON", "") or "{}"
         try:
             contenido = json.loads(texto) if isinstance(texto, str) else {}
-        except (ValueError, TypeError):
+        except (ValueError, TypeError) as exc:
+            App.Console.PrintWarning(f"[VDO] coco_unified_task: contenido de celdas no valido, usa vacio: {exc}\n")
             contenido = {}
         # Convertir claves "i,j" a tuplas (col, row)
         contenido_tuplas = {}

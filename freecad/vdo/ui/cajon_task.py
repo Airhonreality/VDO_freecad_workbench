@@ -96,7 +96,8 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
 
         try:
             skus = get_family(familia) if familia else {}
-        except Exception:
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] cajon_task: catalogo de SKU no leido, lista vacia: {exc}\n")
             skus = {}
 
         for sku in sorted(skus.keys()):
