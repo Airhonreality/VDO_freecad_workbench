@@ -667,3 +667,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-84
 
 - **D-84:** ResolvedLayout declara self.tiras: list[dict[str, Any]] = [] en __init__ (firma intacta). Motivo: coco_spaces.py asignaba el atributo sin declararlo; el único lector (cad/coco_cortes.py) usa getattr con valor por defecto, equivalente. Revertir: git revert del commit dab79d6.
+
+## D-85
+
+- **D-85: mypy --strict en core/ y cad/ a cero (cierre de D-83). Total: 1240 → 0.** (1240 es la base de D-83 al inicio de la ola; al empezar esta sesión quedaban 40 en 16 archivos.) Ignores: ninguno. Anotaciones incorrectas corregidas: `cad/geometria.py` `forma_ref`, de `object | None` a `Any | None` (devuelve formas FreeCAD sin tipo).
