@@ -7,6 +7,7 @@
 
 import logging
 from types import MappingProxyType
+from typing import Any
 
 from freecad.vdo.core.manifest import _obtener_json
 from freecad.vdo.datos.valores import OCULTA
@@ -76,7 +77,7 @@ def _marcas_disponibles():
     return sorted(list(dict.fromkeys(disponibles_h + disponibles)))
 
 
-def obtener_marca(marca_id):
+def obtener_marca(marca_id: Any) -> Any:  # Any: definicion de marca leida del catalogo JSON
     """Devuelve la definición de una corredera oculta.
 
     Fuente primaria: catálogo de Capa H (hardware_hub).
@@ -127,7 +128,8 @@ def listar_marcas() -> list[str]:
     return manifest_keys
 
 
-def seleccionar_guia(prof_int, longitudes_comerciales):
+# Any en longitudes_comerciales: lista JSON de longitudes.
+def seleccionar_guia(prof_int: float, longitudes_comerciales: Any) -> float:
     """Selecciona la guía comercial inmediatamente inferior o igual.
 
     Args:

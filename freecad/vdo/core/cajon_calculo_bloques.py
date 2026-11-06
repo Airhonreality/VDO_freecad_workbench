@@ -1,5 +1,7 @@
 """Bloques de cálculo del despiece del cajón: entradas, geometría y piezas intermedias."""
 
+from typing import Any
+
 from freecad.vdo.core.cajon_correderas import (
     _MANIFEST,
     CORREDERA_OCULTA,
@@ -22,7 +24,9 @@ from freecad.vdo.datos.valores import (
 )
 
 
-def _leer_entradas(config):
+def _leer_entradas(config: dict[str, Any]) -> tuple[
+    float, float, float, Any, Any, float, dict[str, Any], str,
+]:
     """Lee las entradas obligatorias, la marca y el tipo de corredera.
 
     Args:
@@ -59,12 +63,14 @@ def _leer_entradas(config):
             _tipo_corredera_result)
 
 
-def _leer_defectos(config):
+def _leer_defectos(config: dict[str, Any]) -> tuple[
+    float, float, float, float, float, float, float, float, float, Any, Any, str,
+]:
     """Lee los valores por defecto del manifest y las opciones de montaje."""
     # --- Defaults desde manifest (parametros_cajon) ---
     pc = _MANIFEST.get("parametros_cajon", {})
 
-    def _p(clave, fallback):
+    def _p(clave: str, fallback: float) -> float:
         return float(pc.get(clave, {}).get("valor", fallback))
 
     alto_caja = float(config.get("alto_caja") or _p("alto_caja", 120))
@@ -90,10 +96,10 @@ def _leer_defectos(config):
             tipo_montaje_fachada)
 
 
-def _validar_entradas(g_caja, g_fondo, montaje):
+def _validar_entradas(g_caja: float, g_fondo: float, montaje: Any) -> list[str]:
     """Valida grosores y montaje. Devuelve los avisos; lanza ValueError si el montaje es
     inválido."""
-    avisos = []
+    avisos: list[str] = []
 
     # --- Validaciones ---
     if g_caja not in (15.0, 16.0):
@@ -110,7 +116,7 @@ def _validar_entradas(g_caja, g_fondo, montaje):
     return avisos
 
 
-def _resolver_guia(config, prof_int, marca):
+def _resolver_guia(config: dict[str, Any], prof_int: float, marca: Any) -> tuple[Any, float]:
     """Resuelve la longitud de guía: manual si es > 0, si no automática."""
     # --- 1. Guía (LG) ---
     lg_manual = float(config.get("longitud_guia") or 0)
@@ -118,7 +124,7 @@ def _resolver_guia(config, prof_int, marca):
     return lg, lg_manual
 
 
-def _ancho_exterior(li, delta):
+def _ancho_exterior(li: float, delta: float) -> float:
     """Ancho exterior de la caja (LI - Delta). Lanza ValueError si no es positivo."""
     # --- 2. Ancho exterior de la caja ---
     ancho_ext = li - delta
@@ -129,8 +135,10 @@ def _ancho_exterior(li, delta):
     return ancho_ext
 
 
-def _geometria_caja(montaje, ancho_ext, g_caja, lg, alto_caja, alto_lateral,
-                    eje_ranura, g_fondo, pen_ranura):
+def _geometria_caja(
+    montaje: Any, ancho_ext: float, g_caja: float, lg: float, alto_caja: float,
+    alto_lateral: float, eje_ranura: float, g_fondo: float, pen_ranura: float,
+) -> tuple[float, float, float, float, float, float, float]:
     """Contra-frente, frente interior, piso y su altura; lanza ValueError si la caja es
     demasiado baja."""
     # --- 4. Contra-frente y frente interior ---
@@ -158,7 +166,10 @@ def _geometria_caja(montaje, ancho_ext, g_caja, lg, alto_caja, alto_lateral,
     return ancho_contra, y_trasera, z_piso, alto_contra, alto_frente_int, ancho_piso, largo_piso
 
 
-def _fachada_base(alto_frente, holg_sup, holg_inf, ancho_ext, tipo_montaje_fachada, holg_lat):
+def _fachada_base(
+    alto_frente: float, holg_sup: float, holg_inf: float, ancho_ext: float,
+    tipo_montaje_fachada: str, holg_lat: float,
+) -> tuple[Any, float]:
     """Medidas base de la fachada; lanza ValueError si no son positivas."""
     # --- 6. Fachada ---
     alto_fachada_nominal = alto_frente - holg_sup - holg_inf
@@ -172,7 +183,9 @@ def _fachada_base(alto_frente, holg_sup, holg_inf, ancho_ext, tipo_montaje_facha
     return ancho_fachada, alto_fachada_nominal
 
 
-def _sistema_apertura(config, alto_fachada_nominal):
+def _sistema_apertura(
+    config: dict[str, Any], alto_fachada_nominal: float,
+) -> tuple[Any, Any, Any, Any]:
     """Aplica el sistema de apertura a la fachada y devuelve sus cantos y operacion."""
     # --- Aplicar sistema de apertura (contrato universal de fachadas) ---
     sistema_apertura = config.get("sistema_apertura", APERTURA_TIRADOR)
@@ -183,9 +196,12 @@ def _sistema_apertura(config, alto_fachada_nominal):
     return sistema_apertura, alto_fachada, operacion_canto, cantos_fachada
 
 
-def _posiciones(ancho_ext, g_caja, lg, alto_lateral, ancho_contra, montaje, y_trasera,
-    z_piso, g_fondo, alto_contra, alto_frente_int, pen_ranura, ancho_piso,
-    largo_piso, g_fachada, ancho_fachada, alto_fachada):
+def _posiciones(
+    ancho_ext: float, g_caja: float, lg: float, alto_lateral: float, ancho_contra: float,
+    montaje: Any, y_trasera: float, z_piso: float, g_fondo: float, alto_contra: float,
+    alto_frente_int: float, pen_ranura: float, ancho_piso: float, largo_piso: float,
+    g_fachada: float, ancho_fachada: Any, alto_fachada: Any,
+) -> dict[str, dict[str, float]]:
     """Coordenadas 3D locales de las piezas de la caja y de la fachada."""
     # --- 7. Posiciones 3D (origen = esquina frontales-inferior-izquierda
     #        exterior de la caja, coordenadas puramente locales al cajón) ---
