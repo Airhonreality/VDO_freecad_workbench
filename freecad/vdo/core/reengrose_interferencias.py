@@ -1,6 +1,9 @@
 """Interferencias del reengrose con piezas vecinas: vano neto, choque tira-panel y mocheo
 de repisa."""
 
+from collections.abc import Mapping
+from typing import Any
+
 from freecad.vdo.core.helpers import DIMENSION_POR_EJE
 from freecad.vdo.core.reengrose_encuentros import (
     _aabb,
@@ -29,7 +32,10 @@ _REDUCCION_VANO_POR_LADO = {
 }
 
 
-def calcular_vano_neto_con_reengrose(vano_original, division_con_reengrose):
+def calcular_vano_neto_con_reengrose(
+    vano_original: Mapping[str, Any],
+    division_con_reengrose: Mapping[str, Any],
+) -> dict[str, Any]:
     """Reduce el vano neto segun el lado invadido por el reengrose."""
     vano = dict(vano_original)
     division = dict(division_con_reengrose)
