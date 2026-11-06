@@ -1,4 +1,4 @@
-"""app/casos_uso/consultar_herrajes.py — Caso de uso: consultar catálogo de herrajes."""
+"""core/consultar_herrajes.py — Caso de uso: consultar catálogo de herrajes."""
 
 from __future__ import annotations
 
