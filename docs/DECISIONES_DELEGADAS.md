@@ -475,3 +475,7 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 ## D-41 (ola 29)
 
 - **D-41:** M7 ui/vdo_universal_inspector partido por concepto. Verificación visual pendiente (M10).
+
+## D-42
+
+- **D-42:** el bloque QT_QPA_PLATFORM (copiado en 7 archivos) pasa a freecad/vdo/__init__.py (P1). Motivo: debe ejecutarse antes de cualquier import Qt del paquete.
