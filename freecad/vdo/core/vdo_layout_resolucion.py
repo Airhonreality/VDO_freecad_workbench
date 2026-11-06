@@ -128,6 +128,42 @@ def _resolver_track(tracks, total, espesor, etiqueta, warnings,
     return resultado
 
 
+def _extras_divisiones_celda(cell, espesor, reengroses):
+    """Extras de borde de cada division interna de la celda."""
+    axis = cell.axis
+    extras = []
+    for i in range(1, len(cell.children)):
+        path = (f"x{cell.px}.{i + 1}" if axis == AXIS_X
+                else f"y{cell.py}.{i + 1}")
+        clave = f"division_{'x' if axis == AXIS_X else 'y'}:{path}"
+        extras.append(_extras_borde(reengroses, clave, espesor))
+    return extras
+
+
+def _piezas_divisiones_celda(cell, resueltos, nominal_x, nominal_z,
+                             nominal_w, nominal_h, espesor, pieces, seq):
+    """Anade una pieza 'nested' por cada division interna de la celda."""
+    axis = cell.axis
+    for i in range(1, len(resueltos)):
+        prev = resueltos[i - 1]
+        path = (f"x{cell.px}.{i + 1}" if axis == AXIS_X
+                else f"y{cell.py}.{i + 1}")
+        safe = path.replace(".", "_")
+        seq[0] += 1
+        if axis == AXIS_X:
+            pieces.append(PanelPiece(
+                AXIS_X, "nested", path,
+                nominal_x + prev.end, nominal_z,
+                espesor, nominal_h, espesor,
+                f"Division_X_{safe}_{seq[0]:03d}"))
+        else:
+            pieces.append(PanelPiece(
+                AXIS_Y, "nested", path,
+                nominal_x, nominal_z + prev.end,
+                nominal_w, espesor, espesor,
+                f"Repisa_Y_{safe}_{seq[0]:03d}"))
+
+
 def _resolver_celda(cell, x, z, w, h, espesor, pieces, warnings,
                     level, seq, nominal_x=None, nominal_z=None,
                     nominal_w=None, nominal_h=None, reengroses=None):
@@ -148,12 +184,7 @@ def _resolver_celda(cell, x, z, w, h, espesor, pieces, warnings,
               else f"{cell.py}.{i + 1}", child.fixed)
         for i, child in enumerate(cell.children)
     ]
-    extras = []
-    for i in range(1, len(tracks)):
-        path = (f"x{cell.px}.{i + 1}" if axis == AXIS_X
-                else f"y{cell.py}.{i + 1}")
-        clave = f"division_{'x' if axis == AXIS_X else 'y'}:{path}"
-        extras.append(_extras_borde(reengroses, clave, espesor))
+    extras = _extras_divisiones_celda(cell, espesor, reengroses)
 
     etiqueta = f"vano {cell.label} eje {axis}"
     total = nominal_w if axis == AXIS_X else nominal_h
@@ -182,24 +213,9 @@ def _resolver_celda(cell, x, z, w, h, espesor, pieces, warnings,
                 reengroses=reengroses)
         resuelto.children.append(child_res)
 
-    for i in range(1, len(resueltos)):
-        prev = resueltos[i - 1]
-        path = (f"x{cell.px}.{i + 1}" if axis == AXIS_X
-                else f"y{cell.py}.{i + 1}")
-        safe = path.replace(".", "_")
-        seq[0] += 1
-        if axis == AXIS_X:
-            pieces.append(PanelPiece(
-                AXIS_X, "nested", path,
-                nominal_x + prev.end, nominal_z,
-                espesor, nominal_h, espesor,
-                f"Division_X_{safe}_{seq[0]:03d}"))
-        else:
-            pieces.append(PanelPiece(
-                AXIS_Y, "nested", path,
-                nominal_x, nominal_z + prev.end,
-                nominal_w, espesor, espesor,
-                f"Repisa_Y_{safe}_{seq[0]:03d}"))
+    _piezas_divisiones_celda(
+        cell, resueltos, nominal_x, nominal_z, nominal_w, nominal_h,
+        espesor, pieces, seq)
     return resuelto
 
 
