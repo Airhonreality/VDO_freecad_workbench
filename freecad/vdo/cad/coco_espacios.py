@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from freecad.vdo.cad.geometria import forma_ref
 from freecad.vdo.core.coco_spaces import planificar_divisiones_matriz
@@ -15,7 +16,7 @@ from freecad.vdo.core.helpers import _get_app, _get_part
 _LOG = logging.getLogger(__name__)
 
 
-def _shape_caja(caja):
+def _shape_caja(caja: dict[str, Any]) -> Any:  # forma OCC de FreeCAD: sin tipos
     if (caja["w"] <= 1e-9 or caja["h"] <= 1e-9
             or caja["d"] <= 1e-9):
         return None
@@ -24,7 +25,8 @@ def _shape_caja(caja):
         _get_app().Vector(caja["x"], caja["y"], caja["z"]))
 
 
-def _punto_inglete(plan, coord_v, coord_h, coord_e):
+def _punto_inglete(plan: dict[str, Any], coord_v: float, coord_h: float,
+                   coord_e: float) -> Any:  # Vector de FreeCAD: sin tipos
     coords = {"x": 0.0, "y": 0.0, "z": 0.0}
     coords[plan["eje_vertical"]] = float(coord_v)
     coords[plan["eje_horizontal"]] = float(coord_h)
@@ -32,7 +34,7 @@ def _punto_inglete(plan, coord_v, coord_h, coord_e):
     return _get_app().Vector(coords["x"], coords["y"], coords["z"])
 
 
-def _prisma_inglete(inglete):
+def _prisma_inglete(inglete: dict[str, Any]) -> Any:  # forma OCC de FreeCAD: sin tipos
     """Prisma triangular complementario para biselar una tira a 45 grados."""
     plan = inglete.get("plan") or {}
     try:
@@ -61,8 +63,8 @@ def _prisma_inglete(inglete):
         vector["x"], vector["y"], vector["z"]))
 
 
-def _shape_tira(tira):
-    piezas = []
+def _shape_tira(tira: dict[str, Any]) -> Any:  # forma OCC de FreeCAD: sin tipos
+    piezas: list[Any] = []
     for segmento in tira.get("segmentos") or []:
         shape = forma_ref(segmento)
         if shape is not None:
@@ -95,10 +97,14 @@ def _shape_tira(tira):
     return _get_part().makeCompound(piezas)
 
 
-def generar_divisiones_matriz(divisiones_json, ancho_cavidad, alto_cavidad,
-                              fondo, espesor, x0=0.0, z0=0.0,
-                              espacios_x="", espacios_y="",
-                              reengroses=None, obstaculos=None):
+def generar_divisiones_matriz(divisiones_json: Any, ancho_cavidad: float,
+                              alto_cavidad: float,
+                              fondo: float, espesor: float, x0: float = 0.0,
+                              z0: float = 0.0,
+                              espacios_x: str = "", espacios_y: str = "",
+                              reengroses: dict[str, Any] | None = None,
+                              obstaculos: list[Any] | None = None,
+                              ) -> tuple[list[Any], Any, Any, Any]:
     """Genera la matriz de vanos v2 como formas, con reengroses y colisiones.
 
     Misma firma y resultado que antes: ``(shapes, resumen, piezas, resuelto)``.
@@ -109,7 +115,7 @@ def generar_divisiones_matriz(divisiones_json, ancho_cavidad, alto_cavidad,
         divisiones_json, ancho_cavidad, alto_cavidad, fondo, espesor,
         x0, z0, espacios_x, espacios_y, reengroses, obstaculos)
 
-    shapes = []
+    shapes: list[Any] = []
     for bloque in plan["cajas"]:
         core_shape = _shape_caja(bloque["caja"])
         if core_shape is not None:
