@@ -42,6 +42,17 @@ class NestingDialog(QtWidgets.QDialog):
         """Inicializa la interfaz."""
         layout = QtWidgets.QVBoxLayout()
 
+        self._construir_modo(layout)
+
+        self._construir_tablero(layout)
+
+        self._construir_algoritmo(layout)
+
+        self._construir_botones(layout)
+
+        self.setLayout(layout)
+
+    def _construir_modo(self, layout):
         # === MODO DE SELECCIÓN ===
         group_mode = QtWidgets.QGroupBox("1️⃣ Modo de Selección")
         mode_layout = QtWidgets.QVBoxLayout()
@@ -58,6 +69,7 @@ class NestingDialog(QtWidgets.QDialog):
         group_mode.setLayout(mode_layout)
         layout.addWidget(group_mode)
 
+    def _construir_tablero(self, layout):
         # === CONFIGURACIÓN DE TABLERO ===
         group_tablero = QtWidgets.QGroupBox("2️⃣ Configuración de Tablero")
         tablero_layout = QtWidgets.QGridLayout()
@@ -96,6 +108,7 @@ class NestingDialog(QtWidgets.QDialog):
         group_tablero.setLayout(tablero_layout)
         layout.addWidget(group_tablero)
 
+    def _construir_algoritmo(self, layout):
         # === PARÁMETROS DE OPTIMIZACIÓN ===
         group_algo = QtWidgets.QGroupBox("3️⃣ Algoritmo de Optimización")
         algo_layout = QtWidgets.QGridLayout()
@@ -115,6 +128,7 @@ class NestingDialog(QtWidgets.QDialog):
         group_algo.setLayout(algo_layout)
         layout.addWidget(group_algo)
 
+    def _construir_botones(self, layout):
         # === BOTONES ===
         btn_layout = QtWidgets.QHBoxLayout()
 
@@ -128,8 +142,6 @@ class NestingDialog(QtWidgets.QDialog):
         btn_layout.addWidget(btn_ejecutar)
 
         layout.addLayout(btn_layout)
-
-        self.setLayout(layout)
 
     def _populate_presets(self):
         """Carga presets disponibles."""
