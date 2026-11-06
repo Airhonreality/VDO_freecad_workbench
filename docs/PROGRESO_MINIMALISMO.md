@@ -396,11 +396,11 @@ Estado de cada decisión de `DECISIONES_DELEGADAS.md` (fuente vigente; `PENDIENT
 
 ## M11 — documentación
 
-**Fase cerrada en lo que el plan pide, con excepciones.** Se escribieron los documentos del paso 1 al 4 y del 6, y se archivaron los planes del paso 5. Los pasos 5 y 7 de la lista de §6 quedan parciales: ver abajo. M11 documenta el estado real; no cierra las metas de M2 a M10 (ver la tabla de metas).
+**Fase cerrada en lo que el plan pide, con excepciones.** Se hicieron los pasos 1 a 7 del encargo de M11. El paso 5 del encargo (archivar planes anteriores, MN-13) queda parcial. M11 documenta el estado real; no cierra las metas de M2 a M10 (ver la tabla de metas).
 
 ### Qué se documentó y dónde
 
-| Paso (§6 M11) | Documento | Commit |
+| Paso del encargo | Documento | Commit |
 |---|---|---|
 | 1 | `docs/ARQUITECTURA.md`: capas, reglas MN-02 y MN-03, verificación, plantilla P5 y su aplicación medida, excepciones, mapa de archivos | `4e153b3` |
 | 2 | `docs/GLOSARIO.md`: términos del código con su fuente; lo no confirmado queda "por confirmar" | `07ef3be` |
@@ -440,7 +440,7 @@ Estados según la medición de M10 (`docs/metricas/minimalismo_final.json`) y la
 | M8 | Ningún archivo de `freecad/vdo/` empieza con `vdo_` (excepciones enumeradas) | Parcial | Todos los `.py` renombrados. Quedan `core/vdo_manifest.json` y `core/vdo_hardware_catalog.json`, sin enumerar como excepción. |
 | M9 | `excepciones` 0; `ruff` 0; `mypy` 0 en alcance | Parcial | `excepciones` 1 (justificada, D-79). `ruff` 0 en `freecad/vdo/`, pero 8 en `ruff check .` (incluye `verificar.py`, vetado). `mypy` 0 en `core/` y `cad/`. 168 `noqa` pendientes de revisión humana. |
 | M10 | Cada cifra de §1 cumple su meta, o tiene justificación aprobada por el humano | No cumplida | Según M10 y el ajuste de `setStyleSheet`: 9 cifras cumplen, 1 parcial (capas) y 6 no cumplen. Las justificaciones no están aprobadas. Nivel 3 pendiente. |
-| M11 | Documentación (pasos 1 a 5 de §6) | Parcial | Pasos 1, 2, 3, 4 y 6 hechos. Paso 5: planes y registros anteriores siguen en `docs/`. |
+| M11 | Documentación (pasos 1 a 5 de §6 M11) | Parcial | Pasos 1 a 4 hechos (ARQUITECTURA, GLOSARIO, DEUDA, ADR). Paso 5 (archivo, MN-13): planes y registros anteriores siguen en `docs/`. |
 
 ### Verificación final de M11
 
