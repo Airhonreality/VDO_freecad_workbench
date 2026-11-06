@@ -1,20 +1,28 @@
 """Despiece de paneles y cajas con reengrose: politica de cantos y subpiezas fisicas."""
 
+from typing import Any
+
 from freecad.vdo.core.finish import BORDES, CANTOS_VALIDOS
 from freecad.vdo.core.reengrose_geometria import (
     calcular_geometria_caja,
     calcular_geometria_reengrose,
 )
 from freecad.vdo.core.reengrose_modelo import CANTO_OCULTO, CANTO_VISTO
-from freecad.vdo.core.reengrose_modificador import normalizar_modificador
+from freecad.vdo.core.reengrose_modificador import (
+    ReengroseModifier,
+    normalizar_modificador,
+)
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 
-def _cantos_completos(tipo=CANTO_VISTO):
+def _cantos_completos(tipo: str = CANTO_VISTO) -> dict[str, str]:
     return {borde: tipo for borde in BORDES}
 
 
-def resolver_politica_cantos(panel_base, modifier):
+def resolver_politica_cantos(
+    panel_base: dict[str, Any],
+    modifier: ReengroseModifier | dict[str, Any] | None,
+) -> dict[str, Any]:
     """Traduce el modo de fabricacion en un plan de cantos por pieza."""
     mod = normalizar_modificador(modifier)
     cantos_base = dict(panel_base.get("cantos") or {})
@@ -37,9 +45,11 @@ def resolver_politica_cantos(panel_base, modifier):
     }
 
 
-def despiece_panel(nombre, largo, ancho, espesor, modifier,
-                   cantos=None, material_ref=MELAMINA_ESTANDAR,
-                   orientacion="vertical"):
+def despiece_panel(nombre: str, largo: float, ancho: float, espesor: float,
+                   modifier: ReengroseModifier | dict[str, Any] | None,
+                   cantos: dict[str, Any] | None = None,
+                   material_ref: str = MELAMINA_ESTANDAR,
+                   orientacion: str = "vertical") -> list[dict[str, Any]]:
     """Devuelve las subpiezas fisicas de un panel con reengrose."""
     panel = {
         "nombre": nombre,
@@ -55,7 +65,7 @@ def despiece_panel(nombre, largo, ancho, espesor, modifier,
     grupo = geo["grupo_pacha"]
     modo = mod["modo_fabricacion"] if mod["activo"] else ""
 
-    piezas = []
+    piezas: list[dict[str, Any]] = []
     base = geo["base"]
     base.update({
         "tipo": "panel",
@@ -95,8 +105,9 @@ def despiece_panel(nombre, largo, ancho, espesor, modifier,
     return piezas
 
 
-def _pieza_panel(nombre, medidas, orientacion, material_ref, cantos,
-                 grupo, operacion, rol):
+def _pieza_panel(nombre: str, medidas: tuple[float, float, float], orientacion: str,
+                 material_ref: str, cantos: dict[str, Any], grupo: str,
+                 operacion: str, rol: str) -> dict[str, Any]:
     """Dict de una pieza de tablero del despiece de caja."""
     largo, ancho, espesor = medidas
     return {
@@ -116,9 +127,12 @@ def _pieza_panel(nombre, medidas, orientacion, material_ref, cantos,
     }
 
 
-def despiece_caja(caja, modifier, ejes, cantos=None,
-                  material_ref=MELAMINA_ESTANDAR,
-                  orientacion="vertical", cantos_bloque=None):
+def despiece_caja(caja: dict[str, Any],
+                  modifier: ReengroseModifier | dict[str, Any] | None,
+                  ejes: dict[str, str], cantos: dict[str, Any] | None = None,
+                  material_ref: str = MELAMINA_ESTANDAR,
+                  orientacion: str = "vertical",
+                  cantos_bloque: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     """Despiece de una pieza de modulo con reengrose.
 
     ``caja`` usa x/y/z + w/h/d y ``ejes`` define largo/ancho/espesor.
@@ -135,7 +149,7 @@ def despiece_caja(caja, modifier, ejes, cantos=None,
     ejes = dict(ejes)
     base = geo["base"]
 
-    def medidas(caja_pieza):
+    def medidas(caja_pieza: dict[str, Any]) -> tuple[float, float, float]:
         return (
             float(caja_pieza[dim_key[ejes["largo"]]]),
             float(caja_pieza[dim_key[ejes["ancho"]]]),
