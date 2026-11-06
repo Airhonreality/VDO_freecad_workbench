@@ -126,82 +126,62 @@ class PaginaVano(_PaginaBase):
         lay_sub.addWidget(btn_ap_sub)
         self.stack_dock.addWidget(panel_subdiv)
 
+    def _crear_panel_insercion(self, filas, texto_hub, texto_boton, al_pulsar):
+        """Panel del dock con filas [(etiqueta, widget)], línea de hub y botón de insertar.
+
+        Devuelve la etiqueta de hub para que el catálogo la actualice.
+        """
+        panel = QtWidgets.QWidget()
+        lay = QtWidgets.QVBoxLayout(panel)
+        lay.setContentsMargins(6, 6, 6, 6)
+        lay.setSpacing(4)
+        for etiqueta, widget in filas:
+            fila = QtWidgets.QHBoxLayout()
+            fila.addWidget(QtWidgets.QLabel(etiqueta))
+            fila.addWidget(widget, 1)
+            lay.addLayout(fila)
+
+        lbl_hub = QtWidgets.QLabel(texto_hub)
+        tema.aplicar_estilo(lbl_hub, tema.ESTILO_HUB_9PX)
+        lay.addWidget(lbl_hub)
+
+        btn_ap = QtWidgets.QPushButton(texto_boton)
+        tema.aplicar_estilo(btn_ap, tema.ESTILO_BOTON_ACENTO_10PX)
+        btn_ap.clicked.connect(al_pulsar)
+        lay.addWidget(btn_ap)
+        self.stack_dock.addWidget(panel)
+        return lbl_hub
+
     def _crear_panel_cajon(self):
         # 1. Cajón
-        panel_cajon = QtWidgets.QWidget()
-        lay_caj = QtWidgets.QVBoxLayout(panel_cajon)
-        lay_caj.setContentsMargins(6, 6, 6, 6)
-        lay_caj.setSpacing(4)
-
-        f_nc = QtWidgets.QHBoxLayout()
-        f_nc.addWidget(QtWidgets.QLabel("Cajones:"))
         self.spin_cajones = QtWidgets.QSpinBox()
         self.spin_cajones.setRange(1, 4)
         self.spin_cajones.setValue(1)
-        f_nc.addWidget(self.spin_cajones, 1)
-        lay_caj.addLayout(f_nc)
-
-        f_cor = QtWidgets.QHBoxLayout()
-        f_cor.addWidget(QtWidgets.QLabel("Corredera:"))
         self.combo_corredera = QtWidgets.QComboBox()
         self.combo_corredera.addItems(["Oculta Blum Tandem", "Telescópica 45mm"])
-        f_cor.addWidget(self.combo_corredera, 1)
-        lay_caj.addLayout(f_cor)
-
-        f_ag_caj = QtWidgets.QHBoxLayout()
-        f_ag_caj.addWidget(QtWidgets.QLabel("Frente:"))
         self.combo_agarre_caj = QtWidgets.QComboBox()
         self.combo_agarre_caj.addItems(["Tirador", "Perfil Gola", "Chaflán 45°"])
-        f_ag_caj.addWidget(self.combo_agarre_caj, 1)
-        lay_caj.addLayout(f_ag_caj)
-
-        self.lbl_cajon_hub = QtWidgets.QLabel("SKU: BLUM-TANDEM · Blum · $12.50 USD")
-        tema.aplicar_estilo(self.lbl_cajon_hub, tema.ESTILO_HUB_9PX)
-        lay_caj.addWidget(self.lbl_cajon_hub)
-
-        btn_ap_caj = QtWidgets.QPushButton("🗄 Insertar Cajón")
-        tema.aplicar_estilo(btn_ap_caj, tema.ESTILO_BOTON_ACENTO_10PX)
-        btn_ap_caj.clicked.connect(self._aplicar_cajon)
-        lay_caj.addWidget(btn_ap_caj)
-        self.stack_dock.addWidget(panel_cajon)
+        self.lbl_cajon_hub = self._crear_panel_insercion(
+            [("Cajones:", self.spin_cajones),
+             ("Corredera:", self.combo_corredera),
+             ("Frente:", self.combo_agarre_caj)],
+            "SKU: BLUM-TANDEM · Blum · $12.50 USD",
+            "🗄 Insertar Cajón", self._aplicar_cajon)
 
     def _crear_panel_puerta(self):
         # 2. Puerta
-        panel_puerta = QtWidgets.QWidget()
-        lay_pue = QtWidgets.QVBoxLayout(panel_puerta)
-        lay_pue.setContentsMargins(6, 6, 6, 6)
-        lay_pue.setSpacing(4)
-
-        f_sis = QtWidgets.QHBoxLayout()
-        f_sis.addWidget(QtWidgets.QLabel("Sistema:"))
         self.combo_sistema_pue = QtWidgets.QComboBox()
         self.combo_sistema_pue.addItems(["Batiente (Cazoleta 35mm)", "Basculante (Pistón)", "Corrediza (Ducasse)"])
-        f_sis.addWidget(self.combo_sistema_pue, 1)
-        lay_pue.addLayout(f_sis)
-
-        f_sen = QtWidgets.QHBoxLayout()
-        f_sen.addWidget(QtWidgets.QLabel("Sentido:"))
         self.combo_sentido_pue = QtWidgets.QComboBox()
         self.combo_sentido_pue.addItems(["Izquierda", "Derecha", "Doble Hoja"])
-        f_sen.addWidget(self.combo_sentido_pue, 1)
-        lay_pue.addLayout(f_sen)
-
-        f_ag_pue = QtWidgets.QHBoxLayout()
-        f_ag_pue.addWidget(QtWidgets.QLabel("Agarre:"))
         self.combo_agarre_pue = QtWidgets.QComboBox()
         self.combo_agarre_pue.addItems(["Tirador", "Perfil Gola", "Bisel 45°", "Push-to-open"])
-        f_ag_pue.addWidget(self.combo_agarre_pue, 1)
-        lay_pue.addLayout(f_ag_pue)
-
-        self.lbl_puerta_hub = QtWidgets.QLabel("Bisagras Cazoleta 35mm Cierre Suave (Parche)")
-        tema.aplicar_estilo(self.lbl_puerta_hub, tema.ESTILO_HUB_9PX)
-        lay_pue.addWidget(self.lbl_puerta_hub)
-
-        btn_ap_pue = QtWidgets.QPushButton("🚪 Insertar Puerta")
-        tema.aplicar_estilo(btn_ap_pue, tema.ESTILO_BOTON_ACENTO_10PX)
-        btn_ap_pue.clicked.connect(self._aplicar_puerta)
-        lay_pue.addWidget(btn_ap_pue)
-        self.stack_dock.addWidget(panel_puerta)
+        self.lbl_puerta_hub = self._crear_panel_insercion(
+            [("Sistema:", self.combo_sistema_pue),
+             ("Sentido:", self.combo_sentido_pue),
+             ("Agarre:", self.combo_agarre_pue)],
+            "Bisagras Cazoleta 35mm Cierre Suave (Parche)",
+            "🚪 Insertar Puerta", self._aplicar_puerta)
 
     def _crear_panel_vacio(self):
         # 3. Vacío
