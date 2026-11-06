@@ -1,7 +1,9 @@
 # =====================================================================
 # coco.py
-# Capa cad: CocoFeature (Part::FeaturePython), make_coco y el recorte
-# de formas. El cálculo de piezas vive en core/vdo_coco_core.py.
+# Capa cad: CocoFeature (Part::FeaturePython) y make_coco. El cuerpo de
+# execute se reparte en coco_carcasa, coco_shell, coco_divisiones,
+# coco_cortes y coco_propiedades (D-39). El cálculo de piezas vive en
+# core/vdo_coco_core.py.
 # =====================================================================
 
 import json
@@ -137,7 +139,6 @@ class CocoFeature:
         # Cuando el COCO se mueve o rota (su Placement cambia),
         # todos sus hijos se mueven rígidamente con él.
         propagar_placement(fp)
-
 
     def dumps(self):
         return None
