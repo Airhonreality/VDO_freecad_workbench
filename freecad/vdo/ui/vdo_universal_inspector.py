@@ -74,6 +74,25 @@ _TARGET_TO_PAGE = {
     VDOSelectionBridge.TARGET_ZOCALO: PAGE_CIERRE,
 }
 
+# tipo de destino -> (ruta del breadcrumb, clave activa)
+_RUTA_BREADCRUMB_DEFECTO = ((("Mueble", "mueble"),), "mueble")
+_RUTA_BREADCRUMB_POR_TARGET = {
+    VDOSelectionBridge.TARGET_COCO: (
+        (("Mueble", "mueble"), ("Chasis L2", "chasis")), "chasis"),
+    getattr(VDOSelectionBridge, "TARGET_VANO", "VANO"): (
+        (("Mueble", "mueble"), ("Vano L0", "vano")), "vano"),
+    "VANO": (
+        (("Mueble", "mueble"), ("Vano L0", "vano")), "vano"),
+    VDOSelectionBridge.TARGET_PANEL: (
+        (("Mueble", "mueble"), ("Pieza L1", "pieza")), "pieza"),
+    VDOSelectionBridge.TARGET_CAJON: (
+        (("Mueble", "mueble"), ("Cierre / Herraje", "cierre")), "cierre"),
+    VDOSelectionBridge.TARGET_PUERTA: (
+        (("Mueble", "mueble"), ("Cierre / Herraje", "cierre")), "cierre"),
+    VDOSelectionBridge.TARGET_ZOCALO: (
+        (("Mueble", "mueble"), ("Cierre / Herraje", "cierre")), "cierre"),
+}
+
 # clave del breadcrumb -> (pagina, tipo de destino) para _ir_a_nivel
 _CLAVE_BREADCRUMB_A_NIVEL = {
     "mueble": (PAGE_CHASIS, VDOSelectionBridge.TARGET_COCO),
@@ -1131,24 +1150,9 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
         self._tipo_actual = target_type
 
         # Actualizar breadcrumbs
-        if target_type == VDOSelectionBridge.TARGET_COCO:
-            self.breadcrumbs.set_ruta(
-                [("Mueble", "mueble"), ("Chasis L2", "chasis")], activo="chasis")
-        elif target_type in (getattr(VDOSelectionBridge, "TARGET_VANO", "VANO"), "VANO"):
-            self.breadcrumbs.set_ruta(
-                [("Mueble", "mueble"), ("Vano L0", "vano")], activo="vano")
-        elif target_type == VDOSelectionBridge.TARGET_PANEL:
-            self.breadcrumbs.set_ruta(
-                [("Mueble", "mueble"), ("Pieza L1", "pieza")], activo="pieza")
-        elif target_type in (
-                VDOSelectionBridge.TARGET_CAJON,
-                VDOSelectionBridge.TARGET_PUERTA,
-                VDOSelectionBridge.TARGET_ZOCALO):
-            self.breadcrumbs.set_ruta(
-                [("Mueble", "mueble"), ("Cierre / Herraje", "cierre")], activo="cierre")
-        else:
-            self.breadcrumbs.set_ruta(
-                [("Mueble", "mueble")], activo="mueble")
+        ruta, activo = _RUTA_BREADCRUMB_POR_TARGET.get(
+            target_type, _RUTA_BREADCRUMB_DEFECTO)
+        self.breadcrumbs.set_ruta(list(ruta), activo=activo)
 
         self.sigNivelCambiado.emit(page_index, target_type)
 
