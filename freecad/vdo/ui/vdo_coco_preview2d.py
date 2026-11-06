@@ -137,6 +137,30 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
         total_h = self._outer_h + margen + margen_sup
         scene.setSceneRect(0.0, 0.0, total_w, total_h)
 
+        self._dibujar_rotulos(scene, margen, total_w)
+        interior = self._dibujar_carcasa(scene, margen, margen_sup)
+
+        # Paneles físicos (carcasa + divisiones) bajo las celdas.
+        self._dibujar_paneles(scene)
+
+        self._dibujar_celdas(scene)
+
+        # Líneas de frentes de cajón (torre apilada)
+        self._dibujar_frentes_cajon(scene)
+
+        # Tiras de reengrose, sólo sobre su pieza dueña.
+        self._dibujar_tiras(scene)
+
+        # Aviso de overflow.
+        if self._resolved.overflow:
+            scene.addRect(
+                interior.adjusted(1, 1, -1, -1),
+                QtGui.QPen(COLOR_ERROR, 2.0))
+
+        self.fitInView(
+            scene.sceneRect(), QtCore.Qt.KeepAspectRatio)
+
+    def _dibujar_rotulos(self, scene, margen, total_w):
         # Etiqueta de frente local y ejes.
         etiqueta = QtWidgets.QGraphicsSimpleTextItem(VDO_FR.ETIQUETA_FRENTE)
         fuente = etiqueta.font()
@@ -156,6 +180,7 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
         ejes.setPos(total_w - margen - ancho_ejes, 7.0)
         scene.addItem(ejes)
 
+    def _dibujar_carcasa(self, scene, margen, margen_sup):
         # Carcasa exterior e interior.
         exterior = QtCore.QRectF(
             margen, margen_sup, self._outer_w, self._outer_h)
@@ -171,9 +196,9 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
             interior, QtGui.QPen(QtGui.QColor("#d0d0d0"), 1.0),
             QtGui.QBrush(COLOR_INTERIOR))
 
-        # Paneles físicos (carcasa + divisiones) bajo las celdas.
-        self._dibujar_paneles(scene)
+        return interior
 
+    def _dibujar_celdas(self, scene):
         # Celdas (transparentes, encima de los paneles para poder clicar).
         for cell in self._resolved.walk_cells():
             rect = self._rect(cell.x, cell.z, cell.w, cell.h)
@@ -200,21 +225,6 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
                 texto.setPos(
                     rect.center().x() - br.width() / 2.0,
                     rect.center().y() - br.height() / 2.0)
-
-        # Líneas de frentes de cajón (torre apilada)
-        self._dibujar_frentes_cajon(scene)
-
-        # Tiras de reengrose, sólo sobre su pieza dueña.
-        self._dibujar_tiras(scene)
-
-        # Aviso de overflow.
-        if self._resolved.overflow:
-            scene.addRect(
-                interior.adjusted(1, 1, -1, -1),
-                QtGui.QPen(COLOR_ERROR, 2.0))
-
-        self.fitInView(
-            scene.sceneRect(), QtCore.Qt.KeepAspectRatio)
 
     def _dibujar_frentes_cajon(self, scene):
         """Dibuja líneas horizontales de separación de frentes para cajones
