@@ -11,7 +11,8 @@ Este modulo es puro: no importa FreeCAD ni Qt.
 
 import json
 import math
-from typing import Any
+from collections.abc import Iterable, Mapping, Sequence
+from typing import Any, Final
 
 FRENTE = "frente"
 FONDO = "fondo"
@@ -20,11 +21,11 @@ DERECHA = "derecha"
 SUPERIOR = "superior"
 INFERIOR = "inferior"
 
-LADOS = (FRENTE, FONDO, IZQUIERDA, DERECHA, SUPERIOR, INFERIOR)
-LADOS_VERTICALES = (FRENTE, FONDO, IZQUIERDA, DERECHA)
-LADOS_HORIZONTALES = (SUPERIOR, INFERIOR)
+LADOS: Final = (FRENTE, FONDO, IZQUIERDA, DERECHA, SUPERIOR, INFERIOR)
+LADOS_VERTICALES: Final = (FRENTE, FONDO, IZQUIERDA, DERECHA)
+LADOS_HORIZONTALES: Final = (SUPERIOR, INFERIOR)
 
-NORMALES = {
+NORMALES: Final[Mapping[str, tuple[float, float, float]]] = {
     FRENTE: (0.0, -1.0, 0.0),
     FONDO: (0.0, 1.0, 0.0),
     IZQUIERDA: (-1.0, 0.0, 0.0),
@@ -33,7 +34,7 @@ NORMALES = {
     INFERIOR: (0.0, 0.0, -1.0),
 }
 
-OPUESTOS = {
+OPUESTOS: Final[Mapping[str, str]] = {
     FRENTE: FONDO,
     FONDO: FRENTE,
     IZQUIERDA: DERECHA,
@@ -42,7 +43,7 @@ OPUESTOS = {
     INFERIOR: SUPERIOR,
 }
 
-MARCO_LOCAL = {
+MARCO_LOCAL: Final[Mapping[str, str]] = {
     "X+": DERECHA,
     "Y+": FONDO,
     "Z+": SUPERIOR,
@@ -53,7 +54,7 @@ ETIQUETA_FRENTE = "FRENTE (Y\u2212)"
 EJES_PREVIEW = "X\u2192  Y\u2191"
 
 
-def normal(lado):
+def normal(lado: Any) -> tuple[float, float, float]:
     try:
         return NORMALES[str(lado).lower()]
     except KeyError as exc:
@@ -61,7 +62,7 @@ def normal(lado):
             f"Lado VDO invalido: '{lado}'. Validos: {', '.join(LADOS)}.") from exc
 
 
-def opuesto(lado):
+def opuesto(lado: Any) -> str:
     try:
         return OPUESTOS[str(lado).lower()]
     except KeyError as exc:
@@ -69,7 +70,7 @@ def opuesto(lado):
             f"Lado VDO invalido: '{lado}'. Validos: {', '.join(LADOS)}.") from exc
 
 
-def rotar_z(vector, grados):
+def rotar_z(vector: Sequence[float], grados: float) -> tuple[float, float, float]:
     """Rota un vector (x,y,z) alrededor de Z. Angulo en grados."""
     x, y, z = vector
     rad = math.radians(float(grados))
@@ -78,11 +79,11 @@ def rotar_z(vector, grados):
     return (x * c - y * s, x * s + y * c, z)
 
 
-def normal_global(lado, rotacion_z=0.0):
+def normal_global(lado: Any, rotacion_z: float = 0.0) -> tuple[float, float, float]:
     return rotar_z(normal(lado), rotacion_z)
 
 
-def interpretar_lados(valor, por_defecto=None):
+def interpretar_lados(valor: Any, por_defecto: Iterable[str] | None = None) -> list[str]:
     """Devuelve una lista de lados desde JSON, CSV o lista."""
     if valor is None or valor == "":
         return list(por_defecto or [])
@@ -91,13 +92,13 @@ def interpretar_lados(valor, por_defecto=None):
         texto = valor.strip()
         if not texto:
             return list(por_defecto or [])
-        datos = json.loads(texto) if texto.startswith("[") else texto.split(",")
+        datos: list[Any] = json.loads(texto) if texto.startswith("[") else texto.split(",")
     elif isinstance(valor, (list, tuple, set)):
         datos = list(valor)
     else:
         raise ValueError(f"Exposicion VDO invalida: {valor!r}")
 
-    resultado = []
+    resultado: list[str] = []
     for item in datos:
         lado = str(item).strip().lower()
         if not lado:
@@ -110,12 +111,13 @@ def interpretar_lados(valor, por_defecto=None):
     return resultado
 
 
-def serializar_lados(lados):
+def serializar_lados(lados: Any) -> str:
     return json.dumps(interpretar_lados(lados), ensure_ascii=False)
 
 
-def cargar_exposicion(obj, por_defecto_vistos=(FRENTE,),
-                      por_defecto_apoyados=(FONDO,)):
+def cargar_exposicion(obj: Any, por_defecto_vistos: Iterable[str] = (FRENTE,),
+                      por_defecto_apoyados: Iterable[str] = (FONDO,)
+                      ) -> tuple[list[str], list[str]]:
     vistos = interpretar_lados(
         getattr(obj, "VDO_Lados_Vistos", ""), por_defecto_vistos)
     apoyados = interpretar_lados(
@@ -124,7 +126,9 @@ def cargar_exposicion(obj, por_defecto_vistos=(FRENTE,),
     return vistos, apoyados
 
 
-def guardar_exposicion(obj: Any, vistos: Any, apoyados: Any) -> None:
+# Devuelve (vistos, apoyados) desde siempre: la anotacion previa -> None era erronea.
+def guardar_exposicion(obj: Any, vistos: Any, apoyados: Any
+                       ) -> tuple[list[str], list[str]]:
     vistos = interpretar_lados(vistos)
     apoyados = [
         lado for lado in interpretar_lados(apoyados) if lado not in vistos]
