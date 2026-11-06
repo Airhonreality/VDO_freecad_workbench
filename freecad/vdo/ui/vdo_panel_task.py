@@ -301,40 +301,52 @@ class PanelTaskPanel(VDOTransactionMixin):
         self.reject()
         cerrar_dialogo()
 
+    def _aplicar_datos_basicos(self):
+        for spin in (self.spin_re_ancho,
+                     self.spin_re_espesor, self.spin_rotacion):
+            spin.interpretText()
+
+        self.obj.VDO_Etiqueta = self.edit_etiqueta.text().strip()
+        self.obj.VDO_Orientacion = self.combo_orientacion.currentText()
+        self.obj.VDO_Material_Ref = self.edit_material.text().strip()
+
+        for direccion in ["Norte", "Sur", "Este", "Oeste"]:
+            self.obj.__setattr__(
+                f"VDO_Canto_{direccion}",
+                self.combo_cantos[direccion].currentText())
+
+    def _aplicar_medidas(self):
+        if self.combo_modo.currentIndex() == 1:
+            for prop, spin in (("Largo", self.spin_largo),
+                               ("Ancho", self.spin_ancho),
+                               ("Espesor", self.spin_espesor)):
+                self.obj.setExpression(prop, spin.value())
+        else:
+            for prop, spin in (("Largo", self.spin_largo),
+                               ("Ancho", self.spin_ancho),
+                               ("Espesor", self.spin_espesor)):
+                try:
+                    self.obj.clearExpression(prop)
+                except Exception:
+                    App.Console.PrintWarning(
+                        f"[VDO] No se pudo limpiar expresión de {prop}")
+                setattr(self.obj, prop, spin.value_float())
+
+    def _aplicar_anclaje_rotacion(self):
+        anclaje = self.combo_anclaje.currentData()
+        if anclaje:
+            self.obj.VDO_Anclaje = anclaje
+        aplicar_rotacion(self.obj, self.spin_rotacion.value())
+
     def accept(self):
         if not self.obj:
             return True
         try:
             self._vdo_begin()
 
-            for spin in (self.spin_re_ancho,
-                         self.spin_re_espesor, self.spin_rotacion):
-                spin.interpretText()
+            self._aplicar_datos_basicos()
 
-            self.obj.VDO_Etiqueta = self.edit_etiqueta.text().strip()
-            self.obj.VDO_Orientacion = self.combo_orientacion.currentText()
-            self.obj.VDO_Material_Ref = self.edit_material.text().strip()
-
-            for direccion in ["Norte", "Sur", "Este", "Oeste"]:
-                self.obj.__setattr__(
-                    f"VDO_Canto_{direccion}",
-                    self.combo_cantos[direccion].currentText())
-
-            if self.combo_modo.currentIndex() == 1:
-                for prop, spin in (("Largo", self.spin_largo),
-                                   ("Ancho", self.spin_ancho),
-                                   ("Espesor", self.spin_espesor)):
-                    self.obj.setExpression(prop, spin.value())
-            else:
-                for prop, spin in (("Largo", self.spin_largo),
-                                   ("Ancho", self.spin_ancho),
-                                   ("Espesor", self.spin_espesor)):
-                    try:
-                        self.obj.clearExpression(prop)
-                    except Exception:
-                        App.Console.PrintWarning(
-                            f"[VDO] No se pudo limpiar expresión de {prop}")
-                    setattr(self.obj, prop, spin.value_float())
+            self._aplicar_medidas()
 
             mod_reengrose = self._leer_reengrose()
             if mod_reengrose.activo:
@@ -352,10 +364,7 @@ class PanelTaskPanel(VDOTransactionMixin):
                     return False
             VDO_RE_MODIFICADOR.aplicar_a_objeto(self.obj, mod_reengrose)
 
-            anclaje = self.combo_anclaje.currentData()
-            if anclaje:
-                self.obj.VDO_Anclaje = anclaje
-            aplicar_rotacion(self.obj, self.spin_rotacion.value())
+            self._aplicar_anclaje_rotacion()
 
             recalcular_activo()
             self._vdo_commit()
