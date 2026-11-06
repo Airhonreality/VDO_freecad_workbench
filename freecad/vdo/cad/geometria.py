@@ -7,13 +7,16 @@ de geometría.
 
 from __future__ import annotations
 
+from typing import Any
+
 import FreeCAD as App
 import Part
 
 from freecad.vdo.core.helpers import DIMENSION_POR_EJE
 
 
-def _extruir_poligono(puntos, eje, largo):
+def _extruir_poligono(puntos: list[Any], eje: str,  # forma FreeCAD sin tipo
+                        largo: float) -> Any | None:
     """Extruye el polígono ``puntos`` a lo largo de ``eje`` una distancia ``largo``.
 
     Devuelve un sólido válido o None. No silencia errores: FreeCAD señala un
@@ -22,7 +25,7 @@ def _extruir_poligono(puntos, eje, largo):
     Un polígono degenerado no lanza error: produce volumen nulo y se descarta
     por la comprobación de ``isNull()``/``Volume``.
     """
-    vector = {"x": 0.0, "y": 0.0, "z": 0.0}
+    vector: dict[str, float] = {"x": 0.0, "y": 0.0, "z": 0.0}
     vector[eje] = largo
     try:
         cara = Part.Face(Part.makePolygon([*puntos, puntos[0]]))
@@ -36,7 +39,7 @@ def _extruir_poligono(puntos, eje, largo):
     return None
 
 
-def forma_ref(ref: dict) -> object | None:
+def forma_ref(ref: dict[str, Any]) -> Any | None:  # Part.Shape sin tipo (FreeCAD)
     """Devuelve un Part.Shape para una tira/refuerzo descrito por ``ref``.
 
     ``ref`` contiene claves como x, y, z, w, h, d, espesor, largo, ancho,
