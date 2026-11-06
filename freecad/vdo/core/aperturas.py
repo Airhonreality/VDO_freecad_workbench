@@ -68,7 +68,7 @@ def normalizar_apertura(tipo_apertura):
     return LEGADO_A_CONTRATO.get(tipo, tipo)
 
 
-def necesita_descuento_gola(sistema_apertura):
+def necesita_descuento_gola(sistema_apertura: str) -> bool:
     """True si el sistema requiere descuento de altura (gola)."""
     return _clave(sistema_apertura) == APERTURA_GOLA
 
@@ -83,6 +83,6 @@ def necesita_cantos_45(sistema_apertura: str) -> bool:
     return necesita_bisel_45(sistema_apertura)
 
 
-def necesita_expulsor_magnetico(sistema_apertura):
+def necesita_expulsor_magnetico(sistema_apertura: str) -> bool:
     """True si el sistema inyecta expulsor magnético al BOM (push_open)."""
     return _clave(sistema_apertura) == APERTURA_PUSH_OPEN

@@ -46,7 +46,9 @@ from freecad.vdo.core.facade_contract import (
 )
 
 
-def _cotas_mecanizado(mecanizado, marca_id, z_piso, g_fondo):
+def _cotas_mecanizado(
+    mecanizado: dict[str, Any], marca_id: Any, z_piso: float, g_fondo: float,
+) -> tuple[dict[str, Any], float, float, float, float, float, float]:
     """Cotas de mecanizado de la ficha técnica y su resumen."""
     # --- 8. Mecanizados (cotas de la ficha técnica) ---
     diam_t = float(mecanizado.get("diam_taladro", 6))
@@ -70,10 +72,13 @@ def _cotas_mecanizado(mecanizado, marca_id, z_piso, g_fondo):
     return mecanizados_resumen, diam_t, prof_t, dist_t_tras, prof_ranura, notch_ancho, notch_alto
 
 
-def _piezas_laterales(largo_lateral, alto_lateral, g_caja, material_ref, z_piso, g_fondo, lg,
-    prof_ranura, diam_t, prof_t, dist_t_tras):
+def _piezas_laterales(
+    largo_lateral: float, alto_lateral: float, g_caja: float, material_ref: Any,
+    z_piso: float, g_fondo: float, lg: float,
+    prof_ranura: float, diam_t: float, prof_t: float, dist_t_tras: float,
+) -> list[dict[str, Any]]:
     """Paneles laterales izquierdo y derecho de la caja, para la lista de corte."""
-    piezas = [
+    piezas: list[dict[str, Any]] = [
         {
             "nombre": "Cajon_Lateral_Izq",
             "tipo": "panel",
@@ -110,9 +115,13 @@ def _piezas_laterales(largo_lateral, alto_lateral, g_caja, material_ref, z_piso,
     return piezas
 
 
-def _piezas_restantes(ancho_contra, alto_contra, g_caja, material_ref, notch_ancho,
-    notch_alto, alto_frente_int, ancho_piso, largo_piso, g_fondo, ancho_fachada,
-    alto_fachada, g_fachada, sistema_apertura, operacion_canto, cantos_fachada):
+def _piezas_restantes(
+    ancho_contra: float, alto_contra: float, g_caja: float, material_ref: Any,
+    notch_ancho: float, notch_alto: float, alto_frente_int: float, ancho_piso: float,
+    largo_piso: float, g_fondo: float, ancho_fachada: Any,
+    alto_fachada: Any, g_fachada: float, sistema_apertura: Any, operacion_canto: Any,
+    cantos_fachada: Any,
+) -> list[dict[str, Any]]:
     """Paneles de contrafrente, frente interior, piso y fachada."""
     return [
         {
@@ -172,9 +181,11 @@ def _piezas_restantes(ancho_contra, alto_contra, g_caja, material_ref, notch_anc
     ]
 
 
-def _resumen_caja(ancho_ext, largo_lateral, alto_lateral, g_caja,
-                  ancho_contra, alto_contra, montaje, ancho_piso,
-                  largo_piso, g_fondo, z_piso):
+def _resumen_caja(
+    ancho_ext: float, largo_lateral: float, alto_lateral: float, g_caja: float,
+    ancho_contra: float, alto_contra: float, montaje: Any, ancho_piso: float,
+    largo_piso: float, g_fondo: float, z_piso: float,
+) -> dict[str, Any]:
     """Medidas de la caja para el resultado de calcular_despiece."""
     return {
         "ancho_exterior": ancho_ext,
@@ -191,9 +202,11 @@ def _resumen_caja(ancho_ext, largo_lateral, alto_lateral, g_caja,
     }
 
 
-def _resumen_fachada(ancho_fachada, alto_fachada, alto_fachada_nominal,
-                     g_fachada, sistema_apertura, tipo_montaje_fachada,
-                     operacion_canto, cantos_fachada):
+def _resumen_fachada(
+    ancho_fachada: Any, alto_fachada: Any, alto_fachada_nominal: float,
+    g_fachada: float, sistema_apertura: Any, tipo_montaje_fachada: str,
+    operacion_canto: Any, cantos_fachada: Any,
+) -> dict[str, Any]:
     """Medidas y reglas de la fachada para el resultado."""
     return {
         "ancho": ancho_fachada,
@@ -210,7 +223,9 @@ def _resumen_fachada(ancho_fachada, alto_fachada, alto_fachada_nominal,
     }
 
 
-def _filtrar_piezas(piezas, tipo_corredera):
+def _filtrar_piezas(
+    piezas: list[dict[str, Any]], tipo_corredera: str,
+) -> list[dict[str, Any]]:
     """Quita los laterales en caja metalica (van en el perfil)."""
     if tipo_corredera != CAJA_METALICA:
         return piezas
