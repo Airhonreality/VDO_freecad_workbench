@@ -10,6 +10,8 @@
 # =====================================================================
 
 
+from typing import Any
+
 from freecad.vdo.core import reengrose_encuentros as VDO_RE_ENCUENTROS
 from freecad.vdo.core.coco_spaces_bloques import (
     _cajas_y_piezas,
@@ -20,8 +22,8 @@ from freecad.vdo.core.coco_spaces_bloques import (
 from freecad.vdo.core.espacios_cajas import _caja_dict
 
 
-def _cortar_segmentos(segmentos, ganadora):
-    nuevos = []
+def _cortar_segmentos(segmentos: list[Any], ganadora: Any) -> list[Any]:
+    nuevos: list[Any] = []
     for segmento in segmentos:
         if VDO_RE_ENCUENTROS.detectar_colision(segmento, ganadora):
             nuevos.extend(
@@ -31,7 +33,7 @@ def _cortar_segmentos(segmentos, ganadora):
     return nuevos
 
 
-def _prioridad_par(a, b):
+def _prioridad_par(a: dict[str, Any], b: dict[str, Any]) -> Any:
     pa = a.get("prioridad")
     pb = b.get("prioridad")
     if pa and pb:
@@ -43,7 +45,7 @@ def _prioridad_par(a, b):
     return pa or pb or "vertical_domina"
 
 
-def _resolver_tiras_entre_si(tiras):  # noqa: C901 - complejidad 15 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
+def _resolver_tiras_entre_si(tiras: list[dict[str, Any]]) -> None:  # noqa: C901 - complejidad 15 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
     """Matriz de prioridades tira contra tira (X/Z, L y T)."""
     for i in range(len(tiras)):
         for j in range(i + 1, len(tiras)):
@@ -93,14 +95,14 @@ def _resolver_tiras_entre_si(tiras):  # noqa: C901 - complejidad 15 (max 12): fu
             b["segmentos"] = segs_b
 
 
-def _aplicar_interrupciones(tira):
+def _aplicar_interrupciones(tira: dict[str, Any]) -> None:
     segmentos = list(tira.get("segmentos") or [_caja_dict(tira)])
     for panel in tira.pop("_interrupciones", []):
         segmentos = _cortar_segmentos(segmentos, panel)
     tira["segmentos"] = segmentos
 
 
-def resolver_tiras(tiras):
+def resolver_tiras(tiras: list[dict[str, Any]]) -> None:
     """Aplica interrupciones y la matriz de prioridades sobre tiras vivas."""
     for tira in tiras:
         if "_interrupciones" in tira:
@@ -108,7 +110,7 @@ def resolver_tiras(tiras):
     _resolver_tiras_entre_si(tiras)
 
 
-def _resolver_interrupciones(tiras, obstaculos):
+def _resolver_interrupciones(tiras: list[dict[str, Any]], obstaculos: list[Any]) -> None:
     """Aplica interrupciones de tiras y obstaculos, y resuelve los cruces."""
     for tira in tiras:
         _aplicar_interrupciones(tira)
@@ -118,10 +120,12 @@ def _resolver_interrupciones(tiras, obstaculos):
     _resolver_tiras_entre_si(tiras)
 
 
-def planificar_divisiones_matriz(divisiones_json, ancho_cavidad, alto_cavidad,
-                                 fondo, espesor, x0=0.0, z0=0.0,
-                                 espacios_x="", espacios_y="",
-                                 reengroses=None, obstaculos=None):
+def planificar_divisiones_matriz(
+    divisiones_json: Any, ancho_cavidad: float, alto_cavidad: float,
+    fondo: float, espesor: float, x0: float = 0.0, z0: float = 0.0,
+    espacios_x: str = "", espacios_y: str = "",
+    reengroses: Any = None, obstaculos: Any = None,
+) -> dict[str, Any]:
     """Calcula el plan de la matriz de vanos v2, sin construir formas.
 
     Devuelve un dict con:
@@ -138,7 +142,7 @@ def planificar_divisiones_matriz(divisiones_json, ancho_cavidad, alto_cavidad,
     from freecad.vdo.core.layout_resolucion import resolve_layout
     if divisiones_json:
         layout = Layout.loads(divisiones_json)
-        avisos = []
+        avisos: list[str] = []
     else:
         layout, avisos = Layout.from_legacy(espacios_x, espacios_y)
 
