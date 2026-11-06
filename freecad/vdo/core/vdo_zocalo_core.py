@@ -7,7 +7,7 @@
 # y la extruye verticalmente en Z.
 # =====================================================================
 
-from freecad.vdo.core import vdo_reengrose_tiras as VDO_RE_TIRAS
+from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.core.vdo_layout import AXIS_X, Layout, Track, resolve_layout
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
@@ -133,7 +133,7 @@ def calcular_geometria_zocalo(ancho, fondo, alto_zocalo, espesor_tablero,
         },
     }
 
-    tiras = VDO_RE_TIRAS.generar_tiras_perimetrales(
+    tiras = VDO_RE.generar_tiras_perimetrales(
         ancho, fondo, bordes, espesor, "vertical_domina")
     por_borde = {tira["borde"]: tira for tira in tiras}
     for borde in ("frente", "izquierda", "derecha"):

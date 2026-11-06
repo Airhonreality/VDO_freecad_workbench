@@ -8,9 +8,7 @@ from freecad.vdo.cad.geometria import forma_ref
 from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props as VDO_MOD
-from freecad.vdo.core import vdo_reengrose_geometria as VDO_RE_GEOMETRIA
-from freecad.vdo.core import vdo_reengrose_modelo as VDO_RE_MODELO
-from freecad.vdo.core import vdo_reengrose_modificador as VDO_RE_MODIFICADOR
+from freecad.vdo.core import vdo_reengrose as VDO_RE
 from freecad.vdo.core.vdo_finish import CANTOS_VALIDOS
 from freecad.vdo.core.vdo_helpers import _get_app, _get_part, rotacion_z
 from freecad.vdo.core.vdo_panel_core import (
@@ -33,7 +31,7 @@ def add_reengrose_props(obj):
             "App::PropertyEnumeration", "VDO_Reengrose_Orientacion",
             "Reengrose",
             "Paralela al largo del panel o transversal cruzando el ancho")
-        prop.VDO_Reengrose_Orientacion = list(VDO_RE_MODELO.ORIENTACIONES)
+        prop.VDO_Reengrose_Orientacion = list(VDO_RE.ORIENTACIONES)
         obj.VDO_Reengrose_Orientacion = "paralela"
 
     if not hasattr(obj, "VDO_Reengrose_Ancho"):
@@ -52,7 +50,7 @@ def add_reengrose_props(obj):
         prop = obj.addProperty(
             "App::PropertyEnumeration", "VDO_Reengrose_Cara", "Reengrose",
             "Cara del tablero donde se adhiere el refuerzo")
-        prop.VDO_Reengrose_Cara = list(VDO_RE_MODELO.CARAS)
+        prop.VDO_Reengrose_Cara = list(VDO_RE.CARAS)
         obj.VDO_Reengrose_Cara = "cara_a"
 
     if not hasattr(obj, "VDO_Reengrose_Alineacion"):
@@ -60,14 +58,14 @@ def add_reengrose_props(obj):
             "App::PropertyEnumeration", "VDO_Reengrose_Alineacion",
             "Reengrose",
             "Posicion de la tira hacia el frente, centro o fondo")
-        prop.VDO_Reengrose_Alineacion = list(VDO_RE_MODELO.ALINEACIONES)
+        prop.VDO_Reengrose_Alineacion = list(VDO_RE.ALINEACIONES)
         obj.VDO_Reengrose_Alineacion = "frente"
 
     if not hasattr(obj, "VDO_Reengrose_Modo"):
         prop = obj.addProperty(
             "App::PropertyEnumeration", "VDO_Reengrose_Modo", "Reengrose",
             "Tira independiente o pacha encolada y canteada en bloque")
-        prop.VDO_Reengrose_Modo = list(VDO_RE_MODELO.MODOS)
+        prop.VDO_Reengrose_Modo = list(VDO_RE.MODOS)
         obj.VDO_Reengrose_Modo = "pacha"
 
     if not hasattr(obj, "VDO_Reengrose_Alcance"):
@@ -75,7 +73,7 @@ def add_reengrose_props(obj):
             "App::PropertyEnumeration", "VDO_Reengrose_Alcance",
             "Reengrose",
             "Pacha parcial en tira o pacha total de toda la cara")
-        prop.VDO_Reengrose_Alcance = list(VDO_RE_MODELO.ALCANCES)
+        prop.VDO_Reengrose_Alcance = list(VDO_RE.ALCANCES)
         obj.VDO_Reengrose_Alcance = "parcial"
 
     if not hasattr(obj, "VDO_Reengrose_PoliticaRepisa"):
@@ -83,7 +81,7 @@ def add_reengrose_props(obj):
             "App::PropertyEnumeration", "VDO_Reengrose_PoliticaRepisa",
             "Reengrose",
             "Ante colision con repisa: retroceder o mochear en escuadra")
-        prop.VDO_Reengrose_PoliticaRepisa = list(VDO_RE_MODELO.POLITICAS_REPISA)
+        prop.VDO_Reengrose_PoliticaRepisa = list(VDO_RE.POLITICAS_REPISA)
         obj.VDO_Reengrose_PoliticaRepisa = "retroceder"
 
     if not hasattr(obj, "VDO_Reengrose_PrioridadEncuentro"):
@@ -92,7 +90,7 @@ def add_reengrose_props(obj):
             "Reengrose",
             "Prioridad al cruzar tiras: vertical, horizontal o inglete 45")
         prop.VDO_Reengrose_PrioridadEncuentro = list(
-            VDO_RE_MODELO.PRIORIDADES_ENCUENTRO)
+            VDO_RE.PRIORIDADES_ENCUENTRO)
         obj.VDO_Reengrose_PrioridadEncuentro = "vertical_domina"
 
     if not hasattr(obj, "VDO_Reengrose_ChoqueNucleo"):
@@ -101,7 +99,7 @@ def add_reengrose_props(obj):
             "Reengrose",
             "Choque contra panel nucleo: retroceso, mocheo o interrumpir tira")
         prop.VDO_Reengrose_ChoqueNucleo = list(
-            VDO_RE_MODELO.MODOS_CHOQUE_NUCLEO)
+            VDO_RE.MODOS_CHOQUE_NUCLEO)
         obj.VDO_Reengrose_ChoqueNucleo = "retroceso"
 
     if not hasattr(obj, "VDO_Reengrose_JSON"):
@@ -189,13 +187,13 @@ class PanelFeature:
             return
 
         base = _get_part().makeBox(largo, ancho, espesor)
-        mod = VDO_RE_MODIFICADOR.desde_objeto(fp)
+        mod = VDO_RE.desde_objeto(fp)
         if hasattr(fp, "VDO_Reengrose_JSON"):
             fp.VDO_Reengrose_JSON = mod.to_json()
         if not mod.activo:
             fp.Shape = base
             return
-        geo = VDO_RE_GEOMETRIA.calcular_geometria_reengrose(
+        geo = VDO_RE.calcular_geometria_reengrose(
             {"nombre": fp.Label or fp.Name,
              "largo": largo, "ancho": ancho, "espesor": espesor},
             mod)
@@ -298,7 +296,7 @@ def crear_pieza(doc, configuracion):
             panel.Espesor = configuracion["espesor"]
 
     if "reengrose" in configuracion:
-        VDO_RE_MODIFICADOR.aplicar_a_objeto(panel, configuracion.get("reengrose"))
+        VDO_RE.aplicar_a_objeto(panel, configuracion.get("reengrose"))
 
     rotacion = float(configuracion.get("rotacion", 0.0))
     panel.VDO_RotacionZ = rotacion

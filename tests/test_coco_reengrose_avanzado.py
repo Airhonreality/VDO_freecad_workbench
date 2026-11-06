@@ -13,10 +13,7 @@ app = None
 
 from freecad.vdo.cad import coco as C
 from freecad.vdo.cad import coco_espacios as S
-from freecad.vdo.core import vdo_reengrose_despiece as R_DESPIECE
-from freecad.vdo.core import vdo_reengrose_geometria as R_GEOMETRIA
-from freecad.vdo.core import vdo_reengrose_modelo as R_MODELO
-from freecad.vdo.core import vdo_reengrose_modificador as R_MODIFICADOR
+from freecad.vdo.core import vdo_reengrose as R
 from freecad.vdo.core.vdo_layout import Layout
 
 try:
@@ -179,7 +176,7 @@ class CocoReengroseAvanzadoTests(unittest.TestCase):
     def test_marco_perimetral_4_bordes_inglete(self):
         bordes = {
             b: {"activo": True, "ancho": 70, "offset_borde": 10}
-            for b in R_MODELO.BORDES_2D
+            for b in R.BORDES_2D
         }
         reengrose = {
             "activo": True, "bordes": bordes,
@@ -204,8 +201,8 @@ class CocoReengroseAvanzadoTests(unittest.TestCase):
             "nombre": "Techo", "x": 0, "y": 0, "z": 684,
             "w": 600, "h": 580, "d": 18,
         }
-        mod = R_MODIFICADOR.ReengroseModifier(reengrose)
-        geo = R_GEOMETRIA.calcular_geometria_caja(
+        mod = R.ReengroseModifier(reengrose)
+        geo = R.calcular_geometria_caja(
             caja, mod, {"largo": "x", "ancho": "y", "espesor": "z"})
         self.assertEqual(len(geo["refuerzos"]), 4)
         for ref in geo["refuerzos"]:
@@ -241,12 +238,12 @@ class CocoReengroseAvanzadoTests(unittest.TestCase):
             "nombre": "P", "largo": 600.0, "ancho": 400.0,
             "espesor": 18.0,
         }
-        legacy = R_MODIFICADOR.ReengroseModifier({
+        legacy = R.ReengroseModifier({
             "activo": True, "ancho": 70, "cara": "cara_a",
             "alineacion_profundidad": "frente",
             "modo_fabricacion": "independiente",
         })
-        borde = R_MODIFICADOR.ReengroseModifier({
+        borde = R.ReengroseModifier({
             "activo": True, "cara": "cara_a",
             "fabricacion": "independiente",
             "choque_nucleo": "retroceso",
@@ -259,12 +256,12 @@ class CocoReengroseAvanzadoTests(unittest.TestCase):
                 "derecha": {"activo": False},
             },
         })
-        ref_a = R_GEOMETRIA.calcular_geometria_reengrose(panel, legacy)["refuerzos"][0]
-        ref_b = R_GEOMETRIA.calcular_geometria_reengrose(panel, borde)["refuerzos"][0]
+        ref_a = R.calcular_geometria_reengrose(panel, legacy)["refuerzos"][0]
+        ref_b = R.calcular_geometria_reengrose(panel, borde)["refuerzos"][0]
         for clave in ("x", "y", "z", "largo", "ancho", "espesor"):
             self.assertAlmostEqual(ref_a[clave], ref_b[clave])
-        piezas_a = R_DESPIECE.despiece_panel("P", 600, 400, 18, legacy, cantos={})
-        piezas_b = R_DESPIECE.despiece_panel("P", 600, 400, 18, borde, cantos={})
+        piezas_a = R.despiece_panel("P", 600, 400, 18, legacy, cantos={})
+        piezas_b = R.despiece_panel("P", 600, 400, 18, borde, cantos={})
         self.assertEqual(len(piezas_a), len(piezas_b))
         for clave in ("largo", "ancho", "espesor"):
             self.assertAlmostEqual(piezas_a[1][clave], piezas_b[1][clave])
@@ -365,7 +362,7 @@ class CocoReengroseAvanzadoTests(unittest.TestCase):
         idx = editor.combo_elemento_reengrose.findData("techo")
         editor.combo_elemento_reengrose.setCurrentIndex(idx)
         editor.chk_reengrose.setChecked(True)
-        for borde in R_MODELO.BORDES_2D:
+        for borde in R.BORDES_2D:
             editor.btn_borde[borde].setChecked(True)
         editor.chk_sync_esquinas.setChecked(False)
         mezcla = {
@@ -394,12 +391,12 @@ class CocoReengroseAvanzadoTests(unittest.TestCase):
         idx = editor.combo_elemento_reengrose.findData("techo")
         editor.combo_elemento_reengrose.setCurrentIndex(idx)
         editor.chk_reengrose.setChecked(True)
-        for borde in R_MODELO.BORDES_2D:
+        for borde in R.BORDES_2D:
             editor.btn_borde[borde].setChecked(True)
         self.assertTrue(editor.chk_sync_esquinas.isChecked())
         editor._set_combo_data(
             editor.combo_esquina["fondo_derecha"], "inglete_45")
-        for esquina in R_MODELO.ESQUINAS_2D:
+        for esquina in R.ESQUINAS_2D:
             self.assertEqual(
                 editor.combo_esquina[esquina].currentData(), "inglete_45")
         editor._on_reengrose_changed()
