@@ -216,39 +216,12 @@ class PuertaTaskPanel(PuertaTaskConstruccionMixin, VDOTransactionMixin):
     def accept(self):
         if not self.obj:
             return True
+        return self._transaccion_puerta()
+
+    def _transaccion_puerta(self):
         try:
             self._vdo_begin()
-            for spin in (self.spin_ancho, self.spin_alto,
-                         self.spin_pos_x, self.spin_pos_y,
-                         self.spin_pos_z):
-                spin.interpretText()
-            label = self.combo_apertura.currentText()
-            valores = {
-                "TipoSistema": self.combo_sistema.currentText(),
-                "TipoMontaje": self.combo_montaje.currentText(),
-                "SentidoApertura": self.combo_sentido.currentText(),
-                "SistemaApertura": SISTEMA_POR_ETIQUETA.get(label, label),
-                "HardwareSKU": self.combo_sku.currentText(),
-                "Ancho": self.spin_ancho.value(),
-                "Alto": self.spin_alto.value(),
-                "Espesor": self.spin_espesor.value(),
-                "PosX": self.spin_pos_x.value(),
-                "PosY": self.spin_pos_y.value(),
-                "PosZ": self.spin_pos_z.value(),
-            }
-            anclaje = self.combo_anclaje.currentData()
-            if anclaje:
-                valores["VDO_Anclaje"] = anclaje
-            asignar_propiedades(self.obj, valores)
-
-            # Fuerza de pistón (solo lectura)
-            if self.obj.TipoSistema == "Basculante Horizontal":
-                texto, _, _ = descripcion_piston(self.obj.Ancho, self.obj.Alto)
-                asignar_propiedades(self.obj, {"FuerzaPistonRecomendada": texto})
-            else:
-                asignar_propiedades(self.obj, {"FuerzaPistonRecomendada": ""})
-
-            recalcular_activo()
+            self._escribir_puerta()
             self._vdo_commit()
             self._vdo_aceptado = True
             self._vdo_call_accept()
@@ -257,4 +230,34 @@ class PuertaTaskPanel(PuertaTaskConstruccionMixin, VDOTransactionMixin):
             self._vdo_abort()
             App.Console.PrintError(f"[VDO Puerta] Error aceptando: {e}\n")
             return False
+
+    def _escribir_puerta(self):
+        self._form_builder.interpretar_texto()
+        label = self.combo_apertura.currentText()
+        valores = {
+            "TipoSistema": self.combo_sistema.currentText(),
+            "TipoMontaje": self.combo_montaje.currentText(),
+            "SentidoApertura": self.combo_sentido.currentText(),
+            "SistemaApertura": SISTEMA_POR_ETIQUETA.get(label, label),
+            "HardwareSKU": self.combo_sku.currentText(),
+            "Ancho": self.spin_ancho.value(),
+            "Alto": self.spin_alto.value(),
+            "Espesor": self.spin_espesor.value(),
+            "PosX": self.spin_pos_x.value(),
+            "PosY": self.spin_pos_y.value(),
+            "PosZ": self.spin_pos_z.value(),
+        }
+        anclaje = self.combo_anclaje.currentData()
+        if anclaje:
+            valores["VDO_Anclaje"] = anclaje
+        asignar_propiedades(self.obj, valores)
+
+        # Fuerza de pistón (solo lectura)
+        if self.obj.TipoSistema == "Basculante Horizontal":
+            texto, _, _ = descripcion_piston(self.obj.Ancho, self.obj.Alto)
+            asignar_propiedades(self.obj, {"FuerzaPistonRecomendada": texto})
+        else:
+            asignar_propiedades(self.obj, {"FuerzaPistonRecomendada": ""})
+
+        recalcular_activo()
 

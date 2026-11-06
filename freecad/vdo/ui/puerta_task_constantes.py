@@ -4,10 +4,13 @@
 # Compartidas por puerta_task_cabecera y puerta_task_construccion.
 # =====================================================================
 
-FAMILIAS = ["Batiente Vertical", "Basculante Horizontal", "Corrediza"]
-SENTIDOS_BATIENTE = ["Izquierda", "Derecha", "Doble"]
-SENTIDOS_BASCULANTE = ["Hacia Arriba", "Hacia Abajo"]
-SENTIDOS_CORREDIZA = ["2 hojas", "3 hojas"]
+# Las opciones de familia y sentido viven en la especificacion de datos (M6, D-72).
+from freecad.vdo.datos.formularios import (  # noqa: F401 (reexportacion)
+    FAMILIAS,
+    SENTIDOS_BASCULANTE,
+    SENTIDOS_BATIENTE,
+    SENTIDOS_CORREDIZA,
+)
 
 # ---------------------------------------------------------------------
 # Mapeo de nombres de visualización (UI) a constantes del contrato.

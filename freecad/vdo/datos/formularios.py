@@ -5,11 +5,19 @@ FormBuilder.construir_grupo convierte en widgets. La fila de índice i ocupa la
 fila i de la rejilla del grupo.
 """
 
+from freecad.vdo.core.aperturas import ETIQUETAS
 from freecad.vdo.core.vdo_defaults import ORIENTACIONES_VALIDAS
 from freecad.vdo.core.vdo_finish import CANTOS_VALIDOS
 from freecad.vdo.core.vdo_module_props import ANCLAJE_LABELS, ANCLAJES
+from freecad.vdo.core.vdo_puerta_despiece import SISTEMAS_APERTURA
 
 ITEMS_ANCLAJE = [(ANCLAJE_LABELS.get(a, a), a) for a in ANCLAJES]
+
+# Opciones del panel de puerta (antes en ui/puerta_task_constantes).
+FAMILIAS = ["Batiente Vertical", "Basculante Horizontal", "Corrediza"]
+SENTIDOS_BATIENTE = ["Izquierda", "Derecha", "Doble"]
+SENTIDOS_BASCULANTE = ["Hacia Arriba", "Hacia Abajo"]
+SENTIDOS_CORREDIZA = ["2 hojas", "3 hojas"]
 
 AYUDA_CANTO = {
     "Norte": "Borde norte del tablero visto desde la cara A.",
@@ -132,5 +140,58 @@ PANEL_GRUPOS_DESPUES = (
         {"tipo": "combo", "clave": "anclaje", "etiqueta": "Anclaje:",
          "items": ITEMS_ANCLAJE,
          "tooltip": "Esquina del panel que se apoya en el punto de colocación."},
+    )),
+)
+
+
+# --- Panel de puerta (M6, MN-08, D-72) ------------------------------------
+# Bloques en orden de aparición. (clave, titulo, filas) es un grupo;
+# (clave, None, filas) es un campo suelto. Los estilos (colores) los pone la UI.
+PUERTA_BLOQUES = (
+    ("familia", "Familia de puerta", (
+        {"tipo": "combo", "clave": "sistema", "etiqueta": "Tipo de sistema:",
+         "items": [(f, None) for f in FAMILIAS],
+         "tooltip": "Batiente Vertical, Basculante Horizontal o Corrediza."},
+    )),
+    ("montaje", "Montaje (batiente)", (
+        {"tipo": "combo", "clave": "montaje", "etiqueta": "Tipo de montaje:",
+         "items": [(m, None) for m in ("Parche", "Semiparche", "Embebida")]},
+        {"tipo": "combo", "clave": "sentido", "etiqueta": "Sentido de apertura:",
+         "items": [(s, None) for s in SENTIDOS_BATIENTE]},
+    )),
+    ("dimensiones", "Dimensiones de la puerta (mm)", (
+        {"tipo": "vdo_double_spin", "clave": "ancho", "etiqueta": "Ancho (W):",
+         "valor_defecto": 100.0, "rango": (100, 3000), "decimales": 1, "sufijo": " mm"},
+        {"tipo": "vdo_double_spin", "clave": "alto", "etiqueta": "Alto (H):",
+         "valor_defecto": 100.0, "rango": (100, 2600), "decimales": 1, "sufijo": " mm"},
+        {"tipo": "spin", "clave": "espesor", "etiqueta": "Espesor (mm):",
+         "valor_defecto": 18, "rango": (10, 50), "sufijo": " mm"},
+    )),
+    ("apertura", "Sistema de apertura / fachada", (
+        {"tipo": "combo", "clave": "apertura", "etiqueta": "Tipo:",
+         "items": [(ETIQUETAS[k], None) for k in SISTEMAS_APERTURA]},
+    )),
+    ("herraje", "Herraje comercial", (
+        {"tipo": "combo", "clave": "sku", "etiqueta": "SKU:", "items": []},
+        {"tipo": "label", "clave": "info_herraje", "valor_defecto": "",
+         "sin_etiqueta": True, "colspan": 2, "ajustar_texto": True, "estilo": "info"},
+    )),
+    ("piston", "Cálculo de pistón a gas", (
+        {"tipo": "label", "clave": "info_piston", "valor_defecto": "",
+         "sin_etiqueta": True, "colspan": 2, "ajustar_texto": True, "estilo": "piston"},
+    )),
+    ("expulsor", None, (
+        {"tipo": "checkbox", "clave": "expulsor",
+         "etiqueta": "Inyectar expulsor magnético al BOM", "estilo": "texto"},
+    )),
+    ("posicion", "Posición (mm)", (
+        {"tipo": "vdo_double_spin", "clave": "pos_x", "etiqueta": "Pos X:",
+         "valor_defecto": 0.0, "rango": (-5000, 5000), "decimales": 1, "sufijo": " mm"},
+        {"tipo": "vdo_double_spin", "clave": "pos_y", "etiqueta": "Pos Y:",
+         "valor_defecto": 0.0, "rango": (-5000, 5000), "decimales": 1, "sufijo": " mm"},
+        {"tipo": "vdo_double_spin", "clave": "pos_z", "etiqueta": "Pos Z:",
+         "valor_defecto": 0.0, "rango": (-5000, 5000), "decimales": 1, "sufijo": " mm"},
+        {"tipo": "combo", "clave": "anclaje", "etiqueta": "Anclaje:",
+         "items": ITEMS_ANCLAJE, "estilo": "texto"},
     )),
 )

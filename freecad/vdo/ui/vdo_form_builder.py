@@ -21,6 +21,10 @@
 #     "tooltip": str | None,
 #     "items": [(label, data), ...] | None,  # para combo
 #     "dependencias": [(clave, callable), ...],  # callbacks de dependencia
+#     "estilo": str | None,      # clave de estilo (dict "estilos" del builder)
+#     "ajustar_texto": bool,     # setWordWrap (labels)
+#     "sin_etiqueta": bool,      # celda sin etiqueta propia
+#     "colspan": int,            # columnas que ocupa el widget
 #   }
 # =====================================================================
 
@@ -218,15 +222,26 @@ class FormBuilder:
         """Devuelve la lista de claves declaradas (en orden)."""
         return list(self.orden)
 
-    def construir_grupo(self, main_layout, titulo, filas):
+    def _crear_campo_ui(self, espec, estilos):
+        """Crea el campo y su widget. Aplica ajuste de texto y estilo si la especificacion los pide."""
+        campo = self.agregar(espec)
+        w = campo.crear_widget()
+        if espec.get("wrapping"):
+            w.setWrapping(True)
+        if espec.get("ajustar_texto"):
+            w.setWordWrap(True)
+        if espec.get("estilo"):
+            w.setStyleSheet(estilos[espec["estilo"]])
+        return campo, w
+
+    def construir_grupo(self, main_layout, titulo, filas, estilos=None, estilo_grupo=None):
         """Crea un QGroupBox con una fila de rejilla por campo (etiqueta + widget)."""
         grupo = QtWidgets.QGroupBox(titulo)
+        if estilo_grupo:
+            grupo.setStyleSheet(estilo_grupo)
         grid = QtWidgets.QGridLayout(grupo)
         for fila, espec in enumerate(filas):
-            campo = self.agregar(espec)
-            w = campo.crear_widget()
-            if espec.get("wrapping"):
-                w.setWrapping(True)
+            campo, w = self._crear_campo_ui(espec, estilos)
             if espec.get("sin_etiqueta"):
                 grid.addWidget(w, fila, 0, 1, espec.get("colspan", 1))
                 continue
@@ -234,6 +249,26 @@ class FormBuilder:
             grid.addWidget(w, fila, 1, 1, espec.get("colspan", 1))
         main_layout.addWidget(grupo)
         return grupo
+
+    def construir_suelto(self, main_layout, espec, estilos=None):
+        """Añade un campo sin grupo ni etiqueta propia (p. ej. una casilla suelta)."""
+        _campo, w = self._crear_campo_ui(espec, estilos)
+        main_layout.addWidget(w)
+        return w
+
+    def construir_bloques(self, main_layout, bloques, estilos=None, estilo_grupo=None):
+        """Construye bloques en orden. (clave, titulo, filas) = grupo; (clave, None, filas) = campo suelto.
+
+        Devuelve {clave: QGroupBox o widget}.
+        """
+        construidos = {}
+        for clave, titulo, filas in bloques:
+            if titulo is None:
+                construidos[clave] = self.construir_suelto(main_layout, filas[0], estilos)
+            else:
+                construidos[clave] = self.construir_grupo(
+                    main_layout, titulo, filas, estilos, estilo_grupo)
+        return construidos
 
     def interpretar_texto(self):
         """Interpreta el texto escrito en los spinners antes de leer valores."""

@@ -608,3 +608,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-71
 
 - **D-71:** M6 panel de paneles migrado a especificación. Árbol de widgets idéntico (361 nodos). Visual pendiente (M10, usuario). FormBuilder gana los tipos texto, expresion y vdo_double_spin, y la marca sin_etiqueta (celda sin etiqueta); el zócalo no cambia. Accept en normal y error (reengrose inválido) igual que la versión anterior. Revertir: git revert del commit.
+
+## D-72
+
+- **D-72:** M6 panel de puerta migrado a especificación. Árbol de widgets idéntico (41 nodos de rejilla, 101 QWidget incl. internos Qt; visibilidad por apertura incluida: 3 sistemas x 4 aperturas x 3 montajes = 36 combinaciones). Visual pendiente (M10, usuario). Desviaciones: FormBuilder gana estilo por clave, ajustar_texto, construir_suelto y construir_bloques (compatibles con los paneles anteriores); las listas FAMILIAS y SENTIDOS_* pasan de ui/puerta_task_constantes a datos/formularios.py (ui las reexporta) para que datos no importe de ui. Accept normal y de error idénticos a la versión anterior. Observado y no corregido: en el error, la versión anterior ya deja escritas las propiedades del objeto aunque accept devuelva False (el abort no revierte propiedades en esta prueba). Revertir: git revert del commit.
