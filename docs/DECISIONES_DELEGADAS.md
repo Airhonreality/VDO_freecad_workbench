@@ -408,3 +408,7 @@ $ minimalismo.py fachadas   -> 0
 ## D-25 (ola 12)
 
 - **D-25:** `test_arquitectura.py::test_app_no_importa_ui` falla cuando `app/` no tiene `.py`, porque el helper exige archivos. MN-01 elimina `app/`, así que la capa ausente debe considerarse cumplida. La regla se mantiene si `app/` existe. Cambio aprobado por el director (no es debilitar la regla). Revertir: `git revert` del commit de T2.
+
+## D-26 (ola 14)
+
+- **D-26:** el usuario confirmó que no hay documentos VDO que conservar. Verificado: el único .FCStd de usuario fuera del repo (Escritorio) no referencia VDO (0 coincidencias). Se mueven las clases Feature y make_* de core/ a cad/, sin puente de compatibilidad. Revertir: git revert de los commits de esta ola.
