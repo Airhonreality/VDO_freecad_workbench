@@ -139,55 +139,55 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
         layout.addLayout(fila_botones)
 
     def _aplicar_estilo_oscuro(self):
-        estilo = """
-        QDialog { background-color: #2b2b2b; color: #e0e0e0; }
-        QLabel { color: #e0e0e0; }
-        QComboBox {
-            background-color: #3a3a3a; color: #e0e0e0;
-            border: 1px solid #555555; border-radius: 4px; padding: 4px;
-        }
-        QComboBox QAbstractItemView {
-            background-color: #3a3a3a; color: #e0e0e0;
-            selection-background-color: #007acc;
-        }
-        QTableWidget {
-            background-color: #333333; color: #e0e0e0;
-            gridline-color: #444444; border: 1px solid #555555;
-        }
-        QTableWidget::item:selected {
-            background-color: #007acc; color: #ffffff;
-        }
-        QTableWidget::item:alternate {
-            background-color: #3a3a3a;
-        }
-        QHeaderView::section {
-            background-color: #3a3a3a; color: #e0e0e0;
-            border: 1px solid #555555; padding: 4px; font-weight: bold;
-        }
-        QDoubleSpinBox, QLineEdit, QSpinBox {
-            background-color: #3a3a3a; color: #e0e0e0;
-            border: 1px solid #555555; border-radius: 3px; padding: 3px;
-        }
-        QDoubleSpinBox:focus, QLineEdit:focus {
-            border-color: #007acc;
-        }
-        QCheckBox { color: #e0e0e0; }
-        QCheckBox::indicator {
+        estilo = f"""
+        QDialog {{ background-color: {tema.COLOR_FONDO_BOTON}; color: {tema.TEXTO}; }}
+        QLabel {{ color: {tema.TEXTO}; }}
+        QComboBox {{
+            background-color: {tema.BORDE_SUAVE}; color: {tema.TEXTO};
+            border: 1px solid {tema.COLOR_BORDE_MEDIO}; border-radius: 4px; padding: 4px;
+        }}
+        QComboBox QAbstractItemView {{
+            background-color: {tema.BORDE_SUAVE}; color: {tema.TEXTO};
+            selection-background-color: {tema.ACEINTO};
+        }}
+        QTableWidget {{
+            background-color: {tema.FONDO3}; color: {tema.TEXTO};
+            gridline-color: {tema.BORDE}; border: 1px solid {tema.COLOR_BORDE_MEDIO};
+        }}
+        QTableWidget::item:selected {{
+            background-color: {tema.ACEINTO}; color: {tema.TEXTO_CLARO};
+        }}
+        QTableWidget::item:alternate {{
+            background-color: {tema.BORDE_SUAVE};
+        }}
+        QHeaderView::section {{
+            background-color: {tema.BORDE_SUAVE}; color: {tema.TEXTO};
+            border: 1px solid {tema.COLOR_BORDE_MEDIO}; padding: 4px; font-weight: bold;
+        }}
+        QDoubleSpinBox, QLineEdit, QSpinBox {{
+            background-color: {tema.BORDE_SUAVE}; color: {tema.TEXTO};
+            border: 1px solid {tema.COLOR_BORDE_MEDIO}; border-radius: 3px; padding: 3px;
+        }}
+        QDoubleSpinBox:focus, QLineEdit:focus {{
+            border-color: {tema.ACEINTO};
+        }}
+        QCheckBox {{ color: {tema.TEXTO}; }}
+        QCheckBox::indicator {{
             width: 16px; height: 16px;
-            background-color: #3a3a3a; border: 1px solid #555555;
-        }
-        QCheckBox::indicator:checked {
-            background-color: #007acc; border: 1px solid #007acc;
-        }
-        QPushButton {
-            background-color: #3a3a3a; color: #e0e0e0;
-            border: 1px solid #555555; border-radius: 4px;
+            background-color: {tema.BORDE_SUAVE}; border: 1px solid {tema.COLOR_BORDE_MEDIO};
+        }}
+        QCheckBox::indicator:checked {{
+            background-color: {tema.ACEINTO}; border: 1px solid {tema.ACEINTO};
+        }}
+        QPushButton {{
+            background-color: {tema.BORDE_SUAVE}; color: {tema.TEXTO};
+            border: 1px solid {tema.COLOR_BORDE_MEDIO}; border-radius: 4px;
             padding: 6px 14px; font-weight: bold;
-        }
-        QPushButton:hover { background-color: #444444; border-color: #777777; }
-        QPushButton:pressed { background-color: #007acc; color: #ffffff; }
-        QGroupBox { color: #e0e0e0; }
-        QScrollArea { background-color: #2b2b2b; border: none; }
+        }}
+        QPushButton:hover {{ background-color: {tema.BORDE}; border-color: {tema.COLOR_TEXTO_MUTED}; }}
+        QPushButton:pressed {{ background-color: {tema.ACEINTO}; color: {tema.TEXTO_CLARO}; }}
+        QGroupBox {{ color: {tema.TEXTO}; }}
+        QScrollArea {{ background-color: {tema.COLOR_FONDO_BOTON}; border: none; }}
         """
         tema.aplicar_estilo(self, estilo)
 
