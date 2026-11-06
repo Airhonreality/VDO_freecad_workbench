@@ -11,7 +11,12 @@ import FreeCADGui as Gui
 
 from freecad.vdo.cad.colocacion import aplicar_rotacion
 from freecad.vdo.cad.documento import crear_objeto, recalcular, recalcular_activo
-from freecad.vdo.cad.propiedades import add_common_props, anadir_propiedad_texto
+from freecad.vdo.cad.propiedades import (
+    add_common_props,
+    anadir_propiedad_texto,
+    asignar_placement_local,
+    asignar_propiedades,
+)
 from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core import vdo_module_props
 from freecad.vdo.cad.cajon import make_cajon
@@ -374,38 +379,38 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
             enc_sup = cfg.get("encuentros", {}).get("superior_izq", "tapa_domina")
             tapa_val = "externo" if enc_sup == "tapa_domina" else "interno"
             if hasattr(self.obj, "Tapa"):
-                self.obj.Tapa = tapa_val
+                asignar_propiedades(self.obj, {"Tapa": tapa_val})
 
             enc_inf = cfg.get("encuentros", {}).get("inferior_izq", "lateral_domina")
             base_val = "externo" if enc_inf == "base_domina" else "interno"
             if hasattr(self.obj, "Base"):
-                self.obj.Base = base_val
+                asignar_propiedades(self.obj, {"Base": base_val})
 
             fondo_act = cfg.get("caras", {}).get("fondo", {}).get("activa", True)
             if hasattr(self.obj, "TieneFondo"):
-                self.obj.TieneFondo = bool(fondo_act)
+                asignar_propiedades(self.obj, {"TieneFondo": bool(fondo_act)})
 
             base_info = cfg.get("base", {})
             if "altura" in base_info and hasattr(self.obj, "AltoZocalo"):
                 try:
-                    self.obj.AltoZocalo = float(base_info["altura"])
+                    asignar_propiedades(self.obj, {"AltoZocalo": float(base_info["altura"])})
                 except Exception:
                     App.Console.PrintWarning(
                         "[VDO] No se pudo establecer AltoZocalo")
             if "separacion_frente" in base_info and hasattr(self.obj, "DistanciaFrente"):
                 try:
-                    self.obj.DistanciaFrente = float(base_info["separacion_frente"])
+                    asignar_propiedades(self.obj, {"DistanciaFrente": float(base_info["separacion_frente"])})
                 except Exception:
                     App.Console.PrintWarning(
                         "[VDO] No se pudo establecer DistanciaFrente")
 
             try:
                 if hasattr(self.obj, "VDO_Chassis_JSON"):
-                    self.obj.VDO_Chassis_JSON = json.dumps(cfg)
+                    asignar_propiedades(self.obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
                 elif hasattr(self.obj, "addProperty"):
                     anadir_propiedad_texto(self.obj, "VDO_Chassis_JSON", "VDO",
                                            "Configuración semiótica de Capa 1")
-                    self.obj.VDO_Chassis_JSON = json.dumps(cfg)
+                    asignar_propiedades(self.obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
             except Exception:
                 App.Console.PrintWarning(
                     "[VDO] No se pudo guardar VDO_Chassis_JSON")
@@ -1102,7 +1107,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                     App.Console.PrintWarning(
                         f"[VDO] No se pudo remover el hijo {hijo.Name}")
 
-        coco_obj.Hijos = hijos_nuevos
+        asignar_propiedades(coco_obj, {"Hijos": hijos_nuevos})
 
     def _construir_puerta(self, doc, coco_obj, cfg, x, z, w, h, hijos_nuevos):
         """Crea o actualiza una puerta como hijo del COCO."""
@@ -1123,29 +1128,29 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                 ViewProviderPuerta(existente.ViewObject)
 
         # Propiedades de la puerta
-        existente.TipoSistema = cfg.get("tipo_sistema", "Batiente Vertical")
-        existente.TipoMontaje = cfg.get("tipo_montaje", "Parche")
-        existente.SentidoApertura = cfg.get("sentido_apertura", "Izquierda")
-        existente.SistemaApertura = cfg.get(
-            "sistema_apertura", APERTURA_TIRADOR)
-        existente.HardwareSKU = cfg.get("hardware_sku", "")
-        existente.VDO_Vano_ID = cfg.get("vdo_vano_id", "")
-        existente.Ancho = float(cfg.get("ancho", w))
-        existente.Alto = float(cfg.get("alto", h))
-        existente.Espesor = int(cfg.get("espesor", 18))
-        existente.PosX = float(cfg.get("pos_x", x))
-        existente.PosY = float(cfg.get("pos_y", 0.0))
-        existente.PosZ = float(cfg.get("pos_z", z))
-        existente.VDO_Anclaje = cfg.get("anclaje", "inferior_izquierda_frente")
+        asignar_propiedades(existente, {"TipoSistema": cfg.get("tipo_sistema", "Batiente Vertical")})
+        asignar_propiedades(existente, {"TipoMontaje": cfg.get("tipo_montaje", "Parche")})
+        asignar_propiedades(existente, {"SentidoApertura": cfg.get("sentido_apertura", "Izquierda")})
+        asignar_propiedades(existente, {"SistemaApertura": cfg.get(
+            "sistema_apertura", APERTURA_TIRADOR)})
+        asignar_propiedades(existente, {"HardwareSKU": cfg.get("hardware_sku", "")})
+        asignar_propiedades(existente, {"VDO_Vano_ID": cfg.get("vdo_vano_id", "")})
+        asignar_propiedades(existente, {"Ancho": float(cfg.get("ancho", w))})
+        asignar_propiedades(existente, {"Alto": float(cfg.get("alto", h))})
+        asignar_propiedades(existente, {"Espesor": int(cfg.get("espesor", 18))})
+        asignar_propiedades(existente, {"PosX": float(cfg.get("pos_x", x))})
+        asignar_propiedades(existente, {"PosY": float(cfg.get("pos_y", 0.0))})
+        asignar_propiedades(existente, {"PosZ": float(cfg.get("pos_z", z))})
+        asignar_propiedades(existente, {"VDO_Anclaje": cfg.get("anclaje", "inferior_izquierda_frente")})
 
         # Vínculo padre-hijo
-        existente.ParentCOCO = coco_obj
-        existente.LocalPlacement = App.Placement(
+        asignar_propiedades(existente, {"ParentCOCO": coco_obj})
+        asignar_placement_local(existente, App.Placement(
             App.Vector(
                 float(cfg.get("pos_x", x)),
                 float(cfg.get("pos_y", 0.0)),
                 float(cfg.get("pos_z", z)),
-            ), App.Rotation())
+            ), App.Rotation()))
 
         hijos_nuevos.append(existente)
 
@@ -1193,25 +1198,26 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                     ViewProviderCajon(existente.ViewObject)
 
             # Propiedades del cajón
-            existente.AnchoLibre = w
-            existente.ProfLibre = float(getattr(coco_obj, "FondoModulo", 580.0))
-            existente.AnchoModulo = w
-            existente.AltoFrente = h_frente
-            existente.AltoCaja = float(getattr(coco_obj, "Espesor", 18)) * 5  # default 90mm
-            existente.GrosorCaja = 16.0
-            existente.GrosorFondo = 6.0
-            existente.GrosorFachada = 18.0
-            existente.MarcaCorredera = BLUM_TANDEM
-            existente.LongitudGuia = 0.0
-            existente.MontajeTrasera = "entre_laterales"
-            existente.TipoCorredera = tipo_corredera
-            existente.SistemaApertura = sistema_apertura
+            asignar_propiedades(existente, {"AnchoLibre": w})
+            asignar_propiedades(existente, {"ProfLibre": float(getattr(coco_obj, "FondoModulo", 580.0))})
+            asignar_propiedades(existente, {"AnchoModulo": w})
+            asignar_propiedades(existente, {"AltoFrente": h_frente})
+            # default 90mm
+            asignar_propiedades(existente, {"AltoCaja": float(getattr(coco_obj, "Espesor", 18)) * 5})
+            asignar_propiedades(existente, {"GrosorCaja": 16.0})
+            asignar_propiedades(existente, {"GrosorFondo": 6.0})
+            asignar_propiedades(existente, {"GrosorFachada": 18.0})
+            asignar_propiedades(existente, {"MarcaCorredera": BLUM_TANDEM})
+            asignar_propiedades(existente, {"LongitudGuia": 0.0})
+            asignar_propiedades(existente, {"MontajeTrasera": "entre_laterales"})
+            asignar_propiedades(existente, {"TipoCorredera": tipo_corredera})
+            asignar_propiedades(existente, {"SistemaApertura": sistema_apertura})
 
             # Vínculo padre-hijo con z escalonado
             z_local = z + i * (h_frente + CALLE_ENTRE_FRENTES_DEFAULT)
-            existente.ParentCOCO = coco_obj
-            existente.LocalPlacement = App.Placement(
-                App.Vector(x, 0.0, z_local), App.Rotation())
+            asignar_propiedades(existente, {"ParentCOCO": coco_obj})
+            asignar_placement_local(existente, App.Placement(
+                App.Vector(x, 0.0, z_local), App.Rotation()))
 
             hijos_nuevos.append(existente)
 
@@ -1226,47 +1232,47 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                          self.spin_rotacion):
                 spin.interpretText()
 
-            self.obj.Alto = self.spin_alto.value()
-            self.obj.Ancho = self.spin_ancho.value()
-            self.obj.FondoModulo = self.spin_fondo.value()
-            self.obj.Espesor = self.spin_espesor.value()
+            asignar_propiedades(self.obj, {"Alto": self.spin_alto.value()})
+            asignar_propiedades(self.obj, {"Ancho": self.spin_ancho.value()})
+            asignar_propiedades(self.obj, {"FondoModulo": self.spin_fondo.value()})
+            asignar_propiedades(self.obj, {"Espesor": self.spin_espesor.value()})
 
             if hasattr(self, "box_chassis") and self.box_chassis is not None:
                 cfg = self.box_chassis.getChassisConfig()
                 enc_sup = cfg.get("encuentros", {}).get("superior_izq", "tapa_domina")
                 enc_inf = cfg.get("encuentros", {}).get("inferior_izq", "lateral_domina")
-                self.obj.Tapa = "externo" if enc_sup == "tapa_domina" else "interno"
-                self.obj.Base = "externo" if enc_inf == "base_domina" else "interno"
-                self.obj.TieneFondo = bool(cfg.get("caras", {}).get("fondo", {}).get("activa", True))
+                asignar_propiedades(self.obj, {"Tapa": "externo" if enc_sup == "tapa_domina" else "interno"})
+                asignar_propiedades(self.obj, {"Base": "externo" if enc_inf == "base_domina" else "interno"})
+                asignar_propiedades(self.obj, {"TieneFondo": bool(cfg.get("caras", {}).get("fondo", {}).get("activa", True))})
 
                 base_info = cfg.get("base", {})
                 if "altura" in base_info and hasattr(self.obj, "AltoZocalo"):
                     try:
-                        self.obj.AltoZocalo = float(base_info["altura"])
+                        asignar_propiedades(self.obj, {"AltoZocalo": float(base_info["altura"])})
                     except Exception:
                         App.Console.PrintWarning(
                             "[VDO] No se pudo establecer AltoZocalo")
                 if "separacion_frente" in base_info and hasattr(self.obj, "DistanciaFrente"):
                     try:
-                        self.obj.DistanciaFrente = float(base_info["separacion_frente"])
+                        asignar_propiedades(self.obj, {"DistanciaFrente": float(base_info["separacion_frente"])})
                     except Exception:
                         App.Console.PrintWarning(
                             "[VDO] No se pudo establecer DistanciaFrente")
 
                 try:
                     if hasattr(self.obj, "VDO_Chassis_JSON"):
-                        self.obj.VDO_Chassis_JSON = json.dumps(cfg)
+                        asignar_propiedades(self.obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
                     elif hasattr(self.obj, "addProperty"):
                         anadir_propiedad_texto(self.obj, "VDO_Chassis_JSON", "VDO",
                                            "Configuración semiótica de Capa 1")
-                        self.obj.VDO_Chassis_JSON = json.dumps(cfg)
+                        asignar_propiedades(self.obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
                 except Exception:
                     App.Console.PrintWarning(
                         "[VDO] No se pudo persistir VDO_Chassis_JSON")
 
             anclaje = self.combo_anclaje.currentData()
             if anclaje:
-                self.obj.VDO_Anclaje = anclaje
+                asignar_propiedades(self.obj, {"VDO_Anclaje": anclaje})
             aplicar_rotacion(self.obj, self.spin_rotacion.value())
 
             if self.editor_divisiones.tiene_overflow():
@@ -1291,11 +1297,11 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                 anadir_propiedad_texto(
                     self.obj, "VDO_Divisiones", "Divisiones",
                     "Matriz de vanos v2 (JSON)")
-            self.obj.VDO_Divisiones = self.editor_divisiones.dumps()
-            self.obj.VDO_Reengrose_JSON = (
-                self.editor_divisiones.dumps_reengroses())
-            self.obj.VDO_Contenido_JSON = (
-                self.editor_divisiones.dumps_contenido())
+            asignar_propiedades(self.obj, {"VDO_Divisiones": self.editor_divisiones.dumps()})
+            asignar_propiedades(self.obj, {"VDO_Reengrose_JSON": (
+                self.editor_divisiones.dumps_reengroses())})
+            asignar_propiedades(self.obj, {"VDO_Contenido_JSON": (
+                self.editor_divisiones.dumps_contenido())})
 
             # --- Construir insertos solo al aceptar (ciclo transaccional) ---
             self._construir_insertos(self.obj)
