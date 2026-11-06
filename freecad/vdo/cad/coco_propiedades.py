@@ -119,7 +119,7 @@ def exportar_paneles(
         paneles_data, lados_vistos, lados_apoyados,
         tapa=tapa, base=base)
 
-    paneles_expandidos = []
+    paneles_expandidos: list[dict[str, Any]] = []
     for pz in paneles_data:
         paneles_expandidos.extend(_expandir_reengrose(pz))
     paneles_data = paneles_expandidos
@@ -129,7 +129,7 @@ def exportar_paneles(
 
 def ensamblar_forma(fp: Any, boxes: Any) -> None:
     """Une las formas de boxes en un compound y lo asigna a fp.Shape."""
-    solidos = []
+    solidos: list[Any] = []  # formas FreeCAD sin tipo
     for forma in boxes:
         if forma is None or forma.isNull():
             continue
