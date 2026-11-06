@@ -7,6 +7,7 @@ import FreeCAD as App
 
 from freecad.vdo.cad.colocacion import aplicar_rotacion
 from freecad.vdo.cad.propiedades import add_common_props
+from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.core import vdo_defaults as VDO_D
 from freecad.vdo.core import vdo_module_props
 from freecad.vdo.core import vdo_reengrose as VDO_RE
@@ -339,7 +340,7 @@ class PanelTaskPanel(VDOTransactionMixin):
                 self.obj.VDO_Anclaje = anclaje
             aplicar_rotacion(self.obj, self.spin_rotacion.value())
 
-            App.ActiveDocument.recompute()
+            recalcular_activo()
             self._vdo_commit()
             self._vdo_aceptado = True
             self._vdo_call_accept()
