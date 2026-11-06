@@ -1,9 +1,12 @@
 """Resolución de la matriz a medidas y piezas (resolve_layout) con extras de reengrose."""
 
+from collections.abc import Mapping, Sequence
+from typing import Any, cast
+
 from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
 from freecad.vdo.core import reengrose_interferencias as VDO_RE_INTERFERENCIAS
 from freecad.vdo.core.layout_matriz import Layout
-from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y, EPS, Track
+from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y, EPS, Cell, Track
 from freecad.vdo.core.layout_resuelto import (
     PanelPiece,
     ResolvedCell,
@@ -12,28 +15,32 @@ from freecad.vdo.core.layout_resuelto import (
 )
 
 
-def _extras_modificador(reengroses, clave, espesor):
+def _extras_modificador(reengroses: Mapping[str, Any] | None, clave: str,
+                        espesor: float) -> tuple[float, float]:
     mod = (reengroses or {}).get(clave)
     if not mod:
         return (0.0, 0.0)
     return VDO_RE_GEOMETRIA.extras_por_cara(mod, espesor)
 
 
-def _extras_borde(reengroses, clave, espesor):
+def _extras_borde(reengroses: Mapping[str, Any] | None, clave: str,
+                  espesor: float) -> tuple[float, float]:
     positivo, negativo = _extras_modificador(reengroses, clave, espesor)
     return (negativo, positivo)
 
 
-def _extra_shell(reengroses, clave, espesor, lado):
+def _extra_shell(reengroses: Mapping[str, Any] | None, clave: str,
+                 espesor: float, lado: str) -> float:
     positivo, negativo = _extras_modificador(reengroses, clave, espesor)
     if lado in ("izquierda", "inferior"):
         return positivo
     return negativo
 
 
-def _fijos_resueltos(tracks, etiqueta, warnings):
+def _fijos_resueltos(tracks: Sequence[Track], etiqueta: str,
+                     warnings: list[str]) -> list[float | None]:
     """Medida fija de cada vano (None si es libre); los negativos pasan a 0."""
-    fijos = []
+    fijos: list[float | None] = []
     for track in tracks:
         if track.fixed is None:
             fijos.append(None)
@@ -47,7 +54,8 @@ def _fijos_resueltos(tracks, etiqueta, warnings):
     return fijos
 
 
-def _tamanos_track(fijos, disponible, n, etiqueta, warnings):
+def _tamanos_track(fijos: list[float | None], disponible: float, n: int,
+                   etiqueta: str, warnings: list[str]) -> tuple[list[float], float]:
     """Tamano de cada vano y desbordamiento. Devuelve (tamanos, overflow)."""
     suma_fijos = sum(v for v in fijos if v is not None)
     overflow = 0.0
@@ -62,21 +70,25 @@ def _tamanos_track(fijos, disponible, n, etiqueta, warnings):
         suma_fijos = disponible
 
     libres = [i for i, v in enumerate(fijos) if v is None]
+    tamanos: list[float]
     if libres:
         resto = max(0.0, disponible - suma_fijos)
         cuota = resto / len(libres)
         tamanos = [cuota if v is None else v for v in fijos]
     elif fijos:
-        tamanos = list(fijos)
+        # Sin vanos libres todos los valores de fijos son float (no hay None).
+        tamanos = cast(list[float], list(fijos))
         tamanos[-1] += max(0.0, disponible - suma_fijos)
     else:
         tamanos = [0.0] * n
     return tamanos, overflow
 
 
-def _resolver_track(tracks, total, espesor, etiqueta, warnings,
-                    extras_internos=None, extra_borde_izq=0.0,
-                    extra_borde_der=0.0):
+def _resolver_track(tracks: Sequence[Track], total: float, espesor: float,
+                    etiqueta: str, warnings: list[str],
+                    extras_internos: Sequence[tuple[float, float]] | None = None,
+                    extra_borde_izq: float = 0.0,
+                    extra_borde_der: float = 0.0) -> list[ResolvedTrack]:
     n = len(tracks)
     total = max(0.0, float(total))
     espesor = max(0.0, float(espesor))
@@ -94,7 +106,7 @@ def _resolver_track(tracks, total, espesor, etiqueta, warnings,
     tamanos, overflow = _tamanos_track(
         fijos, disponible, n, etiqueta, warnings)
 
-    resultado = []
+    resultado: list[ResolvedTrack] = []
     cursor = 0.0
     for i, track in enumerate(tracks):
         extra_izq = (
@@ -103,7 +115,7 @@ def _resolver_track(tracks, total, espesor, etiqueta, warnings,
         extra_der = (
             float(extra_borde_der) if i == n - 1
             else float(extras_internos[i][0]))
-        neto = {"ancho": tamanos[i], "alto": 0.0}
+        neto: dict[str, Any] = {"ancho": tamanos[i], "alto": 0.0}
         if extra_izq > EPS:
             neto = VDO_RE_INTERFERENCIAS.calcular_vano_neto_con_reengrose(
                 neto, {"lado_afectado": "izquierda",
@@ -128,10 +140,11 @@ def _resolver_track(tracks, total, espesor, etiqueta, warnings,
     return resultado
 
 
-def _extras_divisiones_celda(cell, espesor, reengroses):
+def _extras_divisiones_celda(cell: Cell, espesor: float,
+                             reengroses: Mapping[str, Any] | None) -> list[tuple[float, float]]:
     """Extras de borde de cada division interna de la celda."""
     axis = cell.axis
-    extras = []
+    extras: list[tuple[float, float]] = []
     for i in range(1, len(cell.children)):
         path = (f"x{cell.px}.{i + 1}" if axis == AXIS_X
                 else f"y{cell.py}.{i + 1}")
@@ -140,8 +153,10 @@ def _extras_divisiones_celda(cell, espesor, reengroses):
     return extras
 
 
-def _piezas_divisiones_celda(cell, resueltos, nominal_x, nominal_z,
-                             nominal_w, nominal_h, espesor, pieces, seq):
+def _piezas_divisiones_celda(cell: Cell, resueltos: Sequence[ResolvedTrack],
+                             nominal_x: float, nominal_z: float,
+                             nominal_w: float, nominal_h: float, espesor: float,
+                             pieces: list[PanelPiece], seq: list[int]) -> None:
     """Anade una pieza 'nested' por cada division interna de la celda."""
     axis = cell.axis
     for i in range(1, len(resueltos)):
@@ -164,9 +179,12 @@ def _piezas_divisiones_celda(cell, resueltos, nominal_x, nominal_z,
                 f"Repisa_Y_{safe}_{seq[0]:03d}"))
 
 
-def _resolver_celda(cell, x, z, w, h, espesor, pieces, warnings,
-                    level, seq, nominal_x=None, nominal_z=None,
-                    nominal_w=None, nominal_h=None, reengroses=None):
+def _resolver_celda(cell: Cell, x: float, z: float, w: float, h: float,
+                    espesor: float, pieces: list[PanelPiece], warnings: list[str],
+                    level: int, seq: list[int],
+                    nominal_x: float | None = None, nominal_z: float | None = None,
+                    nominal_w: float | None = None, nominal_h: float | None = None,
+                    reengroses: Mapping[str, Any] | None = None) -> ResolvedCell:
     nominal_x = x if nominal_x is None else nominal_x
     nominal_z = z if nominal_z is None else nominal_z
     nominal_w = w if nominal_w is None else nominal_w
@@ -219,7 +237,7 @@ def _resolver_celda(cell, x, z, w, h, espesor, pieces, warnings,
     return resuelto
 
 
-def _normalizar_entrada_layout(layout):
+def _normalizar_entrada_layout(layout: object) -> Layout:
     """Acepta Layout, texto JSON o nada y devuelve un Layout normalizado."""
     if isinstance(layout, str):
         layout = Layout.loads(layout)
@@ -230,7 +248,9 @@ def _normalizar_entrada_layout(layout):
     return layout
 
 
-def _extras_divisiones(layout, reengroses, thickness):
+def _extras_divisiones(layout: Layout, reengroses: Mapping[str, Any] | None,
+                       thickness: float) -> tuple[list[tuple[float, float]],
+                                                  list[tuple[float, float]]]:
     """Espesores extra de cada division interior (columnas y filas)."""
     extras_columnas = [
         _extras_borde(
@@ -245,9 +265,10 @@ def _extras_divisiones(layout, reengroses, thickness):
     return extras_columnas, extras_filas
 
 
-def _piezas_divisiones(columns, rows, inner_h, thickness):
+def _piezas_divisiones(columns: Sequence[ResolvedTrack], rows: Sequence[ResolvedTrack],
+                       inner_h: float, thickness: float) -> list[PanelPiece]:
     """Paneles de division vertical (X) y repisas horizontales (Y)."""
-    pieces = []
+    pieces: list[PanelPiece] = []
     for i in range(1, len(columns)):
         prev = columns[i - 1]
         pieces.append(PanelPiece(
@@ -265,10 +286,12 @@ def _piezas_divisiones(columns, rows, inner_h, thickness):
     return pieces
 
 
-def _celdas_resueltas(layout, columns, rows, thickness, pieces, warnings,
-                      seq, reengroses):
+def _celdas_resueltas(layout: Layout, columns: Sequence[ResolvedTrack],
+                      rows: Sequence[ResolvedTrack], thickness: float,
+                      pieces: list[PanelPiece], warnings: list[str],
+                      seq: list[int], reengroses: Mapping[str, Any] | None) -> list[ResolvedCell]:
     """Resuelve cada celda ocupada de la matriz sobre las pistas dadas."""
-    cells = []
+    cells: list[ResolvedCell] = []
     for row in rows:
         for col in columns:
             cell = layout.cells.get(Layout.key(col.id, row.id))
@@ -284,7 +307,8 @@ def _celdas_resueltas(layout, columns, rows, thickness, pieces, warnings,
     return cells
 
 
-def resolve_layout(layout, inner_w, inner_h, thickness, reengroses=None):
+def resolve_layout(layout: object, inner_w: float, inner_h: float, thickness: float,
+                   reengroses: Mapping[str, Any] | None = None) -> ResolvedLayout:
     """Resuelve la matriz completa y devuelve cajas/paneles locales.
 
     ``reengroses`` es un dict clave_pieza -> modificador. Las divisiones y
@@ -296,7 +320,7 @@ def resolve_layout(layout, inner_w, inner_h, thickness, reengroses=None):
     inner_h = max(0.0, float(inner_h))
     thickness = max(0.0, float(thickness))
     reengroses = reengroses or {}
-    warnings = []
+    warnings: list[str] = []
 
     extra_izq = _extra_shell(
         reengroses, "lateral_izquierdo", thickness, "izquierda")
