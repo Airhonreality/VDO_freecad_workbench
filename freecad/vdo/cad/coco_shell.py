@@ -59,16 +59,7 @@ def _aplicar_shell(boxes: list[Any], shell_info: dict[str, dict[str, Any]],
             None if prioridad
             == VDO_RE_MODELO.DEFAULTS["prioridad_encuentro_tiras"]
             else prioridad)
-        segmento: dict[str, Any] = {
-            "x": float(ref["x"]), "y": float(ref["y"]),
-            "z": float(ref["z"]), "w": float(ref["w"]),
-            "h": float(ref["h"]), "d": float(ref["d"]),
-        }
-        if ref.get("poligono"):
-            segmento["poligono"] = list(ref["poligono"])
-            segmento["eje_extrusion"] = ref.get(
-                "eje_extrusion", "z")
-        tira["segmentos"] = [segmento]
+        _completar_segmentos(tira, ref)
         tira["shape"] = forma
         shell_refs.append({
             "indice": indice,
@@ -78,6 +69,20 @@ def _aplicar_shell(boxes: list[Any], shell_info: dict[str, dict[str, Any]],
         })
         shell_tiras.append(tira)
         obstaculos.append(tira)
+
+
+def _completar_segmentos(tira: dict[str, Any], ref: dict[str, Any]) -> None:
+    """Fija el segmento unico de la tira a partir de su referencia de refuerzo."""
+    segmento: dict[str, Any] = {
+        "x": float(ref["x"]), "y": float(ref["y"]),
+        "z": float(ref["z"]), "w": float(ref["w"]),
+        "h": float(ref["h"]), "d": float(ref["d"]),
+    }
+    if ref.get("poligono"):
+        segmento["poligono"] = list(ref["poligono"])
+        segmento["eje_extrusion"] = ref.get(
+            "eje_extrusion", "z")
+    tira["segmentos"] = [segmento]
 
 
 def preparar_carcasa(
