@@ -69,8 +69,8 @@ class CmdCrearHoja(_ComandoBase):
     ICONO = "vdo_workbench.svg"
 
     def Activated(self):
-        from freecad.vdo.app.puertos import crear_documento
-        doc = crear_documento()
+        from freecad.vdo.cad.vdo_guardian import asegurar_documento
+        doc = asegurar_documento()
         from freecad.vdo.cad.vdo_guardian import vdo_guard
         vdo_guard(doc)
         App.Console.PrintMessage(

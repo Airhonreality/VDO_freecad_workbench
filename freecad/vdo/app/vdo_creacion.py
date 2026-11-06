@@ -18,7 +18,6 @@ import re
 from collections.abc import Callable
 from typing import Any
 
-from freecad.vdo.app.puertos import Documento
 from freecad.vdo.cad.propiedades import add_common_props as _cad_add_common_props
 from freecad.vdo.cad.propiedades import ocultar_vista as _cad_ocultar_vista
 from freecad.vdo.cad.vdo_guardian import vdo_guard as _cad_vdo_guard
@@ -33,7 +32,7 @@ def _sanitizar_nombre(nombre: str) -> str:
     return nombre
 
 
-def _nombre_unico(doc: Documento, base: str) -> str:
+def _nombre_unico(doc: Any, base: str) -> str:
     base = _sanitizar_nombre(base)
     if doc.getObject(base) is None:
         return base
