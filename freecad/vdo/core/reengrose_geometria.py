@@ -11,7 +11,7 @@ from freecad.vdo.core.reengrose_modificador import (
 from freecad.vdo.core.reengrose_tiras import generar_geometria_tiras_perimetrales
 
 
-def _inicio_alineado(total, tamano, alineacion):
+def _inicio_alineado(total: float, tamano: float, alineacion: Any) -> float:
     total = float(total)
     tamano = float(tamano)
     alineacion = str(alineacion or "centrado").lower()
@@ -24,11 +24,13 @@ def _inicio_alineado(total, tamano, alineacion):
     return max(0.0, inicio)
 
 
-def _refuerzos_bordes_reengrose(largo, ancho, espesor, nombre, mod):
+def _refuerzos_bordes_reengrose(
+    largo: float, ancho: float, espesor: float, nombre: str, mod: dict[str, Any],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     tiras = generar_geometria_tiras_perimetrales(
         ancho, largo, mod, espesor)
     caras = ["cara_a", "cara_b"] if mod["cara"] == "ambos" else [mod["cara"]]
-    refuerzos = []
+    refuerzos: list[dict[str, Any]] = []
     for cara in caras:
         sufijo_cara = ""
         if len(caras) > 1:
@@ -36,7 +38,7 @@ def _refuerzos_bordes_reengrose(largo, ancho, espesor, nombre, mod):
         for tira in tiras:
             esp_ref = float(tira["d"])
             z0 = espesor if cara == "cara_a" else -esp_ref
-            ref = {
+            ref: dict[str, Any] = {
                 "nombre": (
                     f"{nombre}_Tira_{tira['nombre_sufijo']}{sufijo_cara}"),
                 "rol": "refuerzo",
@@ -59,7 +61,9 @@ def _refuerzos_bordes_reengrose(largo, ancho, espesor, nombre, mod):
     return refuerzos, tiras
 
 
-def _posicion_refuerzo(largo, ancho, mod):
+def _posicion_refuerzo(
+    largo: float, ancho: float, mod: dict[str, Any],
+) -> tuple[float, Any, float, float]:
     """Devuelve largo, ancho, x0 e y0 de un refuerzo sin pacha total."""
     ancho_ref = mod["ancho"]
     if mod["orientacion"] == "paralela":
@@ -76,7 +80,10 @@ def _posicion_refuerzo(largo, ancho, mod):
     return ancho, ancho_ref, x0, 0.0
 
 
-def _refuerzo_pieza(nombre, largo, ancho, esp_ref, z0, sufijo, mod):
+def _refuerzo_pieza(
+    nombre: str, largo: float, ancho: float, esp_ref: float, z0: float,
+    sufijo: str, mod: dict[str, Any],
+) -> dict[str, Any]:
     """Construye la pieza de refuerzo de una cara."""
     if mod["modo_fabricacion"] == "pacha" and mod["alcance"] == "total":
         return {
@@ -111,7 +118,7 @@ def calcular_geometria_reengrose(panel_base: dict[str, Any],
     espesor = float(panel_base.get("espesor", 0.0))
     nombre = str(panel_base.get("nombre", "Panel"))
 
-    resultado = {
+    resultado: dict[str, Any] = {
         "base": {
             "nombre": nombre,
             "rol": "base",
@@ -156,15 +163,17 @@ def calcular_geometria_reengrose(panel_base: dict[str, Any],
     return resultado
 
 
-def _refuerzos_bordes_caja(base, ejes, largo, ancho, espesor,
-                           nombre, mod):
+def _refuerzos_bordes_caja(
+    base: dict[str, float], ejes: dict[str, str], largo: float, ancho: float,
+    espesor: float, nombre: str, mod: dict[str, Any],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     tiras = generar_geometria_tiras_perimetrales(
         ancho, largo, mod, espesor)
     dim_key = {"x": "w", "y": "h", "z": "d"}
     cara_lista = (
         ["cara_a", "cara_b"] if mod["cara"] == "ambos"
         else [mod["cara"]])
-    refuerzos = []
+    refuerzos: list[dict[str, Any]] = []
     for cara in cara_lista:
         sufijo_cara = ""
         if len(cara_lista) > 1:
@@ -172,7 +181,7 @@ def _refuerzos_bordes_caja(base, ejes, largo, ancho, espesor,
         for tira in tiras:
             esp_ref = float(tira["d"])
             z_local = espesor if cara == "cara_a" else -esp_ref
-            ref = dict(base)
+            ref: dict[str, Any] = dict(base)
             ref[ejes["largo"]] = base[ejes["largo"]] + float(tira["x"])
             ref[dim_key[ejes["largo"]]] = float(tira["w"])
             ref[ejes["ancho"]] = base[ejes["ancho"]] + float(tira["y"])
@@ -186,7 +195,7 @@ def _refuerzos_bordes_caja(base, ejes, largo, ancho, espesor,
             ref["cara"] = cara
             ref["eje_extrusion"] = ejes["espesor"]
             if tira.get("poligono"):
-                puntos = []
+                puntos: list[tuple[float, float, float]] = []
                 for px, py in tira["poligono"]:
                     coords = {
                         eje: float(base[eje]) for eje in _EJES
@@ -207,7 +216,7 @@ def _refuerzos_bordes_caja(base, ejes, largo, ancho, espesor,
 _CLAVE_DIMENSION = {"x": "w", "y": "h", "z": "d"}
 
 
-def _validar_ejes(ejes):
+def _validar_ejes(ejes: dict[str, str]) -> dict[str, str]:
     """Normaliza a minusculas y valida los ejes largo, ancho y espesor."""
     for clave in ("largo", "ancho", "espesor"):
         eje = str(ejes.get(clave, "")).lower()
@@ -219,7 +228,7 @@ def _validar_ejes(ejes):
     return ejes
 
 
-def _dimensiones_caja(base, ejes):
+def _dimensiones_caja(base: dict[str, float], ejes: dict[str, str]) -> tuple[float, float, float]:
     """Devuelve largo, ancho y espesor de la caja segun los ejes."""
     dims = {eje: base[_CLAVE_DIMENSION[eje]] for eje in ("x", "y", "z")}
     largo = dims[ejes["largo"]]
@@ -230,9 +239,11 @@ def _dimensiones_caja(base, ejes):
     return largo, ancho, espesor
 
 
-def _intervalos_cara(mod, ejes, largo, ancho):
+def _intervalos_cara(
+    mod: dict[str, Any], ejes: dict[str, str], largo: float, ancho: float,
+) -> dict[str, tuple[float, float]]:
     """Intervalos (inicio, tamano) en largo y ancho del refuerzo de una cara."""
-    intervalos = {}
+    intervalos: dict[str, tuple[float, float]] = {}
     if mod["modo_fabricacion"] == "pacha" and mod["alcance"] == "total":
         intervalos[ejes["largo"]] = (0.0, largo)
         intervalos[ejes["ancho"]] = (0.0, ancho)
@@ -255,16 +266,21 @@ def _intervalos_cara(mod, ejes, largo, ancho):
     return intervalos
 
 
-def _intervalo_espesor(cara, espesor, esp_ref):
+def _intervalo_espesor(
+    cara: str, espesor: float, esp_ref: float,
+) -> tuple[tuple[float, float], str]:
     """Intervalo del espesor del refuerzo y sufijo de nombre de la cara."""
     if cara == "cara_a":
         return (espesor, esp_ref), "_A"
     return (-esp_ref, esp_ref), "_B"
 
 
-def _refuerzo_cara(base, nombre, mod, intervalos, cara, sufijo):
+def _refuerzo_cara(
+    base: dict[str, float], nombre: str, mod: dict[str, Any],
+    intervalos: dict[str, tuple[float, float]], cara: str, sufijo: str,
+) -> dict[str, Any]:
     """Construye la pieza de refuerzo de una cara."""
-    ref = dict(base)
+    ref: dict[str, Any] = dict(base)
     for eje, (inicio, tamano) in intervalos.items():
         ref[eje] = base[eje] + inicio
         ref[_CLAVE_DIMENSION[eje]] = tamano
@@ -278,11 +294,14 @@ def _refuerzo_cara(base, nombre, mod, intervalos, cara, sufijo):
     return ref
 
 
-def _refuerzos_caras(base, ejes, largo, ancho, espesor, nombre, mod):
+def _refuerzos_caras(
+    base: dict[str, float], ejes: dict[str, str], largo: float, ancho: float,
+    espesor: float, nombre: str, mod: dict[str, Any],
+) -> list[dict[str, Any]]:
     """Refuerzos del modo sin bordes: una pieza por cara activa."""
     esp_ref = float(mod["espesor"] or espesor)
     caras = ["cara_a", "cara_b"] if mod["cara"] == "ambos" else [mod["cara"]]
-    refuerzos = []
+    refuerzos: list[dict[str, Any]] = []
     for cara in caras:
         intervalos = _intervalos_cara(mod, ejes, largo, ancho)
         intervalo_espesor, sufijo = _intervalo_espesor(cara, espesor, esp_ref)
@@ -310,7 +329,7 @@ def calcular_geometria_caja(caja: dict[str, Any], modifier: ReengroseModifier,
     nombre = str(caja.get("nombre", "Pieza"))
     ejes = _validar_ejes(
         dict(ejes or {"largo": "x", "ancho": "y", "espesor": "z"}))
-    resultado = {
+    resultado: dict[str, Any] = {
         "base": dict(base),
         "refuerzos": [],
         "grupo_pacha": "",
