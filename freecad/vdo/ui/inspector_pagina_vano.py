@@ -4,6 +4,7 @@ from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.core import vdo_hardware_hub as HH
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 from freecad.vdo.ui.inspector_paginas import _PaginaBase, _float_seguro
+from freecad.vdo.ui import tema
 
 
 # ----------------------------------------------------------------------
@@ -35,14 +36,12 @@ class PaginaVano(_PaginaBase):
         # Banner de Luz Libre Real
         # -------------------------------------------------------------
         self.banner_luz = QtWidgets.QFrame()
-        self.banner_luz.setStyleSheet(
-            "QFrame { background-color: #22252a; border: 1px solid #007acc; "
-            "border-radius: 4px; padding: 3px; }")
+        tema.aplicar_estilo(self.banner_luz, tema.ESTILO_BANNER_LUZ)
         lay_b = QtWidgets.QHBoxLayout(self.banner_luz)
         lay_b.setContentsMargins(6, 3, 6, 3)
 
         self.lbl_luz_banner = QtWidgets.QLabel("📐 <b>LUZ LIBRE NETA:</b> 564 × 280 × 550 mm")
-        self.lbl_luz_banner.setStyleSheet("color: #00d4ff; font-size: 10px;")
+        tema.aplicar_estilo(self.lbl_luz_banner, tema.ESTILO_LUZ_10PX)
         lay_b.addWidget(self.lbl_luz_banner)
         self.contenedor_datos.addWidget(self.banner_luz)
 
@@ -51,7 +50,7 @@ class PaginaVano(_PaginaBase):
         # Dock Táctil de Habitantes (4 Acciones)
         # -------------------------------------------------------------
         lbl_dock = QtWidgets.QLabel("HABITANTE DEL VANO:")
-        lbl_dock.setStyleSheet("color: #888888; font-size: 9px; font-weight: bold; margin-top: 4px;")
+        tema.aplicar_estilo(lbl_dock, tema.ESTILO_TITULO_DOCK)
         self.contenedor_datos.addWidget(lbl_dock)
 
         fila_dock = QtWidgets.QHBoxLayout()
@@ -70,26 +69,7 @@ class PaginaVano(_PaginaBase):
             btn.setToolTip(tip)
             btn.setFixedHeight(26)
             btn.setCursor(QtCore.Qt.PointingHandCursor)
-            btn.setStyleSheet("""
-                QPushButton {
-                    background-color: #282828;
-                    border: 1px solid #3d3d3d;
-                    border-radius: 4px;
-                    font-size: 9px;
-                    color: #cccccc;
-                    padding: 2px 4px;
-                }
-                QPushButton:checked {
-                    background-color: #007acc;
-                    border-color: #007acc;
-                    color: #ffffff;
-                    font-weight: bold;
-                }
-                QPushButton:hover:!checked {
-                    background-color: #333333;
-                    color: #ffffff;
-                }
-            """)
+            tema.aplicar_estilo(btn, tema.ESTILO_BOTON_VANO)
             btn.clicked.connect(lambda _, k=key: self._on_dock_clicked(k))
             fila_dock.addWidget(btn)
             self.btn_dock[key] = btn
@@ -102,7 +82,7 @@ class PaginaVano(_PaginaBase):
         # Sub-paneles Contextuales del Dock
         # -------------------------------------------------------------
         self.stack_dock = QtWidgets.QStackedWidget()
-        self.stack_dock.setStyleSheet("background-color: #1a1a1a; border-radius: 4px;")
+        tema.aplicar_estilo(self.stack_dock, tema.ESTILO_FONDO_DOCK)
         self._crear_panel_subdivision()
         self._crear_panel_cajon()
         self._crear_panel_puerta()
@@ -141,7 +121,7 @@ class PaginaVano(_PaginaBase):
         lay_sub.addLayout(f_modo)
 
         btn_ap_sub = QtWidgets.QPushButton("➗ Aplicar Subdivisión")
-        btn_ap_sub.setStyleSheet("background-color: #007acc; color: white; font-weight: bold; padding: 4px; font-size: 10px;")
+        tema.aplicar_estilo(btn_ap_sub, tema.ESTILO_BOTON_ACENTO_10PX)
         btn_ap_sub.clicked.connect(self._aplicar_subdivision)
         lay_sub.addWidget(btn_ap_sub)
         self.stack_dock.addWidget(panel_subdiv)
@@ -176,11 +156,11 @@ class PaginaVano(_PaginaBase):
         lay_caj.addLayout(f_ag_caj)
 
         self.lbl_cajon_hub = QtWidgets.QLabel("SKU: BLUM-TANDEM · Blum · $12.50 USD")
-        self.lbl_cajon_hub.setStyleSheet("color: #28a745; font-size: 9px;")
+        tema.aplicar_estilo(self.lbl_cajon_hub, tema.ESTILO_HUB_9PX)
         lay_caj.addWidget(self.lbl_cajon_hub)
 
         btn_ap_caj = QtWidgets.QPushButton("🗄 Insertar Cajón")
-        btn_ap_caj.setStyleSheet("background-color: #007acc; color: white; font-weight: bold; padding: 4px; font-size: 10px;")
+        tema.aplicar_estilo(btn_ap_caj, tema.ESTILO_BOTON_ACENTO_10PX)
         btn_ap_caj.clicked.connect(self._aplicar_cajon)
         lay_caj.addWidget(btn_ap_caj)
         self.stack_dock.addWidget(panel_cajon)
@@ -214,11 +194,11 @@ class PaginaVano(_PaginaBase):
         lay_pue.addLayout(f_ag_pue)
 
         self.lbl_puerta_hub = QtWidgets.QLabel("Bisagras Cazoleta 35mm Cierre Suave (Parche)")
-        self.lbl_puerta_hub.setStyleSheet("color: #28a745; font-size: 9px;")
+        tema.aplicar_estilo(self.lbl_puerta_hub, tema.ESTILO_HUB_9PX)
         lay_pue.addWidget(self.lbl_puerta_hub)
 
         btn_ap_pue = QtWidgets.QPushButton("🚪 Insertar Puerta")
-        btn_ap_pue.setStyleSheet("background-color: #007acc; color: white; font-weight: bold; padding: 4px; font-size: 10px;")
+        tema.aplicar_estilo(btn_ap_pue, tema.ESTILO_BOTON_ACENTO_10PX)
         btn_ap_pue.clicked.connect(self._aplicar_puerta)
         lay_pue.addWidget(btn_ap_pue)
         self.stack_dock.addWidget(panel_puerta)
@@ -229,10 +209,10 @@ class PaginaVano(_PaginaBase):
         lay_vac = QtWidgets.QVBoxLayout(panel_vacio)
         lay_vac.setContentsMargins(6, 6, 6, 6)
         lbl_v = QtWidgets.QLabel("🔲 Vano libre de almacenamiento útil")
-        lbl_v.setStyleSheet("color: #888888; font-size: 9px;")
+        tema.aplicar_estilo(lbl_v, tema.ESTILO_ATENUADO_9PX)
         lay_vac.addWidget(lbl_v)
         btn_ap_vac = QtWidgets.QPushButton("Restaurar Vacío")
-        btn_ap_vac.setStyleSheet("background-color: #333333; color: #cccccc; padding: 4px; font-size: 10px;")
+        tema.aplicar_estilo(btn_ap_vac, tema.ESTILO_BOTON_VACIO)
         btn_ap_vac.clicked.connect(self._aplicar_vacio)
         lay_vac.addWidget(btn_ap_vac)
         self.stack_dock.addWidget(panel_vacio)

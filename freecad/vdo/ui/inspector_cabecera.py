@@ -4,6 +4,7 @@ from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.vdo_selection_bridge import VDOSelectionBridge
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.inspector_paginas import PAGE_CHASIS, PAGE_CIERRE, PAGE_PIEZA, PAGE_VANO
+from freecad.vdo.ui import tema
 
 
 # tipo de destino -> (ruta del breadcrumb, clave activa)
@@ -56,8 +57,7 @@ class _BreadcrumbBar(QtWidgets.QWidget):
         self.lbl_inicio = QtWidgets.QLabel("🏠 Mueble")
         self.lbl_inicio.setObjectName("lblBreadcrumbRoot")
         self.lbl_inicio.setCursor(QtCore.Qt.PointingHandCursor)
-        self.lbl_inicio.setStyleSheet(
-            "QLabel#lblBreadcrumbRoot { color: #007acc; font-weight: bold; font-size: 11px; }")
+        tema.aplicar_estilo(self.lbl_inicio, tema.ESTILO_BREADCRUMB_RAIZ)
         self.lbl_inicio.mousePressEvent = lambda _e: self.sigNivelClickeado.emit("mueble")
         self.layout.addWidget(self.lbl_inicio)
 
@@ -76,19 +76,14 @@ class _BreadcrumbBar(QtWidgets.QWidget):
 
         for label, clave in niveles:
             sep = QtWidgets.QLabel(" › ")
-            sep.setStyleSheet("color: #666666; font-size: 10px;")
+            tema.aplicar_estilo(sep, tema.ESTILO_SEPARADOR)
             self.layout.insertWidget(self.layout.count() - 1, sep)
 
             lbl = QtWidgets.QLabel(label)
             lbl.setObjectName(f"lblBreadcrumb_{clave}")
             lbl.setCursor(QtCore.Qt.PointingHandCursor)
             activo_es = (clave == activo)
-            lbl.setStyleSheet(
-                f"QLabel#lblBreadcrumb_{clave} {{ "
-                f"color: {'#ffffff' if activo_es else '#aaaaaa'}; "
-                f"font-weight: {'bold' if activo_es else 'normal'}; "
-                f"font-size: 10px; }}"
-            )
+            tema.aplicar_estilo(lbl, tema.estilo_breadcrumb(clave, activo_es))
             lbl.mousePressEvent = (
                 lambda _e, c=clave: self.sigNivelClickeado.emit(c))
             self.layout.insertWidget(self.layout.count() - 1, lbl)
@@ -121,32 +116,7 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
     def _estilizar(self):
         self.setObjectName("VDOMicroHeader")
         self.setFixedHeight(30)
-        self.setStyleSheet("""
-            QFrame#VDOMicroHeader {
-                background-color: #1e1e1e;
-                border-top: 1px solid #2d2d2d;
-                border-bottom: 1px solid #2d2d2d;
-                padding: 1px 4px;
-            }
-            QLabel {
-                color: #888888;
-                font-size: 10px;
-                font-weight: bold;
-            }
-            QDoubleSpinBox {
-                background-color: #282828;
-                color: #00d4ff;
-                border: 1px solid #3d3d3d;
-                border-radius: 3px;
-                padding: 1px 2px;
-                font-size: 10px;
-                font-weight: bold;
-            }
-            QDoubleSpinBox:focus {
-                border-color: #007acc;
-                background-color: #333333;
-            }
-        """)
+        tema.aplicar_estilo(self, tema.ESTILO_MICRO_HEADER)
 
     def _crear_layout(self):
         layout = QtWidgets.QHBoxLayout(self)
@@ -156,7 +126,7 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
 
     def _crear_icono(self, layout):
         icon_lbl = QtWidgets.QLabel("📐")
-        icon_lbl.setStyleSheet("font-size: 11px;")
+        tema.aplicar_estilo(icon_lbl, tema.ESTILO_TEXTO_11PX)
         layout.addWidget(icon_lbl)
 
     def _crear_medidas(self, layout):

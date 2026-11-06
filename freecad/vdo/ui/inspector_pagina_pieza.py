@@ -10,6 +10,7 @@ except ImportError:  # pragma: no cover
 from freecad.vdo.cad.documento import recalcular
 from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades
 from freecad.vdo.ui.inspector_paginas import _PaginaBase, _float_seguro, _str_seguro
+from freecad.vdo.ui import tema
 
 
 # ----------------------------------------------------------------------
@@ -24,11 +25,7 @@ class PaginaPieza(_PaginaBase):
 
         self.header = QtWidgets.QGroupBox("PanelHeader")
         self.header.setObjectName("grpPanelHeader")
-        self.header.setStyleSheet(
-            "QGroupBox#grpPanelHeader { color: #e0e0e0; font-weight: bold; "
-            "border: 1px solid #444444; border-radius: 4px; margin-top: 6px; }"
-            "QGroupBox#grpPanelHeader::title { subcontrol-origin: margin; "
-            "left: 8px; padding: 0 4px; color: #007acc; }")
+        tema.aplicar_estilo(self.header, tema.ESTILO_GRUPO_PANEL_HEADER)
         h_layout = QtWidgets.QGridLayout(self.header)
         h_layout.setContentsMargins(8, 14, 8, 8)
         h_layout.setHorizontalSpacing(8)
@@ -44,9 +41,9 @@ class PaginaPieza(_PaginaBase):
 
         def _fila(r, clave, lbl_widget, label_txt):
             k = QtWidgets.QLabel(label_txt)
-            k.setStyleSheet("color: #aaaaaa; font-size: 10px;")
+            tema.aplicar_estilo(k, tema.ESTILO_CLAVE_10PX)
             v = lbl_widget
-            v.setStyleSheet("color: #e0e0e0; font-size: 10px; font-weight: bold;")
+            tema.aplicar_estilo(v, tema.ESTILO_VALOR_10PX_NEGRITA)
             h_layout.addWidget(k, r, 0)
             h_layout.addWidget(v, r, 1)
 
