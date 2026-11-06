@@ -54,7 +54,7 @@ except ImportError:  # pragma: no cover
     cavidad_interior = None
 
 from freecad.vdo.cad.documento import recalcular
-from freecad.vdo.cad.propiedades import anadir_propiedad_texto
+from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades
 from freecad.vdo.core import vdo_hardware_hub as HH
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
@@ -441,12 +441,12 @@ class PaginaChasis(_PaginaBase):
             return
         try:
             if hasattr(obj, "VDO_Chassis_JSON"):
-                obj.VDO_Chassis_JSON = json.dumps(cfg)
+                asignar_propiedades(obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
             elif hasattr(obj, "addProperty"):
                 try:
                     anadir_propiedad_texto(obj, "VDO_Chassis_JSON", "VDO",
                                            "Configuración semiótica de Capa 1")
-                    obj.VDO_Chassis_JSON = json.dumps(cfg)
+                    asignar_propiedades(obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
                 except Exception:
                     App.Console.PrintWarning(
                         "[VDO] No se pudo añadir propiedad VDO_Chassis_JSON")
@@ -893,11 +893,11 @@ class PaginaPieza(_PaginaBase):
             return
         try:
             if hasattr(obj, "VDO_Reengrose_JSON"):
-                obj.VDO_Reengrose_JSON = json.dumps(cfg)
+                asignar_propiedades(obj, {"VDO_Reengrose_JSON": json.dumps(cfg)})
             elif hasattr(obj, "addProperty"):
                 try:
                     anadir_propiedad_texto(obj, "VDO_Reengrose_JSON", "VDO", "Regrueso JSON")
-                    obj.VDO_Reengrose_JSON = json.dumps(cfg)
+                    asignar_propiedades(obj, {"VDO_Reengrose_JSON": json.dumps(cfg)})
                 except Exception:
                     App.Console.PrintWarning(
                         "[VDO] No se pudo añadir propiedad VDO_Reengrose_JSON")
@@ -1437,16 +1437,16 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
         if obj is not None:
             try:
                 if hasattr(obj, "Ancho"):
-                    obj.Ancho = w
+                    asignar_propiedades(obj, {"Ancho": w})
                 if hasattr(obj, "Alto"):
-                    obj.Alto = h
+                    asignar_propiedades(obj, {"Alto": h})
                 if hasattr(obj, "FondoModulo"):
-                    obj.FondoModulo = d
+                    asignar_propiedades(obj, {"FondoModulo": d})
                 if hasattr(obj, "Espesor"):
                     try:
-                        obj.Espesor = e
+                        asignar_propiedades(obj, {"Espesor": e})
                     except TypeError:
-                        obj.Espesor = round(e)
+                        asignar_propiedades(obj, {"Espesor": round(e)})
                 doc = getattr(obj, "Document", None)
                 if doc is not None:
                     recalcular(doc)
@@ -1463,10 +1463,10 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
         def _guardar_prop(prop_name, prop_val):
             try:
                 if hasattr(obj, prop_name):
-                    setattr(obj, prop_name, prop_val)
+                    asignar_propiedades(obj, {prop_name: prop_val})
                 elif hasattr(obj, "addProperty"):
-                    obj.addProperty("App::PropertyString", prop_name, "VDO", prop_name)
-                    setattr(obj, prop_name, prop_val)
+                    anadir_propiedad_texto(obj, prop_name, "VDO", prop_name)
+                    asignar_propiedades(obj, {prop_name: prop_val})
             except Exception:
                 App.Console.PrintWarning(
                     f"[VDO] No se pudo guardar propiedad {prop_name}")
@@ -1501,7 +1501,7 @@ class VDOUniversalInspectorWidget(QtWidgets.QWidget):
         try:
             doc = getattr(obj, "Document", None)
             if doc is not None:
-                doc.recompute()
+                recalcular(doc)
         except Exception:
             App.Console.PrintWarning(
                 "[VDO] No se pudo recomputar el documento")
