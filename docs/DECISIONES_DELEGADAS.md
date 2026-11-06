@@ -519,3 +519,8 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 
 - **D-50:** M7 ui/vdo_cajon_task partido por concepto. Verificación visual pendiente (M10).
 - Decisión de implementación: `PanelHeaderWidget` (cabecera de cotas y cantos) va a `ui/cajon_task_cabecera.py`, sin cambios de código. `CajonTaskPanel._crear_widget` (construcción de la ventana) va a un mixin en `ui/cajon_task_construccion.py`. La raíz `ui/vdo_cajon_task.py` conserva `CajonTaskPanel` con `__init__`, selectores, carga de valores, cabecera y aceptar, y así `vdo_interfaz.py` y `vdo_view_providers.py` no cambian. Sin reexportaciones (P6). Sin ciclos nuevos.
+
+## D-51
+
+- **D-51:** M7 ui/vdo_puerta_task partido por concepto. Verificación visual pendiente (M10).
+- Decisión de implementación: las constantes de presentación y opciones (`FAMILIAS`, `SENTIDOS_*`, `COLOR_*`) van a `ui/puerta_task_constantes.py`, sin cambios de código. `PanelHeaderWidget` va a `ui/puerta_task_cabecera.py`. `PuertaTaskPanel._crear_widget` va a un mixin en `ui/puerta_task_construccion.py`. La raíz `ui/vdo_puerta_task.py` conserva `PuertaTaskPanel` con `__init__`, carga de valores, cálculo de visibilidad, cabecera, aceptar y cancelar, y así `vdo_interfaz.py` y `vdo_view_providers.py` no cambian. Las constantes van primero para evitar ciclos: el mixin no puede importar de la raíz. Sin reexportaciones (P6).

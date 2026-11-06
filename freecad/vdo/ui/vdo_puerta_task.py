@@ -34,24 +34,17 @@ from freecad.vdo.core.vdo_puerta_despiece import (
     descripcion_piston,
 )
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui.puerta_task_constantes import (
+    COLOR_BORDE,
+    COLOR_FONDO,
+    COLOR_TEXTO,
+    FAMILIAS,
+    SENTIDOS_BASCULANTE,
+    SENTIDOS_BATIENTE,
+    SENTIDOS_CORREDIZA,
+)
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
-
-FAMILIAS = ["Batiente Vertical", "Basculante Horizontal", "Corrediza"]
-SENTIDOS_BATIENTE = ["Izquierda", "Derecha", "Doble"]
-SENTIDOS_BASCULANTE = ["Hacia Arriba", "Hacia Abajo"]
-SENTIDOS_CORREDIZA = ["2 hojas", "3 hojas"]
-
-# ---------------------------------------------------------------------
-# Mapeo de nombres de visualización (UI) a constantes del contrato.
-# ---------------------------------------------------------------------
-
-# Colores del Manifiesto de UI VDO (tema oscuro)
-COLOR_FONDO = "#1e1e1e"
-COLOR_ACENTO = "#007acc"
-COLOR_TEXTO = "#e0e0e0"
-COLOR_BORDE = "#4a4a4a"
-
 
 # ---------------------------------------------------------------------
 # PanelHeaderWidget (encabezado universal de pieza física)
