@@ -31,7 +31,25 @@ class BoxConstruccionMixin:
         vbox = QtWidgets.QVBoxLayout(self)
         vbox.setContentsMargins(6, 6, 6, 6)
         vbox.setSpacing(5)
+        self._construir_barra_superior(vbox)
+        # 2. Marco del Cuadrado Espacial Concéntrico
+        self.container_canvas = QtWidgets.QFrame()
+        self.container_canvas.setObjectName("canvas_container")
+        grid = QtWidgets.QGridLayout(self.container_canvas)
+        grid.setContentsMargins(6, 6, 6, 6)
+        grid.setSpacing(4)
+        self._construir_esquinas(grid)
+        self._construir_bordes(grid)
+        self._construir_centro(grid, vbox)
+        # Alias chk_uniforme para compatibilidad backward
+        self.chk_uniforme = self.btn_centro
+        self._construir_selector_margenes(vbox)
+        self._construir_panel_medidas(vbox)
+        self._construir_chips_offset(vbox)
+        self._construir_spins_borde()
+        self._construir_resumen(vbox)
 
+    def _construir_barra_superior(self, vbox):
         # 1. Barra superior: [ Activar ]  [ All ]  [ 🔗 Sincronizar esquinas ]
         top_bar = QtWidgets.QHBoxLayout()
         self.chk_activo = QtWidgets.QCheckBox("Activar reengrose")
@@ -58,13 +76,7 @@ class BoxConstruccionMixin:
         top_bar.addWidget(self.chk_sync_esquinas)
         vbox.addLayout(top_bar)
 
-        # 2. Marco del Cuadrado Espacial Concéntrico
-        self.container_canvas = QtWidgets.QFrame()
-        self.container_canvas.setObjectName("canvas_container")
-        grid = QtWidgets.QGridLayout(self.container_canvas)
-        grid.setContentsMargins(6, 6, 6, 6)
-        grid.setSpacing(4)
-
+    def _construir_esquinas(self, grid):
         # Esquinas (botones cuadrados)
         self.btn_esquina = {}
         self.combo_esquina = {}  # Compatibilidad backward
@@ -96,6 +108,7 @@ class BoxConstruccionMixin:
         self.btn_esquinas = self.btn_esquina
         self.combo_esquinas = self.combo_esquina["frente_izquierda"]
 
+    def _construir_bordes(self, grid):
         # Botones de Bordes (Tiras)
         self.btn_borde = {}
         # FONDO (Norte)
@@ -142,6 +155,7 @@ class BoxConstruccionMixin:
         grid.addWidget(btn_der, 1, 2)
         self.btn_borde["derecha"] = btn_der
 
+    def _construir_centro(self, grid, vbox):
         # CENTRO: Canvas Concéntrico (Calibre 1px Canto + Calibre 3px Tiras + Brecha Offset)
         self.center_box = QtWidgets.QFrame()
         self.center_box.setStyleSheet("background: transparent;")
@@ -173,9 +187,7 @@ class BoxConstruccionMixin:
         grid.setColumnStretch(1, 1)
         vbox.addWidget(self.container_canvas)
 
-        # Alias chk_uniforme para compatibilidad backward
-        self.chk_uniforme = self.btn_centro
-
+    def _construir_selector_margenes(self, vbox):
         # 3. Selector Gestáltico de Margen
         bar_margenes = QtWidgets.QHBoxLayout()
         self.lbl_margen_tag = QtWidgets.QLabel("Margen:")
@@ -193,6 +205,7 @@ class BoxConstruccionMixin:
         bar_margenes.addStretch()
         vbox.addLayout(bar_margenes)
 
+    def _construir_panel_medidas(self, vbox):
         # 4. Panel de Cotas Numéricas Gestálticas (Ancho 3px & Offset 1px)
         self.panel_medidas = QtWidgets.QWidget()
         grid_med = QtWidgets.QGridLayout(self.panel_medidas)
@@ -224,6 +237,7 @@ class BoxConstruccionMixin:
 
         vbox.addWidget(self.panel_medidas)
 
+    def _construir_chips_offset(self, vbox):
         # 5. Chips de Acceso Rápido para Offset de Taller
         bar_quick_offset = QtWidgets.QHBoxLayout()
         lbl_quick = QtWidgets.QLabel("Offset rápido:")
@@ -245,6 +259,7 @@ class BoxConstruccionMixin:
         bar_quick_offset.addStretch()
         vbox.addLayout(bar_quick_offset)
 
+    def _construir_spins_borde(self):
         # Compatibilidad: spins individuales mapeados en dict
         self.spin_ancho_borde = {}
         self.spin_offset_borde = {}
@@ -252,6 +267,7 @@ class BoxConstruccionMixin:
             self.spin_ancho_borde[b] = self._spin(70.0)
             self.spin_offset_borde[b] = self._spin(0.0)
 
+    def _construir_resumen(self, vbox):
         # 6. Resumen compacto
         self.lbl_resumen = QtWidgets.QLabel("Sin reengrose.")
         self.lbl_resumen.setWordWrap(True)
