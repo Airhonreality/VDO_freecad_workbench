@@ -53,8 +53,8 @@ def _marca_desde_catalogo(hw, marca_id):
         "unidad_delta": "mm",
         "descripcion": hw.get("proveedor", ""),
         "longitudes_comerciales": [
-            float(l)
-            for l in tecnicos.get("longitudes_comerciales", [300, 350])
+            float(lon)
+            for lon in tecnicos.get("longitudes_comerciales", [300, 350])
         ],
         "mecanizado": _mecanizado_corredera(tecnicos),
         "proveedor": hw.get("proveedor", ""),
@@ -140,8 +140,8 @@ def seleccionar_guia(prof_int, longitudes_comerciales):
     Raises:
         ValueError: si ProfInt es menor que la guía más corta
     """
-    validas = sorted(float(l) for l in longitudes_comerciales)
-    aptas = [l for l in validas if l <= float(prof_int)]
+    validas = sorted(float(lon) for lon in longitudes_comerciales)
+    aptas = [lon for lon in validas if lon <= float(prof_int)]
     if not aptas:
         raise ValueError(
             f"ProfInt={prof_int} mm es menor que la guía comercial mínima "

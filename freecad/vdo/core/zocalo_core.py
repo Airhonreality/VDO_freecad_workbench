@@ -42,8 +42,8 @@ CANTOS_BORDE = {
 def _float_positivo(valor, nombre):
     try:
         numero = float(valor)
-    except (TypeError, ValueError):
-        raise ZocaloError(f"Valor inválido para '{nombre}': {valor!r}.")
+    except (TypeError, ValueError) as exc:
+        raise ZocaloError(f"Valor inválido para '{nombre}': {valor!r}.") from exc
     if numero <= 0:
         raise ZocaloError(f"'{nombre}' debe ser mayor que 0.")
     return numero
@@ -52,8 +52,8 @@ def _float_positivo(valor, nombre):
 def _float_no_negativo(valor, nombre):
     try:
         numero = float(valor)
-    except (TypeError, ValueError):
-        raise ZocaloError(f"Valor inválido para '{nombre}': {valor!r}.")
+    except (TypeError, ValueError) as exc:
+        raise ZocaloError(f"Valor inválido para '{nombre}': {valor!r}.") from exc
     if numero < 0:
         raise ZocaloError(f"'{nombre}' no puede ser negativo.")
     return numero
@@ -76,10 +76,10 @@ def _validar_parametros(ancho, fondo, alto_zocalo, espesor_tablero,
     tiene_trasera = bool(tiene_trasera)
     try:
         amarres = int(amarres_intermedios)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError) as exc:
         raise ZocaloError(
             f"Valor inválido para 'amarres_intermedios': "
-            f"{amarres_intermedios!r}.")
+            f"{amarres_intermedios!r}.") from exc
     if amarres < 0:
         raise ZocaloError("'amarres_intermedios' no puede ser negativo.")
     return (ancho, fondo, alto_zocalo, espesor, dist_frente,

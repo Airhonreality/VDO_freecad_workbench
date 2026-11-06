@@ -55,17 +55,17 @@ EJES_PREVIEW = "X\u2192  Y\u2191"
 def normal(lado):
     try:
         return NORMALES[str(lado).lower()]
-    except KeyError:
+    except KeyError as exc:
         raise ValueError(
-            f"Lado VDO invalido: '{lado}'. Validos: {', '.join(LADOS)}.")
+            f"Lado VDO invalido: '{lado}'. Validos: {', '.join(LADOS)}.") from exc
 
 
 def opuesto(lado):
     try:
         return OPUESTOS[str(lado).lower()]
-    except KeyError:
+    except KeyError as exc:
         raise ValueError(
-            f"Lado VDO invalido: '{lado}'. Validos: {', '.join(LADOS)}.")
+            f"Lado VDO invalido: '{lado}'. Validos: {', '.join(LADOS)}.") from exc
 
 
 def rotar_z(vector, grados):

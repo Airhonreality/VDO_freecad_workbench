@@ -33,10 +33,10 @@ def get_param(ruta, default=None, manifest=None):
         for parte in partes:
             valor = valor[parte]
         return valor
-    except (KeyError, TypeError):
+    except (KeyError, TypeError) as exc:
         if default is not None:
             return default
-        raise ValueError(f"Parámetro no encontrado en manifest: {ruta}")
+        raise ValueError(f"Parámetro no encontrado en manifest: {ruta}") from exc
 
 
 # === DIMENSIONES LOCALES (Params) ===

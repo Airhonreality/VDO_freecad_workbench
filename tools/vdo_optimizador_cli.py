@@ -28,8 +28,8 @@ def _parse_board(text):
     try:
         w, h = text.lower().split("x")
         return float(w), float(h)
-    except (ValueError, AttributeError):
-        raise argparse.ArgumentTypeError("Formato de tablero: ANCHOxALTO (ej: 2440x1830)")
+    except (ValueError, AttributeError) as exc:
+        raise argparse.ArgumentTypeError("Formato de tablero: ANCHOxALTO (ej: 2440x1830)") from exc
 
 
 def main():

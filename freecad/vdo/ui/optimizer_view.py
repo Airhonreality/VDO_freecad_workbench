@@ -95,9 +95,12 @@ class BoardView(QtWidgets.QWidget):
         text = (f"{g['label']}   —   {len(g['sheets'])} tablero(s), "
                 f"{placed}/{g['n_pieces']} piezas")
         p.setPen(QtGui.QPen(QtGui.QColor("#114488")))
-        f = p.font(); f.setBold(True); p.setFont(f)
+        f = p.font()
+        f.setBold(True)
+        p.setFont(f)
         p.drawText(_PAD, b["y"] + 16, text)
-        f.setBold(False); p.setFont(f)
+        f.setBold(False)
+        p.setFont(f)
 
     def _draw_sheet(self, p, b):
         s = b["s"]

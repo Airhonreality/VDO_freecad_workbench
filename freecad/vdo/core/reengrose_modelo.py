@@ -172,9 +172,9 @@ def _a_float(valor, nombre, defecto=None):
         return defecto
     try:
         return float(valor)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError) as exc:
         raise ReengroseError(
-            f"Valor numerico invalido para '{nombre}': {valor!r}.")
+            f"Valor numerico invalido para '{nombre}': {valor!r}.") from exc
 
 
 def _a_bool(valor):
@@ -198,10 +198,10 @@ def _normalizar_modo_choque(valor, nombre="comportamiento_choque_nucleo"):
     texto = str(valor or "").strip().lower()
     try:
         return _MAPA_MODO_CHOQUE[texto]
-    except KeyError:
+    except KeyError as exc:
         raise ReengroseError(
             f"Valor invalido para '{nombre}': {valor!r}. "
-            f"Validos: {', '.join(MODOS_CHOQUE_NUCLEO)}.")
+            f"Validos: {', '.join(MODOS_CHOQUE_NUCLEO)}.") from exc
 
 
 _EJES = ("x", "y", "z")

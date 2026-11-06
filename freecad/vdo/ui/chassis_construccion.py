@@ -163,7 +163,7 @@ class ChassisConstruccionMixin:
 
         self.combo_fondo = QtWidgets.QComboBox()
         self.combo_fondo.setProperty("class", "combo-fondo")
-        for val, label, icono_id, tip in TIPOS_FONDO:
+        for val, label, icono_id, _tip in TIPOS_FONDO:
             self.combo_fondo.addItem(obtener_svg_icon(icono_id, 16), label, val)
         self.combo_fondo.currentIndexChanged.connect(self._on_fondo_changed)
         layout_fondo.addWidget(self.combo_fondo, 1)

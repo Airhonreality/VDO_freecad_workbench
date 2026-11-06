@@ -288,7 +288,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
             no_col = True
             col_detalle = []
             cz_intervals = []
-            for i, cj in enumerate(cajones):
+            for _i, cj in enumerate(cajones):
                 pl = cj.Placement
                 bb = cj.Shape.BoundBox
                 z0 = pl.Base.z + bb.ZMin

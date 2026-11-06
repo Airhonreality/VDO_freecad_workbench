@@ -89,7 +89,7 @@ def _ejecutar(directorio, salida):
 
     # Cada entrada de failures/errors se escribe tal cual. Sin reclasificación a SKIP.
     def _ultima(tb):
-        lineas = [l for l in tb.strip().splitlines() if l.strip()]
+        lineas = [renglon for renglon in tb.strip().splitlines() if renglon.strip()]
         return lineas[-1] if lineas else ""
 
     filas = [("FALLO", t.id(), _ultima(tb)) for t, tb in resultado.failures]

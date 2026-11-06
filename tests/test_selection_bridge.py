@@ -151,7 +151,7 @@ class SelectionBridgeTests(unittest.TestCase):
             (self.obj_zocalo, "ZOCALO"),
             (self.obj_box, "UNKNOWN"),
         ]
-        for obj, esperado in secuencias:
+        for obj, _esperado in secuencias:
             self._seleccionar(obj)
         self.assertEqual(len(self.eventos), len(secuencias))
         for (obj, tipo), (_obj, esperado) in zip(self.eventos, secuencias, strict=False):

@@ -115,7 +115,7 @@ def _duplicados() -> dict:
     # 2. Funciones con cuerpo idéntico
     cuerpos: dict[str, list[tuple[str, str, int]]] = collections.defaultdict(list)
 
-    for nombre, base in CAPAS:
+    for _nombre, base in CAPAS:
         for p in _archivos_py(base):
             src = _leer(p)
             try:
@@ -195,7 +195,7 @@ def _literales() -> dict:
 def _ramas() -> dict:
     """Funciones con cadenas if/elif de 4 o más ramas sobre el mismo test."""
     resultado: dict = {}
-    for nombre, base in CAPAS:
+    for _nombre, base in CAPAS:
         for p in _archivos_py(base):
             src = _leer(p)
             try:
@@ -244,7 +244,7 @@ def _contar_cadena_ifelif(nodo_func) -> int:
 def _fachadas() -> dict:
     """Módulos cuyo cuerpo son solo imports y reexportaciones."""
     fachadas = []
-    for nombre, base in CAPAS:
+    for _nombre, base in CAPAS:
         for p in _archivos_py(base):
             if p.name == "__init__.py":
                 continue
@@ -282,7 +282,7 @@ def _fachadas() -> dict:
 def _tamano() -> dict:
     archivos_grandes = []
     funciones_largas = []
-    for nombre, base in CAPAS:
+    for _nombre, base in CAPAS:
         for p in _archivos_py(base):
             src = _leer(p)
             n_lineas = src.count("\n") + 1
@@ -311,7 +311,7 @@ def _tamano() -> dict:
 def _excepciones() -> dict:
     """except sin re-lanzamiento (raise) ni registro (App.Console / logging)."""
     problemas = []
-    for nombre, base in CAPAS:
+    for _nombre, base in CAPAS:
         for p in _archivos_py(base):
             src = _leer(p)
             try:
@@ -378,9 +378,9 @@ def main() -> int:
         filas = [[str(data["tablas_identicas"]), "tablas constantes idénticas (AST)"]]
         filas.append([str(data["cuerpos_identicos"]), "funciones con cuerpo idéntico"])
         _imprimir_tabla("DUPLICADOS", filas, ["cantidad", "tipo"])
-        for k, v in data["detalle_tablas"].items():
+        for _k, v in data["detalle_tablas"].items():
             print(f"  Tabla duplicada: {v}")
-        for k, v in data["detalle_cuerpos"].items():
+        for _k, v in data["detalle_cuerpos"].items():
             print(f"  Función duplicada: {v}")
 
     elif sub == "literales":
