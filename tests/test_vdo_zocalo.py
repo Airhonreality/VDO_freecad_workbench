@@ -6,10 +6,12 @@ from tests.soporte.requisitos import requiere_freecad
 try:
     import FreeCAD as App
 
+    from freecad.vdo.cad import zocalo as ZC
     from freecad.vdo.core import vdo_zocalo_core as Z
 except ImportError:
     App = None
     Z = None
+    ZC = None
 
 
 def _freecad_real():
@@ -71,7 +73,7 @@ class ZocaloGeometryTests(unittest.TestCase):
     def test_make_zocalo_sin_solapes(self):
         doc = App.newDocument("TestZocalo")
         try:
-            obj = Z.make_zocalo(doc, {
+            obj = ZC.make_zocalo(doc, {
                 "nombre": "ZocaloTest",
                 "ancho": 600,
                 "fondo": 580,

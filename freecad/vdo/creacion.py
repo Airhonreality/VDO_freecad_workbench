@@ -35,7 +35,7 @@ from freecad.vdo.core.vdo_module_specs import get_spec
 from freecad.vdo.core.vdo_panel_core import crear_pieza
 from freecad.vdo.cad.puerta import make_puerta
 from freecad.vdo.core.vdo_view_base import diagnostico_viewprovider
-from freecad.vdo.core.vdo_zocalo_core import make_zocalo
+from freecad.vdo.cad.zocalo import make_zocalo
 
 
 def _sanitizar_nombre(nombre: str) -> str:
