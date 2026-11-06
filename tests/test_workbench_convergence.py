@@ -45,7 +45,7 @@ import contextlib
 
 from freecad.vdo.core import vdo_hardware_hub as HH
 from freecad.vdo.cad.cajon import CajonFeature
-from freecad.vdo.cad.coco_feature import CocoFeature
+from freecad.vdo.cad.coco import CocoFeature
 from freecad.vdo.cad.panel import PanelFeature
 from freecad.vdo.cad.puerta import PuertaFeature
 from freecad.vdo.ui.vdo_selection_bridge import VDOSelectionBridge
