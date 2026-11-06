@@ -97,6 +97,27 @@ def despiece_panel(nombre, largo, ancho, espesor, modifier,
     return piezas
 
 
+def _pieza_panel(nombre, medidas, orientacion, material_ref, cantos,
+                 grupo, operacion, rol):
+    """Dict de una pieza de tablero del despiece de caja."""
+    largo, ancho, espesor = medidas
+    return {
+        "nombre": nombre,
+        "tipo": "panel",
+        "orientacion": orientacion,
+        "largo": largo,
+        "ancho": ancho,
+        "espesor": espesor,
+        "cantidad": 1,
+        "material_ref": material_ref,
+        "cantos": dict(cantos),
+        "grupo": grupo,
+        "grupo_pacha": grupo,
+        "operacion": operacion,
+        "rol_reengrose": rol,
+    }
+
+
 def despiece_caja(caja, modifier, ejes, cantos=None,
                   material_ref=MELAMINA_ESTANDAR,
                   orientacion="vertical", cantos_bloque=None):
@@ -123,44 +144,19 @@ def despiece_caja(caja, modifier, ejes, cantos=None,
             float(caja_pieza[dim_key[ejes["espesor"]]]),
         )
 
-    piezas = []
-    largo, ancho, espesor = medidas(base)
-    piezas.append({
-        "nombre": caja.get("nombre", "Pieza"),
-        "tipo": "panel",
-        "orientacion": orientacion,
-        "largo": largo,
-        "ancho": ancho,
-        "espesor": espesor,
-        "cantidad": 1,
-        "material_ref": material_ref,
-        "cantos": dict(plan["base"]),
-        "grupo": grupo,
-        "grupo_pacha": grupo,
-        "operacion": (
-            "Encolar + canto de bloque unificado" if grupo
-            else ("Cantear por separado" if modo else "")),
-        "rol_reengrose": "base",
-    })
+    operacion_base = (
+        "Encolar + canto de bloque unificado" if grupo
+        else ("Cantear por separado" if modo else ""))
+    piezas = [_pieza_panel(
+        caja.get("nombre", "Pieza"), medidas(base), orientacion, material_ref,
+        plan["base"], grupo, operacion_base, "base")]
+    operacion_refuerzo = (
+        "Encolar + canto de bloque unificado" if grupo
+        else "Cantear por separado")
     for ref in geo["refuerzos"]:
-        largo, ancho, espesor = medidas(ref)
-        pieza = {
-            "nombre": ref["nombre"],
-            "tipo": "panel",
-            "orientacion": orientacion,
-            "largo": largo,
-            "ancho": ancho,
-            "espesor": espesor,
-            "cantidad": 1,
-            "material_ref": material_ref,
-            "cantos": dict(plan["tira"]),
-            "grupo": grupo,
-            "grupo_pacha": grupo,
-            "operacion": (
-                "Encolar + canto de bloque unificado" if grupo
-                else "Cantear por separado"),
-            "rol_reengrose": "refuerzo",
-        }
+        pieza = _pieza_panel(
+            ref["nombre"], medidas(ref), orientacion, material_ref,
+            plan["tira"], grupo, operacion_refuerzo, "refuerzo")
         if plan["bloque"]:
             pieza["cantos_bloque"] = dict(plan["bloque"])
         piezas.append(pieza)
