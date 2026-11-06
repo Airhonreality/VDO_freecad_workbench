@@ -24,7 +24,7 @@ except BaseException:
     QtWidgets = None
 
 try:
-    from freecad.vdo.core.vdo_coco_core import make_coco
+    from freecad.vdo.cad.coco import make_coco
     from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
     from freecad.vdo.ui.vdo_coco_unified_task import CocoUnifiedTaskPanel
     from freecad.vdo.ui.vdo_inspector_dock import obtener_o_crear_dock_inspector
