@@ -7,14 +7,11 @@ import FreeCAD as App
 
 from freecad.vdo.cad.colocacion import aplicar_rotacion
 from freecad.vdo.core import vdo_module_props
-from freecad.vdo.core.vdo_module_props import (
-    ANCLAJE_DEFAULT,
-    ANCLAJE_LABELS,
-    ANCLAJES,
-)
+from freecad.vdo.core.vdo_module_props import ANCLAJE_DEFAULT
 from freecad.vdo.cad.propiedades import add_common_props, asignar_propiedades
 from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.core.vdo_zocalo_core import ZocaloError, calcular_geometria_zocalo
+from freecad.vdo.datos.formularios import PROPIEDAD_ZOCALO, ZOCALO_GRUPOS
 from freecad.vdo.qt_compat import QtGui, QtWidgets
 from freecad.vdo.ui.vdo_form_builder import FormBuilder
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
@@ -52,111 +49,30 @@ class ZocaloTaskPanel(VDOTransactionMixin):
         main_layout.addWidget(self.header)
 
         self._form_builder = FormBuilder(widget)
-
-        self._crear_grupo_dimensiones(main_layout)
-
-        self._crear_grupo_separacion(main_layout)
-
-        self._crear_grupo_estructura(main_layout)
-
-        self._crear_grupo_colocacion(main_layout)
+        for titulo, filas in ZOCALO_GRUPOS:
+            self._form_builder.construir_grupo(main_layout, titulo, filas)
+        main_layout.addStretch()
 
         self._crear_botones(main_layout)
-
+        self._enlazar_widgets()
         self._conectar_senales()
 
         return widget
 
-    def _crear_grupo_dimensiones(self, main_layout):
-        grupo_dim = QtWidgets.QGroupBox("Dimensiones del mueble")
-        grid_dim = QtWidgets.QGridLayout(grupo_dim)
-
-        self.spin_ancho = self._campo(grid_dim, 0, "Ancho (mm):",
-                                      "ancho", "double_spin", (1, 4000), 1,
-                                      " mm",
-                                      "Ancho total del mueble; define el "
-                                      "largo de la tira frontal.")
-        self.spin_fondo = self._campo(grid_dim, 1, "Fondo (mm):",
-                                      "fondo", "double_spin", (1, 2000), 1,
-                                      " mm",
-                                      "Fondo total del mueble; limita el "
-                                      "largo de los laterales.")
-        self.spin_alto = self._campo(grid_dim, 2, "Alto zócalo (mm):",
-                                     "alto", "double_spin", (1, 400), 1,
-                                     " mm",
-                                     "Altura física del zócalo (por ejemplo "
-                                     "100 o 120 mm).")
-        self.spin_espesor = self._campo(grid_dim, 3, "Espesor tablero (mm):",
-                                        "espesor", "spin", (1, 40), None,
-                                        " mm",
-                                        "Espesor de las tiras de melamina "
-                                        "del zócalo.")
-
-        main_layout.addWidget(grupo_dim)
-
-    def _crear_grupo_separacion(self, main_layout):
-        grupo_sep = QtWidgets.QGroupBox("Separación y encuentros")
-        grid_sep = QtWidgets.QGridLayout(grupo_sep)
-
-        self.spin_frente = self._campo(grid_sep, 0, "Separación frontal:",
-                                       "frente", "double_spin", (0, 500), 1,
-                                       " mm",
-                                       "Distancia desde el frente del mueble "
-                                       "hacia adentro. Deja espacio libre "
-                                       "para no golpear los pies.")
-        self.spin_costados = self._campo(grid_sep, 1, "Distancia costados:",
-                                         "costados", "double_spin", (0, 500),
-                                         1, " mm",
-                                         "Separación desde cada costado del "
-                                         "mueble (0 = al ras).")
-        self.spin_trasera = self._campo(grid_sep, 2, "Distancia trasera:",
-                                        "trasera", "double_spin", (0, 500),
-                                        1, " mm",
-                                        "Separación desde el fondo del mueble "
-                                        "para librar el rodapié de la pared.")
-        self.chk_trasera = self._campo(grid_sep, 3, "Tiene trasera",
-                                       "trasera_habilitada", "checkbox",
-                                       None, None, None,
-                                       "Cierra el cajón del zócalo por "
-                                       "detrás.", fila_check=3, colspan=2)
-
-        main_layout.addWidget(grupo_sep)
-
-    def _crear_grupo_estructura(self, main_layout):
-        grupo_est = QtWidgets.QGroupBox("Estructura")
-        grid_est = QtWidgets.QGridLayout(grupo_est)
-
-        self.spin_amarres = self._campo(grid_est, 0, "Divisiones interiores:",
-                                        "amarres", "spin", (0, 20), None, None,
-                                        "Partes iguales del hueco interior "
-                                        "entre frente y trasera. Se resuelven "
-                                        "con el motor de división de vanos "
-                                        "(vdo_layout).")
-
-        main_layout.addWidget(grupo_est)
-
-    def _crear_grupo_colocacion(self, main_layout):
-        grupo_coloc = QtWidgets.QGroupBox("Colocación")
-        grid_coloc = QtWidgets.QGridLayout(grupo_coloc)
-
-        self.spin_rotacion = self._campo(grid_coloc, 0, "Rotación Z:",
-                                         "rotacion", "double_spin",
-                                         (-360.0, 360.0), 1, " °",
-                                         "Rotación de colocación alrededor "
-                                         "de Z. No cambia la geometría.",
-                                         wrapping=True)
-
-        grid_coloc.addWidget(QtWidgets.QLabel("Anclaje:"), 1, 0)
-        self.combo_anclaje = QtWidgets.QComboBox()
-        for anclaje in ANCLAJES:
-            self.combo_anclaje.addItem(
-                ANCLAJE_LABELS.get(anclaje, anclaje), anclaje)
-        self.combo_anclaje.setToolTip(
-            "Esquina del zócalo que se apoya en el punto de colocación.")
-        grid_coloc.addWidget(self.combo_anclaje, 1, 1)
-
-        main_layout.addWidget(grupo_coloc)
-        main_layout.addStretch()
+    def _enlazar_widgets(self):
+        """Nombres cortos de los widgets del formulario, usados por señales y carga."""
+        fb = self._form_builder
+        self.spin_ancho = fb.widget("ancho")
+        self.spin_fondo = fb.widget("fondo")
+        self.spin_alto = fb.widget("alto")
+        self.spin_espesor = fb.widget("espesor")
+        self.spin_frente = fb.widget("frente")
+        self.spin_costados = fb.widget("costados")
+        self.spin_trasera = fb.widget("trasera")
+        self.chk_trasera = fb.widget("trasera_habilitada")
+        self.spin_amarres = fb.widget("amarres")
+        self.spin_rotacion = fb.widget("rotacion")
+        self.combo_anclaje = fb.widget("anclaje")
 
     def _crear_botones(self, main_layout):
         botones = QtWidgets.QDialogButtonBox()
@@ -185,50 +101,6 @@ class ZocaloTaskPanel(VDOTransactionMixin):
         self.chk_trasera.toggled.connect(self._on_trasera)
         self.chk_trasera.toggled.connect(self._actualizar_header)
         self.chk_trasera.setChecked(True)
-
-    def _campo(self, grid, fila, etiqueta, clave, tipo, rango=None,
-               decimales=None, sufijo=None, tooltip=None, wrapping=False,
-               fila_check=None, colspan=1):
-        """Añade un campo al builder y lo coloca en el grid del grupo."""
-        espec = {
-            "tipo": tipo,
-            "etiqueta": etiqueta,
-            "clave": clave,
-            "valor_defecto": self._valor_defecto(clave, tipo),
-            "rango": rango,
-            "decimales": decimales,
-            "sufijo": sufijo,
-            "tooltip": tooltip,
-        }
-        if tipo == "combo":
-            espec["items"] = [
-                (ANCLAJE_LABELS.get(a, a), a) for a in ANCLAJES]
-        campo = self._form_builder.agregar(espec)
-        w = campo.crear_widget()
-        if wrapping and tipo == "double_spin":
-            w.setWrapping(True)
-        if tipo == "checkbox":
-            grid.addWidget(QtWidgets.QLabel(etiqueta), fila_check, 0)
-            grid.addWidget(w, fila_check, 1, 1, colspan)
-        elif tipo == "combo":
-            grid.addWidget(QtWidgets.QLabel(etiqueta), fila, 0)
-            grid.addWidget(w, fila, 1)
-        else:
-            grid.addWidget(QtWidgets.QLabel(etiqueta), fila, 0)
-            grid.addWidget(w, fila, 1)
-        return w
-
-    @staticmethod
-    def _valor_defecto(clave, tipo):
-        defectos = {
-            "ancho": 600.0, "fondo": 580.0, "alto": 120.0, "espesor": 18,
-            "frente": 0.0, "costados": 0.0, "trasera": 0.0,
-            "amarres": 0, "rotacion": 0.0, "trasera_habilitada": True,
-        }
-        valor = defectos.get(clave, 0.0)
-        if tipo == "spin":
-            return int(valor)
-        return valor
 
     # -----------------------------------------------------------------
     def _on_trasera(self, activo):
@@ -281,45 +153,12 @@ class ZocaloTaskPanel(VDOTransactionMixin):
     def accept(self):
         if not self.obj:
             return True
+        return self._transaccion_zocalo()
+
+    def _transaccion_zocalo(self):
         try:
             self._vdo_begin()
-            for spin in (
-                    self.spin_ancho, self.spin_fondo, self.spin_alto,
-                    self.spin_frente, self.spin_costados,
-                    self.spin_trasera, self.spin_rotacion):
-                spin.interpretText()
-            self.spin_espesor.interpretText()
-            self.spin_amarres.interpretText()
-
-            calcular_geometria_zocalo(
-                self.spin_ancho.value(),
-                self.spin_fondo.value(),
-                self.spin_alto.value(),
-                self.spin_espesor.value(),
-                self.spin_frente.value(),
-                self.spin_costados.value(),
-                self.spin_trasera.value(),
-                self.chk_trasera.isChecked(),
-                self.spin_amarres.value(),
-            )
-
-            valores = {
-                "Ancho": self.spin_ancho.value(),
-                "Fondo": self.spin_fondo.value(),
-                "AltoZocalo": self.spin_alto.value(),
-                "EspesorTablero": self.spin_espesor.value(),
-                "DistanciaFrente": self.spin_frente.value(),
-                "DistanciaCostados": self.spin_costados.value(),
-                "DistanciaTrasera": self.spin_trasera.value(),
-                "TieneTrasera": self.chk_trasera.isChecked(),
-                "AmarresIntermedios": self.spin_amarres.value(),
-            }
-            anclaje = self.combo_anclaje.currentData()
-            if anclaje:
-                valores["VDO_Anclaje"] = anclaje
-            asignar_propiedades(self.obj, valores)
-            aplicar_rotacion(self.obj, self.spin_rotacion.value())
-            recalcular_activo()
+            self._escribir_zocalo()
             self._vdo_commit()
             self._vdo_aceptado = True
             self._vdo_call_accept()
@@ -335,3 +174,16 @@ class ZocaloTaskPanel(VDOTransactionMixin):
                 f"[VDO] Error aceptando el zócalo: {exc}\n")
             return False
 
+    def _escribir_zocalo(self):
+        fb = self._form_builder
+        fb.interpretar_texto()
+        v = fb.valores()
+        calcular_geometria_zocalo(
+            v["ancho"], v["fondo"], v["alto"], v["espesor"], v["frente"],
+            v["costados"], v["trasera"], v["trasera_habilitada"], v["amarres"])
+        valores = {PROPIEDAD_ZOCALO[c]: v[c] for c in PROPIEDAD_ZOCALO}
+        if v["anclaje"]:
+            valores["VDO_Anclaje"] = v["anclaje"]
+        asignar_propiedades(self.obj, valores)
+        aplicar_rotacion(self.obj, v["rotacion"])
+        recalcular_activo()

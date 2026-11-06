@@ -194,5 +194,26 @@ class FormBuilder:
         """Devuelve la lista de claves declaradas (en orden)."""
         return list(self.orden)
 
+    def construir_grupo(self, main_layout, titulo, filas):
+        """Crea un QGroupBox con una fila de rejilla por campo (etiqueta + widget)."""
+        grupo = QtWidgets.QGroupBox(titulo)
+        grid = QtWidgets.QGridLayout(grupo)
+        for fila, espec in enumerate(filas):
+            campo = self.agregar(espec)
+            w = campo.crear_widget()
+            if espec.get("wrapping"):
+                w.setWrapping(True)
+            grid.addWidget(QtWidgets.QLabel(campo.etiqueta), fila, 0)
+            grid.addWidget(w, fila, 1, 1, espec.get("colspan", 1))
+        main_layout.addWidget(grupo)
+        return grupo
+
+    def interpretar_texto(self):
+        """Interpreta el texto escrito en los spinners antes de leer valores."""
+        for clave in self.orden:
+            campo = self.campos[clave]
+            if campo.tipo in ("double_spin", "spin") and campo.widget is not None:
+                campo.widget.interpretText()
+
 
 __all__ = ["FormBuilder", "FormField"]
