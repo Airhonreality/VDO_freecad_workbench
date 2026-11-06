@@ -24,6 +24,22 @@ class ReengroseDivisionesMixin:
         grid.setVerticalSpacing(4)
         grid.setHorizontalSpacing(8)
 
+        self._crear_combo_elemento(grid)
+
+        # Controlador Espacial Figma Box Model (Cuadrado Paramétrico)
+        self.box_controller = VDOBoxControllerWidget()
+        self.re_editor = self.box_controller
+        grid.addWidget(self.box_controller, 1, 0, 1, 4)
+
+        self._crear_combos_fabricacion(grid)
+
+        self._crear_aliases_reengrose()
+
+        self._crear_controles_legacy()
+
+        return grupo
+
+    def _crear_combo_elemento(self, grid):
         grid.addWidget(QtWidgets.QLabel("Elemento:"), 0, 0)
         self.combo_elemento_reengrose = QtWidgets.QComboBox()
         self.combo_elemento_reengrose.setToolTip(
@@ -32,11 +48,7 @@ class ReengroseDivisionesMixin:
             "refuerzo pertenece a la pieza que lo lleva.")
         grid.addWidget(self.combo_elemento_reengrose, 0, 1, 1, 3)
 
-        # Controlador Espacial Figma Box Model (Cuadrado Paramétrico)
-        self.box_controller = VDOBoxControllerWidget()
-        self.re_editor = self.box_controller
-        grid.addWidget(self.box_controller, 1, 0, 1, 4)
-
+    def _crear_combos_fabricacion(self, grid):
         # Parámetros globales de fabricación debajo del widget
         grid.addWidget(QtWidgets.QLabel("Fabricación:"), 2, 0)
         self.combo_fabricacion = QtWidgets.QComboBox()
@@ -61,6 +73,7 @@ class ReengroseDivisionesMixin:
         self.combo_cara.setToolTip("Cara del tablero donde se pegan las tiras.")
         grid.addWidget(self.combo_cara, 4, 1, 1, 3)
 
+    def _crear_aliases_reengrose(self):
         # Aliases y compatibilidad backward
         self.chk_reengrose = self.re_editor.chk_activo
         self.spin_re_ancho = self.re_editor.spin_ancho
@@ -91,6 +104,7 @@ class ReengroseDivisionesMixin:
         self.re_editor.combo_fabricacion = self.combo_fabricacion
         self.re_editor._set_combo_data = self._set_combo_data
 
+    def _crear_controles_legacy(self):
         # Controles legacy ocultos para compatibilidad de API
         self.combo_re_orientacion = QtWidgets.QComboBox()
         self.combo_re_orientacion.addItem("Paralela", "paralela")
@@ -102,7 +116,6 @@ class ReengroseDivisionesMixin:
         self.combo_re_alcance = QtWidgets.QComboBox()
         self.combo_re_alcance.addItem("Parcial", "parcial")
         self.combo_re_alcance.addItem("Total", "total")
-        return grupo
     @staticmethod
     def _spin_medida():
         spin = QtWidgets.QDoubleSpinBox()
