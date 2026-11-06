@@ -13,6 +13,7 @@ from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui.hardware_constantes import CLAVES_BOOL, ETIQUETAS, FAMILIAS
 from freecad.vdo.ui.hardware_resumen import _resumen_cotas
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
+from freecad.vdo.ui import tema
 
 
 class VDOHardwareManagerDialog(QtWidgets.QDialog):
@@ -67,7 +68,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
         # ---- Selector de familia ----
         fila_familia = QtWidgets.QHBoxLayout()
         lbl = QtWidgets.QLabel("Familia de herraje:")
-        lbl.setStyleSheet("font-weight: bold; color: #e0e0e0;")
+        tema.aplicar_estilo(lbl, tema.ESTILO_NEGRITA_TEXTO)
         fila_familia.addWidget(lbl)
         self.combo_familia = QtWidgets.QComboBox()
         for clave, etiqueta in FAMILIAS.items():
@@ -99,18 +100,14 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
     def _crear_panel_detalle(self, layout):
         # ---- Panel de detalle / edicion tecnica ----
         grupo = QtWidgets.QGroupBox("Inspeccion y edicion tecnica (parametros_tecnicos)")
-        grupo.setStyleSheet(
-            "QGroupBox { font-weight: bold; color: #e0e0e0; border: 1px solid #555555; "
-            "border-radius: 6px; margin-top: 10px; padding-top: 8px; }"
-            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 4px; }")
+        tema.aplicar_estilo(grupo, tema.ESTILO_GRUPO_CABECERA)
         self.grid_detalle = QtWidgets.QGridLayout(grupo)
         self.grid_detalle.setHorizontalSpacing(12)
         self.grid_detalle.setVerticalSpacing(6)
         layout.addWidget(grupo, stretch=1)
 
         self.lbl_sku_detalle = QtWidgets.QLabel("SKU: -")
-        self.lbl_sku_detalle.setStyleSheet(
-            "font-weight: bold; color: #007acc; font-size: 12px;")
+        tema.aplicar_estilo(self.lbl_sku_detalle, tema.ESTILO_TITULO_ACENTO_12PX)
         self.grid_detalle.addWidget(self.lbl_sku_detalle, 0, 0, 1, 4)
 
         self.scroll_detalle = QtWidgets.QScrollArea()
@@ -188,7 +185,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
         QGroupBox { color: #e0e0e0; }
         QScrollArea { background-color: #2b2b2b; border: none; }
         """
-        self.setStyleSheet(estilo)
+        tema.aplicar_estilo(self, estilo)
 
     def _conectar_senales(self):
         self.combo_familia.currentIndexChanged.connect(self._cargar_familia_actual)
@@ -267,7 +264,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
 
         if not self._editores:
             lbl = QtWidgets.QLabel("(Sin parámetros técnicos registrados)")
-            lbl.setStyleSheet("color: #8a8a8a; font-style: italic;")
+            tema.aplicar_estilo(lbl, tema.ESTILO_ATENUADO_ITALICA)
             self.form_detalle.addRow(lbl)
 
         self._cargando = False

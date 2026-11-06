@@ -28,6 +28,7 @@ from freecad.vdo.ui.box_esquinas import BoxEsquinasMixin
 from freecad.vdo.ui.box_estado import BoxEstadoMixin
 from freecad.vdo.ui.box_hoja_estilos import ESTILO_WIDGET
 from freecad.vdo.ui.box_margen import BoxMargenMixin
+from freecad.vdo.ui import tema
 
 _LOG = logging.getLogger(__name__)
 
@@ -54,7 +55,7 @@ class VDOBoxControllerWidget(
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("VDOBoxRoot")
-        self.setStyleSheet(ESTILO_WIDGET)
+        tema.aplicar_estilo(self, ESTILO_WIDGET)
 
         self._cargando = False
         self._margen_seleccionado = "frente"

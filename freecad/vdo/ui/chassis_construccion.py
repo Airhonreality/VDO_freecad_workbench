@@ -8,6 +8,7 @@ from freecad.vdo.ui.chassis_constantes import (
     TIPOS_FONDO,
     obtener_svg_icon,
 )
+from freecad.vdo.ui import tema
 
 
 class ChassisConstruccionMixin:
@@ -59,13 +60,13 @@ class ChassisConstruccionMixin:
         barra_sup.setSpacing(6)
 
         lbl_titulo = QtWidgets.QLabel("🪵 <b>CHASIS PARAMÉTRICO</b>")
-        lbl_titulo.setStyleSheet("font-size: 11px; color: #e0e0e0; letter-spacing: 0.5px;")
+        tema.aplicar_estilo(lbl_titulo, tema.ESTILO_TITULO_ESPACIADO)
         barra_sup.addWidget(lbl_titulo)
 
         barra_sup.addStretch()
 
         lbl_arq = QtWidgets.QLabel("Arquetipos:")
-        lbl_arq.setStyleSheet("font-size: 9px; color: #888888;")
+        tema.aplicar_estilo(lbl_arq, tema.ESTILO_ARQUITECTURA_9PX)
         barra_sup.addWidget(lbl_arq)
 
         self.btn_arquetipos = {}
@@ -158,7 +159,7 @@ class ChassisConstruccionMixin:
         layout_fondo.setSpacing(6)
 
         lbl_fondo = QtWidgets.QLabel("Fondo Trasero:")
-        lbl_fondo.setStyleSheet("font-size: 10px; color: #aaaaaa;")
+        tema.aplicar_estilo(lbl_fondo, tema.ESTILO_ETIQUETA_10PX)
         layout_fondo.addWidget(lbl_fondo)
 
         self.combo_fondo = QtWidgets.QComboBox()
@@ -236,7 +237,7 @@ class ChassisConstruccionMixin:
         lay_ps.addWidget(self.spin_despegue_piso)
 
         lbl_camar = QtWidgets.QLabel("🧗 Herrajes Camar / Scilm")
-        lbl_camar.setStyleSheet("color: #ffaa00; font-size: 10px;")
+        tema.aplicar_estilo(lbl_camar, tema.ESTILO_AVISO_10PX)
         lay_ps.addWidget(lbl_camar)
         self.stack_params.addWidget(page_susp)
 
