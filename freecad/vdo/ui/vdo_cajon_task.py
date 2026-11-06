@@ -178,6 +178,9 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
             if sku_idx >= 0:
                 self.combo_sku.setCurrentIndex(sku_idx)
 
+        self._cargar_rotacion_anclaje(obj)
+
+    def _cargar_rotacion_anclaje(self, obj):
         self.spin_rotacion.setValue(
             float(getattr(obj, "VDO_RotacionZ", 0.0)))
         anclaje = getattr(obj, "VDO_Anclaje", ANCLAJE_DEFAULT)
