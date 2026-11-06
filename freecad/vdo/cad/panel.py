@@ -170,6 +170,72 @@ class PanelFeature:
         return None
 
 
+def _obtener_o_crear_panel(doc, nombre):
+    """Devuelve (panel, es_nuevo): reutiliza un panel VDO existente o crea uno."""
+    panel = doc.getObject(nombre)
+    if panel is not None and not isinstance(
+            getattr(panel, "Proxy", None), PanelFeature):
+        if panel.TypeId != "Part::Box":
+            raise ValueError(
+                f"Ya existe un objeto '{nombre}' ({panel.TypeId}) que no es "
+                "un panel VDO. Usa otro nombre.")
+        # Migración: un Part::Box viejo no puede tener ViewProvider Python.
+        doc.removeObject(panel.Name)
+        panel = None
+
+    if panel:
+        _get_app().Console.PrintMessage(f"⚠️ '{nombre}' ya existe. Actualizando...")
+        add_reengrose_props(panel)
+        return panel, False
+    panel = doc.addObject("Part::FeaturePython", nombre)
+    PanelFeature(panel)
+    return panel, True
+
+
+def _aplicar_cantos(panel, cantos):
+    """Valida y asigna los cuatro cantos (Norte, Sur, Este, Oeste)."""
+    for direccion in ["Norte", "Sur", "Este", "Oeste"]:
+        prop_name = f"VDO_Canto_{direccion}"
+        canto_value = cantos.get(direccion.lower(), "FX")
+        if canto_value not in CANTOS_VALIDOS:
+            raise ValueError(
+                f"Canto inválido en '{direccion}': '{canto_value}'. "
+                f"Debe ser uno de: {', '.join(CANTOS_VALIDOS)}.")
+        setattr(panel, prop_name, canto_value)
+
+
+def _aplicar_dimensiones(panel, configuracion, orientacion):
+    """Dimensiones por expresiones de Params o por valores explícitos."""
+    usar_params = configuracion.get(
+        "usar_params",
+        not any(k in configuracion for k in ("largo", "ancho", "espesor")))
+    if usar_params:
+        aplicar_mapeo_orientacion(panel, orientacion)
+        return
+    for prop in ("Largo", "Ancho", "Espesor"):
+        _limpiar_expresion(panel, prop)
+    if "largo" in configuracion:
+        panel.Largo = configuracion["largo"]
+    if "ancho" in configuracion:
+        panel.Ancho = configuracion["ancho"]
+    if "espesor" in configuracion:
+        panel.Espesor = configuracion["espesor"]
+
+
+def _aplicar_rotacion_anclaje(panel, configuracion, es_nuevo):
+    """Rotación Z, anclaje y Placement del panel."""
+    rotacion = float(configuracion.get("rotacion", 0.0))
+    panel.VDO_RotacionZ = rotacion
+    panel.VDO_Anclaje = configuracion.get(
+        "anclaje", VDO_MOD.ANCLAJE_DEFAULT)
+
+    if rotacion:
+        panel.Placement = _get_app().Placement(
+            panel.Placement.Base, rotacion_z(rotacion))
+    elif es_nuevo:
+        panel.Placement = _get_app().Placement()
+
+
 def crear_pieza(doc, configuracion):
     """Función principal del motor de paneles (agnóstica de semántica).
 
@@ -202,25 +268,7 @@ def crear_pieza(doc, configuracion):
     material_ref = configuracion.get(
         "material_ref", MELAMINA_ESTANDAR)
 
-    es_nuevo = False
-    panel = doc.getObject(nombre)
-    if panel is not None and not isinstance(
-            getattr(panel, "Proxy", None), PanelFeature):
-        if panel.TypeId != "Part::Box":
-            raise ValueError(
-                f"Ya existe un objeto '{nombre}' ({panel.TypeId}) que no es "
-                "un panel VDO. Usa otro nombre.")
-        # Migración: un Part::Box viejo no puede tener ViewProvider Python.
-        doc.removeObject(panel.Name)
-        panel = None
-
-    if panel:
-        _get_app().Console.PrintMessage(f"⚠️ '{nombre}' ya existe. Actualizando...")
-        add_reengrose_props(panel)
-    else:
-        panel = doc.addObject("Part::FeaturePython", nombre)
-        PanelFeature(panel)
-        es_nuevo = True
+    panel, es_nuevo = _obtener_o_crear_panel(doc, nombre)
 
     if _get_app().GuiUp:
         # La vista se adjunta desde app/ (F5/F6), no desde core.
@@ -229,44 +277,13 @@ def crear_pieza(doc, configuracion):
     panel.VDO_Orientacion = orientacion
     panel.VDO_Etiqueta = etiqueta
     panel.VDO_Material_Ref = material_ref
-
-    for direccion in ["Norte", "Sur", "Este", "Oeste"]:
-        prop_name = f"VDO_Canto_{direccion}"
-        canto_value = cantos.get(direccion.lower(), "FX")
-        if canto_value not in CANTOS_VALIDOS:
-            raise ValueError(
-                f"Canto inválido en '{direccion}': '{canto_value}'. "
-                f"Debe ser uno de: {', '.join(CANTOS_VALIDOS)}.")
-        setattr(panel, prop_name, canto_value)
-
-    usar_params = configuracion.get(
-        "usar_params",
-        not any(k in configuracion for k in ("largo", "ancho", "espesor")))
-    if usar_params:
-        aplicar_mapeo_orientacion(panel, orientacion)
-    else:
-        for prop in ("Largo", "Ancho", "Espesor"):
-            _limpiar_expresion(panel, prop)
-        if "largo" in configuracion:
-            panel.Largo = configuracion["largo"]
-        if "ancho" in configuracion:
-            panel.Ancho = configuracion["ancho"]
-        if "espesor" in configuracion:
-            panel.Espesor = configuracion["espesor"]
+    _aplicar_cantos(panel, cantos)
+    _aplicar_dimensiones(panel, configuracion, orientacion)
 
     if "reengrose" in configuracion:
         VDO_RE_MODIFICADOR.aplicar_a_objeto(panel, configuracion.get("reengrose"))
 
-    rotacion = float(configuracion.get("rotacion", 0.0))
-    panel.VDO_RotacionZ = rotacion
-    panel.VDO_Anclaje = configuracion.get(
-        "anclaje", VDO_MOD.ANCLAJE_DEFAULT)
-
-    if rotacion:
-        panel.Placement = _get_app().Placement(
-            panel.Placement.Base, rotacion_z(rotacion))
-    elif es_nuevo:
-        panel.Placement = _get_app().Placement()
+    _aplicar_rotacion_anclaje(panel, configuracion, es_nuevo)
 
     doc.recompute()
     _get_app().Console.PrintMessage(f"✅ Panel '{nombre}' configurado: orientacion='{orientacion}'")
