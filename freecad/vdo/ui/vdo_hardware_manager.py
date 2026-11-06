@@ -58,7 +58,12 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(12, 12, 12, 12)
         layout.setSpacing(10)
+        self._crear_selector_familia(layout)
+        self._crear_tabla_productos(layout)
+        self._crear_panel_detalle(layout)
+        self._crear_botones(layout)
 
+    def _crear_selector_familia(self, layout):
         # ---- Selector de familia ----
         fila_familia = QtWidgets.QHBoxLayout()
         lbl = QtWidgets.QLabel("Familia de herraje:")
@@ -71,6 +76,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
         fila_familia.addStretch(1)
         layout.addLayout(fila_familia)
 
+    def _crear_tabla_productos(self, layout):
         # ---- Tabla de productos ----
         self.tabla = QtWidgets.QTableWidget(0, 5)
         self.tabla.setHorizontalHeaderLabels(
@@ -90,6 +96,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
             3, QtWidgets.QHeaderView.ResizeToContents)
         layout.addWidget(self.tabla, stretch=2)
 
+    def _crear_panel_detalle(self, layout):
         # ---- Panel de detalle / edicion tecnica ----
         grupo = QtWidgets.QGroupBox("Inspeccion y edicion tecnica (parametros_tecnicos)")
         grupo.setStyleSheet(
@@ -116,6 +123,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
         self.scroll_detalle.setWidget(self.widget_detalle)
         self.grid_detalle.addWidget(self.scroll_detalle, 1, 0, 1, 4)
 
+    def _crear_botones(self, layout):
         # ---- Botones de accion ----
         fila_botones = QtWidgets.QHBoxLayout()
         self.btn_guardar = QtWidgets.QPushButton("💾 Guardar Cambios")
