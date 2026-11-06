@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from freecad.vdo.app.dto import OptimizarCorteDTO, OptimizarCorteResultado
+from freecad.vdo.core.dto import OptimizarCorteDTO, OptimizarCorteResultado
 
 
 def optimizar_corte(doc, dto: OptimizarCorteDTO) -> OptimizarCorteResultado:

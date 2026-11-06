@@ -6,7 +6,7 @@ vía el Guardian de cad/. No escribe en objetos FreeCAD directamente.
 
 from __future__ import annotations
 
-from freecad.vdo.app.dto import HojaDTO, HojaResultado
+from freecad.vdo.core.dto import HojaDTO, HojaResultado
 from freecad.vdo.cad.vdo_guardian import vdo_guard
 
 

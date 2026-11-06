@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from freecad.vdo.app.dto import EditarModuloDTO, EditarModuloResultado
+from freecad.vdo.core.dto import EditarModuloDTO, EditarModuloResultado
 
 
 def editar_modulo(doc, dto: EditarModuloDTO) -> EditarModuloResultado:

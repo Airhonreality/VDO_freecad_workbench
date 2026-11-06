@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from freecad.vdo.app.dto import ZocaloDTO, ZocaloResultado
+from freecad.vdo.core.dto import ZocaloDTO, ZocaloResultado
 from freecad.vdo.core.vdo_zocalo_core import make_zocalo
 
 

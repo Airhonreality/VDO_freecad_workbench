@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from freecad.vdo.app.dto import CajonDTO, CajonResultado
+from freecad.vdo.core.dto import CajonDTO, CajonResultado
 from freecad.vdo.core.vdo_cajon_core import make_cajon
 
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from freecad.vdo.app.dto import ColocarModuloDTO, ColocarModuloResultado
+from freecad.vdo.core.dto import ColocarModuloDTO, ColocarModuloResultado
 from freecad.vdo.cad.colocacion import PlanColocacion
 from freecad.vdo.cad.colocacion import aplicar_colocacion as _cad_aplicar
 from freecad.vdo.cad.colocacion import preparar_colocacion as _cad_preparar

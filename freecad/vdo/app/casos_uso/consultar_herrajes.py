@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from freecad.vdo.app.dto import ConsultarHerrajesDTO, ConsultarHerrajesResultado
+from freecad.vdo.core.dto import ConsultarHerrajesDTO, ConsultarHerrajesResultado
 from freecad.vdo.datos.valores import TIRADOR
 
 

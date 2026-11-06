@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from freecad.vdo.app.dto import NestingDTO, NestingResultado
+from freecad.vdo.core.dto import NestingDTO, NestingResultado
 
 
 def nesting(doc, dto: NestingDTO) -> NestingResultado:

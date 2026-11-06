@@ -6,7 +6,7 @@ pasándole el documento, y devuelve un PanelResultado.
 
 from __future__ import annotations
 
-from freecad.vdo.app.dto import PanelDTO, PanelResultado
+from freecad.vdo.core.dto import PanelDTO, PanelResultado
 from freecad.vdo.core.vdo_panel_core import crear_pieza
 
 

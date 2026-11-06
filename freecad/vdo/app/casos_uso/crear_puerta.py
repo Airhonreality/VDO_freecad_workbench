@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from freecad.vdo.app.dto import PuertaDTO, PuertaResultado
+from freecad.vdo.core.dto import PuertaDTO, PuertaResultado
 from freecad.vdo.core.vdo_puerta_core import make_puerta
 
 

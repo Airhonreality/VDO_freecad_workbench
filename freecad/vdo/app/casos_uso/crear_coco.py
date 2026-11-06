@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from freecad.vdo.app.dto import CocoDTO, CocoResultado
+from freecad.vdo.core.dto import CocoDTO, CocoResultado
 from freecad.vdo.core.vdo_coco_core import make_coco
 
 
