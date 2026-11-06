@@ -2,6 +2,8 @@
 
 import json
 import logging
+from collections.abc import Iterable, Iterator, Mapping
+from typing import Any
 
 from freecad.vdo.core.layout_modelo import (
     AXIS_X,
@@ -21,7 +23,14 @@ _LOG = logging.getLogger(__name__)
 class Layout:
     """Matriz raíz de columnas/filas con contenido anidado por celda."""
 
-    def __init__(self, columns=None, rows=None, cells=None):
+    columns: list[Track]
+    rows: list[Track]
+    cells: dict[str, Cell]
+
+    # Any: acepta Track, str o dict (migración); el tipo real se normaliza abajo.
+    def __init__(self, columns: Iterable[Any] | None = None,
+                 rows: Iterable[Any] | None = None,
+                 cells: Mapping[str, Any] | None = None) -> None:
         self.columns = list(columns or [Track("x1")])
         self.rows = list(rows or [Track("y1")])
         self.cells = dict(cells or {})
@@ -31,17 +40,17 @@ class Layout:
     # Normalización / serialización
     # -----------------------------------------------------------------
     @staticmethod
-    def key(col_id, row_id):
+    def key(col_id: str, row_id: str) -> str:
         return f"{col_id}|{row_id}"
 
-    def _normalizar(self):  # noqa: C901 - complejidad 14 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
+    def _normalizar(self) -> None:  # noqa: C901 - complejidad 14 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
         if not self.columns:
             self.columns = [Track("x1")]
         if not self.rows:
             self.rows = [Track("y1")]
 
-        vistos = set()
-        columnas = []
+        vistos: set[str] = set()
+        columnas: list[Track] = []
         for i, col in enumerate(self.columns):
             if isinstance(col, str):
                 col = Track(col)
@@ -54,7 +63,7 @@ class Layout:
         self.columns = columnas
 
         vistos = set()
-        filas = []
+        filas: list[Track] = []
         for i, row in enumerate(self.rows):
             if isinstance(row, str):
                 row = Track(row)
@@ -66,7 +75,7 @@ class Layout:
             filas.append(row)
         self.rows = filas
 
-        nuevas = {}
+        nuevas: dict[str, Cell] = {}
         for col in self.columns:
             for row in self.rows:
                 k = self.key(col.id, row.id)
@@ -79,7 +88,7 @@ class Layout:
                 nuevas[k] = cell
         self.cells = nuevas
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             "version": VERSION,
             "columns": [c.to_dict() for c in self.columns],
@@ -90,12 +99,12 @@ class Layout:
             },
         }
 
-    def dumps(self):
+    def dumps(self) -> str:
         return json.dumps(
             self.to_dict(), ensure_ascii=False, separators=(",", ":"))
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data: Any) -> "Layout":  # Any: dict de JSON, sin esquema fijo
         if not isinstance(data, dict):
             return cls()
         columns = [
@@ -107,7 +116,7 @@ class Layout:
             for i, r in enumerate(data.get("rows", []))
         ] or [Track("y1")]
 
-        cells = {}
+        cells: dict[str, Cell] = {}
         raw_cells = data.get("cells", {})
         if isinstance(raw_cells, dict):
             for k, value in raw_cells.items():
@@ -124,7 +133,7 @@ class Layout:
         return cls(columns=columns, rows=rows, cells=cells)
 
     @classmethod
-    def loads(cls, texto):
+    def loads(cls, texto: str | None) -> "Layout":
         if not texto or not str(texto).strip():
             return cls()
         try:
@@ -134,13 +143,13 @@ class Layout:
             _LOG.warning("layout_matriz: datos no validos, usa matriz por defecto: %s", exc)
             return cls()
 
-    def copy(self):
+    def copy(self) -> "Layout":
         return Layout.from_dict(self.to_dict())
 
     # -----------------------------------------------------------------
     # Matriz raíz
     # -----------------------------------------------------------------
-    def add_column(self, fixed=None):
+    def add_column(self, fixed: object = None) -> Track:
         col = Track(_id_unico("x", [c.id for c in self.columns]), fixed)
         self.columns.append(col)
         for row in self.rows:
@@ -150,7 +159,7 @@ class Layout:
             )
         return col
 
-    def remove_column(self):
+    def remove_column(self) -> bool:
         if len(self.columns) <= 1:
             return False
         col = self.columns.pop()
@@ -158,7 +167,7 @@ class Layout:
             self.cells.pop(self.key(col.id, row.id), None)
         return True
 
-    def add_row(self, fixed=None):
+    def add_row(self, fixed: object = None) -> Track:
         row = Track(_id_unico("y", [r.id for r in self.rows]), fixed)
         self.rows.append(row)
         for col in self.columns:
@@ -168,7 +177,7 @@ class Layout:
             )
         return row
 
-    def remove_row(self):
+    def remove_row(self) -> bool:
         if len(self.rows) <= 1:
             return False
         row = self.rows.pop()
@@ -176,15 +185,15 @@ class Layout:
             self.cells.pop(self.key(col.id, row.id), None)
         return True
 
-    def set_column_fixed(self, index, fixed):
+    def set_column_fixed(self, index: int, fixed: object) -> None:
         if 0 <= index < len(self.columns):
             self.columns[index].fixed = _to_float(fixed)
 
-    def set_row_fixed(self, index, fixed):
+    def set_row_fixed(self, index: int, fixed: object) -> None:
         if 0 <= index < len(self.rows):
             self.rows[index].fixed = _to_float(fixed)
 
-    def get_cell(self, col_index, row_index):
+    def get_cell(self, col_index: int, row_index: int) -> Cell | None:
         if not (0 <= col_index < len(self.columns)
                 and 0 <= row_index < len(self.rows)):
             return None
@@ -192,12 +201,12 @@ class Layout:
         row = self.rows[row_index]
         return self.cells.get(self.key(col.id, row.id))
 
-    def _celdas_arbol(self, cell):
+    def _celdas_arbol(self, cell: Cell) -> Iterator[Cell]:
         yield cell
         for child in getattr(cell, "children", []):
             yield from self._celdas_arbol(child)
 
-    def column_has_subtree(self, index):
+    def column_has_subtree(self, index: int) -> bool:
         if not (0 <= index < len(self.columns)):
             return False
         for j in range(len(self.rows)):
@@ -206,7 +215,7 @@ class Layout:
                 return True
         return False
 
-    def row_has_subtree(self, index):
+    def row_has_subtree(self, index: int) -> bool:
         if not (0 <= index < len(self.rows)):
             return False
         for i in range(len(self.columns)):
@@ -219,12 +228,12 @@ class Layout:
     # Subdivisiones anidadas
     # -----------------------------------------------------------------
     @staticmethod
-    def _etiquetas_hijos(cell, axis, count):
+    def _etiquetas_hijos(cell: Cell, axis: str, count: int) -> list[tuple[str, str]]:
         if axis == AXIS_X:
             return [(f"{cell.px}.{k + 1}", cell.py) for k in range(count)]
         return [(cell.px, f"{cell.py}.{k + 1}") for k in range(count)]
 
-    def set_split(self, cell, axis, count):
+    def set_split(self, cell: Cell | None, axis: str, count: int | str) -> bool:
         if cell is None:
             return False
         if axis not in (AXIS_X, AXIS_Y):
@@ -238,7 +247,7 @@ class Layout:
         etiquetas = self._etiquetas_hijos(cell, axis, count)
         viejos = list(cell.children or [])
         mismo_eje = cell.axis == axis
-        nuevos = []
+        nuevos: list[Cell] = []
         for k, (px, py) in enumerate(etiquetas):
             if mismo_eje and k < len(viejos):
                 child = viejos[k]
@@ -251,22 +260,22 @@ class Layout:
         cell.children = nuevos
         return True
 
-    def disable_split(self, cell):
+    def disable_split(self, cell: Cell | None) -> bool:
         if cell is None:
             return False
         cell.axis = None
         cell.children = []
         return True
 
-    def set_cell_fixed(self, cell, fixed):
+    def set_cell_fixed(self, cell: Cell | None, fixed: object) -> None:
         if cell is not None:
             cell.fixed = _to_float(fixed)
 
-    def iter_all(self):
+    def iter_all(self) -> Iterator[Cell]:
         for cell in self.cells.values():
             yield from self._celdas_arbol(cell)
 
-    def find_label(self, label):
+    def find_label(self, label: str) -> Cell | None:
         for cell in self.iter_all():
             if cell.label == label:
                 return cell
@@ -276,8 +285,8 @@ class Layout:
     # Migración desde EspaciosX / EspaciosY
     # -----------------------------------------------------------------
     @classmethod
-    def from_legacy(cls, espacios_x="", espacios_y=""):
-        warnings = []
+    def from_legacy(cls, espacios_x: str = "", espacios_y: str = "") -> tuple["Layout", list[str]]:
+        warnings: list[str] = []
         cols = _legacy_tracks(espacios_x, "X", warnings)
         rows = _legacy_tracks(espacios_y, "Y", warnings)
         layout = cls(columns=cols, rows=rows)
@@ -288,8 +297,8 @@ class Layout:
         return layout, warnings
 
 
-def _legacy_tracks(texto, eje, warnings):  # noqa: C901 - complejidad 13 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
-    nodos = []
+def _legacy_tracks(texto: str, eje: str, warnings: list[str]) -> list[Track]:  # noqa: C901 - complejidad 13 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
+    nodos: list[Any] = []
     if texto:
         try:
             data = json.loads(texto)
@@ -299,7 +308,7 @@ def _legacy_tracks(texto, eje, warnings):  # noqa: C901 - complejidad 13 (max 12
             _LOG.warning("layout_matriz: JSON legacy de eje invalido: %s", exc)
             warnings.append(f"JSON legacy de {eje} inválido.")
 
-    tracks = []
+    tracks: list[Track] = []
     for nodo in nodos:
         if not isinstance(nodo, dict):
             continue
