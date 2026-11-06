@@ -110,6 +110,14 @@ def _validar_entradas(g_caja, g_fondo, montaje):
     return avisos
 
 
+def _resolver_guia(config, prof_int, marca):
+    """Resuelve la longitud de guía: manual si es > 0, si no automática."""
+    # --- 1. Guía (LG) ---
+    lg_manual = float(config.get("longitud_guia") or 0)
+    lg = lg_manual if lg_manual > 0 else seleccionar_guia(prof_int, marca["longitudes_comerciales"])
+    return lg, lg_manual
+
+
 def calcular_despiece(config):
     """Calcula el despiece completo del cajón con corredera oculta.
 
@@ -145,9 +153,7 @@ def calcular_despiece(config):
 
     avisos = _validar_entradas(g_caja, g_fondo, montaje)
 
-    # --- 1. Guía (LG) ---
-    lg_manual = float(config.get("longitud_guia") or 0)
-    lg = lg_manual if lg_manual > 0 else seleccionar_guia(prof_int, marca["longitudes_comerciales"])
+    lg, lg_manual = _resolver_guia(config, prof_int, marca)
 
     # --- 2. Ancho exterior de la caja ---
     ancho_ext = li - delta
