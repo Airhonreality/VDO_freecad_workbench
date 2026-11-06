@@ -6,6 +6,7 @@
 
 import json
 
+from freecad.vdo.cad.coco_divisiones import aplicar_divisiones
 from freecad.vdo.cad.coco_shell import (
     aplicar_carcasa,
     preparar_carcasa,
@@ -109,33 +110,9 @@ class CocoFeature:
             f_x, f_y, f_z, f_len, calibre_fondo, f_alt, reengroses,
             obstaculos, shell_tiras, shell_info, shell_refs, boxes)
 
-        # --- Divisiones internas (matriz de vanos v2) ---
-        divisiones_json = getattr(fp, "VDO_Divisiones", "")
-        divisiones_piezas = []
-
-        from freecad.vdo.core.vdo_layout_modelo import cavidad_interior
-        cavidad = cavidad_interior(alto, ancho, espesor)
-        ancho_util = cavidad["ancho"]
-        altura_util = cavidad["alto"]
-        x_util = cavidad["x0"]
-        z_util = cavidad["z0"]
-
-        resuelto = None
-        divs = []
-        indice_divs = None
-        fondo_divisiones = max(0.0, f_y) if tiene_fondo else fondo
-        if divisiones_json:
-            from freecad.vdo.cad.coco_espacios import generar_divisiones_matriz
-            divs, resumen, piezas, resuelto = generar_divisiones_matriz(
-                divisiones_json, ancho_util, altura_util,
-                fondo_divisiones, espesor, x_util, z_util,
-                reengroses=reengroses, obstaculos=obstaculos)
-            indice_divs = len(boxes)
-            boxes.extend(divs)
-            divisiones_piezas.extend(piezas)
-            fp.ResumenEspacios = resumen
-        else:
-            fp.ResumenEspacios = ""
+        divs, divisiones_piezas, resuelto, indice_divs = aplicar_divisiones(
+            fp, alto, ancho, espesor, fondo, tiene_fondo, f_y, reengroses,
+            obstaculos, boxes)
 
         division_tiras = resolver_tiras_divisiones(
             resuelto, shell_tiras, divisiones_piezas, divs, boxes,
