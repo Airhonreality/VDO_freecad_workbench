@@ -38,6 +38,15 @@ class CuttingListPreviewPanel:
         self.form = QtWidgets.QWidget()
         layout = QtWidgets.QVBoxLayout()
 
+        self._crear_cabecera(layout, modo, piezas)
+        total_costo = self._crear_tabla(layout, piezas)
+        self._crear_resumen(layout, total_costo)
+        self._crear_botones(layout)
+
+        self.form.setLayout(layout)
+        self.colorear_piezas()
+
+    def _crear_cabecera(self, layout, modo, piezas):
         # Header
         header = QtWidgets.QLabel()
         header.setText(f"<b>📊 Preview Exportación - {modo.upper()}</b>")
@@ -49,6 +58,7 @@ class CuttingListPreviewPanel:
         info.setText(f"Se va a exportar <b>{len(piezas)}</b> piezas de melamina")
         layout.addWidget(info)
 
+    def _crear_tabla(self, layout, piezas):
         # Tabla de piezas
         self.tabla = QtWidgets.QTableWidget()
         self.tabla.setColumnCount(5)
@@ -87,7 +97,9 @@ class CuttingListPreviewPanel:
 
         self.tabla.resizeColumnsToContents()
         layout.addWidget(self.tabla)
+        return total_costo
 
+    def _crear_resumen(self, layout, total_costo):
         # Resumen
         resumen = QtWidgets.QLabel()
         resumen.setText(f"<b>💰 Costo total material: ${total_costo:.2f}</b>")
@@ -105,6 +117,7 @@ class CuttingListPreviewPanel:
 
         layout.addSpacing(10)
 
+    def _crear_botones(self, layout):
         # Botones
         btn_layout = QtWidgets.QHBoxLayout()
 
@@ -118,9 +131,6 @@ class CuttingListPreviewPanel:
         btn_layout.addWidget(btn_aceptar)
 
         layout.addLayout(btn_layout)
-
-        self.form.setLayout(layout)
-        self.colorear_piezas()
 
     def colorear_piezas(self):
         """Colorea en rojo las piezas que se van a exportar"""

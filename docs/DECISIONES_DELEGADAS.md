@@ -574,3 +574,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-62
 
 - **D-62:** cierre de excepciones de D-59/D-61. chassis_estilos: CSS a constante de módulo (texto idéntico, verificado). _actualizar_vista_completa: verificador AST ampliado a asignaciones de retorno. Cinco funciones más de ui/ divididas. Verificación visual pendiente (M10).
+
+## D-63
+
+- **D-63:** cinco funciones más de ui/ divididas por extracción literal, verificada con AST. Verificación visual pendiente (M10), que el usuario hará al final.
