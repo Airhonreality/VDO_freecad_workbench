@@ -10,11 +10,10 @@
 # en la próxima fase de saneamiento.
 # =====================================================================
 
+import json
 import logging
 
 _LOG = logging.getLogger(__name__)
-
-import json
 
 # --- Constantes de tipos de espacio ---
 ESPACIO_FIJO = "fijo"

@@ -1,14 +1,13 @@
 """Carga, lectura y resumen de valores del panel COCO."""
 
-import logging
-
-_LOG = logging.getLogger(__name__)
-
 import json
+import logging
 
 from freecad.vdo.core import frames as VDO_FR
 from freecad.vdo.core.module_props import ANCLAJE_DEFAULT
 from freecad.vdo.ui.task_base import cerrar_dialogo
+
+_LOG = logging.getLogger(__name__)
 
 
 class CocoUnifiedValoresMixin:

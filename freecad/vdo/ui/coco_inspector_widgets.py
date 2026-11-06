@@ -4,8 +4,6 @@ Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
 
 import logging
 
-_LOG = logging.getLogger(__name__)
-
 from freecad.vdo.core import (
     finish as VDO_FIN,
 )
@@ -24,6 +22,8 @@ from freecad.vdo.core.facade_contract import (
 from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui import tema
+
+_LOG = logging.getLogger(__name__)
 
 BORDE_LABELS = {
     "norte": "Norte", "sur": "Sur", "este": "Este", "oeste": "Oeste"}

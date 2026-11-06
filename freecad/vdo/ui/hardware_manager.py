@@ -5,11 +5,8 @@ herrajes (vdo_hardware_catalog.json). 100% compatible con el tema oscuro
 de FreeCAD.
 """
 
-import logging
-
-_LOG = logging.getLogger(__name__)
-
 import json
+import logging
 import os
 
 from freecad.vdo.core import hardware_hub as H
@@ -18,6 +15,8 @@ from freecad.vdo.ui import tema
 from freecad.vdo.ui.hardware_constantes import CLAVES_BOOL, ETIQUETAS, FAMILIAS
 from freecad.vdo.ui.hardware_resumen import _resumen_cotas
 from freecad.vdo.ui.qt import VDO_DoubleSpinBox
+
+_LOG = logging.getLogger(__name__)
 
 
 class VDOHardwareManagerDialog(QtWidgets.QDialog):

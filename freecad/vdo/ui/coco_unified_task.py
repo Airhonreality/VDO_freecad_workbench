@@ -4,11 +4,8 @@
 # Se abre por clic derecho, doble clic o flujo de creación.
 # =====================================================================
 
-import logging
-
-_LOG = logging.getLogger(__name__)
-
 import json
+import logging
 
 import FreeCAD as App
 
@@ -41,6 +38,8 @@ from freecad.vdo.ui.coco_unified_espacios import CocoUnifiedEspaciosMixin
 from freecad.vdo.ui.coco_unified_pestanas import CocoUnifiedPestanasMixin
 from freecad.vdo.ui.coco_unified_valores import CocoUnifiedValoresMixin
 from freecad.vdo.ui.task_base import VDOTransactionMixin
+
+_LOG = logging.getLogger(__name__)
 
 
 class CocoUnifiedTaskPanel(

@@ -1,10 +1,7 @@
 """Pagina de pieza del inspector: cabecera de panel y caja."""
 
-import logging
-
-_LOG = logging.getLogger(__name__)
-
 import json
+import logging
 
 import FreeCAD as App
 
@@ -19,6 +16,8 @@ from freecad.vdo.cad.documento import recalcular
 from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades
 from freecad.vdo.ui import tema
 from freecad.vdo.ui.inspector_paginas import _float_seguro, _PaginaBase, _str_seguro
+
+_LOG = logging.getLogger(__name__)
 
 
 # ----------------------------------------------------------------------

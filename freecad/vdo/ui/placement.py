@@ -12,14 +12,14 @@
 
 import logging
 
-_LOG = logging.getLogger(__name__)
-
 import FreeCAD as App
 
 from freecad.vdo.cad.colocacion import (
     aplicar_colocacion,
     preparar_colocacion,
 )
+
+_LOG = logging.getLogger(__name__)
 
 try:
     import FreeCADGui as Gui

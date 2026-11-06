@@ -2,8 +2,6 @@
 
 import logging
 
-_LOG = logging.getLogger(__name__)
-
 from freecad.vdo.core.spaces import ESPACIO_FIJO, ESPACIO_IGUALES
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 from freecad.vdo.ui.coco_unified_tabla import (
@@ -15,6 +13,8 @@ from freecad.vdo.ui.coco_unified_tabla import (
     TIPOS_LABELS,
     EspacioRow,
 )
+
+_LOG = logging.getLogger(__name__)
 
 
 class CocoUnifiedCeldasMixin:

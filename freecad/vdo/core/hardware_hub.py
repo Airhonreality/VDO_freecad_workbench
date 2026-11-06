@@ -7,14 +7,13 @@ o se inyecta como parámetro.
 
 from __future__ import annotations
 
-import logging
-
-_LOG = logging.getLogger(__name__)
-
 import json
+import logging
 import os
 
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
+
+_LOG = logging.getLogger(__name__)
 
 try:
     _HERE = os.path.dirname(os.path.abspath(__file__))

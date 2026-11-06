@@ -6,12 +6,12 @@
 
 import logging
 
-_LOG = logging.getLogger(__name__)
-
 from freecad.vdo.core import frames as VDO_FR
 from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
 from freecad.vdo.core.facade_contract import CALLE_ENTRE_FRENTES_DEFAULT
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+
+_LOG = logging.getLogger(__name__)
 
 COLOR_FONDO = QtGui.QColor("#f7f7f5")
 COLOR_INTERIOR = QtGui.QColor("#ffffff")

@@ -5,15 +5,14 @@ por el registro (core/vdo_ui_registry.py) y no lo importa.
 """
 
 import logging
-
-_LOG = logging.getLogger(__name__)
-
 import os
 
 import FreeCAD as App
 
 from freecad.vdo.core.paths import ruta_icono
 from freecad.vdo.core.view_base import _es_cajon, _es_coco, _es_panel, _es_zocalo
+
+_LOG = logging.getLogger(__name__)
 
 
 def _gui():

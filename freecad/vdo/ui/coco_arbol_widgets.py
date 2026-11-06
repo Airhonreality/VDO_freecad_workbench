@@ -4,8 +4,6 @@ Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
 
 import logging
 
-_LOG = logging.getLogger(__name__)
-
 import FreeCAD as App
 
 from freecad.vdo.core import (
@@ -26,6 +24,8 @@ from freecad.vdo.core import (
 from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y
 from freecad.vdo.core.layout_resolucion import resolve_layout
 from freecad.vdo.ui.coco_arbol_pintado import ArbolPintadoMixin
+
+_LOG = logging.getLogger(__name__)
 
 
 class ArbolDivisionesMixin(ArbolPintadoMixin):

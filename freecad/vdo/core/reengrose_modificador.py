@@ -1,10 +1,7 @@
 """Modificador de reengrose: normalizacion de entrada, espesor efectivo y lectura/escritura en el objeto."""
 
-import logging
-
-_LOG = logging.getLogger(__name__)
-
 import json
+import logging
 
 from freecad.vdo.core.reengrose_modelo import (
     _MAPA_MODO_LEGACY,
@@ -32,6 +29,8 @@ from freecad.vdo.core.reengrose_modelo import (
     _normalizar_modo_choque,
     _validar_enum,
 )
+
+_LOG = logging.getLogger(__name__)
 
 
 class ReengroseModifier:

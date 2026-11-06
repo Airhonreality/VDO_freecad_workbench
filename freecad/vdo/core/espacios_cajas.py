@@ -8,10 +8,10 @@
 
 import logging
 
-_LOG = logging.getLogger(__name__)
-
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
+
+_LOG = logging.getLogger(__name__)
 
 
 def _clave_pieza(pieza):

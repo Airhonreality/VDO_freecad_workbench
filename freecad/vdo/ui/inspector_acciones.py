@@ -1,10 +1,7 @@
 """Acciones de navegacion y edicion del inspector (migas, dimensiones, habitantes)."""
 
-import logging
-
-_LOG = logging.getLogger(__name__)
-
 import json
+import logging
 
 import FreeCAD as App
 
@@ -24,6 +21,8 @@ from freecad.vdo.ui.inspector_cabecera import (
     _RUTA_BREADCRUMB_DEFECTO,
     _RUTA_BREADCRUMB_POR_TARGET,
 )
+
+_LOG = logging.getLogger(__name__)
 
 
 class AccionesInspectorMixin:

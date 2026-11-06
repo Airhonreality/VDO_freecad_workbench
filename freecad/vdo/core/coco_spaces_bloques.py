@@ -8,8 +8,6 @@
 
 import logging
 
-_LOG = logging.getLogger(__name__)
-
 from freecad.vdo.core import reengrose_encuentros as VDO_RE_ENCUENTROS
 from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
 from freecad.vdo.core import reengrose_interferencias as VDO_RE_INTERFERENCIAS
@@ -26,6 +24,8 @@ from freecad.vdo.core.espacios_cajas import (
     _modificador,
     _modo_efectivo,
 )
+
+_LOG = logging.getLogger(__name__)
 
 
 def _aplicar_choques(caja, obstaculos, es_vertical):

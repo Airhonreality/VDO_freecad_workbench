@@ -4,8 +4,6 @@ Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
 
 import logging
 
-_LOG = logging.getLogger(__name__)
-
 from freecad.vdo.core import defaults as VDO_D
 from freecad.vdo.core.layout_matriz import Layout
 from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y
@@ -16,6 +14,8 @@ from freecad.vdo.ui.coco_edicion_widgets import EdicionDivisionesMixin
 from freecad.vdo.ui.coco_inspector_widgets import InspectorDivisionesMixin, PanelHeaderWidget
 from freecad.vdo.ui.coco_preview2d import CocoPreview2D
 from freecad.vdo.ui.coco_reengrose_widgets import ReengroseDivisionesMixin
+
+_LOG = logging.getLogger(__name__)
 
 
 class DivisionesEditor(

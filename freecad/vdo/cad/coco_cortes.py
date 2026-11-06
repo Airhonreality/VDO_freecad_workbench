@@ -6,10 +6,10 @@
 
 import logging
 
-_LOG = logging.getLogger(__name__)
-
 from freecad.vdo.core import reengrose_encuentros as VDO_RE_ENCUENTROS
 from freecad.vdo.core.helpers import _get_part
+
+_LOG = logging.getLogger(__name__)
 
 
 def _cortar_shape(forma, recorte):

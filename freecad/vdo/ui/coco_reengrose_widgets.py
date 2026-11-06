@@ -2,11 +2,8 @@
 
 Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
 
-import logging
-
-_LOG = logging.getLogger(__name__)
-
 import json
+import logging
 
 from freecad.vdo.core import (
     reengrose_modelo as VDO_RE_MODELO,
@@ -17,6 +14,8 @@ from freecad.vdo.core import (
 from freecad.vdo.core.layout_matriz import Layout
 from freecad.vdo.core.layout_modelo import cavidad_interior
 from freecad.vdo.qt_compat import QtWidgets
+
+_LOG = logging.getLogger(__name__)
 
 
 class ReengroseDivisionesMixin:

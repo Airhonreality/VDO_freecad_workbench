@@ -6,9 +6,9 @@
 
 import logging
 
-_LOG = logging.getLogger(__name__)
-
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+
+_LOG = logging.getLogger(__name__)
 
 QDOUBLESPINBOX_BASE = getattr(QtWidgets, "QDoubleSpinBox", getattr(QtGui, "QDoubleSpinBox", None))
 

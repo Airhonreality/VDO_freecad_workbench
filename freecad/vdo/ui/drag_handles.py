@@ -7,9 +7,6 @@
 # =====================================================================
 
 import logging
-
-_LOG = logging.getLogger(__name__)
-
 import math
 
 import FreeCAD as App
@@ -17,6 +14,8 @@ import FreeCADGui as Gui
 from pivy import coin
 
 from freecad.vdo.ui.view_providers import VDOViewProviderBase
+
+_LOG = logging.getLogger(__name__)
 
 
 class DragableViewProvider(VDOViewProviderBase):

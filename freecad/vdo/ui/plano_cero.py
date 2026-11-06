@@ -15,11 +15,11 @@ Sin GUI, o sin Draft, no hace nada.
 
 import logging
 
-_LOG = logging.getLogger(__name__)
-
 import FreeCAD as App
 
 from freecad.vdo.qt_compat import QtCore
+
+_LOG = logging.getLogger(__name__)
 
 _REINTENTOS = 10
 _RETARDO_MS = 250

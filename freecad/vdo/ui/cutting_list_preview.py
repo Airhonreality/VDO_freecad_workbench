@@ -12,9 +12,6 @@ Flujo:
 """
 
 import logging
-
-_LOG = logging.getLogger(__name__)
-
 import sys
 from pathlib import Path
 
@@ -27,6 +24,8 @@ except ImportError:
 from freecad.vdo.core import manifest
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 from freecad.vdo.ui import export_cutting_list, tema
+
+_LOG = logging.getLogger(__name__)
 
 
 class CuttingListPreviewPanel:

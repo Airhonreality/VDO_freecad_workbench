@@ -1,10 +1,7 @@
 """Matriz de vanos (Layout): construcción, edición, serialización y migración legacy."""
 
-import logging
-
-_LOG = logging.getLogger(__name__)
-
 import json
+import logging
 
 from freecad.vdo.core.layout_modelo import (
     AXIS_X,
@@ -17,6 +14,8 @@ from freecad.vdo.core.layout_modelo import (
     _sufijo_id,
     _to_float,
 )
+
+_LOG = logging.getLogger(__name__)
 
 
 class Layout:

@@ -1,12 +1,11 @@
 """Lista de corte: lectura del CSV de vdo_cutting_list y expansión a piezas unitarias."""
 
+import csv
 import logging
 
-_LOG = logging.getLogger(__name__)
-
-import csv
-
 from freecad.vdo.core import defaults as _VDO_D
+
+_LOG = logging.getLogger(__name__)
 
 _CANTO_ESPESOR = {
     "FX": 0.0,

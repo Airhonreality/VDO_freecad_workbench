@@ -13,11 +13,8 @@
 # Sincronización bidireccional total entre 3D, 2D, Árbol y Páginas.
 # =====================================================================
 
-import logging
-
-_LOG = logging.getLogger(__name__)
-
 import json
+import logging
 
 import FreeCAD as App
 
@@ -51,6 +48,8 @@ from freecad.vdo.ui.inspector_cabecera import _BreadcrumbBar, _MicroHeaderWidget
 from freecad.vdo.ui.inspector_pagina_pieza import PaginaPieza
 from freecad.vdo.ui.inspector_pagina_vano import PaginaVano
 from freecad.vdo.ui.inspector_paginas import PAGE_CHASIS, PaginaChasis, PaginaCierre, _float_seguro
+
+_LOG = logging.getLogger(__name__)
 
 
 class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, QtWidgets.QWidget):

@@ -6,13 +6,12 @@
 # =====================================================================
 
 import logging
-
-_LOG = logging.getLogger(__name__)
-
 from types import MappingProxyType
 
 from freecad.vdo.core.manifest import _obtener_json
 from freecad.vdo.datos.valores import OCULTA
+
+_LOG = logging.getLogger(__name__)
 
 _MANIFEST = MappingProxyType(_obtener_json())  # solo lectura (D-18)
 

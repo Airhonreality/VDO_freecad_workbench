@@ -8,11 +8,11 @@ from __future__ import annotations
 
 import logging
 
-_LOG = logging.getLogger(__name__)
-
 from freecad.vdo.cad.geometria import forma_ref
 from freecad.vdo.core.coco_spaces import planificar_divisiones_matriz
 from freecad.vdo.core.helpers import _get_app, _get_part
+
+_LOG = logging.getLogger(__name__)
 
 
 def _shape_caja(caja):

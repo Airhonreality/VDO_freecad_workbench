@@ -1,10 +1,7 @@
 """Paginas de detalle del inspector: constantes de pagina, base, chasis y cierre."""
 
-import logging
-
-_LOG = logging.getLogger(__name__)
-
 import json
+import logging
 
 import FreeCAD as App
 
@@ -21,6 +18,8 @@ from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propieda
 from freecad.vdo.core import hardware_hub as HH
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 from freecad.vdo.ui import tema
+
+_LOG = logging.getLogger(__name__)
 
 # ----------------------------------------------------------------------
 # Constantes de navegación del QStackedWidget

@@ -7,9 +7,6 @@
 # =====================================================================
 
 import logging
-
-_LOG = logging.getLogger(__name__)
-
 import os
 
 import FreeCAD as App
@@ -28,6 +25,8 @@ from freecad.vdo.ui.inspector_paginas import (
     PAGE_VANO,
 )
 from freecad.vdo.ui.universal_inspector import VDOUniversalInspectorWidget
+
+_LOG = logging.getLogger(__name__)
 
 
 class VDOInspectorDockWidget(QtWidgets.QDockWidget):
