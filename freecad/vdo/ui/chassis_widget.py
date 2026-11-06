@@ -17,6 +17,7 @@ import logging
 import sys
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtSvg, QtWidgets
+from freecad.vdo.ui import tema
 from freecad.vdo.ui.chassis_config import ChassisConfigMixin
 from freecad.vdo.ui.chassis_construccion import ChassisConstruccionMixin
 from freecad.vdo.ui.chassis_estado import ChassisEstadoMixin
@@ -85,15 +86,15 @@ if __name__ == "__main__":
 
     # Paleta oscura global coherente
     paleta = QtGui.QPalette()
-    paleta.setColor(QtGui.QPalette.Window, QtGui.QColor("#1e1e1e"))
-    paleta.setColor(QtGui.QPalette.WindowText, QtGui.QColor("#e0e0e0"))
-    paleta.setColor(QtGui.QPalette.Base, QtGui.QColor("#252525"))
-    paleta.setColor(QtGui.QPalette.AlternateBase, QtGui.QColor("#1e1e1e"))
-    paleta.setColor(QtGui.QPalette.Text, QtGui.QColor("#e0e0e0"))
-    paleta.setColor(QtGui.QPalette.Button, QtGui.QColor("#2b2b2b"))
-    paleta.setColor(QtGui.QPalette.ButtonText, QtGui.QColor("#ffffff"))
-    paleta.setColor(QtGui.QPalette.Highlight, QtGui.QColor("#007acc"))
-    paleta.setColor(QtGui.QPalette.HighlightedText, QtGui.QColor("#ffffff"))
+    paleta.setColor(QtGui.QPalette.Window, QtGui.QColor(tema.FONDO))
+    paleta.setColor(QtGui.QPalette.WindowText, QtGui.QColor(tema.TEXTO))
+    paleta.setColor(QtGui.QPalette.Base, QtGui.QColor(tema.COLOR_FONDO_BASE))
+    paleta.setColor(QtGui.QPalette.AlternateBase, QtGui.QColor(tema.FONDO))
+    paleta.setColor(QtGui.QPalette.Text, QtGui.QColor(tema.TEXTO))
+    paleta.setColor(QtGui.QPalette.Button, QtGui.QColor(tema.COLOR_FONDO_BOTON))
+    paleta.setColor(QtGui.QPalette.ButtonText, QtGui.QColor(tema.TEXTO_CLARO))
+    paleta.setColor(QtGui.QPalette.Highlight, QtGui.QColor(tema.ACEINTO))
+    paleta.setColor(QtGui.QPalette.HighlightedText, QtGui.QColor(tema.TEXTO_CLARO))
     app.setPalette(paleta)
 
     ventana = QtWidgets.QMainWindow()
