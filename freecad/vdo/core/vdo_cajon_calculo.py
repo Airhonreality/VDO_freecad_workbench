@@ -129,6 +129,35 @@ def _ancho_exterior(li, delta):
     return ancho_ext
 
 
+def _geometria_caja(montaje, ancho_ext, g_caja, lg, alto_caja, alto_lateral, eje_ranura, g_fondo, pen_ranura):
+    """Contra-frente, frente interior, piso y su altura; lanza ValueError si la caja es demasiado baja."""
+    # --- 4. Contra-frente y frente interior ---
+    if montaje == "entre_laterales":
+        ancho_contra = ancho_ext - (2 * g_caja)
+        y_trasera = lg - g_caja
+    else:  # testa: trasera detrás de los laterales
+        ancho_contra = ancho_ext
+        y_trasera = lg
+
+    z_piso = eje_ranura
+    alto_contra = alto_lateral - (z_piso + g_fondo)  # sobre el piso
+    if alto_contra <= 0:
+        raise ValueError(
+            f"Alto de caja ({alto_caja} mm) demasiado pequeño: "
+            f"debe superar eje_ranura({eje_ranura}) + "
+            f"grosor_fondo({g_fondo}) = {z_piso + g_fondo} mm.")
+    alto_frente_int = alto_contra
+
+    # --- 5. Piso ---
+    if montaje == "entre_laterales":
+        anchoEntre = ancho_contra  # = ancho_ext - 2*g_caja
+    else:
+        anchoEntre = ancho_ext - (2 * g_caja)
+    ancho_piso = anchoEntre + (2 * pen_ranura)
+    largo_piso = lg  # fórmula del usuario (largo = LG)
+    return ancho_contra, y_trasera, z_piso, alto_contra, alto_frente_int, ancho_piso, largo_piso
+
+
 def calcular_despiece(config):
     """Calcula el despiece completo del cajón con corredera oculta.
 
@@ -172,30 +201,9 @@ def calcular_despiece(config):
     largo_lateral = lg
     alto_lateral = alto_caja
 
-    # --- 4. Contra-frente y frente interior ---
-    if montaje == "entre_laterales":
-        ancho_contra = ancho_ext - (2 * g_caja)
-        y_trasera = lg - g_caja
-    else:  # testa: trasera detrás de los laterales
-        ancho_contra = ancho_ext
-        y_trasera = lg
-
-    z_piso = eje_ranura
-    alto_contra = alto_lateral - (z_piso + g_fondo)  # sobre el piso
-    if alto_contra <= 0:
-        raise ValueError(
-            f"Alto de caja ({alto_caja} mm) demasiado pequeño: "
-            f"debe superar eje_ranura({eje_ranura}) + "
-            f"grosor_fondo({g_fondo}) = {z_piso + g_fondo} mm.")
-    alto_frente_int = alto_contra
-
-    # --- 5. Piso ---
-    if montaje == "entre_laterales":
-        anchoEntre = ancho_contra  # = ancho_ext - 2*g_caja
-    else:
-        anchoEntre = ancho_ext - (2 * g_caja)
-    ancho_piso = anchoEntre + (2 * pen_ranura)
-    largo_piso = lg  # fórmula del usuario (largo = LG)
+    (ancho_contra, y_trasera, z_piso, alto_contra, alto_frente_int,
+     ancho_piso, largo_piso) = _geometria_caja(montaje, ancho_ext, g_caja,
+     lg, alto_caja, alto_lateral, eje_ranura, g_fondo, pen_ranura)
 
     # --- 6. Fachada ---
     alto_fachada_nominal = alto_frente - holg_sup - holg_inf
