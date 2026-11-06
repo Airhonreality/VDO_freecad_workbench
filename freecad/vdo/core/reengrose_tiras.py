@@ -10,10 +10,10 @@ from freecad.vdo.core.reengrose_modelo import (
     ESQUINAS_2D,
     SUFIJOS_BORDE,
 )
-from freecad.vdo.core.reengrose_modificador import (
+from freecad.vdo.core.reengrose_modificador import normalizar_modificador
+from freecad.vdo.core.reengrose_modificador_normalizacion import (
     _normalizar_borde_config,
     _normalizar_encuentro,
-    normalizar_modificador,
 )
 
 

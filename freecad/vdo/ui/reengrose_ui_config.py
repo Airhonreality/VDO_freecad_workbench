@@ -2,6 +2,7 @@
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
+from freecad.vdo.core import reengrose_modificador_normalizacion as VDO_RE_NORMALIZACION
 
 
 class ReengroseConfigMixin:
@@ -81,7 +82,7 @@ class ReengroseConfigMixin:
             mod, "esquinas", VDO_RE_MODELO.ENCUENTRO_ESQUINAS_DEFAULT)
         if not esquinas_raw:
             esquinas_raw = VDO_RE_MODELO.ENCUENTRO_ESQUINAS_DEFAULT
-        esquinas = VDO_RE_MODIFICADOR._normalizar_encuentro(esquinas_raw)
+        esquinas = VDO_RE_NORMALIZACION._normalizar_encuentro(esquinas_raw)
         uniforme_esq = len(set(esquinas.values())) == 1
         return esquinas, uniforme_esq
 

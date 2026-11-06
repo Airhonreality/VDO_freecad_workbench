@@ -6,6 +6,9 @@ from freecad.vdo.core import (
 from freecad.vdo.core import (
     reengrose_modificador as VDO_RE_MODIFICADOR,
 )
+from freecad.vdo.core import (
+    reengrose_modificador_normalizacion as VDO_RE_NORMALIZACION,
+)
 from freecad.vdo.ui.box_constantes import ESQUINAS, obtener_svg_icon
 
 
@@ -53,7 +56,7 @@ class BoxConfigMixin:
     def _aplicar_esquinas(self, cfg):
         # 2. Esquinas
         esquinas_raw = cfg.get("esquinas", VDO_RE_MODELO.ENCUENTRO_ESQUINAS_DEFAULT)
-        esquinas_norm = VDO_RE_MODIFICADOR._normalizar_encuentro(esquinas_raw)
+        esquinas_norm = VDO_RE_NORMALIZACION._normalizar_encuentro(esquinas_raw)
         for e in ESQUINAS:
             tipo = esquinas_norm.get(e, "vertical_domina")
             self._esquinas[e] = tipo

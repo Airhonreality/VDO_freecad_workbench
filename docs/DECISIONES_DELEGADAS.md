@@ -671,3 +671,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-85
 
 - **D-85: mypy --strict en core/ y cad/ a cero (cierre de D-83). Total: 1240 → 0.** (1240 es la base de D-83 al inicio de la ola; al empezar esta sesión quedaban 40 en 16 archivos.) Ignores: ninguno. Anotaciones incorrectas corregidas: `cad/geometria.py` `forma_ref`, de `object | None` a `Any | None` (devuelve formas FreeCAD sin tipo).
+
+## D-86
+
+- **D-86: tras anotar con mypy, tres archivos de core superaron 400 lineas y dos funciones superaron 60. Corregido por movimiento literal a modulos hermanos y extraccion literal, verificado con AST y gates.** Commits: reengrose_modificador (normalizacion a reengrose_modificador_normalizacion.py, golden AGREGADOS actualizado), spaces, optimizer_core, cajon_calculo._piezas_restantes, coco_shell._aplicar_shell. Revertir: git revert --no-edit de cada commit D-86.
