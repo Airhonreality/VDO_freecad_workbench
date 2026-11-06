@@ -127,6 +127,14 @@ class CapasTests(unittest.TestCase):
         )
 
     def test_app_no_importa_ui(self):
+        # D-25: MN-01 elimina app/. Si la capa no existe o no tiene .py, la
+        # regla se cumple por ausencia (no se pasa en vacío sobre una carpeta
+        # que existe). Si app/ existe con .py, se aplica la regla completa.
+        if not APP.is_dir() or not any(
+                p for p in APP.rglob("*.py") if "__pycache__" not in p.parts):
+            print("\n[D-25] freecad/vdo/app ausente o sin .py: "
+                  "test_app_no_importa_ui cumplido por ausencia de capa.")
+            return
         prohibidos = ("freecad.vdo.ui",)
         violaciones = []
         for p in _py_files(APP):
