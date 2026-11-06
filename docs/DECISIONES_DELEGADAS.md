@@ -593,4 +593,6 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 
 ## D-67
 
-- **D-67:** últimas cinco funciones de ui/ de 62-66 líneas bajo 60 líneas por extracción literal, verificada con AST. Cierra M7 (criterio de función, P5).
+- **D-67:** últimas cinco funciones de ui/ de 62-66 líneas bajo 60 líneas por extracción literal, verificada con AST. Cierra M7 con classify_object resuelto en D-68 (criterio de función, P5).
+
+- **D-68:** classify_object convertido a tabla de despacho (P3), verificado por equivalencia exacta sobre tipos de proxy.
