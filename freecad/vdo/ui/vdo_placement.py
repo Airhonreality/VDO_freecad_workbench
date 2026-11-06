@@ -12,8 +12,8 @@
 
 import FreeCAD as App
 
-from freecad.vdo.app.casos_uso.colocar_modulo import (
-    colocar_en_punto,
+from freecad.vdo.cad.colocacion import (
+    aplicar_colocacion,
     preparar_colocacion,
 )
 
@@ -207,7 +207,7 @@ class ColocadorModulo:
         self._visible = True
 
     def _aplicar(self, punto):
-        colocar_en_punto(self.obj, punto, self.plan)
+        aplicar_colocacion(self.obj, punto, self.plan)
 
     def _finalizar(self):
         if self._finalizado:
