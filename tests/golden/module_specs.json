@@ -164,7 +164,7 @@
     "menu": "Propiedades del Zócalo",
     "icon": "vdo_zocalo.svg",
     "factory": [
-      "freecad.vdo.core.vdo_zocalo_core",
+      "freecad.vdo.cad.zocalo",
       "make_zocalo"
     ],
     "panel": "panel.zocalo",
