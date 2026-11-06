@@ -27,6 +27,34 @@
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 
 
+def _asignar_numero(widget, valor):
+    widget.setValue(valor)
+
+
+def _asignar_check(widget, valor):
+    widget.setChecked(bool(valor))
+
+
+def _asignar_combo(widget, valor):
+    idx = widget.findData(valor)
+    if idx >= 0:
+        widget.setCurrentIndex(idx)
+
+
+def _asignar_texto(widget, valor):
+    widget.setText(str(valor))
+
+
+# tipo de campo -> funcion que escribe el valor en el widget
+_ASIGNADORES_VALOR = {
+    "double_spin": _asignar_numero,
+    "spin": _asignar_numero,
+    "checkbox": _asignar_check,
+    "combo": _asignar_combo,
+    "label": _asignar_texto,
+}
+
+
 class FormField:
     """Un campo de formulario con su widget y metadatos."""
 
@@ -97,16 +125,9 @@ class FormField:
     def set_valor(self, valor):
         if self.widget is None:
             return
-        if self.tipo in ("double_spin", "spin"):
-            self.widget.setValue(valor)
-        elif self.tipo == "checkbox":
-            self.widget.setChecked(bool(valor))
-        elif self.tipo == "combo":
-            idx = self.widget.findData(valor)
-            if idx >= 0:
-                self.widget.setCurrentIndex(idx)
-        elif self.tipo == "label":
-            self.widget.setText(str(valor))
+        asignar = _ASIGNADORES_VALOR.get(self.tipo)
+        if asignar is not None:
+            asignar(self.widget, valor)
 
 
 class FormBuilder:
