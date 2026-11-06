@@ -73,13 +73,25 @@ class CocoUnifiedPestanasMixin:
         lbl_eje = QtWidgets.QLabel("Eje de sub-división:")
         group_layout.addWidget(lbl_eje)
 
+        table = self._crear_tabla_hijos(axis, group_layout)
+
+        btn_back = self._crear_botones_hijos(axis, group_layout)
+        layout.addWidget(group)
+
+        self._registrar_widgets_hijos(axis, group, lbl, lbl_eje, table, btn_back)
+
+        return group
+
+    def _crear_tabla_hijos(self, axis, group_layout):
         table = SpacesTableWidget(
             reorder_callback=lambda ids, a=axis: self._reordenar_hijos(a, ids))
         table.setMaximumHeight(200)
         table.cellChanged.connect(
             lambda r, c, a=axis: self._on_child_cell_changed(r, c, a))
         group_layout.addWidget(table)
+        return table
 
+    def _crear_botones_hijos(self, axis, group_layout):
         btn_layout = QtWidgets.QHBoxLayout()
 
         btn_add = QtWidgets.QPushButton("+ Añadir vano")
@@ -117,8 +129,9 @@ class CocoUnifiedPestanasMixin:
         btn_layout.addWidget(btn_close)
 
         group_layout.addLayout(btn_layout)
-        layout.addWidget(group)
+        return btn_back
 
+    def _registrar_widgets_hijos(self, axis, group, lbl, lbl_eje, table, btn_back):
         if axis == "X":
             self.group_hijos_x = group
             self.lbl_hijo_info_x = lbl
@@ -131,5 +144,3 @@ class CocoUnifiedPestanasMixin:
             self.lbl_hijo_eje_y = lbl_eje
             self.table_hijos_y = table
             self.btn_hijo_atras_y = btn_back
-
-        return group
