@@ -13,7 +13,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 from pivy import coin
 
-from freecad.vdo.ui.view_providers import VDOViewProviderBase
+from freecad.vdo.ui.view_providers import VDOViewProviderBase, panel_coco_unificado
 
 _LOG = logging.getLogger(__name__)
 
@@ -207,8 +207,7 @@ class DragableViewProvider(VDOViewProviderBase):
     # =====================================================================
 
     def get_panel_class(self):
-        from freecad.vdo.ui.coco_unified_task import CocoUnifiedTaskPanel
-        return CocoUnifiedTaskPanel
+        return panel_coco_unificado()
 
     def setEdit(self, vobj, mode):
         """Activar edición: handles visuales + panel unificado."""

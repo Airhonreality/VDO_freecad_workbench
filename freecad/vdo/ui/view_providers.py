@@ -257,6 +257,12 @@ def abrir_panel_objeto(obj):
         return False
 
 
+def panel_coco_unificado():
+    """Panel de edición del COCO (fuente única para ViewProviders y handles 3D)."""
+    from freecad.vdo.ui.coco_unified_task import CocoUnifiedTaskPanel
+    return CocoUnifiedTaskPanel
+
+
 class ViewProviderCoco(VDOViewProviderBase):
     """ViewProvider de respaldo para el COCO FeaturePython."""
 
@@ -264,8 +270,7 @@ class ViewProviderCoco(VDOViewProviderBase):
     ICON = "vdo_coco.svg"
 
     def get_panel_class(self):
-        from freecad.vdo.ui.coco_unified_task import CocoUnifiedTaskPanel
-        return CocoUnifiedTaskPanel
+        return panel_coco_unificado()
 
     def setEdit(self, vobj, mode):
         enfocar_inspector_universal(getattr(vobj, "Object", None))
