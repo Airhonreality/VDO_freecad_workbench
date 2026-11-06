@@ -33,16 +33,16 @@ _instalado_ctx.__enter__()
 
 from freecad.vdo.core import vdo_facade_contract as FC
 from freecad.vdo.core import vdo_hardware_hub as H
-from freecad.vdo.core.vdo_cajon_core import (
+from freecad.vdo.cad.cajon import (
     CAJA_METALICA as CC_MET,
 )
-from freecad.vdo.core.vdo_cajon_core import (
+from freecad.vdo.cad.cajon import (
     CORREDERA_OCULTA as CC_OCU,
 )
-from freecad.vdo.core.vdo_cajon_core import (
+from freecad.vdo.cad.cajon import (
     CORREDERA_TELESCOPICA as CC_TEL,
 )
-from freecad.vdo.core.vdo_cajon_core import (
+from freecad.vdo.cad.cajon import (
     _aplicar_bisel_45_fachada,
     _aplicar_corte,
     _corte_notch_lateral,

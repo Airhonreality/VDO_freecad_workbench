@@ -13,7 +13,7 @@ from freecad.vdo.cad.colocacion import aplicar_rotacion
 from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import vdo_frames as VDO_FR
 from freecad.vdo.core import vdo_module_props
-from freecad.vdo.core.vdo_cajon_core import make_cajon
+from freecad.vdo.cad.cajon import make_cajon
 from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
@@ -1185,7 +1185,7 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
 
             if existente is None:
                 existente = doc.addObject("Part::FeaturePython", nombre)
-                from freecad.vdo.core.vdo_cajon_core import CajonFeature
+                from freecad.vdo.cad.cajon import CajonFeature
                 CajonFeature(existente)
                 if App.GuiUp:
                     from freecad.vdo.ui.vdo_view_providers import ViewProviderCajon

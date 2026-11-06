@@ -16,9 +16,9 @@
 from types import MappingProxyType
 
 from freecad.vdo.core.vdo_facade_contract import (
-    APERTURA_45_GRADOS,  # noqa: F401 (re-exportado: lo importan vdo_cajon_core y la UI)
-    APERTURA_GOLA,  # noqa: F401 (re-exportado: lo importan vdo_cajon_core y la UI)
-    APERTURA_PUSH_OPEN,  # noqa: F401 (re-exportado: lo importan vdo_cajon_core y la UI)
+    APERTURA_45_GRADOS,  # noqa: F401 (re-exportado: lo importan cad/cajon y la UI)
+    APERTURA_GOLA,  # noqa: F401 (re-exportado: lo importan cad/cajon y la UI)
+    APERTURA_PUSH_OPEN,  # noqa: F401 (re-exportado: lo importan cad/cajon y la UI)
     APERTURA_TIRADOR,
     GOLA_DESCUENTO_ALTURA_DEFAULT,
     MONTAJE_PARCHE,
@@ -35,7 +35,7 @@ from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR, OCULTA
 
 _MANIFEST = MappingProxyType(_obtener_json())  # solo lectura (D-18)
 
-# Tipologías de corredera (compatibles con vdo_cajon_core.py)
+# Tipologías de corredera (compatibles con cad/cajon.py)
 CORREDERA_TELESCOPICA = "telescopica"
 CORREDERA_OCULTA = OCULTA
 CAJA_METALICA = "metalica"
