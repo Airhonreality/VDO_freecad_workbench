@@ -120,10 +120,10 @@ class ReengroseConstruccionMixin:
         caja_preview.setContentsMargins(0, 0, 0, 0)
         caja_preview.addWidget(self.preview)
         leyenda = QtWidgets.QLabel(
-            '<span style="color:#00b894">■</span> Vertical &nbsp;'
-            '<span style="color:#e67e22">■</span> Horizontal &nbsp;'
-            '<span style="color:#9b59b6">■</span> Inglete &nbsp;'
-            '<span style="color:#7f8c8d">■</span> Marco')
+            f'<span style="color:{tema.COLOR_CATEGORIA_VERTICAL}">■</span> Vertical &nbsp;'
+            f'<span style="color:{tema.COLOR_NARANJA}">■</span> Horizontal &nbsp;'
+            f'<span style="color:{tema.COLOR_CATEGORIA_INGLETE}">■</span> Inglete &nbsp;'
+            f'<span style="color:{tema.COLOR_CATEGORIA_MARCO}">■</span> Marco')
         leyenda.setTextFormat(QtCore.Qt.RichText)
         tema.aplicar_estilo(leyenda, tema.ESTILO_TEXTO_10PX)
         caja_preview.addWidget(leyenda)
@@ -243,29 +243,29 @@ class ReengroseConstruccionMixin:
 
     def _aplicar_estilo_botones(self):
         """QSS para los botones checkables de bordes."""
-        estilo = """
-        QPushButton, QToolButton {
-            background-color: #333333;
-            color: #e0e0e0;
-            border: 1px solid #555555;
+        estilo = f"""
+        QPushButton, QToolButton {{
+            background-color: {tema.FONDO3};
+            color: {tema.TEXTO};
+            border: 1px solid {tema.COLOR_BORDE_MEDIO};
             border-radius: 4px;
             padding: 5px 10px;
             font-weight: bold;
-        }
-        QPushButton:hover, QToolButton:hover {
-            background-color: #444444;
-            border-color: #777777;
-        }
-        QPushButton:checked, QToolButton:checked {
-            background-color: #007acc;
-            color: #ffffff;
-            border: 1px solid #007acc;
-        }
-        QPushButton:disabled, QToolButton:disabled {
-            background-color: #222222;
-            color: #777777;
-            border: 1px solid #333333;
-        }
+        }}
+        QPushButton:hover, QToolButton:hover {{
+            background-color: {tema.BORDE};
+            border-color: {tema.COLOR_TEXTO_MUTED};
+        }}
+        QPushButton:checked, QToolButton:checked {{
+            background-color: {tema.ACEINTO};
+            color: {tema.TEXTO_CLARO};
+            border: 1px solid {tema.ACEINTO};
+        }}
+        QPushButton:disabled, QToolButton:disabled {{
+            background-color: {tema.COLOR_FONDO_HUB};
+            color: {tema.COLOR_TEXTO_MUTED};
+            border: 1px solid {tema.FONDO3};
+        }}
         """
         tema.aplicar_estilo(self.btn_all, estilo)
         for btn in self.btn_borde.values():

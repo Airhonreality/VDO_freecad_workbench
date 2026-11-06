@@ -1,6 +1,7 @@
 """Vista compacta del tablero con bordes activos y tipo de esquina."""
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui import tema
 from freecad.vdo.ui.reengrose_ui_constantes import COLOR_ESQUINA
 
 
@@ -30,13 +31,13 @@ class VDOBoardPreview(QtWidgets.QWidget):
         if x1 <= x0 or y1 <= y0:
             return
 
-        painter.setBrush(QtGui.QBrush(QtGui.QColor("#1e1e1e")))
-        painter.setPen(QtGui.QPen(QtGui.QColor("#555555"), 1))
+        painter.setBrush(QtGui.QBrush(QtGui.QColor(tema.FONDO)))
+        painter.setPen(QtGui.QPen(QtGui.QColor(tema.COLOR_BORDE_MEDIO), 1))
         painter.drawRoundedRect(x0, y0, x1 - x0, y1 - y0, 6, 6)
 
         grosor = 9
-        activo = QtGui.QColor("#007acc")
-        inactivo = QtGui.QColor("#3a3a3a")
+        activo = QtGui.QColor(tema.ACEINTO)
+        inactivo = QtGui.QColor(tema.BORDE_SUAVE)
 
         def color_borde(borde):
             return activo if borde in self._bordes else inactivo
@@ -60,21 +61,21 @@ class VDOBoardPreview(QtWidgets.QWidget):
         lado = 14
         for esquina, (cx, cy) in posiciones.items():
             tipo = self._esquinas.get(esquina)
-            color = QtGui.QColor(COLOR_ESQUINA.get(tipo, "#444444"))
+            color = QtGui.QColor(COLOR_ESQUINA.get(tipo, tema.BORDE))
             painter.setBrush(QtGui.QBrush(color))
-            painter.setPen(QtGui.QPen(QtGui.QColor("#111111"), 1))
+            painter.setPen(QtGui.QPen(QtGui.QColor(tema.COLOR_TRAZO_NEGRO), 1))
             painter.drawRect(cx - lado / 2.0, cy - lado / 2.0, lado, lado)
             if tipo == "inglete_45":
-                painter.setPen(QtGui.QPen(QtGui.QColor("#111111"), 1))
+                painter.setPen(QtGui.QPen(QtGui.QColor(tema.COLOR_TRAZO_NEGRO), 1))
                 painter.drawLine(cx - lado / 2.0, cy + lado / 2.0,
                                  cx + lado / 2.0, cy - lado / 2.0)
             elif tipo == "marco_interior":
-                painter.setBrush(QtGui.QBrush(QtGui.QColor("#1e1e1e")))
-                painter.setPen(QtGui.QPen(QtGui.QColor("#bdc3c7"), 1))
+                painter.setBrush(QtGui.QBrush(QtGui.QColor(tema.FONDO)))
+                painter.setPen(QtGui.QPen(QtGui.QColor(tema.COLOR_TRAZO_CLARO), 1))
                 painter.drawRect(cx - lado / 4.0, cy - lado / 4.0,
                                  lado / 2.0, lado / 2.0)
 
-        painter.setPen(QtGui.QPen(QtGui.QColor("#8a8a8a"), 1))
+        painter.setPen(QtGui.QPen(QtGui.QColor(tema.COLOR_TRAZO_NEUTRO), 1))
         painter.drawText(
             QtCore.QRectF(x0, y0, x1 - x0, y1 - y0),
             QtCore.Qt.AlignCenter, "Tablero")
