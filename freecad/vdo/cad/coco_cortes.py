@@ -13,7 +13,7 @@ from freecad.vdo.core.helpers import _get_part
 _LOG = logging.getLogger(__name__)
 
 
-def _cortar_shape(forma, recorte):
+def _cortar_shape(forma: Any, recorte: Any) -> Any | None:  # forma FreeCAD sin tipo
     """Resta robusta: OCC falla al cortar compounds multi-solido."""
     if forma is None or forma.isNull():
         return None
@@ -26,7 +26,7 @@ def _cortar_shape(forma, recorte):
         if resultado.isNull() or resultado.Volume <= 1e-9:
             return None
         return resultado
-    solidos = []
+    solidos: list[Any] = []
     for solido in forma.Solids:
         try:
             resultado = solido.cut(recorte)
