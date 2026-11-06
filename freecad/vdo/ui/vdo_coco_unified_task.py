@@ -92,7 +92,25 @@ class CocoUnifiedTaskPanel(
         doc = App.ActiveDocument
         if doc is None:
             return
+        contenido_tuplas = self._leer_contenido_tuplas(coco_obj)
 
+        # Resolved map para obtener cotas de celdas
+        editor = self.editor_divisiones
+        resolved_map = getattr(editor, "_resolved_map", {})
+        layout = getattr(editor, "layout", None)
+
+        hijos_nuevos = []
+        celdas_procesadas = set()
+
+        self._insertar_hijos_vanos(doc, coco_obj, contenido_tuplas, layout,
+                                   resolved_map, celdas_procesadas, hijos_nuevos)
+
+        self._eliminar_huerfanos(doc, coco_obj, hijos_nuevos)
+
+        asignar_propiedades(coco_obj, {"Hijos": hijos_nuevos})
+
+
+    def _leer_contenido_tuplas(self, coco_obj):
         # Leer contenido persistido
         texto = getattr(coco_obj, "VDO_Contenido_JSON", "") or "{}"
         try:
@@ -107,15 +125,10 @@ class CocoUnifiedTaskPanel(
                 contenido_tuplas[(col, row)] = v
             except (ValueError, TypeError):
                 continue
+        return contenido_tuplas
 
-        # Resolved map para obtener cotas de celdas
-        editor = self.editor_divisiones
-        resolved_map = getattr(editor, "_resolved_map", {})
-        layout = getattr(editor, "layout", None)
-
-        hijos_nuevos = []
-        celdas_procesadas = set()
-
+    def _insertar_hijos_vanos(self, doc, coco_obj, contenido_tuplas, layout,
+                              resolved_map, celdas_procesadas, hijos_nuevos):
         for (col, row), datos in contenido_tuplas.items():
             celdas_procesadas.add((col, row))
             tipo = datos.get("tipo", "vacio")
@@ -142,6 +155,7 @@ class CocoUnifiedTaskPanel(
                 self._construir_cajones(
                     doc, coco_obj, cfg, x, z, w, h, hijos_nuevos)
 
+    def _eliminar_huerfanos(self, doc, coco_obj, hijos_nuevos):
         # --- Gestión de huérfanos ---
         hijos_actuales = list(coco_obj.Hijos or [])
         claves_activas = set()
@@ -154,8 +168,6 @@ class CocoUnifiedTaskPanel(
                 except Exception:
                     App.Console.PrintWarning(
                         f"[VDO] No se pudo remover el hijo {hijo.Name}")
-
-        asignar_propiedades(coco_obj, {"Hijos": hijos_nuevos})
 
     def _construir_puerta(self, doc, coco_obj, cfg, x, z, w, h, hijos_nuevos):
         """Crea o actualiza una puerta como hijo del COCO."""
