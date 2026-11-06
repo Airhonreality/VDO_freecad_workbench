@@ -8,6 +8,7 @@ import FreeCAD as App
 
 from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.cad.propiedades import add_common_props, asignar_propiedades
+from freecad.vdo.cad.transaccion import foto_propiedades, restaurar_propiedades
 from freecad.vdo.core import hardware_hub as H
 from freecad.vdo.core.aperturas import ETIQUETAS, SISTEMA_POR_ETIQUETA
 from freecad.vdo.core.facade_contract import (
@@ -224,6 +225,7 @@ class PuertaTaskPanel(PuertaTaskConstruccionMixin, VDOTransactionMixin):
         return self._transaccion_puerta()
 
     def _transaccion_puerta(self):
+        foto = foto_propiedades(self.obj)
         try:
             self._vdo_begin()
             self._escribir_puerta()
@@ -233,6 +235,7 @@ class PuertaTaskPanel(PuertaTaskConstruccionMixin, VDOTransactionMixin):
             return True
         except Exception as e:
             self._vdo_abort()
+            restaurar_propiedades(self.obj, foto)
             App.Console.PrintError(f"[VDO Puerta] Error aceptando: {e}\n")
             return False
 
