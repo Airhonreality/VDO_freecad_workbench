@@ -8,6 +8,7 @@ import FreeCAD as App
 
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui import vdo_cutting_list_preview
+from freecad.vdo.ui import tema
 
 
 def mostrar_menu():
@@ -42,7 +43,7 @@ def mostrar_menu():
 def _agregar_titulo(layout):
     # Título
     titulo = QtWidgets.QLabel("¿Qué piezas deseas exportar?")
-    titulo.setStyleSheet("font-size: 14px; font-weight: bold;")
+    tema.aplicar_estilo(titulo, tema.ESTILO_TITULO_14PX)
     layout.addWidget(titulo)
 
     layout.addSpacing(10)
@@ -77,7 +78,7 @@ def _agregar_info(layout):
         "El siguiente paso mostrará un PREVIEW\n"
         "con las piezas coloreadas en ROJO para confirmar"
     )
-    info.setStyleSheet("color: #666; font-size: 11px;")
+    tema.aplicar_estilo(info, tema.ESTILO_INFO_11PX)
     layout.addWidget(info)
 
     layout.addSpacing(15)
@@ -92,7 +93,7 @@ def _agregar_botones(dialog, layout):
     btn_layout.addWidget(btn_cancelar)
 
     btn_ok = QtWidgets.QPushButton("Continuar →")
-    btn_ok.setStyleSheet("background-color: #0066cc; color: white; font-weight: bold;")
+    tema.aplicar_estilo(btn_ok, tema.ESTILO_BOTON_AZUL)
     btn_ok.clicked.connect(dialog.accept)
     btn_layout.addWidget(btn_ok)
 

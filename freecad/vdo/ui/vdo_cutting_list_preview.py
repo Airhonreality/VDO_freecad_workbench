@@ -23,6 +23,7 @@ except ImportError:
 from freecad.vdo.core import vdo_manifest
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 from freecad.vdo.ui import vdo_export_cutting_list
+from freecad.vdo.ui import tema
 
 
 class CuttingListPreviewPanel:
@@ -50,7 +51,7 @@ class CuttingListPreviewPanel:
         # Header
         header = QtWidgets.QLabel()
         header.setText(f"<b>📊 Preview Exportación - {modo.upper()}</b>")
-        header.setStyleSheet("font-size: 14px; color: #333;")
+        tema.aplicar_estilo(header, tema.ESTILO_TITULO_14PX_OSCURO)
         layout.addWidget(header)
 
         # Info
@@ -103,7 +104,7 @@ class CuttingListPreviewPanel:
         # Resumen
         resumen = QtWidgets.QLabel()
         resumen.setText(f"<b>💰 Costo total material: ${total_costo:.2f}</b>")
-        resumen.setStyleSheet("color: #0066cc; font-weight: bold;")
+        tema.aplicar_estilo(resumen, tema.ESTILO_RESUMEN_AZUL)
         layout.addWidget(resumen)
 
         # Instrucciones
@@ -126,7 +127,7 @@ class CuttingListPreviewPanel:
         btn_layout.addWidget(btn_cancelar)
 
         btn_aceptar = QtWidgets.QPushButton("✅ Aceptar - Generar CSV")
-        btn_aceptar.setStyleSheet("background-color: #00cc00; color: white; font-weight: bold;")
+        tema.aplicar_estilo(btn_aceptar, tema.ESTILO_BOTON_EXITO)
         btn_aceptar.clicked.connect(self.aceptar)
         btn_layout.addWidget(btn_aceptar)
 

@@ -18,6 +18,7 @@ from freecad.vdo.core import optimizer_lista_corte as lista
 from freecad.vdo.core import vdo_optimizer_core as core
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui import vdo_optimizer_view as view
+from freecad.vdo.ui import tema
 
 
 class OptimizerDialog(QtWidgets.QDialog):
@@ -61,7 +62,7 @@ class OptimizerDialog(QtWidgets.QDialog):
         row.addWidget(btn)
         form.addLayout(row)
         self.lbl_csv = QtWidgets.QLabel("—")
-        self.lbl_csv.setStyleSheet("color:#777; font-size:11px;")
+        tema.aplicar_estilo(self.lbl_csv, tema.ESTILO_GRIS_11PX)
         form.addWidget(self.lbl_csv)
         self.edit_csv.textChanged.connect(self._inspect_csv)
 
@@ -89,8 +90,7 @@ class OptimizerDialog(QtWidgets.QDialog):
 
         form.addStretch(1)
         self.btn_run = QtWidgets.QPushButton("▶  Optimizar")
-        self.btn_run.setStyleSheet(
-            "background:#0066cc; color:white; font-weight:bold; padding:6px;")
+        tema.aplicar_estilo(self.btn_run, tema.ESTILO_BOTON_AZUL_PAD)
         self.btn_run.clicked.connect(self._run)
         form.addWidget(self.btn_run)
 
@@ -119,7 +119,7 @@ class OptimizerDialog(QtWidgets.QDialog):
         scroll = QtWidgets.QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setWidget(self.view)
-        scroll.setStyleSheet("background:#fafafa;")
+        tema.aplicar_estilo(scroll, tema.ESTILO_FONDO_CLARO)
         split.addWidget(scroll)
         split.setStretchFactor(1, 1)
 
@@ -128,7 +128,7 @@ class OptimizerDialog(QtWidgets.QDialog):
         # ---- Barra inferior: sumatoria ----
         bar = QtWidgets.QHBoxLayout()
         self.lbl_summary = QtWidgets.QLabel("Sin optimizar.")
-        self.lbl_summary.setStyleSheet("font-size:12px;")
+        tema.aplicar_estilo(self.lbl_summary, tema.ESTILO_TEXTO_12PX)
         bar.addWidget(self.lbl_summary, 1)
         btn_close = QtWidgets.QPushButton("Cerrar")
         btn_close.clicked.connect(self.accept)

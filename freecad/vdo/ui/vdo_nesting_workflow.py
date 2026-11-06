@@ -23,6 +23,7 @@ except ImportError:
     raise ImportError("Nesting Workbench no instalado") from None
 
 from freecad.vdo.core import vdo_nesting_presets as presets_mgr
+from freecad.vdo.ui import tema
 
 
 class NestingDialog(QtWidgets.QDialog):
@@ -137,7 +138,7 @@ class NestingDialog(QtWidgets.QDialog):
         btn_layout.addWidget(btn_cancelar)
 
         btn_ejecutar = QtWidgets.QPushButton("▶️ Ejecutar Nesting")
-        btn_ejecutar.setStyleSheet("background-color: #0066cc; color: white; font-weight: bold;")
+        tema.aplicar_estilo(btn_ejecutar, tema.ESTILO_BOTON_AZUL)
         btn_ejecutar.clicked.connect(self.execute_nesting)
         btn_layout.addWidget(btn_ejecutar)
 
