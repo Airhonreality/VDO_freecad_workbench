@@ -403,4 +403,8 @@ $ minimalismo.py fachadas   -> 0
 
 ## D-24 (ola 11)
 
-- **D-24:** vdo_creacion.py y los crear_*.py pasan a freecad/vdo/creacion.py (307 líneas, bajo el límite de P5). commands.py no crece. Razón: juntos con commands.py (359) superarían 400 líneas. Revertir: git revert de T12b y T12c.
+- **D-24:** vdo_creacion.py y los crear_*.py pasan a freecad/vdo/creacion.py (307 líneas según `wc -l` de los archivos origen, suma medida; bajo el límite de P5). commands.py no crece. Razón: juntos con commands.py (359) superarían 400 líneas. Revertir: git revert de T12b y T12c.
+
+## D-25 (ola 12)
+
+- **D-25:** `test_arquitectura.py::test_app_no_importa_ui` falla cuando `app/` no tiene `.py`, porque el helper exige archivos. MN-01 elimina `app/`, así que la capa ausente debe considerarse cumplida. La regla se mantiene si `app/` existe. Cambio aprobado por el director (no es debilitar la regla). Revertir: `git revert` del commit de T2.
