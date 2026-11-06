@@ -150,24 +150,25 @@ class Layout:
     # Matriz raíz
     # -----------------------------------------------------------------
     def add_column(self, fixed: object = None) -> Track:
-        col = Track(_id_unico("x", [c.id for c in self.columns]), fixed)
-        self.columns.append(col)
-        for row in self.rows:
-            self.cells[self.key(col.id, row.id)] = Cell(
-                px=_sufijo_id(col.id, "x"),
-                py=_sufijo_id(row.id, "y"),
-            )
-        return col
+        return self._agregar_pista("x", fixed)
 
     def add_row(self, fixed: object = None) -> Track:
-        row = Track(_id_unico("y", [r.id for r in self.rows]), fixed)
-        self.rows.append(row)
-        for col in self.columns:
+        return self._agregar_pista("y", fixed)
+
+    def _agregar_pista(self, eje: str, fixed: object) -> Track:
+        """Añade una columna (eje 'x') o fila (eje 'y') y crea sus celdas con la otra pista."""
+        es_columna = eje == "x"
+        pistas = self.columns if es_columna else self.rows
+        otras = self.rows if es_columna else self.columns
+        pista = Track(_id_unico(eje, [p.id for p in pistas]), fixed)
+        pistas.append(pista)
+        for otra in otras:
+            col, row = (pista, otra) if es_columna else (otra, pista)
             self.cells[self.key(col.id, row.id)] = Cell(
                 px=_sufijo_id(col.id, "x"),
                 py=_sufijo_id(row.id, "y"),
             )
-        return row
+        return pista
 
     def set_column_fixed(self, index: int, fixed: object) -> None:
         if 0 <= index < len(self.columns):
