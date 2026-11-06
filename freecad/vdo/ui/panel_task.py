@@ -10,6 +10,7 @@ from freecad.vdo.cad.colocacion import aplicar_rotacion
 from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.cad.panel import add_reengrose_props
 from freecad.vdo.cad.propiedades import add_common_props
+from freecad.vdo.cad.transaccion import foto_propiedades, restaurar_propiedades
 from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
@@ -263,10 +264,12 @@ class PanelTaskPanel(VDOTransactionMixin):
         return True
 
     def _transaccion_panel(self):
+        foto = foto_propiedades(self.obj)
         try:
             self._vdo_begin()
             if not self._escribir_panel():
                 self._vdo_abort()
+                restaurar_propiedades(self.obj, foto)
                 return False
             self._vdo_commit()
             self._vdo_aceptado = True
@@ -274,6 +277,7 @@ class PanelTaskPanel(VDOTransactionMixin):
             return True
         except Exception as exc:
             self._vdo_abort()
+            restaurar_propiedades(self.obj, foto)
             App.Console.PrintError(
                 f"[VDO] Error aceptando panel: {exc}\n")
             import traceback
