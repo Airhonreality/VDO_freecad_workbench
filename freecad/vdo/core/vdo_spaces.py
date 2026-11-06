@@ -97,6 +97,111 @@ def deserializar_espacios(json_str):
         return []
 
 
+def _division_iguales(nodes, espacio_total, espesor):
+    """Espacio disponible y ancho de cada división de los nodos 'iguales'."""
+    espacio_disponible = espacio_total
+
+    if espacio_disponible < 0:
+        espacio_disponible = 0.0
+
+    fijos = [n for n in nodes if n.space_type == ESPACIO_FIJO]
+    restantes = [n for n in nodes if n.space_type == ESPACIO_RESTANTE]
+    iguales = [n for n in nodes if n.space_type == ESPACIO_IGUALES]
+
+    espacio_consumido_fijos = sum(n.value for n in fijos)
+    espacio_para_iguales = espacio_disponible - espacio_consumido_fijos
+
+    if restantes:
+        espacio_para_iguales = max(0, espacio_para_iguales)
+
+    if iguales and espacio_para_iguales > 0:
+        n_div_iguales = sum(int(n.value) for n in iguales)
+        # Cada grupo de N iguales aporta N-1 separadores internos.
+        separadores_iguales = sum(max(0, int(n.value) - 1) for n in iguales)
+        espacio_para_dividir = espacio_para_iguales - separadores_iguales * espesor
+        espacio_para_dividir = max(0, espacio_para_dividir)
+        espacio_cada_div = (espacio_para_dividir / n_div_iguales
+                            if n_div_iguales > 0 else 0)
+    else:
+        espacio_cada_div = 0
+    return espacio_disponible, espacio_cada_div
+
+
+def _nodo_fijo(node, cursor, espacio_disponible, espesor):
+    """Resuelve un nodo 'fijo'. Devuelve (resuelto, nuevo_cursor)."""
+    libre = min(node.value, max(0, espacio_disponible - cursor))
+    resuelto = {
+        "id": node.space_id,
+        "inicio": cursor,
+        "fin": cursor + libre,
+        "libre": libre,
+        "tipo": ESPACIO_FIJO,
+        "children": [],
+    }
+    if node.children:
+        resuelto["children"] = _resolver_subespacios(
+            node.children, libre, espesor)
+    return resuelto, cursor + libre
+
+
+def _nodo_iguales(node, cursor, espacio_cada_div, espesor):
+    """Resuelve un nodo 'iguales' en N subespacios. Devuelve (resuelto, nuevo_cursor)."""
+    n_sub = max(1, int(node.value))
+    espacio_total_este = espacio_cada_div * n_sub
+    sub_cursor = cursor
+    sub_spaces = []
+    for j in range(n_sub):
+        sub_spaces.append({
+            "id": f"{node.space_id}_{j+1}",
+            "inicio": sub_cursor,
+            "fin": sub_cursor + espacio_cada_div,
+            "libre": espacio_cada_div,
+            "tipo": ESPACIO_FIJO,
+            "children": [],
+        })
+        sub_cursor += espacio_cada_div
+        if j < n_sub - 1:
+            sub_cursor += espesor
+
+    resuelto = {
+        "id": node.space_id,
+        "inicio": cursor,
+        "fin": sub_cursor,
+        "libre": espacio_total_este,
+        "tipo": ESPACIO_IGUALES,
+        "children": sub_spaces,
+    }
+    return resuelto, sub_cursor
+
+
+def _nodo_restante(node, cursor, espacio_disponible, espesor):
+    """Resuelve un nodo 'restante'. Devuelve (resuelto, nuevo_cursor)."""
+    libre = max(0, espacio_disponible - cursor)
+    resuelto = {
+        "id": node.space_id,
+        "inicio": cursor,
+        "fin": cursor + libre,
+        "libre": libre,
+        "tipo": ESPACIO_RESTANTE,
+        "children": [],
+    }
+    if node.children:
+        resuelto["children"] = _resolver_subespacios(
+            node.children, libre, espesor)
+    return resuelto, cursor + libre
+
+
+def _resolver_nodo(node, cursor, espacio_disponible, espacio_cada_div, espesor):
+    """Despacha un nodo a su resolutor. Tipo desconocido: (None, cursor)."""
+    if node.space_type == ESPACIO_FIJO:
+        return _nodo_fijo(node, cursor, espacio_disponible, espesor)
+    if node.space_type == ESPACIO_IGUALES:
+        return _nodo_iguales(node, cursor, espacio_cada_div, espesor)
+    if node.space_type == ESPACIO_RESTANTE:
+        return _nodo_restante(node, cursor, espacio_disponible, espesor)
+    return None, cursor
+
+
 def resolver_espacios_eje(nodes, espacio_total, espesor):
     """Resuelve una lista de nodos en posiciones físicas a lo largo de un eje.
 
@@ -123,97 +228,17 @@ def resolver_espacios_eje(nodes, espacio_total, espesor):
         return [{"id": "_full", "inicio": 0.0, "fin": espacio_total,
                  "libre": espacio_total, "tipo": "fijo", "children": []}]
 
-    espacio_disponible = espacio_total
-
-    if espacio_disponible < 0:
-        espacio_disponible = 0.0
-
-    fijos = [n for n in nodes if n.space_type == ESPACIO_FIJO]
-    restantes = [n for n in nodes if n.space_type == ESPACIO_RESTANTE]
-    iguales = [n for n in nodes if n.space_type == ESPACIO_IGUALES]
-
-    espacio_consumido_fijos = sum(n.value for n in fijos)
-    espacio_para_iguales = espacio_disponible - espacio_consumido_fijos
-
-    if restantes:
-        espacio_para_iguales = max(0, espacio_para_iguales)
-
-    if iguales and espacio_para_iguales > 0:
-        len(iguales)
-        n_div_iguales = sum(int(n.value) for n in iguales)
-        # Cada grupo de N iguales aporta N-1 separadores internos.
-        separadores_iguales = sum(max(0, int(n.value) - 1) for n in iguales)
-        espacio_para_dividir = espacio_para_iguales - separadores_iguales * espesor
-        espacio_para_dividir = max(0, espacio_para_dividir)
-        espacio_cada_div = (espacio_para_dividir / n_div_iguales
-                            if n_div_iguales > 0 else 0)
-    else:
-        espacio_cada_div = 0
+    espacio_disponible, espacio_cada_div = _division_iguales(
+        nodes, espacio_total, espesor)
 
     resultado = []
     cursor = 0.0
 
     for i, node in enumerate(nodes):
-        if node.space_type == ESPACIO_FIJO:
-            libre = min(node.value, max(0, espacio_disponible - cursor))
-            resuelto = {
-                "id": node.space_id,
-                "inicio": cursor,
-                "fin": cursor + libre,
-                "libre": libre,
-                "tipo": ESPACIO_FIJO,
-                "children": [],
-            }
-            if node.children:
-                resuelto["children"] = _resolver_subespacios(
-                    node.children, libre, espesor)
+        resuelto, cursor = _resolver_nodo(
+            node, cursor, espacio_disponible, espacio_cada_div, espesor)
+        if resuelto is not None:
             resultado.append(resuelto)
-            cursor += libre
-
-        elif node.space_type == ESPACIO_IGUALES:
-            n_sub = max(1, int(node.value))
-            espacio_total_este = espacio_cada_div * n_sub
-            sub_cursor = cursor
-            sub_spaces = []
-            for j in range(n_sub):
-                sub_spaces.append({
-                    "id": f"{node.space_id}_{j+1}",
-                    "inicio": sub_cursor,
-                    "fin": sub_cursor + espacio_cada_div,
-                    "libre": espacio_cada_div,
-                    "tipo": ESPACIO_FIJO,
-                    "children": [],
-                })
-                sub_cursor += espacio_cada_div
-                if j < n_sub - 1:
-                    sub_cursor += espesor
-
-            resuelto = {
-                "id": node.space_id,
-                "inicio": cursor,
-                "fin": sub_cursor,
-                "libre": espacio_total_este,
-                "tipo": ESPACIO_IGUALES,
-                "children": sub_spaces,
-            }
-            resultado.append(resuelto)
-            cursor = sub_cursor
-
-        elif node.space_type == ESPACIO_RESTANTE:
-            libre = max(0, espacio_disponible - cursor)
-            resuelto = {
-                "id": node.space_id,
-                "inicio": cursor,
-                "fin": cursor + libre,
-                "libre": libre,
-                "tipo": ESPACIO_RESTANTE,
-                "children": [],
-            }
-            if node.children:
-                resuelto["children"] = _resolver_subespacios(
-                    node.children, libre, espesor)
-            resultado.append(resuelto)
-            cursor += libre
 
         if i < len(nodes) - 1:
             cursor += espesor
