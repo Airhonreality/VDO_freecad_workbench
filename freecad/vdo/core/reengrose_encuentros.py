@@ -1,5 +1,8 @@
 """Geometria AABB 3D y encuentro de tiras: colision, orientacion, recorte en T/L y bisel."""
 
+from collections.abc import Collection
+from typing import Any, TypedDict
+
 from freecad.vdo.core.helpers import DIMENSION_POR_EJE
 from freecad.vdo.core.reengrose_modelo import (
     _EJES,
@@ -9,22 +12,56 @@ from freecad.vdo.core.reengrose_modelo import (
 )
 
 
-def _aabb(valor):
+class _Anclaje(TypedDict):
+    frente: float
+    fondo: float
+    centro: float
+    origen: tuple[float, float, float]
+
+
+class _PlanInglete(TypedDict):
+    plano: str
+    eje_vertical: str
+    eje_horizontal: str
+    extrusion: str
+    rango_vertical: tuple[float, float]
+    rango_horizontal: tuple[float, float]
+    rango_extrusion: tuple[float, float]
+    interseccion: dict[str, float]
+
+
+class _ResultadoEncuentro(TypedDict):
+    colision: bool
+    modo: str
+    prioridad: str
+    orientacion_a: str
+    orientacion_b: str
+    ganador: str | None
+    perdedor: str | None
+    tira_a: list[dict[str, float]]
+    tira_b: list[dict[str, float]]
+    recortes: list[dict[str, float]]
+    inglete: _PlanInglete | None
+
+
+# Any: valor es un dict de JSON o una tupla de 6, sin tipo fijo.
+def _aabb(valor: Any) -> tuple[float, ...]:
     if isinstance(valor, dict):
+        datos: dict[str, Any] = valor
         return (
-            float(valor.get("x", 0.0)),
-            float(valor.get("y", 0.0)),
-            float(valor.get("z", 0.0)),
-            float(valor.get("w", valor.get("largo", 0.0))),
-            float(valor.get("h", valor.get("ancho", 0.0))),
-            float(valor.get("d", valor.get("espesor", 0.0))),
+            float(datos.get("x", 0.0)),
+            float(datos.get("y", 0.0)),
+            float(datos.get("z", 0.0)),
+            float(datos.get("w", datos.get("largo", 0.0))),
+            float(datos.get("h", datos.get("ancho", 0.0))),
+            float(datos.get("d", datos.get("espesor", 0.0))),
         )
     if isinstance(valor, (list, tuple)) and len(valor) == 6:
         return tuple(float(v) for v in valor)
     raise ReengroseError("AABB invalido: se esperaba dict o tupla de 6.")
 
 
-def detectar_colision(a, b, tolerancia=1e-6):
+def detectar_colision(a: Any, b: Any, tolerancia: float = 1e-6) -> bool:
     ax, ay, az, aw, ah, ad = _aabb(a)
     bx, by, bz, bw, bh, bd = _aabb(b)
     return not (
@@ -34,26 +71,26 @@ def detectar_colision(a, b, tolerancia=1e-6):
     )
 
 
-def _aabb_dict(caja):
+def _aabb_dict(caja: Any) -> dict[str, float]:
     x, y, z, w, h, d = _aabb(caja)
     return {"x": x, "y": y, "z": z, "w": w, "h": h, "d": d}
 
 
-def _dimensiones(aabb):
+def _dimensiones(aabb: tuple[float, ...]) -> dict[str, float]:
     return {"x": aabb[3], "y": aabb[4], "z": aabb[5]}
 
 
-def _eje_mayor(aabb):
+def _eje_mayor(aabb: tuple[float, ...]) -> str:
     dims = _dimensiones(aabb)
     return max(_EJES, key=lambda eje: dims[eje])
 
 
-def _eje_menor(aabb):
+def _eje_menor(aabb: tuple[float, ...]) -> str:
     dims = _dimensiones(aabb)
     return min(_EJES, key=lambda eje: dims[eje])
 
 
-def _eje_restante(aabb, usados):
+def _eje_restante(aabb: tuple[float, ...], usados: Collection[str]) -> str:
     dims = _dimensiones(aabb)
     restantes = [eje for eje in _EJES if eje not in usados]
     if not restantes:
@@ -61,7 +98,8 @@ def _eje_restante(aabb, usados):
     return max(restantes, key=lambda eje: dims[eje])
 
 
-def _interseccion_aabb(a, b, tolerancia=1e-6):
+def _interseccion_aabb(a: Any, b: Any,
+                       tolerancia: float = 1e-6) -> tuple[float, ...] | None:
     ax, ay, az, aw, ah, ad = _aabb(a)
     bx, by, bz, bw, bh, bd = _aabb(b)
     x0 = max(ax, bx)
@@ -76,7 +114,7 @@ def _interseccion_aabb(a, b, tolerancia=1e-6):
     return (x0, y0, z0, x1, y1, z1)
 
 
-def orientacion_tira(tira):
+def orientacion_tira(tira: Any) -> str:
     """Devuelve 'vertical' u 'horizontal' para una tira AABB."""
     if isinstance(tira, dict):
         pista = str(
@@ -94,7 +132,7 @@ def orientacion_tira(tira):
     return "vertical" if eje == "z" else "horizontal"
 
 
-def vector_anclaje_y(panel_real):
+def vector_anclaje_y(panel_real: Any) -> _Anclaje:
     """Vector de anclaje relativo en Y de la cara real del panel.
 
     El frente funcional VDO es Y-. El resultado nunca usa coordenadas
@@ -109,7 +147,8 @@ def vector_anclaje_y(panel_real):
     }
 
 
-def recortar_tira_contra_tira(perdedora, ganadora, tolerancia=1e-6):
+def recortar_tira_contra_tira(perdedora: Any, ganadora: Any,
+                              tolerancia: float = 1e-6) -> list[dict[str, float]]:
     """Parte la tira perdedora fuera del volumen de la tira ganadora.
 
     Devuelve una lista de AABB. En un cruce en T produce dos tramos; en
@@ -127,7 +166,7 @@ def recortar_tira_contra_tira(perdedora, ganadora, tolerancia=1e-6):
     fin = inicio + base[dim]
     corte_ini = inter[idx]
     corte_fin = inter[idx + 3]
-    tramos = []
+    tramos: list[dict[str, float]] = []
     if corte_ini > inicio + tolerancia:
         tramo = dict(base)
         tramo[dim] = corte_ini - inicio
@@ -140,7 +179,7 @@ def recortar_tira_contra_tira(perdedora, ganadora, tolerancia=1e-6):
     return tramos
 
 
-def _plan_inglete(a, b):
+def _plan_inglete(a: Any, b: Any) -> _PlanInglete | None:
     """Datos minimos para construir un bisel a 45 grados en Capa 2."""
     inter = _interseccion_aabb(a, b)
     if inter is None:
@@ -177,7 +216,7 @@ def _plan_inglete(a, b):
     }
 
 
-def _ganador_perdedor(prioridad, oa, ob):
+def _ganador_perdedor(prioridad: str, oa: str, ob: str) -> tuple[str, str]:
     """Tira ganadora y perdedora del encuentro segun prioridad y orientaciones."""
     if prioridad == "vertical_domina":
         if ob == "vertical" and oa != "vertical":
@@ -188,7 +227,7 @@ def _ganador_perdedor(prioridad, oa, ob):
     return "a", "b"
 
 
-def _recortes_interseccion(tira_a, tira_b):
+def _recortes_interseccion(tira_a: Any, tira_b: Any) -> list[dict[str, float]]:
     """Caja de interseccion de las dos tiras como lista de un recorte, o []."""
     inter = _interseccion_aabb(tira_a, tira_b)
     if inter is None:
@@ -201,7 +240,8 @@ def _recortes_interseccion(tira_a, tira_b):
     })]
 
 
-def resolver_encuentro_tiras(tira_a, tira_b, prioridad="vertical_domina"):
+def resolver_encuentro_tiras(tira_a: Any, tira_b: Any,
+                             prioridad: str = "vertical_domina") -> _ResultadoEncuentro:
     """Resuelve el encuentro entre dos tiras sin solape booleano.
 
     Devuelve las tiras resultantes ya segmentadas. En ``inglete_45``
@@ -210,7 +250,7 @@ def resolver_encuentro_tiras(tira_a, tira_b, prioridad="vertical_domina"):
     prioridad = _validar_enum(
         prioridad or "vertical_domina", "prioridad_encuentro_tiras",
         PRIORIDADES_ENCUENTRO)
-    resultado = {
+    resultado: _ResultadoEncuentro = {
         "colision": False,
         "modo": prioridad,
         "prioridad": prioridad,
