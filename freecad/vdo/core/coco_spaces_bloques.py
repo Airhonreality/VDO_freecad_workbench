@@ -159,27 +159,20 @@ def _frente_soportes(entries: list[dict[str, Any]], entry: dict[str, Any]) -> fl
     return frente
 
 
-def _ajustar_repisas(entries: list[dict[str, Any]], obstaculos: list[dict[str, Any]]) -> None:
-    """Retranquea las repisas (eje Y) contra las tiras verticales."""
-    verticales = _tiras_de(entries, "X")
+def _ajustar_piezas(
+    entries: list[dict[str, Any]], obstaculos: list[dict[str, Any]], eje: str,
+) -> None:
+    """Retranquea las piezas del eje dado contra las tiras del eje contrario.
+
+    Repisas (eje Y) chocan con tiras verticales (X); montantes (eje X), con
+    tiras horizontales (Y).
+    """
+    tiras = _tiras_de(entries, "Y" if eje == "X" else "X")
     for entry in entries:
-        if entry["pieza"].axis != "Y":
+        if entry["pieza"].axis != eje:
             continue
         ajustada, cortes = _aplicar_choques(
-            entry["caja_base"], obstaculos + verticales, es_vertical=False)
-        entry["caja"] = ajustada
-        entry["cortes"] = list(cortes)
-        _regenerar_tiras(entry)
-
-
-def _ajustar_montantes(entries: list[dict[str, Any]], obstaculos: list[dict[str, Any]]) -> None:
-    """Retranquea los montantes (eje X) contra las tiras horizontales."""
-    horizontales = _tiras_de(entries, "Y")
-    for entry in entries:
-        if entry["pieza"].axis != "X":
-            continue
-        ajustada, cortes = _aplicar_choques(
-            entry["caja_base"], obstaculos + horizontales, es_vertical=True)
+            entry["caja_base"], obstaculos + tiras, es_vertical=(eje == "X"))
         entry["caja"] = ajustada
         entry["cortes"] = list(cortes)
         _regenerar_tiras(entry)
@@ -204,8 +197,8 @@ def _iterar_punto_fijo(entries: list[dict[str, Any]], obstaculos: list[dict[str,
     """Itera repisas, montantes y contencion hasta estabilizar las cajas."""
     for _ in range(4):
         antes = [_huella_caja(entry["caja"]) for entry in entries]
-        _ajustar_repisas(entries, obstaculos)
-        _ajustar_montantes(entries, obstaculos)
+        _ajustar_piezas(entries, obstaculos, "Y")
+        _ajustar_piezas(entries, obstaculos, "X")
         _contener_repisas(entries)
         despues = [_huella_caja(entry["caja"]) for entry in entries]
         if antes == despues:
