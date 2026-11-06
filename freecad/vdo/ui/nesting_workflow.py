@@ -23,7 +23,7 @@ except ImportError:
     raise ImportError("Nesting Workbench no instalado") from None
 
 from freecad.vdo.core import nesting_presets as presets_mgr
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import qt, tema
 
 
 class NestingDialog(QtWidgets.QDialog):
@@ -130,19 +130,9 @@ class NestingDialog(QtWidgets.QDialog):
         layout.addWidget(group_algo)
 
     def _construir_botones(self, layout):
-        # === BOTONES ===
-        btn_layout = QtWidgets.QHBoxLayout()
-
-        btn_cancelar = QtWidgets.QPushButton("❌ Cancelar")
-        btn_cancelar.clicked.connect(self.reject)
-        btn_layout.addWidget(btn_cancelar)
-
-        btn_ejecutar = QtWidgets.QPushButton("▶️ Ejecutar Nesting")
-        tema.aplicar_estilo(btn_ejecutar, tema.ESTILO_BOTON_AZUL)
-        btn_ejecutar.clicked.connect(self.execute_nesting)
-        btn_layout.addWidget(btn_ejecutar)
-
-        layout.addLayout(btn_layout)
+        qt.crear_botonera_cancelar_aceptar(
+            layout, "❌ Cancelar", self.reject,
+            "▶️ Ejecutar Nesting", tema.ESTILO_BOTON_AZUL, self.execute_nesting)
 
     def _populate_presets(self):
         """Carga presets disponibles."""

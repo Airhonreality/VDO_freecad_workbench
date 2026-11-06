@@ -23,7 +23,7 @@ except ImportError:
 
 from freecad.vdo.core import manifest
 from freecad.vdo.qt_compat import QtCore, QtWidgets
-from freecad.vdo.ui import export_cutting_list, tema
+from freecad.vdo.ui import export_cutting_list, qt, tema
 
 _LOG = logging.getLogger(__name__)
 
@@ -121,19 +121,9 @@ class CuttingListPreviewPanel:
         layout.addSpacing(10)
 
     def _crear_botones(self, layout):
-        # Botones
-        btn_layout = QtWidgets.QHBoxLayout()
-
-        btn_cancelar = QtWidgets.QPushButton("❌ Cancelar")
-        btn_cancelar.clicked.connect(self.cancelar)
-        btn_layout.addWidget(btn_cancelar)
-
-        btn_aceptar = QtWidgets.QPushButton("✅ Aceptar - Generar CSV")
-        tema.aplicar_estilo(btn_aceptar, tema.ESTILO_BOTON_EXITO)
-        btn_aceptar.clicked.connect(self.aceptar)
-        btn_layout.addWidget(btn_aceptar)
-
-        layout.addLayout(btn_layout)
+        qt.crear_botonera_cancelar_aceptar(
+            layout, "❌ Cancelar", self.cancelar,
+            "✅ Aceptar - Generar CSV", tema.ESTILO_BOTON_EXITO, self.aceptar)
 
     def colorear_piezas(self):
         """Colorea en rojo las piezas que se van a exportar"""

@@ -7,7 +7,7 @@ de piezas de melamina antes de exportar el CSV.
 import FreeCAD as App
 
 from freecad.vdo.qt_compat import QtWidgets
-from freecad.vdo.ui import cutting_list_preview, tema
+from freecad.vdo.ui import cutting_list_preview, qt, tema
 
 
 def mostrar_menu():
@@ -84,19 +84,9 @@ def _agregar_info(layout):
 
 
 def _agregar_botones(dialog, layout):
-    # Botones
-    btn_layout = QtWidgets.QHBoxLayout()
-
-    btn_cancelar = QtWidgets.QPushButton("Cancelar")
-    btn_cancelar.clicked.connect(dialog.reject)
-    btn_layout.addWidget(btn_cancelar)
-
-    btn_ok = QtWidgets.QPushButton("Continuar →")
-    tema.aplicar_estilo(btn_ok, tema.ESTILO_BOTON_AZUL)
-    btn_ok.clicked.connect(dialog.accept)
-    btn_layout.addWidget(btn_ok)
-
-    layout.addLayout(btn_layout)
+    qt.crear_botonera_cancelar_aceptar(
+        layout, "Cancelar", dialog.reject,
+        "Continuar →", tema.ESTILO_BOTON_AZUL, dialog.accept)
 
 
 def abrir_lista_corte():

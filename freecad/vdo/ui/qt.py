@@ -7,6 +7,7 @@
 import logging
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui import tema
 
 _LOG = logging.getLogger(__name__)
 
@@ -18,6 +19,22 @@ def seleccionar_por_dato(combo, valor):
     idx = combo.findData(valor)
     if idx >= 0:
         combo.setCurrentIndex(idx)
+
+
+def crear_botonera_cancelar_aceptar(layout, texto_cancelar, al_cancelar,
+                                    texto_aceptar, estilo_aceptar, al_aceptar):
+    """Añade a `layout` una fila [Cancelar, Aceptar]; el botón de aceptar lleva `estilo_aceptar`."""
+    btn_layout = QtWidgets.QHBoxLayout()
+    btn_cancelar = QtWidgets.QPushButton(texto_cancelar)
+    btn_cancelar.clicked.connect(al_cancelar)
+    btn_layout.addWidget(btn_cancelar)
+
+    btn_aceptar = QtWidgets.QPushButton(texto_aceptar)
+    tema.aplicar_estilo(btn_aceptar, estilo_aceptar)
+    btn_aceptar.clicked.connect(al_aceptar)
+    btn_layout.addWidget(btn_aceptar)
+
+    layout.addLayout(btn_layout)
 
 
 class VDO_DoubleSpinBox(QDOUBLESPINBOX_BASE):
