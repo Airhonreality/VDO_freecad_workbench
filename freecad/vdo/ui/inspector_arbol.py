@@ -25,23 +25,7 @@ class ArbolInspectorMixin:
         raiz.setData(0, QtCore.Qt.UserRole, {"tipo": "coco", "obj": obj})
         self.master_tree.addTopLevelItem(raiz)
 
-        # Rama 1: Chasis y Envolvente
-        item_chasis = QtWidgets.QTreeWidgetItem(["🪵 Chasis y Envolvente"])
-        item_chasis.setData(0, QtCore.Qt.UserRole, {"tipo": "chasis", "obj": obj})
-        raiz.addChild(item_chasis)
-
-        caras_chasis = [
-            ("━━ Tapa Superior", "superior"),
-            ("━━ Base Inferior", "inferior"),
-            ("◀ Lateral Izquierdo", "izquierda"),
-            ("Lateral Derecho ▶", "derecha"),
-            ("▦ Fondo Trasero", "fondo"),
-            ("⌸ Zócalo Base", "zocalo"),
-        ]
-        for nom, face_id in caras_chasis:
-            it = QtWidgets.QTreeWidgetItem([nom])
-            it.setData(0, QtCore.Qt.UserRole, {"tipo": "chasis_face", "face": face_id})
-            item_chasis.addChild(it)
+        item_chasis = self._construir_rama_chasis(raiz, obj)
 
         # Rama 2: Piezas Físicas
         item_piezas = QtWidgets.QTreeWidgetItem(["🪵 Piezas Físicas"])
@@ -81,6 +65,26 @@ class ArbolInspectorMixin:
         item_chasis.setExpanded(True)
         item_vanos.setExpanded(True)
         self.master_tree.blockSignals(False)
+
+    def _construir_rama_chasis(self, raiz, obj):
+        # Rama 1: Chasis y Envolvente
+        item_chasis = QtWidgets.QTreeWidgetItem(["🪵 Chasis y Envolvente"])
+        item_chasis.setData(0, QtCore.Qt.UserRole, {"tipo": "chasis", "obj": obj})
+        raiz.addChild(item_chasis)
+
+        caras_chasis = [
+            ("━━ Tapa Superior", "superior"),
+            ("━━ Base Inferior", "inferior"),
+            ("◀ Lateral Izquierdo", "izquierda"),
+            ("Lateral Derecho ▶", "derecha"),
+            ("▦ Fondo Trasero", "fondo"),
+            ("⌸ Zócalo Base", "zocalo"),
+        ]
+        for nom, face_id in caras_chasis:
+            it = QtWidgets.QTreeWidgetItem([nom])
+            it.setData(0, QtCore.Qt.UserRole, {"tipo": "chasis_face", "face": face_id})
+            item_chasis.addChild(it)
+        return item_chasis
 
     def _on_tree_item_clicked(self, item, column):
         data = item.data(0, QtCore.Qt.UserRole)
