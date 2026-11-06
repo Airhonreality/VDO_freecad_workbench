@@ -391,3 +391,8 @@ $ minimalismo.py fachadas   -> 0
 - **D-19:** el gate de literales cubre el paquete de primer nivel (`commands.py`, `Init.py`, `InitGui.py`). No cubre `tools/` ni `tests/`. Razón: D-16 exige 0 en el paquete; `tools/` y `tests/` usan literales a propósito.
 - **D-20:** se elimina el alias de reexportación `APERTURA_DESCUENTO_ALTO` en `vdo_puerta_despiece.py`. Sin usos externos.
 - **D-21:** M4.3 `generar_tiras_perimetrales` se reescribe como tabla de lados y reglas. Gates: goldens reengrose y zocalo_core OK; equivalencia exacta 20000/20000 con script fuera del repo. **El gate "ramas baja en 1" NO se cumple:** la función nunca contó en el auditor (su cadena if/elif máxima era de 3 ramas). Se acepta porque el criterio real del plan es comportamiento congelado, no la cifra del auditor. Revertir: `git revert e28e5e0`.
+
+## D-22 (ola 6)
+
+- **D-22:** se eliminan los stubs `app/casos_uso/exportar_lista_corte.py` y `app/casos_uso/recargar_catalogo.py` (sin lógica). La regla R4 de tools/auditoria/verificar.py exige su existencia y pasará a FALLO. Razón: MN-01 elimina app/, y el plan §5 declara que verificar.py es solo referencia; el cierre de fase se decide con minimalismo.py. Revertir: git revert del commit de T2.
+
