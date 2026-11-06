@@ -479,3 +479,8 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 ## D-42
 
 - **D-42:** el bloque QT_QPA_PLATFORM (copiado en 7 archivos) pasa a freecad/vdo/__init__.py (P1). Motivo: debe ejecutarse antes de cualquier import Qt del paquete.
+
+## D-43
+
+- **D-43:** M7 ui/vdo_coco_unified_task partido por concepto. Verificación visual pendiente (M10).
+- Decisión de implementación: la clase `CocoUnifiedTaskPanel` se reparte en mixins por concepto (`coco_unified_construccion`, `coco_unified_pestanas`, `coco_unified_valores`, `coco_unified_celdas`, `coco_unified_espacios`, `coco_unified_aplicar`), sin cambios de código en los métodos. La tabla de espacios (constantes, `EspacioRow`, `SpacesTableWidget`) va a `coco_unified_tabla`. El original queda como clase raíz con `__init__` (menos de 400 líneas), sin reexportaciones (P6); sus consumidores no cambian.

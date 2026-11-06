@@ -5,9 +5,7 @@
 # =====================================================================
 
 import json
-
 import FreeCAD as App
-import FreeCADGui as Gui
 
 from freecad.vdo.cad.colocacion import aplicar_rotacion
 from freecad.vdo.cad.documento import (
@@ -23,8 +21,6 @@ from freecad.vdo.cad.propiedades import (
     asignar_propiedades,
 )
 from freecad.vdo.core import vdo_frames as VDO_FR
-from freecad.vdo.core import vdo_module_props
-from freecad.vdo.cad.cajon import make_cajon
 from freecad.vdo.core.vdo_facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
@@ -37,35 +33,29 @@ from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_LABELS,
     ANCLAJES,
 )
-from freecad.vdo.cad.puerta import make_puerta
 from freecad.vdo.core.vdo_spaces import (
     ESPACIO_FIJO,
     ESPACIO_IGUALES,
     ESPACIO_RESTANTE,
     SpaceNode,
-    calcular_espacio_libre,
-    deserializar_espacios,
-    serializar_espacios,
 )
 from freecad.vdo.datos.valores import BLUM_TANDEM
-from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.qt_compat import QtCore, QtWidgets
 from freecad.vdo.ui.vdo_chassis_widget import VDOChassisControllerWidget
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
 from freecad.vdo.ui.coco_construccion_widgets import DivisionesEditor
+from freecad.vdo.ui.coco_unified_tabla import (
+    COL_ACCIONES,
+    COL_RESUMEN,
+    COL_TIPO,
+    COL_VALOR,
+    EspacioRow,
+    ROLE_NODE_ID,
+    SpacesTableWidget,
+    TIPOS_LABELS,
+)
 
-COL_TIPO = 0
-COL_VALOR = 1
-COL_RESUMEN = 2
-COL_ACCIONES = 3
-
-ROLE_NODE_ID = QtCore.Qt.UserRole + 1
-
-TIPOS_LABELS = {
-    ESPACIO_FIJO: "Fijo (mm)",
-    ESPACIO_RESTANTE: "Restante",
-    ESPACIO_IGUALES: "Iguales (N partes)",
-}
 
 LADOS_EXPOSICION = (
     (VDO_FR.FRENTE, "Frente"),
@@ -75,7 +65,6 @@ LADOS_EXPOSICION = (
     (VDO_FR.SUPERIOR, "Superior"),
     (VDO_FR.INFERIOR, "Inferior"),
 )
-
 ESTADOS_EXPOSICION = (
     ("oculto", "Oculto"),
     ("visto", "Visto"),
@@ -83,87 +72,9 @@ ESTADOS_EXPOSICION = (
 )
 
 
-class EspacioRow:
-    """Representa una fila visual en la tabla de espacios."""
-
-    def __init__(self, node=None, depth=0):
-        self.node = node or SpaceNode(space_type=ESPACIO_RESTANTE)
-        self.depth = depth
-        self.children_rows = []
-
-
-class SpacesTableWidget(QtWidgets.QTableWidget):
-    """QTableWidget con reordenamiento basado en modelo.
-
-    No mueve filas por sí mismo: calcula el nuevo orden de nodos y delega
-    en el panel, que reconstruye la tabla desde el modelo.
-    """
-
-    def __init__(self, parent=None, reorder_callback=None):
-        super().__init__(parent)
-        self.reorder_callback = reorder_callback
-        self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
-        self.setDragEnabled(True)
-        self.setAcceptDrops(True)
-        self.setDropIndicatorShown(True)
-        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-        self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
-        self.setColumnCount(4)
-        self.setHorizontalHeaderLabels(
-            ["Tipo", "Valor", "Resultado", "Acciones"])
-        header = self.horizontalHeader()
-        header.setResizeMode(COL_TIPO, QtWidgets.QHeaderView.ResizeToContents)
-        header.setResizeMode(COL_VALOR, QtWidgets.QHeaderView.Stretch)
-        header.setResizeMode(COL_RESUMEN, QtWidgets.QHeaderView.Stretch)
-        header.setResizeMode(COL_ACCIONES, QtWidgets.QHeaderView.ResizeToContents)
-        self.verticalHeader().setVisible(False)
-        self.setAlternatingRowColors(True)
-
-    def _ids_actuales(self):
-        ids = []
-        for row in range(self.rowCount()):
-            item = self.item(row, COL_TIPO)
-            node_id = item.data(ROLE_NODE_ID) if item else None
-            ids.append(node_id)
-        return ids
-
-    def dropEvent(self, event):
-        if event.source() is not self or self.reorder_callback is None:
-            super().dropEvent(event)
-            return
-
-        ids = self._ids_actuales()
-        selected_rows = sorted(
-            set(idx.row() for idx in self.selectedIndexes()))
-        if not selected_rows:
-            event.ignore()
-            return
-
-        drop_index = self.indexAt(event.pos())
-        drop_row = None
-        if drop_index.isValid():
-            pos = self.dropIndicatorPosition()
-            if pos == QtWidgets.QAbstractItemView.AboveItem:
-                drop_row = drop_index.row()
-            elif pos in (QtWidgets.QAbstractItemView.BelowItem,
-                         QtWidgets.QAbstractItemView.OnItem):
-                drop_row = drop_index.row() + 1
-        if drop_row is None:
-            drop_row = self.rowCount()
-
-        moving = [ids[r] for r in selected_rows]
-        rest = [node_id for i, node_id in enumerate(ids)
-                if i not in selected_rows]
-        insert_at = drop_row - sum(1 for r in selected_rows if r < drop_row)
-        insert_at = max(0, min(insert_at, len(rest)))
-        new_ids = rest[:insert_at] + moving + rest[insert_at:]
-
-        event.setDropAction(QtCore.Qt.MoveAction)
-        event.accept()
-        self.reorder_callback(new_ids)
-
-
-class CocoUnifiedTaskPanel(VDOTransactionMixin):
+class CocoUnifiedTaskPanel(
+    VDOTransactionMixin,
+):
     """Task Panel UNIFICADO: Medidas + Estructura + Divisiones + Colocación."""
 
     def __init__(self, obj=None, on_accept=None, on_cancel=None,
@@ -200,9 +111,6 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                 ).VDO_Contenido_JSON = "{}"
             self._cargar_valores(obj)
 
-    # =================================================================
-    # Construcción de UI
-    # =================================================================
     def _crear_widget(self):
         widget = QtWidgets.QWidget()
         main_layout = QtWidgets.QVBoxLayout(widget)
@@ -556,9 +464,6 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
 
         return group
 
-    # =================================================================
-    # Carga de datos
-    # =================================================================
     def _cargar_valores(self, obj):
         """Carga todas las propiedades del objeto en el panel."""
         self._building = True
@@ -642,9 +547,6 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
         ]
         return row
 
-    # =================================================================
-    # Acceso al modelo visual
-    # =================================================================
     def _get_rows(self, axis):
         return self._rows_x if axis == "X" else self._rows_y
 
@@ -680,9 +582,6 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                 partes.append(str(row.node.space_id))
         return " → ".join(partes)
 
-    # =================================================================
-    # Pintado
-    # =================================================================
     def _refrescar_tabla(self, axis):
         table = self._get_table(axis)
         rows = self._get_rows(axis)
@@ -741,9 +640,6 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
 
         table.setCellWidget(row_idx, COL_ACCIONES, widget_acciones)
 
-    # =================================================================
-    # Edición de celdas
-    # =================================================================
     def _on_medida_changed(self, *args):
         if self._building:
             return
@@ -790,9 +686,6 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
         self._aplicar_valor(
             self._get_hijo_widgets(axis)[3], row, col, axis, path)
 
-    # =================================================================
-    # Operaciones sobre la tabla principal
-    # =================================================================
     def _agregar_espacio(self, axis):
         rows = self._get_rows(axis)
         n = len(rows)
@@ -858,9 +751,6 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
             return
         self._abrir_hijos(axis, [selected[0].row()])
 
-    # =================================================================
-    # Sub-panel recursivo
-    # =================================================================
     def _eje_hijos_label(self, axis, depth):
         """Etiqueta física del eje de los hijos según alternancia."""
         if axis == "X":
@@ -964,9 +854,6 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
         self._refrescar_tabla(axis)
         self._actualizar_resumen()
 
-    # =================================================================
-    # Reordenamiento
-    # =================================================================
     def _reordenar_por_ids(self, rows, ordered_ids):
         por_id = {id(row.node): row for row in rows}
         nuevas = [por_id[nid] for nid in ordered_ids if nid in por_id]
@@ -991,9 +878,6 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
         self._abrir_hijos(axis, path)
         self._actualizar_resumen()
 
-    # =================================================================
-    # Resumen
-    # =================================================================
     def _leer_valores_ui(self):
         cfg = self.box_chassis.getChassisConfig() if hasattr(self, "box_chassis") and self.box_chassis else {}
         enc_sup = cfg.get("encuentros", {}).get("superior_izq", "tapa_domina")
@@ -1026,9 +910,6 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
                       "antes de aplicar.")
         self.lbl_resumen.setText(texto)
 
-    # =================================================================
-    # Aceptar / cancelar
-    # =================================================================
     def _on_ok(self):
         if self.accept():
             cerrar_dialogo()
@@ -1037,9 +918,6 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
         self.reject()
         cerrar_dialogo()
 
-    # =================================================================
-    # Construcción de insertos (solo al aceptar - ciclo transaccional)
-    # =================================================================
     def _construir_insertos(self, coco_obj):
         """Crea o actualiza los objetos hijos (puertas, cajones) del COCO.
 
@@ -1323,5 +1201,3 @@ class CocoUnifiedTaskPanel(VDOTransactionMixin):
             import traceback
             App.Console.PrintError(traceback.format_exc())
             return False
-
-
