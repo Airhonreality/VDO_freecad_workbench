@@ -1,0 +1,394 @@
+"""Arbol de la matriz COCO: reconstruccion, pintado de vanos y estructura, items de piezas.
+
+Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
+
+import FreeCAD as App
+
+from freecad.vdo.core import (
+    vdo_finish as VDO_FIN,
+    vdo_frames as VDO_FR,
+    vdo_reengrose_despiece as VDO_RE_DESPIECE,
+    vdo_reengrose_geometria as VDO_RE_GEOMETRIA,
+    vdo_reengrose_modificador as VDO_RE_MODIFICADOR,
+)
+from freecad.vdo.core.vdo_layout_modelo import AXIS_X, AXIS_Y
+from freecad.vdo.core.vdo_layout_resolucion import resolve_layout
+from freecad.vdo.datos.valores import TIRADOR
+from freecad.vdo.qt_compat import QtCore, QtWidgets
+
+
+ROLE_DATA = QtCore.Qt.UserRole + 1
+ROLE_KIND = QtCore.Qt.UserRole + 2
+ROLE_KEY = QtCore.Qt.UserRole + 3
+
+
+class ArbolDivisionesMixin:
+    """Mixin de DivisionesEditor (ver coco_construccion_widgets.py)."""
+
+    # -----------------------------------------------------------------
+    # Resolución y árbol
+    # -----------------------------------------------------------------
+    def _rebuild(self):
+        if self.inner_w <= 0 or self.inner_h <= 0:
+            self._resolved = resolve_layout(
+                self.layout, max(0.0, self.inner_w),
+                max(0.0, self.inner_h), self.thickness,
+                reengroses=self.reengroses)
+        else:
+            self._resolved = resolve_layout(
+                self.layout, self.inner_w, self.inner_h, self.thickness,
+                reengroses=self.reengroses)
+        self._resolved_map = {
+            cell.label: cell for cell in self._resolved.walk_cells()
+        }
+        self._items_by_label = {}
+        self._items_by_key = {}
+        # Mapeo label de celda -> (col, row) para el preview 2D
+        self._label_to_colrow = {}
+        for j, _row in enumerate(self._resolved.rows):
+            for i, _col in enumerate(self._resolved.columns):
+                cell = self.layout.get_cell(i, j)
+                if cell is not None:
+                    resuelto = self._resolved_map.get(cell.label)
+                    if resuelto is not None:
+                        self._label_to_colrow[resuelto.label] = (i, j)
+        self._pintar_arbol()
+        self.preview.set_layout(
+            self._resolved, self.outer_w, self.outer_h,
+            selected=self._label_seleccionado(),
+            reengroses=self.reengroses,
+            entities=self._piezas_fisicas(),
+            fondo=self._fondo,
+            contenido_por_celda=self._contenido_por_celda,
+            label_to_colrow=self._label_to_colrow)
+        self.lbl_resumen.setText(self.resumen())
+        self._poblar_elementos_reengrose()
+        self._restaurar_seleccion()
+
+    def _on_modo_changed(self, index):
+        if self._building:
+            return
+        modo = "vanos" if index == 0 else "estructura"
+        if modo == self.mode:
+            return
+        self.mode = modo
+        if modo == "vanos":
+            self._selected_key = (
+                "cell", self.layout.columns[0].id,
+                self.layout.rows[0].id)
+        else:
+            piezas = self._piezas_fisicas()
+            self._selected_key = (
+                ("piece", piezas[0]["key"]) if piezas
+                else ("cell", self.layout.columns[0].id,
+                      self.layout.rows[0].id))
+        self._selected_data = None
+        self._rebuild()
+
+    def _pintar_arbol(self):
+        self.tree.blockSignals(True)
+        self.tree.clear()
+        if self.mode == "estructura":
+            self.tree.setHeaderLabels(
+                ["Pieza", "Largo", "Ancho", "Espesor"])
+            self._pintar_estructura()
+        else:
+            self.tree.setHeaderLabels(
+                ["Vano", "X libre", "Y libre", "Subdivisión"])
+            self._pintar_vanos()
+        self.tree.expandAll()
+        self.tree.blockSignals(False)
+
+    def _pintar_vanos(self):
+        root = QtWidgets.QTreeWidgetItem([
+            f"COCO — Matriz {len(self.layout.columns)} × "
+            f"{len(self.layout.rows)}", "", "", ""])
+        root.setFlags(root.flags() & ~QtCore.Qt.ItemIsSelectable)
+        self.tree.addTopLevelItem(root)
+
+        for j, row in enumerate(self._resolved.rows):
+            row_item = QtWidgets.QTreeWidgetItem([
+                f"Y{j + 1}", "", f"{row.size:.1f}",
+                "fijo" if row.fixed is not None else "libre"])
+            row_item.setData(0, ROLE_DATA, {
+                "kind": "row", "row_index": j, "row": row})
+            row_item.setToolTip(
+                0, f"Fila Y{j + 1}: alto libre {row.size:.1f} mm")
+            root.addChild(row_item)
+            self._items_by_key[("row", j)] = row_item
+
+            for i, _col in enumerate(self._resolved.columns):
+                cell = self.layout.get_cell(i, j)
+                resuelto = self._resolved_map.get(cell.label) if cell else None
+                if resuelto is None:
+                    continue
+                item = self._crear_item_celda(
+                    resuelto, row_item, kind="cell",
+                    col_index=i, row_index=j, parent_axis=None)
+                self._items_by_key[
+                    ("cell", self.layout.columns[i].id,
+                     self.layout.rows[j].id)] = item
+
+                # Hijos del vano: puertas, cajones, torres
+                contenido = self._contenido_por_celda.get((i, j))
+                if contenido:
+                    tipo = contenido.get("tipo", "vacio")
+                    if tipo == "puerta":
+                        cfg = contenido.get("config", {})
+                        cfg.get("nombre", f"Puerta_{cell.label}")
+                        montaje = cfg.get("tipo_montaje", "Parche")
+                        apertura = cfg.get("sistema_apertura", TIRADOR)
+                        child = QtWidgets.QTreeWidgetItem([
+                            f"🚪 Puerta ({montaje} · {apertura})", "", "", ""])
+                        child.setData(0, ROLE_DATA, {
+                            "kind": "contenido_hijo",
+                            "tipo": "puerta",
+                            "celda": (i, j),
+                            "config": cfg,
+                        })
+                        item.addChild(child)
+                    elif tipo == "cajon":
+                        cfg = contenido.get("config", {})
+                        cantidad = cfg.get("cantidad", 1)
+                        corredera = cfg.get("corredera", "Oculta")
+                        apertura = cfg.get("apertura", "Tirador")
+                        child = QtWidgets.QTreeWidgetItem([
+                            f"🗄️ Cajón ×{cantidad} ({corredera} · {apertura})",
+                            "", "", ""])
+                        child.setData(0, ROLE_DATA, {
+                            "kind": "contenido_hijo",
+                            "tipo": "cajon",
+                            "celda": (i, j),
+                            "config": cfg,
+                        })
+                        item.addChild(child)
+
+        for pieza in self._piezas_fisicas():
+            item = QtWidgets.QTreeWidgetItem([
+                pieza["nombre"], "", "", ""])
+            item.setData(0, ROLE_DATA, {
+                "kind": "elemento_reengrose",
+                "clave": pieza["key"],
+                "pieza": pieza,
+            })
+            item.setHidden(True)
+            root.addChild(item)
+            self._items_by_key[("elemento", pieza["key"])] = item
+
+    def _pintar_estructura(self):
+        root = QtWidgets.QTreeWidgetItem([
+            "COCO — Estructura física", "", "", ""])
+        root.setFlags(root.flags() & ~QtCore.Qt.ItemIsSelectable)
+        self.tree.addTopLevelItem(root)
+
+        grupos = (
+            ("Horizontales", "horizontal"),
+            ("Verticales", "vertical"),
+        )
+        piezas = self._piezas_fisicas()
+        for titulo, grupo in grupos:
+            grupo_item = QtWidgets.QTreeWidgetItem([
+                f"▾ {titulo}", "", "", ""])
+            grupo_item.setFlags(
+                grupo_item.flags() & ~QtCore.Qt.ItemIsSelectable)
+            root.addChild(grupo_item)
+            for pieza in piezas:
+                if pieza["grupo"] != grupo:
+                    continue
+                item = self._crear_item_pieza(pieza, grupo_item)
+                self._items_by_key[("piece", pieza["key"])] = item
+                self._items_by_key[("elemento", pieza["key"])] = item
+                if pieza["key"] in self.reengroses:
+                    self._crear_item_reengrose(pieza, item)
+
+    def _crear_item_pieza(self, pieza, parent):
+        item = QtWidgets.QTreeWidgetItem([
+            pieza["nombre"],
+            f"{pieza['largo']:.1f}",
+            f"{pieza['ancho']:.1f}",
+            f"{pieza['espesor']:.1f}",
+        ])
+        item.setData(0, ROLE_DATA, {
+            "kind": "piece",
+            "clave": pieza["key"],
+            "pieza": pieza,
+        })
+        item.setToolTip(
+            0, f"{pieza['nombre']}\n"
+               f"{pieza['largo']:.1f} × {pieza['ancho']:.1f} × "
+               f"{pieza['espesor']:.1f} mm")
+        parent.addChild(item)
+        return item
+
+    def _crear_item_reengrose(self, pieza, parent):
+        item = QtWidgets.QTreeWidgetItem([
+            "🪵 Reengrose · tira", "", "", ""])
+        item.setData(0, ROLE_DATA, {
+            "kind": "reengrose_piece",
+            "clave": pieza["key"],
+            "pieza": pieza,
+        })
+        item.setToolTip(
+            0, f"Tira de reengrose de {pieza['nombre']}")
+        parent.addChild(item)
+        self._items_by_key[("reengrose", pieza["key"])] = item
+        return item
+    def _vistos(self):
+        if self._obj is not None:
+            try:
+                vistos, _apoyados = VDO_FR.cargar_exposicion(self._obj)
+                if vistos:
+                    return list(vistos)
+            except Exception:
+                App.Console.PrintWarning(
+                    "[VDO] No se pudo leer la exposición del objeto")
+        return [VDO_FR.FRENTE]
+
+    def _cantos_pieza(self, rol, clave=None, es_reengrose=False):
+        try:
+            cantos = VDO_FIN.cantos_para_rol(
+                rol, self._vistos(), tapa=self._tapa, base=self._base)
+        except Exception:
+            cantos = {borde: "FX" for borde in VDO_FIN.BORDES}
+        if es_reengrose and clave:
+            datos = self.reengroses.get(clave)
+            if datos:
+                try:
+                    mod = VDO_RE_MODIFICADOR.ReengroseModifier(datos)
+                    plan = VDO_RE_DESPIECE.resolver_politica_cantos(
+                        {"cantos": cantos}, mod)
+                    cantos = (
+                        plan.get("tira") or plan.get("bloque") or cantos)
+                except Exception:
+                    App.Console.PrintWarning(
+                        "[VDO] No se pudo resolver la política de cantos")
+        return cantos
+
+    def _piezas_fisicas(self):
+        """Registro 2D de piezas físicas para árbol, header y preview."""
+        t = float(self.thickness)
+        outer_w = float(self.outer_w)
+        outer_h = float(self.outer_h)
+        fondo = float(self._fondo)
+        inner_w = float(self.inner_w)
+        inner_h = float(self.inner_h)
+        lat_h = outer_h
+        if self._tapa == "externo":
+            lat_h -= t
+        if self._base == "externo":
+            lat_h -= t
+        base_len = outer_w if self._base == "externo" else max(
+            0.0, outer_w - 2.0 * t)
+        techo_len = outer_w if self._tapa == "externo" else max(
+            0.0, outer_w - 2.0 * t)
+
+        piezas = []
+
+        def agregar(clave, nombre, grupo, rol, largo, ancho, espesor,
+                    caja, ejes):
+            piezas.append({
+                "key": clave,
+                "nombre": nombre,
+                "grupo": grupo,
+                "rol": rol,
+                "largo": float(largo),
+                "ancho": float(ancho),
+                "espesor": float(espesor),
+                "caja": caja,
+                "ejes": ejes,
+                "cantos": self._cantos_pieza(rol, clave, False),
+            })
+
+        agregar(
+            "base", "Base", "horizontal", "base",
+            base_len, fondo, t,
+            {"nombre": "Base", "x": 0.0, "y": 0.0, "z": 0.0,
+             "w": inner_w, "h": fondo, "d": t},
+            {"largo": "x", "ancho": "y", "espesor": "z"})
+        agregar(
+            "techo", "Techo", "horizontal", "techo",
+            techo_len, fondo, t,
+            {"nombre": "Techo", "x": 0.0, "y": 0.0, "z": inner_h,
+             "w": inner_w, "h": fondo, "d": t},
+            {"largo": "x", "ancho": "y", "espesor": "z"})
+
+        agregar(
+            "lateral_izquierdo", "Lateral Izq", "vertical",
+            "lateral_izquierdo", fondo, lat_h, t,
+            {"nombre": "Lateral Izq", "x": 0.0, "y": 0.0, "z": 0.0,
+             "w": t, "h": fondo, "d": inner_h},
+            {"largo": "z", "ancho": "y", "espesor": "x"})
+        agregar(
+            "lateral_derecho", "Lateral Der", "vertical",
+            "lateral_derecho", fondo, lat_h, t,
+            {"nombre": "Lateral Der", "x": max(0.0, inner_w - t),
+             "y": 0.0, "z": 0.0, "w": t, "h": fondo, "d": inner_h},
+            {"largo": "z", "ancho": "y", "espesor": "x"})
+        if self._tiene_fondo:
+            agregar(
+                "fondo", "Fondo", "vertical", "fondo",
+                inner_w, inner_h, t,
+                {"nombre": "Fondo", "x": 0.0, "y": max(0.0, fondo - t),
+                 "z": 0.0, "w": inner_w, "h": t, "d": inner_h},
+                {"largo": "x", "ancho": "z", "espesor": "y"})
+
+        h_seq = 0
+        v_seq = 0
+        for pieza in (self._resolved.pieces if self._resolved else []):
+            clave = (
+                f"division_x:{pieza.path}" if pieza.axis == AXIS_X
+                else f"division_y:{pieza.path}")
+            if pieza.axis == AXIS_Y:
+                h_seq += 1
+                nombre = f"H{h_seq} · {pieza.nombre}"
+                agregar(
+                    clave, nombre, "horizontal", "division_y",
+                    pieza.w, fondo, t,
+                    {"nombre": pieza.nombre, "x": pieza.x, "y": 0.0,
+                     "z": pieza.z, "w": pieza.w, "h": fondo, "d": t},
+                    {"largo": "x", "ancho": "y", "espesor": "z"})
+            else:
+                v_seq += 1
+                nombre = f"V{v_seq} · {pieza.nombre}"
+                agregar(
+                    clave, nombre, "vertical", "division_x",
+                    fondo, pieza.h, t,
+                    {"nombre": pieza.nombre, "x": pieza.x, "y": 0.0,
+                     "z": pieza.z, "w": t, "h": fondo, "d": pieza.h},
+                    {"largo": "z", "ancho": "y", "espesor": "x"})
+        return piezas
+
+    def _pieza_por_clave(self, clave):
+        for pieza in self._piezas_fisicas():
+            if pieza["key"] == clave:
+                return pieza
+        return None
+
+    def _reengroses_invasores(self, resuelto):
+        if resuelto is None:
+            return []
+        x0, z0 = resuelto.nominal_x, resuelto.nominal_z
+        x1 = x0 + resuelto.nominal_w
+        z1 = z0 + resuelto.nominal_h
+        invasores = []
+        for clave, datos in self.reengroses.items():
+            if not datos:
+                continue
+            pieza = self._pieza_por_clave(clave)
+            if pieza is None:
+                continue
+            try:
+                mod = VDO_RE_MODIFICADOR.ReengroseModifier(datos)
+                geo = VDO_RE_GEOMETRIA.calcular_geometria_caja(
+                    pieza["caja"], mod, pieza["ejes"])
+            except Exception:
+                continue
+            for ref in geo.get("refuerzos") or []:
+                rx0, rz0 = float(ref["x"]), float(ref["z"])
+                rx1 = rx0 + float(ref["w"])
+                rz1 = rz0 + float(ref["d"])
+                if (min(x1, rx1) - max(x0, rx0) > 1e-6
+                        and min(z1, rz1) - max(z0, rz0) > 1e-6):
+                    invasores.append(pieza["nombre"])
+                    break
+        return invasores
