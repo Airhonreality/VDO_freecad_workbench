@@ -61,9 +61,12 @@ def _tiene_import_prohibido(src: str, prohibidos: tuple[str, ...]) -> bool:
 
 
 def _tiene_escritura_freecad(src: str) -> bool:
-    """Detecta asignaciones a objetos FreeCAD o llamadas addObject/recompute."""
+    """Detecta escrituras en FreeCAD (D-33): crear/borrar objetos, recompute,
+    addProperty y asignaciones a propiedades o placement. Las lecturas
+    (App.Console, App.ActiveDocument, Part.*) no cuentan."""
     patrones = (
-        ".addObject(", ".recompute()", ".recompute (",
+        ".addObject(", ".removeObject(", ".recompute()", ".recompute (",
+        ".addProperty(",
     )
     for pat in patrones:
         if pat in src:
@@ -79,11 +82,7 @@ def _tiene_escritura_freecad(src: str) -> bool:
             # Solo cuenta si es asignación (target de Assign)
             pass
     import re
-    if re.search(r"\.(Ancho|Alto|Largo|Espesor|LocalPlacement|Placement)\s*=[^=]", src):
-        return True
-    if re.search(r"\bApp\.\w+", src):
-        return True
-    return bool(re.search(r"\bPart\.\w+", src))
+    return bool(re.search(r"\.(Ancho|Alto|Largo|Espesor|LocalPlacement|Placement)\s*=[^=]", src))
 
 
 class CapasTests(unittest.TestCase):
