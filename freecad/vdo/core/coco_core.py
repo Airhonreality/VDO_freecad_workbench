@@ -5,6 +5,10 @@
 # =====================================================================
 
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 from freecad.vdo.core import reengrose_despiece as VDO_RE_DESPIECE
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
@@ -19,7 +23,8 @@ def _modificador_mapa(mapa, clave):
         return VDO_RE_MODIFICADOR.ReengroseModifier()
     try:
         return VDO_RE_MODIFICADOR.ReengroseModifier(datos)
-    except VDO_RE_MODELO.ReengroseError:
+    except VDO_RE_MODELO.ReengroseError as exc:
+        _LOG.warning("coco_core: reengrose invalido, usa modificador vacio: %s", exc)
         return VDO_RE_MODIFICADOR.ReengroseModifier()
 
 

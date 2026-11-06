@@ -1,5 +1,9 @@
 """Modificador de reengrose: normalizacion de entrada, espesor efectivo y lectura/escritura en el objeto."""
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import json
 
 from freecad.vdo.core.reengrose_modelo import (
@@ -348,7 +352,8 @@ def desde_objeto(obj):
     if texto:
         try:
             guardado = json.loads(texto)
-        except (TypeError, ValueError):
+        except (TypeError, ValueError) as exc:
+            _LOG.warning("reengrose_modificador: estado guardado no valido: %s", exc)
             guardado = None
     if (guardado is not None
             and isinstance(guardado, dict)
@@ -385,6 +390,7 @@ def leer_reengroses(obj) -> dict:
     texto = getattr(obj, "VDO_Reengrose_JSON", "") or "{}"
     try:
         datos = json.loads(texto) if isinstance(texto, str) else dict(texto)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError) as exc:
+        _LOG.warning("reengrose_modificador: reengroses no leidos, usa vacio: %s", exc)
         return {}
     return datos if isinstance(datos, dict) else {}

@@ -10,6 +10,10 @@
 # en la próxima fase de saneamiento.
 # =====================================================================
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import json
 
 # --- Constantes de tipos de espacio ---
@@ -93,7 +97,8 @@ def deserializar_espacios(json_str):
     try:
         data = json.loads(json_str)
         return [SpaceNode.from_dict(d) for d in data]
-    except (json.JSONDecodeError, TypeError):
+    except (json.JSONDecodeError, TypeError) as exc:
+        _LOG.warning("spaces: JSON de espacios no valido, usa lista vacia: %s", exc)
         return []
 
 

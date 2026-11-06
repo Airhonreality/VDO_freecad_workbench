@@ -7,6 +7,10 @@ o se inyecta como parámetro.
 
 from __future__ import annotations
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import json
 import os
 
@@ -14,7 +18,8 @@ from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 
 try:
     _HERE = os.path.dirname(os.path.abspath(__file__))
-except NameError:
+except NameError as exc:
+    _LOG.debug("hardware_hub: __file__ no disponible, usa cwd: %s", exc)
     _HERE = os.getcwd()
 CATALOGO_PATH = os.path.join(_HERE, "vdo_hardware_catalog.json")
 
@@ -138,7 +143,8 @@ def resolve_hinge(tipo_montaje, prefer_sku=None, catalogo=None):
         hw = None
         try:
             hw = get_hardware(prefer_sku, catalogo)
-        except KeyError:
+        except KeyError as exc:
+            _LOG.debug("hardware_hub: herraje no encontrado: %s", exc)
             hw = None
         if hw is not None:
             return hw
@@ -170,7 +176,8 @@ def _herraje_compatible(sku, tipo, catalogo):
     """Herraje del SKU si existe y su tipo_corredera es compatible; si no, None."""
     try:
         hw = get_hardware(sku, catalogo)
-    except KeyError:
+    except KeyError as exc:
+        _LOG.debug("hardware_hub: herraje sin datos de corredera: %s", exc)
         return None
     if hw is not None and hw["parametros_tecnicos"].get("tipo_corredera") in (tipo, None, ""):
         return hw
@@ -182,7 +189,8 @@ def _herraje_por_familia(tipo, marca, catalogo):
     familia = "corredera_oculta" if tipo == OCULTA else "corredera_telescopica"
     try:
         familia_skus = get_family(familia, catalogo)
-    except KeyError:
+    except KeyError as exc:
+        _LOG.debug("hardware_hub: familia de herrajes no encontrada: %s", exc)
         familia_skus = {}
     if marca.lower() in {s.lower() for s in familia_skus}:
         for sku_cand in familia_skus:

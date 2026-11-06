@@ -1,5 +1,9 @@
 """Matriz de vanos (Layout): construcción, edición, serialización y migración legacy."""
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import json
 
 from freecad.vdo.core.layout_modelo import (
@@ -127,7 +131,8 @@ class Layout:
         try:
             data = json.loads(texto)
             return cls.from_dict(data)
-        except (TypeError, ValueError, KeyError, AttributeError):
+        except (TypeError, ValueError, KeyError, AttributeError) as exc:
+            _LOG.warning("layout_matriz: datos no validos, usa matriz por defecto: %s", exc)
             return cls()
 
     def copy(self):
@@ -291,7 +296,8 @@ def _legacy_tracks(texto, eje, warnings):
             data = json.loads(texto)
             if isinstance(data, list):
                 nodos = data
-        except (TypeError, ValueError):
+        except (TypeError, ValueError) as exc:
+            _LOG.warning("layout_matriz: JSON legacy de eje invalido: %s", exc)
             warnings.append(f"JSON legacy de {eje} inválido.")
 
     tracks = []

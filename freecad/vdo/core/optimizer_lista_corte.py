@@ -1,5 +1,9 @@
 """Lista de corte: lectura del CSV de vdo_cutting_list y expansión a piezas unitarias."""
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 import csv
 
 from freecad.vdo.core import defaults as _VDO_D
@@ -34,7 +38,8 @@ def read_cutting_csv(path):
                 width = float(row[1])
                 thickness = float(row[2])
                 qty = int(float(row[3])) if row[3].strip() else 1
-            except (ValueError, IndexError):
+            except (ValueError, IndexError) as exc:
+                _LOG.debug("optimizer_lista_corte: fila TOTAL o malformada, se omite: %s", exc)
                 continue  # fila TOTAL / malformada
 
             material = row[4] if len(row) > 4 else ""

@@ -24,6 +24,10 @@
 # =====================================================================
 
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 VERSION = 2
 AXIS_X = "X"
 AXIS_Y = "Y"
@@ -39,7 +43,8 @@ def _to_float(valor):
         return None
     try:
         return float(valor)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError) as exc:
+        _LOG.warning("layout_modelo: valor no convertible a numero: %s", exc)
         return None
 
 

@@ -3,6 +3,10 @@
 # Autoprueba del cálculo del cajón. Separada de vdo_cajon_despiece.py (M7, D-36).
 # =====================================================================
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 from freecad.vdo.core.cajon_calculo import calcular_despiece
 from freecad.vdo.datos.valores import BLUM_TANDEM
 
@@ -56,7 +60,8 @@ if __name__ == "__main__":
     lanzó_value_error = False
     try:
         calcular_despiece(dict(config, prof_libre=200))
-    except ValueError:
+    except ValueError as exc:
+        _LOG.debug("cajon_autotest: ValueError esperado en la prueba de autotest: %s", exc)
         lanzó_value_error = True
     if not lanzó_value_error:
         raise AssertionError("Debía fallar con ProfInt=200")

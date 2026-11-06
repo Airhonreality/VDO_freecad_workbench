@@ -5,6 +5,10 @@
 # Axioma 2: lógica pura, SIN FreeCAD ni UI (testable con python3)
 # =====================================================================
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 from types import MappingProxyType
 
 from freecad.vdo.core.manifest import _obtener_json
@@ -19,7 +23,8 @@ CAJA_METALICA = "metalica"
 
 try:
     from freecad.vdo.core import hardware_hub as H
-except ImportError:
+except ImportError as exc:
+    _LOG.debug("cajon_correderas: import opcional H no disponible: %s", exc)
     H = None
 
 
@@ -66,7 +71,8 @@ def _marcas_disponibles():
         return disponibles
     try:
         disponibles_h = sorted(H.get_family("corredera_oculta").keys())
-    except KeyError:
+    except KeyError as exc:
+        _LOG.debug("cajon_correderas: marca sin herrajes en el catalogo: %s", exc)
         disponibles_h = []
     return sorted(list(dict.fromkeys(disponibles_h + disponibles)))
 
@@ -87,7 +93,8 @@ def obtener_marca(marca_id):
         hw = None
         try:
             hw = H.resolve_drawer_slide(tipo=OCULTA, marca=marca_id)
-        except (KeyError, ValueError):
+        except (KeyError, ValueError) as exc:
+            _LOG.debug("cajon_correderas: herraje no encontrado: %s", exc)
             hw = None
         if hw is not None:
             return _marca_desde_catalogo(hw, marca_id)
@@ -113,7 +120,8 @@ def listar_marcas():
                 H.get_family("corredera_oculta").keys())
             combinadas = list(dict.fromkeys(catalogo_keys + manifest_keys))
             return sorted(combinadas)
-        except KeyError:
+        except KeyError as exc:
+            _LOG.debug("cajon_correderas: catalogo de marca no disponible: %s", exc)
             catalogo_keys = []
             combinadas = list(dict.fromkeys(catalogo_keys + manifest_keys))
             return sorted(combinadas)

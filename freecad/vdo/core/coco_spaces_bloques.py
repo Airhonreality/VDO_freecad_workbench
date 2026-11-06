@@ -6,6 +6,10 @@
 # =====================================================================
 
 
+import logging
+
+_LOG = logging.getLogger(__name__)
+
 from freecad.vdo.core import reengrose_encuentros as VDO_RE_ENCUENTROS
 from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
 from freecad.vdo.core import reengrose_interferencias as VDO_RE_INTERFERENCIAS
@@ -81,7 +85,8 @@ def _crear_refuerzos(entry):
     try:
         geo = VDO_RE_GEOMETRIA.calcular_geometria_caja(
             entry["caja"], mod, entry["ejes"])
-    except VDO_RE_MODELO.ReengroseError:
+    except VDO_RE_MODELO.ReengroseError as exc:
+        _LOG.warning("coco_spaces_bloques: reengrose invalido, sin refuerzos: %s", exc)
         return []
     return geo["refuerzos"]
 
