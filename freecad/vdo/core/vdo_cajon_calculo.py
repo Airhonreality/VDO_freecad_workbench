@@ -91,6 +91,25 @@ def _leer_defectos(config):
             tipo_montaje_fachada)
 
 
+def _validar_entradas(g_caja, g_fondo, montaje):
+    """Valida grosores y montaje. Devuelve los avisos; lanza ValueError si el montaje es inválido."""
+    avisos = []
+
+    # --- Validaciones ---
+    if g_caja not in (15.0, 16.0):
+        avisos.append(
+            f"Grosor de caja {g_caja} mm: las correderas ocultas estándar "
+            f"están pensadas para 15/16 mm (con 18 mm hay que rebajar el "
+            f"canto inferior del lateral).")
+    if g_fondo > g_caja:
+        avisos.append("El grosor del piso no puede superar el de la caja.")
+    if montaje not in ("entre_laterales", "testa"):
+        raise ValueError(
+            f"montaje_trasera inválido: '{montaje}' "
+            f"(use 'entre_laterales' o 'testa')")
+    return avisos
+
+
 def calcular_despiece(config):
     """Calcula el despiece completo del cajón con corredera oculta.
 
@@ -124,20 +143,7 @@ def calcular_despiece(config):
      holg_lat, holg_sup, holg_inf, montaje, material_ref,
      tipo_montaje_fachada) = _leer_defectos(config)
 
-    avisos = []
-
-    # --- Validaciones ---
-    if g_caja not in (15.0, 16.0):
-        avisos.append(
-            f"Grosor de caja {g_caja} mm: las correderas ocultas estándar "
-            f"están pensadas para 15/16 mm (con 18 mm hay que rebajar el "
-            f"canto inferior del lateral).")
-    if g_fondo > g_caja:
-        avisos.append("El grosor del piso no puede superar el de la caja.")
-    if montaje not in ("entre_laterales", "testa"):
-        raise ValueError(
-            f"montaje_trasera inválido: '{montaje}' "
-            f"(use 'entre_laterales' o 'testa')")
+    avisos = _validar_entradas(g_caja, g_fondo, montaje)
 
     # --- 1. Guía (LG) ---
     lg_manual = float(config.get("longitud_guia") or 0)
