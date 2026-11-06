@@ -7,16 +7,18 @@ paquete (R7).
 
 from __future__ import annotations
 
+from typing import Any
+
 
 class VDOError(Exception):
     """Excepción base de todos los errores del dominio VDO."""
 
-    def __init__(self, mensaje: str, contexto: dict | None = None):
+    def __init__(self, mensaje: str, contexto: dict[str, Any] | None = None) -> None:
         super().__init__(mensaje)
         self.mensaje = mensaje
         self.contexto = contexto or {}
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.contexto:
             ctx = ", ".join(f"{k}={v!r}" for k, v in self.contexto.items())
             return f"{self.mensaje} ({ctx})"
