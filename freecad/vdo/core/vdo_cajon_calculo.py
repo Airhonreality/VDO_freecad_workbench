@@ -158,6 +158,20 @@ def _geometria_caja(montaje, ancho_ext, g_caja, lg, alto_caja, alto_lateral, eje
     return ancho_contra, y_trasera, z_piso, alto_contra, alto_frente_int, ancho_piso, largo_piso
 
 
+def _fachada_base(alto_frente, holg_sup, holg_inf, ancho_ext, tipo_montaje_fachada, holg_lat):
+    """Medidas base de la fachada; lanza ValueError si no son positivas."""
+    # --- 6. Fachada ---
+    alto_fachada_nominal = alto_frente - holg_sup - holg_inf
+    ancho_fachada, _alto_fachada_contract = calcular_fachada_base(
+        ancho_ext, alto_fachada_nominal, tipo_montaje_fachada,
+        holgura=holg_lat, solape=SOLAPE_PARCHE_NOMINAL)
+    if ancho_fachada <= 0 or alto_fachada_nominal <= 0:
+        raise ValueError(
+            f"Fachada inválida: {ancho_fachada} x {alto_fachada_nominal} mm "
+            f"(holguras demasiado grandes).")
+    return ancho_fachada, alto_fachada_nominal
+
+
 def calcular_despiece(config):
     """Calcula el despiece completo del cajón con corredera oculta.
 
@@ -205,15 +219,8 @@ def calcular_despiece(config):
      ancho_piso, largo_piso) = _geometria_caja(montaje, ancho_ext, g_caja,
      lg, alto_caja, alto_lateral, eje_ranura, g_fondo, pen_ranura)
 
-    # --- 6. Fachada ---
-    alto_fachada_nominal = alto_frente - holg_sup - holg_inf
-    ancho_fachada, _alto_fachada_contract = calcular_fachada_base(
-        ancho_ext, alto_fachada_nominal, tipo_montaje_fachada,
-        holgura=holg_lat, solape=SOLAPE_PARCHE_NOMINAL)
-    if ancho_fachada <= 0 or alto_fachada_nominal <= 0:
-        raise ValueError(
-            f"Fachada inválida: {ancho_fachada} x {alto_fachada_nominal} mm "
-            f"(holguras demasiado grandes).")
+    ancho_fachada, alto_fachada_nominal = _fachada_base(
+        alto_frente, holg_sup, holg_inf, ancho_ext, tipo_montaje_fachada, holg_lat)
 
     # --- Aplicar sistema de apertura (contrato universal de fachadas) ---
     sistema_apertura = config.get("sistema_apertura", APERTURA_TIRADOR)
