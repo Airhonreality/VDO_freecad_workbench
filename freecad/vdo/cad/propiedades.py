@@ -58,7 +58,7 @@ def add_common_props(obj: Any) -> None:
         ).VDO_Lados_Apoyados = VDO_FR.serializar_lados([VDO_FR.FONDO])
 
 
-def rotacion_z(grados):
+def rotacion_z(grados: float) -> Any:  # App.Rotation de FreeCAD sin tipo
     """Crea una rotación Z a partir de grados.
 
     En FreeCAD 1.1.4 el constructor `App.Rotation(axis, angle)` recibe el
@@ -80,7 +80,8 @@ def ocultar_vista(obj: Any) -> None:
         vista.Visibility = False
 
 
-def anadir_propiedad_texto(obj, nombre: str, grupo: str, descripcion: str):
+def anadir_propiedad_texto(obj: Any, nombre: str, grupo: str,  # objeto FreeCAD sin tipo
+                            descripcion: str) -> Any:
     """Añade una propiedad de texto (App::PropertyString) a un objeto FreeCAD (D-31).
 
     Devuelve lo que devuelve ``addProperty`` (se conserva por compatibilidad).
@@ -88,7 +89,7 @@ def anadir_propiedad_texto(obj, nombre: str, grupo: str, descripcion: str):
     return obj.addProperty("App::PropertyString", nombre, grupo, descripcion)
 
 
-def asignar_propiedades(obj, valores) -> None:
+def asignar_propiedades(obj: Any, valores: dict[str, Any]) -> None:  # objeto FreeCAD sin tipo
     """Asigna propiedades a un objeto FreeCAD en el orden del dict (D-32).
 
     ``valores`` es un dict ``nombre -> valor``. Equivale a las asignaciones
@@ -98,6 +99,6 @@ def asignar_propiedades(obj, valores) -> None:
         setattr(obj, nombre, valor)
 
 
-def asignar_placement_local(obj, placement) -> None:
+def asignar_placement_local(obj: Any, placement: Any) -> None:  # objeto/placement FreeCAD sin tipo
     """Asigna ``LocalPlacement`` a un objeto FreeCAD (D-32)."""
     obj.LocalPlacement = placement
