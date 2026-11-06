@@ -7,6 +7,8 @@
 # y la extruye verticalmente en Z.
 # =====================================================================
 
+from typing import Any
+
 from freecad.vdo.core import reengrose_tiras as VDO_RE_TIRAS
 from freecad.vdo.core.layout_matriz import Layout
 from freecad.vdo.core.layout_modelo import AXIS_X, Track
@@ -39,7 +41,8 @@ CANTOS_BORDE = {
 }
 
 
-def _float_positivo(valor, nombre):
+# Any: valor de usuario, se convierte con float().
+def _float_positivo(valor: Any, nombre: str) -> float:
     try:
         numero = float(valor)
     except (TypeError, ValueError) as exc:
@@ -49,7 +52,8 @@ def _float_positivo(valor, nombre):
     return numero
 
 
-def _float_no_negativo(valor, nombre):
+# Any: valor de usuario, se convierte con float().
+def _float_no_negativo(valor: Any, nombre: str) -> float:
     try:
         numero = float(valor)
     except (TypeError, ValueError) as exc:
@@ -59,10 +63,13 @@ def _float_no_negativo(valor, nombre):
     return numero
 
 
-def _validar_parametros(ancho, fondo, alto_zocalo, espesor_tablero,
-                        distancia_frente, distancia_costados,
-                        distancia_trasera, tiene_trasera,
-                        amarres_intermedios):
+def _validar_parametros(
+    # Any: parametros de usuario, se convierten abajo.
+    ancho: Any, fondo: Any, alto_zocalo: Any, espesor_tablero: Any,
+    distancia_frente: Any, distancia_costados: Any,
+    distancia_trasera: Any, tiene_trasera: Any,
+    amarres_intermedios: Any,
+) -> tuple[float, float, float, float, float, float, float, bool]:
     """Convierte y valida los parámetros de entrada."""
     ancho = _float_positivo(ancho, "ancho")
     fondo = _float_positivo(fondo, "fondo")
@@ -86,8 +93,10 @@ def _validar_parametros(ancho, fondo, alto_zocalo, espesor_tablero,
             dist_costados, dist_trasera, tiene_trasera)
 
 
-def _validar_distancias(ancho, fondo, espesor, dist_frente, dist_costados,
-                        dist_trasera, tiene_trasera):
+def _validar_distancias(
+    ancho: float, fondo: float, espesor: float, dist_frente: float, dist_costados: float,
+    dist_trasera: float, tiene_trasera: bool,
+) -> None:
     """Comprueba que las distancias dejan el zócalo dentro del mueble."""
     if dist_frente + espesor > fondo + 1e-9:
         raise ZocaloError(
@@ -104,8 +113,10 @@ def _validar_distancias(ancho, fondo, espesor, dist_frente, dist_costados,
                 "Las tiras frontal y trasera se solapan en el fondo.")
 
 
-def _bordes_zocalo(espesor, dist_frente, dist_costados, dist_trasera,
-                   tiene_trasera):
+def _bordes_zocalo(
+    espesor: float, dist_frente: float, dist_costados: float, dist_trasera: float,
+    tiene_trasera: bool,
+) -> dict[str, dict[str, Any]]:
     """Describe los cuatro bordes del zócalo para el generador de tiras."""
     return {
         "frente": {
@@ -139,7 +150,9 @@ def _bordes_zocalo(espesor, dist_frente, dist_costados, dist_trasera,
     }
 
 
-def _tiras_zocalo(ancho, fondo, bordes, espesor):
+def _tiras_zocalo(
+    ancho: float, fondo: float, bordes: dict[str, dict[str, Any]], espesor: float,
+) -> tuple[list[dict[str, Any]], Any, Any, Any, Any]:
     """Genera las tiras y mide el hueco interior entre laterales y tiras."""
     tiras = VDO_RE_TIRAS.generar_tiras_perimetrales(
         ancho, fondo, bordes, espesor, "vertical_domina")
@@ -168,10 +181,13 @@ def _tiras_zocalo(ancho, fondo, bordes, espesor):
     return tiras, rib_y0, rib_y1, interior_izq, interior_der
 
 
-def _amarres_intermedios(amarres_intermedios, interior_izq, interior_der,
-                         rib_y0, rib_y1, espesor):
+def _amarres_intermedios(
+    # Any: entero de usuario y luces de tiras (valores de diccionario sin tipo fijo).
+    amarres_intermedios: Any, interior_izq: Any, interior_der: Any,
+    rib_y0: Any, rib_y1: Any, espesor: float,
+) -> list[dict[str, Any]]:
     """Calcula los amarres intermedios horizontales del zócalo."""
-    amarres = []
+    amarres: list[dict[str, Any]] = []
     if amarres_intermedios:
         hueco_w = max(0.0, interior_der - interior_izq)
         hueco_h = max(0.0, rib_y1 - rib_y0)
@@ -203,9 +219,12 @@ def _amarres_intermedios(amarres_intermedios, interior_izq, interior_der,
     return amarres
 
 
-def _piezas_zocalo(tiras, amarres, alto_zocalo, espesor, material_ref):
+def _piezas_zocalo(
+    tiras: list[dict[str, Any]], amarres: list[dict[str, Any]], alto_zocalo: float,
+    espesor: float, material_ref: str,
+) -> list[dict[str, Any]]:
     """Convierte tiras y amarres en piezas de corte."""
-    piezas = []
+    piezas: list[dict[str, Any]] = []
     for tira in tiras:
         borde = tira["borde"]
         piezas.append({
@@ -247,8 +266,10 @@ def _piezas_zocalo(tiras, amarres, alto_zocalo, espesor, material_ref):
     return piezas
 
 
-def _resumen_zocalo(ancho, fondo, alto_zocalo, espesor, tiene_trasera,
-                    piezas):
+def _resumen_zocalo(
+    ancho: float, fondo: float, alto_zocalo: float, espesor: float, tiene_trasera: bool,
+    piezas: list[dict[str, Any]],
+) -> str:
     """Texto de resumen del zócalo y sus piezas."""
     lineas = [
         f"Zócalo: {ancho:.0f} × {fondo:.0f} × {alto_zocalo:.0f} mm "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
@@ -263,13 +284,16 @@ def _resumen_zocalo(ancho, fondo, alto_zocalo, espesor, tiene_trasera,
     return "\n".join(lineas)
 
 
-def calcular_geometria_zocalo(ancho, fondo, alto_zocalo, espesor_tablero,
-                              distancia_frente=50.0,
-                              distancia_costados=0.0,
-                              distancia_trasera=20.0,
-                              tiene_trasera=True,
-                              amarres_intermedios=0,
-                              material_ref=MELAMINA_ESTANDAR):
+def calcular_geometria_zocalo(
+    # Any: parametros de usuario, validados en _validar_parametros.
+    ancho: Any, fondo: Any, alto_zocalo: Any, espesor_tablero: Any,
+    distancia_frente: Any = 50.0,
+    distancia_costados: Any = 0.0,
+    distancia_trasera: Any = 20.0,
+    tiene_trasera: Any = True,
+    amarres_intermedios: Any = 0,
+    material_ref: str = MELAMINA_ESTANDAR,
+) -> dict[str, Any]:
     """Calcula tiras, amarres y despiece del zócalo (sin FreeCAD).
 
     Coordenadas del tablero: X = ancho del mueble, Y = fondo del mueble.
