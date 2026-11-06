@@ -11,6 +11,16 @@
 #   Gcaja    = grosor de laterales/trasera/frente interior (15-16 mm)
 #   Gfondo   = grosor del piso (6-12 mm)
 #   Gfrente  = grosor de la fachada (18 mm)
+#
+# Salida de calcular_despiece:
+#   dict con:
+#   "guia":        {lg, delta, marca, prof_int}
+#   "caja":        medidas de las 5 piezas de la caja
+#   "fachada":     medidas de la fachada
+#   "posiciones":  coordenadas 3D (X=ancho, Y=prof, Z=alto)
+#   "piezas":      lista de corte (para VDO_Paneles_JSON)
+#   "mecanizados": cotas de mecanizado usadas
+#   "avisos":      lista de advertencias (str)
 # =====================================================================
 
 from freecad.vdo.core.vdo_cajon_correderas import (
@@ -37,7 +47,20 @@ from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR
 
 
 def _leer_entradas(config):
-    """Lee las entradas obligatorias, la marca y el tipo de corredera."""
+    """Lee las entradas obligatorias, la marca y el tipo de corredera.
+
+    Args:
+        config (dict): claves obligatorias:
+            ancho_libre (LI), prof_libre (ProfInt), ancho_modulo,
+            alto_frente, marca (str)
+          opcionales:
+            alto_caja, grosor_caja, grosor_fondo, grosor_fachada,
+            longitud_guia (0 = auto), montaje_trasera
+            ("entre_laterales" | "testa"),
+            penetracion_ranura, eje_ranura,
+            holgura_lateral_fachada, holgura_superior_fachada,
+            holgura_inferior_fachada, material_ref
+    """
     li = float(config["ancho_libre"])
     prof_int = float(config["prof_libre"])
     float(config["ancho_modulo"])
@@ -283,11 +306,10 @@ def _piezas_laterales(largo_lateral, alto_lateral, g_caja, material_ref, z_piso,
 
 
 def _piezas_restantes(ancho_contra, alto_contra, g_caja, material_ref, notch_ancho,
-    notch_alto, alto_frente_int, ancho_piso, largo_piso, g_fondo,
-    ancho_fachada, alto_fachada, g_fachada, sistema_apertura,
-    operacion_canto, cantos_fachada):
+    notch_alto, alto_frente_int, ancho_piso, largo_piso, g_fondo, ancho_fachada,
+    alto_fachada, g_fachada, sistema_apertura, operacion_canto, cantos_fachada):
     """Paneles de contrafrente, frente interior, piso y fachada."""
-    piezas = [
+    return [
         {
             "nombre": "Cajon_Contrafrente",
             "tipo": "panel",
@@ -343,7 +365,6 @@ def _piezas_restantes(ancho_contra, alto_contra, g_caja, material_ref, notch_anc
             ],
         },
     ]
-    return piezas
 
 
 def _resumen_caja(ancho_ext, largo_lateral, alto_lateral, g_caja,
@@ -393,67 +414,37 @@ def _filtrar_piezas(piezas, tipo_corredera):
 
 
 def calcular_despiece(config):
-    """Calcula el despiece completo del cajón con corredera oculta.
+    """Calcula el despiece del cajón (corredera oculta, telescópica o metálica).
 
-    Args:
-        config (dict): claves obligatorias:
-            ancho_libre (LI), prof_libre (ProfInt), ancho_modulo,
-            alto_frente, marca (str)
-          opcionales:
-            alto_caja, grosor_caja, grosor_fondo, grosor_fachada,
-            longitud_guia (0 = auto), montaje_trasera
-            ("entre_laterales" | "testa"),
-            penetracion_ranura, eje_ranura,
-            holgura_lateral_fachada, holgura_superior_fachada,
-            holgura_inferior_fachada, material_ref
-
-    Returns:
-        dict con:
-            "guia":        {lg, delta, marca, prof_int}
-            "caja":        medidas de las 5 piezas de la caja
-            "fachada":     medidas de la fachada
-            "posiciones":  coordenadas 3D (X=ancho, Y=prof, Z=alto)
-            "piezas":      lista de corte (para VDO_Paneles_JSON)
-            "mecanizados": cotas de mecanizado usadas
-            "avisos":      lista de advertencias (str)
+    Entradas y valores por defecto: ver _leer_entradas y _leer_defectos.
+    Salida: ver la cabecera de este módulo.
     """
     # --- Entradas obligatorias, marca y tipo de corredera ---
     (li, prof_int, alto_frente, marca_id, marca, delta, mecanizado,
      _tipo_corredera_result) = _leer_entradas(config)
-
     (alto_caja, g_caja, g_fondo, g_fachada, pen_ranura, eje_ranura,
      holg_lat, holg_sup, holg_inf, montaje, material_ref,
      tipo_montaje_fachada) = _leer_defectos(config)
-
     avisos = _validar_entradas(g_caja, g_fondo, montaje)
-
     lg, lg_manual = _resolver_guia(config, prof_int, marca)
-
     ancho_ext = _ancho_exterior(li, delta)
-
     # --- 3. Laterales ---
     largo_lateral = lg
     alto_lateral = alto_caja
-
     (ancho_contra, y_trasera, z_piso, alto_contra, alto_frente_int,
      ancho_piso, largo_piso) = _geometria_caja(montaje, ancho_ext, g_caja,
      lg, alto_caja, alto_lateral, eje_ranura, g_fondo, pen_ranura)
-
     ancho_fachada, alto_fachada_nominal = _fachada_base(
         alto_frente, holg_sup, holg_inf, ancho_ext, tipo_montaje_fachada, holg_lat)
-
     (sistema_apertura, alto_fachada, operacion_canto,
      cantos_fachada) = _sistema_apertura(config, alto_fachada_nominal)
-
     posiciones = _posiciones(
         ancho_ext, g_caja, lg, alto_lateral, ancho_contra, montaje, y_trasera,
         z_piso, g_fondo, alto_contra, alto_frente_int, pen_ranura, ancho_piso,
         largo_piso, g_fachada, ancho_fachada, alto_fachada)
-
     (mecanizados_resumen, diam_t, prof_t, dist_t_tras, prof_ranura,
      notch_ancho, notch_alto) = _cotas_mecanizado(mecanizado, marca_id,
      z_piso, g_fondo)
-
     # --- 9. Piezas para cutting list (VDO_Paneles_JSON) ---
     piezas = _piezas_laterales(largo_lateral, alto_lateral, g_caja,
                                material_ref, z_piso, g_fondo, lg, prof_ranura,
@@ -462,7 +453,6 @@ def calcular_despiece(config):
         notch_alto, alto_frente_int, ancho_piso, largo_piso, g_fondo,
         ancho_fachada, alto_fachada, g_fachada, sistema_apertura,
         operacion_canto, cantos_fachada)
-
     return {
         "guia": {"lg": lg, "delta": delta, "marca": marca_id,
                  "prof_int": prof_int,
