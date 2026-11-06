@@ -99,6 +99,15 @@ class VDOTransactionMixin:
         if self._vdo_on_cancel:
             QtCore.QTimer.singleShot(0, self._vdo_on_cancel)
 
+    # Botones OK / Cancelar comunes a todos los Task Panels VDO.
+    def _on_ok(self):
+        if self.accept():
+            cerrar_dialogo()
+
+    def _on_cancel(self):
+        self.reject()
+        cerrar_dialogo()
+
     # -----------------------------------------------------------------
     # API estándar de Task Panel (compartida por todos los paneles)
     # -----------------------------------------------------------------

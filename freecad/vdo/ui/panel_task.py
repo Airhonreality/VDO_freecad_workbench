@@ -186,14 +186,6 @@ class PanelTaskPanel(VDOTransactionMixin):
         self.re_editor.cargar(mod)
         self.re_editor._actualizar_estado()
 
-    def _on_ok(self):
-        if self.accept():
-            cerrar_dialogo()
-
-    def _on_cancel(self):
-        self.reject()
-        cerrar_dialogo()
-
     def _aplicar_datos_basicos(self):
         self._form_builder.interpretar_texto()
         for spin in (self.spin_re_ancho, self.spin_re_espesor):

@@ -125,11 +125,3 @@ class CocoUnifiedValoresMixin:
             texto += ("\n\n⚠ OVERFLOW: corrige las medidas fijas "
                       "antes de aplicar.")
         self.lbl_resumen.setText(texto)
-
-    def _on_ok(self):
-        if self.accept():
-            cerrar_dialogo()
-
-    def _on_cancel(self):
-        self.reject()
-        cerrar_dialogo()

@@ -233,14 +233,6 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
     # -----------------------------------------------------------------
     # Aceptar / Cancelar
     # -----------------------------------------------------------------
-    def _on_ok(self):
-        if self.accept():
-            cerrar_dialogo()
-
-    def _on_cancel(self):
-        self.reject()
-        cerrar_dialogo()
-
     def accept(self):
         if not self.obj:
             return True
