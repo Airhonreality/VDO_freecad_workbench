@@ -108,6 +108,16 @@ def _retroceso_panel(panel_t, tira_t, eje_normal, eje_ancho):
     return _aabb_dict(panel)
 
 
+def _caja_interseccion(inter):
+    """Caja de la banda de invasion (tupla AABB de interseccion) como dict."""
+    return _aabb_dict({
+        "x": inter[0], "y": inter[1], "z": inter[2],
+        "w": inter[3] - inter[0],
+        "h": inter[4] - inter[1],
+        "d": inter[5] - inter[2],
+    })
+
+
 def resolver_choque_tira_panel(tira, panel_perpendicular, modo="retroceso"):
     """Resuelve el choque entre una tira y un panel perpendicular.
 
@@ -148,12 +158,7 @@ def resolver_choque_tira_panel(tira, panel_perpendicular, modo="retroceso"):
         return plan
 
     if modo == "mocheo":
-        plan["cortes_panel"].append(_aabb_dict({
-            "x": inter[0], "y": inter[1], "z": inter[2],
-            "w": inter[3] - inter[0],
-            "h": inter[4] - inter[1],
-            "d": inter[5] - inter[2],
-        }))
+        plan["cortes_panel"].append(_caja_interseccion(inter))
         return plan
 
     # Retroceso simetrico. La tira corre en el mismo eje que la normal del
@@ -167,12 +172,7 @@ def resolver_choque_tira_panel(tira, panel_perpendicular, modo="retroceso"):
 
     # Paneles verticales (o encuentros no clasicos): cajeado recto en la
     # banda exacta de invasion. Esto evita partir la tira del techo.
-    plan["cortes_panel"].append(_aabb_dict({
-        "x": inter[0], "y": inter[1], "z": inter[2],
-        "w": inter[3] - inter[0],
-        "h": inter[4] - inter[1],
-        "d": inter[5] - inter[2],
-    }))
+    plan["cortes_panel"].append(_caja_interseccion(inter))
     return plan
 
 
