@@ -69,10 +69,26 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
     # UI
     # ------------------------------------------------------------------
     def _construir_ui(self):
+        root = self._crear_raiz()
+        self._crear_cabecera(root)
+        self._crear_preview(root)
+        self._crear_splitter()
+        self._crear_arbol_maestro()
+        self._crear_stack()
+        # Proporción inicial del splitter (130px árbol : 230px stack)
+        self.splitter.setSizes([130, 230])
+        root.addWidget(self.splitter, 1)
+
+        # Iniciar en nivel Chasis
+        self._ir_a_nivel(PAGE_CHASIS, VDOSelectionBridge.TARGET_UNKNOWN)
+
+    def _crear_raiz(self):
         root = QtWidgets.QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(0)
+        return root
 
+    def _crear_cabecera(self, root):
         # 1. Breadcrumbs
         self.breadcrumbs = _BreadcrumbBar(self)
         self.breadcrumbs.sigNivelClickeado.connect(self._on_breadcrumb_clicked)
@@ -83,6 +99,7 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
         self.micro_header.sigDimensionesCambiadas.connect(self._on_dimensiones_header_cambiadas)
         root.addWidget(self.micro_header)
 
+    def _crear_preview(self, root):
         # 3. Visor 2D (CocoPreview2D)
         self.preview = None
         if CocoPreview2D is not None:
@@ -94,6 +111,7 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
             self.preview.reengroseClicked.connect(self._on_preview_reengrose_clicked)
             root.addWidget(self.preview)
 
+    def _crear_splitter(self):
         # 4. QSplitter Horizontal Inferior
         self.splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal, self)
         self.splitter.setChildrenCollapsible(False)
@@ -107,6 +125,7 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
             }
         """)
 
+    def _crear_arbol_maestro(self):
         # Panel Izquierdo: QTreeWidget Maestro
         self.master_tree = QtWidgets.QTreeWidget(self.splitter)
         self.master_tree.setHeaderHidden(True)
@@ -132,6 +151,7 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
         self.master_tree.itemClicked.connect(self._on_tree_item_clicked)
         self.splitter.addWidget(self.master_tree)
 
+    def _crear_stack(self):
         # Panel Derecho: QStackedWidget con las 4 páginas
         self.stack = QtWidgets.QStackedWidget(self.splitter)
 
@@ -150,12 +170,6 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
 
         self.splitter.addWidget(self.stack)
 
-        # Proporción inicial del splitter (130px árbol : 230px stack)
-        self.splitter.setSizes([130, 230])
-        root.addWidget(self.splitter, 1)
-
-        # Iniciar en nivel Chasis
-        self._ir_a_nivel(PAGE_CHASIS, VDOSelectionBridge.TARGET_UNKNOWN)
     # ------------------------------------------------------------------
     # Sincronización del Árbol Maestro y Preview 2D
     # ------------------------------------------------------------------
