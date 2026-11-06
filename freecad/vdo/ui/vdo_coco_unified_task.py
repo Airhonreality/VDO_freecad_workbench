@@ -275,53 +275,9 @@ class CocoUnifiedTaskPanel(
         try:
             self._vdo_begin()
 
-            for spin in (self.spin_alto, self.spin_ancho,
-                         self.spin_fondo, self.spin_espesor,
-                         self.spin_rotacion):
-                spin.interpretText()
-
-            asignar_propiedades(self.obj, {"Alto": self.spin_alto.value()})
-            asignar_propiedades(self.obj, {"Ancho": self.spin_ancho.value()})
-            asignar_propiedades(self.obj, {"FondoModulo": self.spin_fondo.value()})
-            asignar_propiedades(self.obj, {"Espesor": self.spin_espesor.value()})
-
-            if hasattr(self, "box_chassis") and self.box_chassis is not None:
-                cfg = self.box_chassis.getChassisConfig()
-                enc_sup = cfg.get("encuentros", {}).get("superior_izq", "tapa_domina")
-                enc_inf = cfg.get("encuentros", {}).get("inferior_izq", "lateral_domina")
-                asignar_propiedades(self.obj, {"Tapa": "externo" if enc_sup == "tapa_domina" else "interno"})
-                asignar_propiedades(self.obj, {"Base": "externo" if enc_inf == "base_domina" else "interno"})
-                asignar_propiedades(self.obj, {"TieneFondo": bool(cfg.get("caras", {}).get("fondo", {}).get("activa", True))})
-
-                base_info = cfg.get("base", {})
-                if "altura" in base_info and hasattr(self.obj, "AltoZocalo"):
-                    try:
-                        asignar_propiedades(self.obj, {"AltoZocalo": float(base_info["altura"])})
-                    except Exception:
-                        App.Console.PrintWarning(
-                            "[VDO] No se pudo establecer AltoZocalo")
-                if "separacion_frente" in base_info and hasattr(self.obj, "DistanciaFrente"):
-                    try:
-                        asignar_propiedades(self.obj, {"DistanciaFrente": float(base_info["separacion_frente"])})
-                    except Exception:
-                        App.Console.PrintWarning(
-                            "[VDO] No se pudo establecer DistanciaFrente")
-
-                try:
-                    if hasattr(self.obj, "VDO_Chassis_JSON"):
-                        asignar_propiedades(self.obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
-                    elif hasattr(self.obj, "addProperty"):
-                        anadir_propiedad_texto(self.obj, "VDO_Chassis_JSON", "VDO",
-                                           "Configuración semiótica de Capa 1")
-                        asignar_propiedades(self.obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
-                except Exception:
-                    App.Console.PrintWarning(
-                        "[VDO] No se pudo persistir VDO_Chassis_JSON")
-
-            anclaje = self.combo_anclaje.currentData()
-            if anclaje:
-                asignar_propiedades(self.obj, {"VDO_Anclaje": anclaje})
-            aplicar_rotacion(self.obj, self.spin_rotacion.value())
+            self._asignar_dimensiones()
+            self._asignar_chasis()
+            self._asignar_anclaje_rotacion()
 
             if self.editor_divisiones.tiene_overflow():
                 QtWidgets.QMessageBox.warning(
@@ -331,25 +287,9 @@ class CocoUnifiedTaskPanel(
                 self._vdo_abort()
                 return False
 
-            vistos = []
-            apoyados = []
-            for lado, combo in self.combos_exposicion.items():
-                estado = combo.currentData()
-                if estado == "visto":
-                    vistos.append(lado)
-                elif estado == "apoyado":
-                    apoyados.append(lado)
-            VDO_FR.guardar_exposicion(self.obj, vistos, apoyados)
+            self._guardar_exposicion()
 
-            if not hasattr(self.obj, "VDO_Divisiones"):
-                anadir_propiedad_texto(
-                    self.obj, "VDO_Divisiones", "Divisiones",
-                    "Matriz de vanos v2 (JSON)")
-            asignar_propiedades(self.obj, {"VDO_Divisiones": self.editor_divisiones.dumps()})
-            asignar_propiedades(self.obj, {"VDO_Reengrose_JSON": (
-                self.editor_divisiones.dumps_reengroses())})
-            asignar_propiedades(self.obj, {"VDO_Contenido_JSON": (
-                self.editor_divisiones.dumps_contenido())})
+            self._asignar_contenido()
 
             # --- Construir insertos solo al aceptar (ciclo transaccional) ---
             self._construir_insertos(self.obj)
@@ -366,3 +306,76 @@ class CocoUnifiedTaskPanel(
             import traceback
             App.Console.PrintError(traceback.format_exc())
             return False
+
+    def _asignar_dimensiones(self):
+        for spin in (self.spin_alto, self.spin_ancho,
+                     self.spin_fondo, self.spin_espesor,
+                     self.spin_rotacion):
+            spin.interpretText()
+
+        asignar_propiedades(self.obj, {"Alto": self.spin_alto.value()})
+        asignar_propiedades(self.obj, {"Ancho": self.spin_ancho.value()})
+        asignar_propiedades(self.obj, {"FondoModulo": self.spin_fondo.value()})
+        asignar_propiedades(self.obj, {"Espesor": self.spin_espesor.value()})
+
+    def _asignar_chasis(self):
+        if hasattr(self, "box_chassis") and self.box_chassis is not None:
+            cfg = self.box_chassis.getChassisConfig()
+            enc_sup = cfg.get("encuentros", {}).get("superior_izq", "tapa_domina")
+            enc_inf = cfg.get("encuentros", {}).get("inferior_izq", "lateral_domina")
+            asignar_propiedades(self.obj, {"Tapa": "externo" if enc_sup == "tapa_domina" else "interno"})
+            asignar_propiedades(self.obj, {"Base": "externo" if enc_inf == "base_domina" else "interno"})
+            asignar_propiedades(self.obj, {"TieneFondo": bool(cfg.get("caras", {}).get("fondo", {}).get("activa", True))})
+
+            base_info = cfg.get("base", {})
+            if "altura" in base_info and hasattr(self.obj, "AltoZocalo"):
+                try:
+                    asignar_propiedades(self.obj, {"AltoZocalo": float(base_info["altura"])})
+                except Exception:
+                    App.Console.PrintWarning(
+                        "[VDO] No se pudo establecer AltoZocalo")
+            if "separacion_frente" in base_info and hasattr(self.obj, "DistanciaFrente"):
+                try:
+                    asignar_propiedades(self.obj, {"DistanciaFrente": float(base_info["separacion_frente"])})
+                except Exception:
+                    App.Console.PrintWarning(
+                        "[VDO] No se pudo establecer DistanciaFrente")
+
+            try:
+                if hasattr(self.obj, "VDO_Chassis_JSON"):
+                    asignar_propiedades(self.obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
+                elif hasattr(self.obj, "addProperty"):
+                    anadir_propiedad_texto(self.obj, "VDO_Chassis_JSON", "VDO",
+                                       "Configuración semiótica de Capa 1")
+                    asignar_propiedades(self.obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
+            except Exception:
+                App.Console.PrintWarning(
+                    "[VDO] No se pudo persistir VDO_Chassis_JSON")
+
+    def _asignar_anclaje_rotacion(self):
+        anclaje = self.combo_anclaje.currentData()
+        if anclaje:
+            asignar_propiedades(self.obj, {"VDO_Anclaje": anclaje})
+        aplicar_rotacion(self.obj, self.spin_rotacion.value())
+
+    def _guardar_exposicion(self):
+        vistos = []
+        apoyados = []
+        for lado, combo in self.combos_exposicion.items():
+            estado = combo.currentData()
+            if estado == "visto":
+                vistos.append(lado)
+            elif estado == "apoyado":
+                apoyados.append(lado)
+        VDO_FR.guardar_exposicion(self.obj, vistos, apoyados)
+
+    def _asignar_contenido(self):
+        if not hasattr(self.obj, "VDO_Divisiones"):
+            anadir_propiedad_texto(
+                self.obj, "VDO_Divisiones", "Divisiones",
+                "Matriz de vanos v2 (JSON)")
+        asignar_propiedades(self.obj, {"VDO_Divisiones": self.editor_divisiones.dumps()})
+        asignar_propiedades(self.obj, {"VDO_Reengrose_JSON": (
+            self.editor_divisiones.dumps_reengroses())})
+        asignar_propiedades(self.obj, {"VDO_Contenido_JSON": (
+            self.editor_divisiones.dumps_contenido())})
