@@ -12,7 +12,7 @@ from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_LABELS,
     ANCLAJES,
 )
-from freecad.vdo.cad.propiedades import add_common_props
+from freecad.vdo.cad.propiedades import add_common_props, asignar_propiedades
 from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.core.vdo_zocalo_core import ZocaloError, calcular_geometria_zocalo
 from freecad.vdo.qt_compat import QtGui, QtWidgets
@@ -285,18 +285,21 @@ class ZocaloTaskPanel(VDOTransactionMixin):
                 self.spin_amarres.value(),
             )
 
-            self.obj.Ancho = self.spin_ancho.value()
-            self.obj.Fondo = self.spin_fondo.value()
-            self.obj.AltoZocalo = self.spin_alto.value()
-            self.obj.EspesorTablero = self.spin_espesor.value()
-            self.obj.DistanciaFrente = self.spin_frente.value()
-            self.obj.DistanciaCostados = self.spin_costados.value()
-            self.obj.DistanciaTrasera = self.spin_trasera.value()
-            self.obj.TieneTrasera = self.chk_trasera.isChecked()
-            self.obj.AmarresIntermedios = self.spin_amarres.value()
+            valores = {
+                "Ancho": self.spin_ancho.value(),
+                "Fondo": self.spin_fondo.value(),
+                "AltoZocalo": self.spin_alto.value(),
+                "EspesorTablero": self.spin_espesor.value(),
+                "DistanciaFrente": self.spin_frente.value(),
+                "DistanciaCostados": self.spin_costados.value(),
+                "DistanciaTrasera": self.spin_trasera.value(),
+                "TieneTrasera": self.chk_trasera.isChecked(),
+                "AmarresIntermedios": self.spin_amarres.value(),
+            }
             anclaje = self.combo_anclaje.currentData()
             if anclaje:
-                self.obj.VDO_Anclaje = anclaje
+                valores["VDO_Anclaje"] = anclaje
+            asignar_propiedades(self.obj, valores)
             aplicar_rotacion(self.obj, self.spin_rotacion.value())
             recalcular_activo()
             self._vdo_commit()

@@ -86,3 +86,18 @@ def anadir_propiedad_texto(obj, nombre: str, grupo: str, descripcion: str):
     Devuelve lo que devuelve ``addProperty`` (se conserva por compatibilidad).
     """
     return obj.addProperty("App::PropertyString", nombre, grupo, descripcion)
+
+
+def asignar_propiedades(obj, valores) -> None:
+    """Asigna propiedades a un objeto FreeCAD en el orden del dict (D-32).
+
+    ``valores`` es un dict ``nombre -> valor``. Equivale a las asignaciones
+    ``obj.nombre = valor`` en secuencia.
+    """
+    for nombre, valor in valores.items():
+        setattr(obj, nombre, valor)
+
+
+def asignar_placement_local(obj, placement) -> None:
+    """Asigna ``LocalPlacement`` a un objeto FreeCAD (D-32)."""
+    obj.LocalPlacement = placement
