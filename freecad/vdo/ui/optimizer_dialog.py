@@ -15,6 +15,7 @@ import os
 import FreeCAD as App
 
 from freecad.vdo.core import optimizer_core as core
+from freecad.vdo.core import optimizer_core_resumen as resumen_core
 from freecad.vdo.core import optimizer_lista_corte as lista
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui import optimizer_view as view
@@ -212,7 +213,7 @@ class OptimizerDialog(QtWidgets.QDialog):
 
         self.view.set_groups(groups)
 
-        tot = core.resumen_global(groups, board_w, board_h)
+        tot = resumen_core.resumen_global(groups, board_w, board_h)
         txt = (f"<b>{tot['n_placed']}/{tot['n_total']} piezas</b> · "
                f"{tot['n_boards']} tablero(s) · "
                f"aprovechamiento <b>{tot['efficiency']:.1f}%</b> · "

@@ -16,8 +16,8 @@ from freecad.vdo.core.optimizer_core import (
     KERF_DEFAULT,
     MARGIN_DEFAULT,
     optimize_by_group,
-    resumen_global,
 )
+from freecad.vdo.core.optimizer_core_resumen import resumen_global
 from freecad.vdo.core.optimizer_lista_corte import expand_pieces, read_cutting_csv
 
 
