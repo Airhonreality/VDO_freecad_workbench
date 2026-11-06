@@ -36,7 +36,7 @@ except ImportError:
 import contextlib
 
 from freecad.vdo.core.vdo_coco_core import CocoFeature
-from freecad.vdo.core.vdo_panel_core import PanelFeature
+from freecad.vdo.cad.panel import PanelFeature
 from freecad.vdo.ui.vdo_inspector_dock import (
     PAGE_CHASIS,
     PAGE_CIERRE,

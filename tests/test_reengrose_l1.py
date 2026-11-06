@@ -9,7 +9,7 @@ try:
 except BaseException:
     QtWidgets = None
 
-from freecad.vdo.core import vdo_panel_core as P
+from freecad.vdo.cad import panel as P
 from freecad.vdo.core import vdo_reengrose as R
 try:
     from freecad.vdo.ui import vdo_export_cutting_list as E

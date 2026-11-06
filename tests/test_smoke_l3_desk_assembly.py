@@ -39,7 +39,7 @@ from freecad.vdo.core import vdo_frames as VFR
 from freecad.vdo.core import vdo_hardware_hub as HH
 from freecad.vdo.core import vdo_layout as VL
 from freecad.vdo.core import vdo_module_props as VMOD
-from freecad.vdo.core import vdo_panel_core as VP
+from freecad.vdo.cad import panel as VP
 from freecad.vdo.core import vdo_reengrose as VR
 from freecad.vdo.core.errores import VDOError
 from tests.soporte.requisitos import requiere_freecad
@@ -150,8 +150,8 @@ REQUIRED_API = [
     ("freecad.vdo.core.vdo_cajon_despiece", "CORREDERA_OCULTA"),
     ("freecad.vdo.core.vdo_cajon_despiece", "CORREDERA_TELESCOPICA"),
     ("freecad.vdo.core.vdo_hardware_hub", "resolve_drawer_slide"),
-    ("freecad.vdo.core.vdo_panel_core", "crear_pieza"),
-    ("freecad.vdo.core.vdo_panel_core", "PanelFeature"),
+    ("freecad.vdo.cad.panel", "crear_pieza"),
+    ("freecad.vdo.cad.panel", "PanelFeature"),
     ("freecad.vdo.core.vdo_reengrose", "aplicar_a_objeto"),
     ("freecad.vdo.core.vdo_reengrose", "calcular_geometria_reengrose"),
     ("freecad.vdo.ui.vdo_export_cutting_list", "extraer_piezas_del_documento"),

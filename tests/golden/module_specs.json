@@ -63,7 +63,7 @@
     "menu": "Propiedades del Panel",
     "icon": "vdo_panel.svg",
     "factory": [
-      "freecad.vdo.core.vdo_panel_core",
+      "freecad.vdo.cad.panel",
       "crear_pieza"
     ],
     "panel": "panel.panel",
@@ -88,7 +88,7 @@
     "menu": "Propiedades del Panel",
     "icon": "vdo_panel_fachada.svg",
     "factory": [
-      "freecad.vdo.core.vdo_panel_core",
+      "freecad.vdo.cad.panel",
       "crear_pieza"
     ],
     "panel": "panel.panel",
@@ -113,7 +113,7 @@
     "menu": "Propiedades del Panel",
     "icon": "vdo_panel.svg",
     "factory": [
-      "freecad.vdo.core.vdo_panel_core",
+      "freecad.vdo.cad.panel",
       "crear_pieza"
     ],
     "panel": "panel.panel",

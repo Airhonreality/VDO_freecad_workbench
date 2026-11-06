@@ -55,7 +55,7 @@ class UniversalInspectorTests(unittest.TestCase):
         cls.Part = Part
 
         from freecad.vdo.core.vdo_coco_core import CocoFeature
-        from freecad.vdo.core.vdo_panel_core import PanelFeature
+        from freecad.vdo.cad.panel import PanelFeature
 
         cls.CocoFeature = CocoFeature
         cls.PanelFeature = PanelFeature

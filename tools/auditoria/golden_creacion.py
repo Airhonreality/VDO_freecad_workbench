@@ -70,7 +70,7 @@ PROPS = ["VDO_Orientacion", "VDO_Etiqueta", "VDO_Material_Ref", "Largo", "Ancho"
 def _fabrica(nombre_flujo):
     """Devuelve la función de creación de b78de04 para cada flujo."""
     if nombre_flujo == "crear_pieza":
-        from freecad.vdo.core.vdo_panel_core import crear_pieza as f
+        from freecad.vdo.cad.panel import crear_pieza as f
     elif nombre_flujo == "make_coco":
         from freecad.vdo.core.vdo_coco_core import make_coco as f
     elif nombre_flujo == "make_zocalo":

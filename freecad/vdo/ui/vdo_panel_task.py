@@ -15,7 +15,8 @@ from freecad.vdo.core.vdo_module_props import (
     ANCLAJE_LABELS,
     ANCLAJES,
 )
-from freecad.vdo.core.vdo_panel_core import CANTOS_VALIDOS, add_reengrose_props
+from freecad.vdo.core.vdo_finish import CANTOS_VALIDOS
+from freecad.vdo.cad.panel import add_reengrose_props
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 from freecad.vdo.qt_compat import QtGui, QtWidgets
 from freecad.vdo.ui.vdo_qt import VDO_DoubleSpinBox, VDO_ExpressionInput
