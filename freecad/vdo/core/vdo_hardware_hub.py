@@ -166,6 +166,32 @@ def resolve_sliding(tipo_mueble="closet", catalogo=None):
     return get_hardware(sku, catalogo)
 
 
+def _herraje_compatible(sku, tipo, catalogo):
+    """Herraje del SKU si existe y su tipo_corredera es compatible; si no, None."""
+    try:
+        hw = get_hardware(sku, catalogo)
+    except KeyError:
+        return None
+    if hw is not None and hw["parametros_tecnicos"].get("tipo_corredera") in (tipo, None, ""):
+        return hw
+    return None
+
+
+def _herraje_por_familia(tipo, marca, catalogo):
+    """Busqueda por familia: marca coincide con un SKU de la familia del tipo."""
+    familia = "corredera_oculta" if tipo == OCULTA else "corredera_telescopica"
+    try:
+        familia_skus = get_family(familia, catalogo)
+    except KeyError:
+        familia_skus = {}
+    if marca.lower() in {s.lower() for s in familia_skus}:
+        for sku_cand in familia_skus:
+            if sku_cand.lower() == marca.lower():
+                hw = get_hardware(sku_cand, catalogo)
+                return {**hw, "sku": sku_cand}
+    return None
+
+
 def resolve_drawer_slide(tipo=OCULTA, marca=BLUM_TANDEM, catalogo=None):
     """Helper para correderas de cajón.
 
@@ -188,54 +214,25 @@ def resolve_drawer_slide(tipo=OCULTA, marca=BLUM_TANDEM, catalogo=None):
     catalogo, sku_a_familia = _resolver_catalogo(catalogo)
     tipo = str(tipo).strip().lower()
     marca = str(marca).strip()
-    sku_encontrado = None
 
-    # 1. Intento directo: el caller ya pasó un SKU del catálogo.
-    hw = None
-    try:
-        hw = get_hardware(marca, catalogo)
-    except KeyError:
-        hw = None
-    if hw is not None and hw["parametros_tecnicos"].get("tipo_corredera") in (tipo, None, ""):
-        sku_encontrado = marca
-        return {**hw, "sku": sku_encontrado}
-
-    # 2. Normalización: blum_tandem -> BLUM-TANDEM
+    # Candidatos en orden: 1) directo, 2) normalizado (blum_tandem -> BLUM-TANDEM),
+    # 3) tabla de claves del manifest.
+    candidatos = [marca]
     normalizada = marca.upper().replace("_", "-")
     if normalizada != marca:
-        hw = None
-        try:
-            hw = get_hardware(normalizada, catalogo)
-        except KeyError:
-            hw = None
-        if hw is not None and hw["parametros_tecnicos"].get("tipo_corredera") in (tipo, None, ""):
-            sku_encontrado = normalizada
-            return {**hw, "sku": sku_encontrado}
+        candidatos.append(normalizada)
+    sku_tabla = _MARCA_A_SKU.get(marca.lower())
+    if sku_tabla:
+        candidatos.append(sku_tabla)
+    for sku in candidatos:
+        hw = _herraje_compatible(sku, tipo, catalogo)
+        if hw is not None:
+            return {**hw, "sku": sku}
 
-    # 3. Tabla de mapeo de claves del manifest.
-    sku = _MARCA_A_SKU.get(marca.lower())
-    if sku:
-        hw = None
-        try:
-            hw = get_hardware(sku, catalogo)
-        except KeyError:
-            hw = None
-        if hw is not None and hw["parametros_tecnicos"].get("tipo_corredera") in (tipo, None, ""):
-            sku_encontrado = sku
-            return {**hw, "sku": sku_encontrado}
-
-    # 4. Búsqueda por familia si se pasó el tipo genérico.
-    familia = "corredera_oculta" if tipo == OCULTA else "corredera_telescopica"
-    try:
-        familia_skus = get_family(familia, catalogo)
-    except KeyError:
-        familia_skus = {}
-    if marca.lower() in {s.lower() for s in familia_skus}:
-        for sku_cand in familia_skus:
-            if sku_cand.lower() == marca.lower():
-                hw = get_hardware(sku_cand, catalogo)
-                sku_encontrado = sku_cand
-                return {**hw, "sku": sku_encontrado}
+    # 4. Busqueda por familia si se pasó el tipo genérico.
+    hw = _herraje_por_familia(tipo, marca, catalogo)
+    if hw is not None:
+        return hw
 
     raise KeyError(
         f"Corredera {tipo} / {marca!r} no encontrada en el catálogo de "
