@@ -39,6 +39,23 @@ class VDOTransactionMixin:
         self.transaction_name = transaction_name
         self._vdo_tx_open = False
 
+    def _init_panel_vdo(self, obj, on_accept, on_cancel, auto_transaction,
+                        transaction_name, propiedades=()):
+        """Secuencia común de arranque de los task panels de módulo."""
+        self.obj = obj
+        self._vdo_aceptado = False
+        self._init_vdo_task(
+            on_accept=on_accept,
+            on_cancel=on_cancel,
+            auto_transaction=auto_transaction,
+            transaction_name=transaction_name,
+        )
+        self.form = self._crear_widget()
+        if obj:
+            for anadir_propiedades in propiedades:
+                anadir_propiedades(obj)
+            self._cargar_valores(obj)
+
     def _crear_botonera_vdo(self, main_layout, tip_aceptar=None, tip_cancelar=None):
         """Botonera Aceptar/Cancelar de los task panels; tooltips opcionales."""
         botones = QtWidgets.QDialogButtonBox()

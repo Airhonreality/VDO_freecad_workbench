@@ -29,19 +29,9 @@ class PanelTaskPanel(VDOTransactionMixin):
 
     def __init__(self, obj=None, on_accept=None, on_cancel=None,
                  auto_transaction=True):
-        self.obj = obj
-        self._vdo_aceptado = False
-        self._init_vdo_task(
-            on_accept=on_accept,
-            on_cancel=on_cancel,
-            auto_transaction=auto_transaction,
-            transaction_name="Editar panel VDO",
-        )
-        self.form = self._crear_widget()
-        if obj:
-            add_reengrose_props(obj)
-            add_common_props(obj)
-            self._cargar_valores(obj)
+        self._init_panel_vdo(obj, on_accept, on_cancel, auto_transaction,
+                             "Editar panel VDO",
+                             (add_reengrose_props, add_common_props))
 
     def _crear_widget(self):
         widget = QtWidgets.QWidget()

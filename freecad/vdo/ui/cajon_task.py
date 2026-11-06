@@ -67,18 +67,8 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
 
     def __init__(self, obj=None, on_accept=None, on_cancel=None,
                  auto_transaction=True):
-        self.obj = obj
-        self._vdo_aceptado = False
-        self._init_vdo_task(
-            on_accept=on_accept,
-            on_cancel=on_cancel,
-            auto_transaction=auto_transaction,
-            transaction_name="Editar cajón oculta",
-        )
-        self.form = self._crear_widget()
-        if obj:
-            add_common_props(obj)
-            self._cargar_valores(obj)
+        self._init_panel_vdo(obj, on_accept, on_cancel, auto_transaction,
+                             "Editar cajón oculta", (add_common_props,))
         self._actualizar_header()
     # -----------------------------------------------------------------
     # Selectores contextuales
