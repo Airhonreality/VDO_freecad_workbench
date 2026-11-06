@@ -35,6 +35,11 @@ VIGILADOS = DATOS / "vigilados.json"
 
 CAPAS = [("core", CORE), ("ui", UI), ("cad", CAD), ("app", APP)]
 
+# Archivos de primer nivel del paquete (commands.py, __init__.py, qt_compat.py...).
+# Se escanean en `literales` porque viven fuera de las capas y podían reintroducir
+# valores de dominio sin que el gate lo viera. Solo primer nivel: datos/ queda fuera.
+PAQUETE = FREECAD / "vdo"
+
 
 # ---------------------------------------------------------------------------
 # Lectura de archivos
@@ -171,16 +176,17 @@ def _literales() -> dict:
     # Cuenta usos como literal de cadena (AST): ignora comentarios, docstrings de
     # texto libre, identificadores como `tirador_x` y subcadenas.
     conjunto = set(vigilados)
-    for nombre, base in CAPAS:
-        for p in _archivos_py(base):
-            try:
-                t = ast.parse(_leer(p))
-            except SyntaxError:
-                continue
-            rel = str(p.relative_to(ROOT))
-            for nodo in ast.walk(t):
-                if isinstance(nodo, ast.Constant) and isinstance(nodo.value, str) and nodo.value in conjunto:
-                    hallazgos.setdefault(nodo.value, []).append(f"{rel}:{nodo.lineno}")
+    archivos = [p for _, base in CAPAS for p in _archivos_py(base)]
+    archivos += sorted(PAQUETE.glob("*.py"))
+    for p in archivos:
+        try:
+            t = ast.parse(_leer(p))
+        except SyntaxError:
+            continue
+        rel = str(p.relative_to(ROOT))
+        for nodo in ast.walk(t):
+            if isinstance(nodo, ast.Constant) and isinstance(nodo.value, str) and nodo.value in conjunto:
+                hallazgos.setdefault(nodo.value, []).append(f"{rel}:{nodo.lineno}")
     return {"vigilados": vigilados, "hallazgos": hallazgos, "total": sum(len(v) for v in hallazgos.values())}
 
 
