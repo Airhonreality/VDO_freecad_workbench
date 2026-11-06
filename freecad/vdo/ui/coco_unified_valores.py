@@ -18,7 +18,14 @@ class CocoUnifiedValoresMixin:
         self.spin_ancho.setValue(float(obj.Ancho))
         self.spin_fondo.setValue(float(obj.FondoModulo))
         self.spin_espesor.setValue(int(obj.Espesor))
+        self._cargar_chassis(obj)
+        self._cargar_orientacion(obj)
+        self._cargar_divisiones(obj)
 
+        self._actualizar_resumen()
+        self._building = False
+
+    def _cargar_chassis(self, obj):
         if hasattr(self, "box_chassis") and self.box_chassis is not None:
             raw_cfg = getattr(obj, "VDO_Chassis_JSON", None)
             cfg = None
@@ -53,6 +60,7 @@ class CocoUnifiedValoresMixin:
                 }
             self.box_chassis.setChassisConfig(cfg)
 
+    def _cargar_orientacion(self, obj):
         self.spin_rotacion.setValue(
             float(getattr(obj, "VDO_RotacionZ", 0.0)))
         anclaje = getattr(obj, "VDO_Anclaje", ANCLAJE_DEFAULT)
@@ -72,6 +80,7 @@ class CocoUnifiedValoresMixin:
             if idx >= 0:
                 combo.setCurrentIndex(idx)
 
+    def _cargar_divisiones(self, obj):
         self._rows_x = []
         self._rows_y = []
         self._selected_paths = {"X": [], "Y": []}
@@ -80,9 +89,6 @@ class CocoUnifiedValoresMixin:
             self.spin_alto.value(), self.spin_ancho.value(),
             self.spin_espesor.value())
         self.editor_divisiones.cargar_desde_objeto(obj)
-
-        self._actualizar_resumen()
-        self._building = False
 
     def _leer_valores_ui(self):
         cfg = self.box_chassis.getChassisConfig() if hasattr(self, "box_chassis") and self.box_chassis else {}
