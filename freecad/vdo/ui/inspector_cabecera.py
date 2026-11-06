@@ -110,6 +110,15 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self._estilizar()
+        layout = self._crear_layout()
+        self._crear_icono(layout)
+        self._crear_medidas(layout)
+        self._crear_espesor(layout)
+        layout.addStretch()
+        self._conectar_senales()
+
+    def _estilizar(self):
         self.setObjectName("VDOMicroHeader")
         self.setFixedHeight(30)
         self.setStyleSheet("""
@@ -139,14 +148,18 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
             }
         """)
 
+    def _crear_layout(self):
         layout = QtWidgets.QHBoxLayout(self)
         layout.setContentsMargins(6, 2, 6, 2)
         layout.setSpacing(4)
+        return layout
 
+    def _crear_icono(self, layout):
         icon_lbl = QtWidgets.QLabel("📐")
         icon_lbl.setStyleSheet("font-size: 11px;")
         layout.addWidget(icon_lbl)
 
+    def _crear_medidas(self, layout):
         # Ancho (W)
         self.spin_w = VDO_DoubleSpinBox()
         self.spin_w.setDecimals(1)
@@ -178,6 +191,7 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
         self.spin_d.setFixedWidth(64)
         layout.addWidget(self.spin_d)
 
+    def _crear_espesor(self, layout):
         lbl_sep = QtWidgets.QLabel("mm │ Esp:")
         layout.addWidget(lbl_sep)
 
@@ -190,8 +204,7 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
         self.spin_e.setFixedWidth(60)
         layout.addWidget(self.spin_e)
 
-        layout.addStretch()
-
+    def _conectar_senales(self):
         self._bloqueo_signals = False
         self.spin_w.editingFinished.connect(self._on_edited)
         self.spin_h.editingFinished.connect(self._on_edited)

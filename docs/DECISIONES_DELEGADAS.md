@@ -578,3 +578,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-63
 
 - **D-63:** cinco funciones más de ui/ divididas por extracción literal, verificada con AST. Verificación visual pendiente (M10), que el usuario hará al final.
+
+## D-64
+
+- **D-64:** cinco funciones más de ui/ divididas por extracción literal, verificada con AST antes de commitear.
