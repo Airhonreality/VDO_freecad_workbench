@@ -600,3 +600,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-69
 
 - **D-69:** corrección de error preexistente: `fila=` duplicado en chk_trasera hacía imposible construir el panel de zócalo (desde 23d69a9). Intención igual (fila 3). Desviación del encargo: quitar solo el duplicado no bastaba, porque `_campo` coloca los checkbox en `fila_check` (por defecto None) y el panel seguía fallando con `addWidget(QLabel, NoneType, int)`. Por eso `fila=3` se sustituye por `fila_check=3`. Verificado: ZocaloTaskPanel se construye en offscreen. Revertir: git revert del commit.
+
+## D-70
+
+- **D-70:** M6 usa vdo_form_builder.FormBuilder como constructor genérico (no se duplica). El panel de zócalo se migra a especificación.
