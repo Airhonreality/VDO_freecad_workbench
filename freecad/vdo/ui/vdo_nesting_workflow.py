@@ -192,75 +192,21 @@ class NestingDialog(QtWidgets.QDialog):
         App.Console.PrintMessage(f"\n📦 Preparando {len(self.selected_parts)} pieza(s)...")
 
         try:
-            preparer = ShapePreparer(doc, {
-                'deflection': 0.05,
-                'simplification': 1.0
-            })
-
-            shapes = []
-            for obj in self.selected_parts:
-                try:
-                    shape = preparer.prepare_shape(
-                        obj,
-                        quantity=1,
-                        rotation_steps=4,
-                        up_direction="Z+"
-                    )
-                    shapes.append(shape)
-                    App.Console.PrintMessage(f"  ✅ {obj.Label}")
-                except Exception as e:
-                    App.Console.PrintMessage(f"  ❌ {obj.Label}: {e}")
+            shapes = self._preparar_formas(doc)
 
             if not shapes:
                 App.Console.PrintError("No se pudieron preparar piezas\n")
                 return
 
-            # Parámetros
-            width = self.spin_width.value()
-            height = self.spin_height.value()
-            spacing = self.spin_spacing.value()
-            algo = "Minkowski" if "Minkowski" in self.combo_algo.currentText() else "Physics"
-            generations = self.spin_generations.value()
+            width, height, spacing, algo, generations = self._leer_parametros()
 
-            # Ejecutar nesting
-            App.Console.PrintMessage(f"\n🔄 Ejecutando nesting ({algo})...")
-            App.Console.PrintMessage(f"   Tablero: {width}×{height} mm, Espaciado: {spacing} mm")
+            sheets, unplaced, _steps, elapsed = self._ejecutar_nesting(shapes, width, height, spacing, algo, generations)
 
-            sheets, unplaced, _steps, elapsed = nest(
-                parts=shapes,
-                width=width,
-                height=height,
-                rotation_steps=4,
-                spacing=spacing,
-                simulate=False,
-                algorithm=algo,
-                generations=generations if algo == "Minkowski" else 1,
-                population_size=1,
-                gravity_direction=0,
-                verbose=True
-            )
+            self._imprimir_resultados(sheets, unplaced, elapsed)
 
-            # Resultados
-            App.Console.PrintMessage(f"\n✅ Nesting completado en {elapsed:.2f}s")
-            App.Console.PrintMessage(f"   Tableros utilizados: {len(sheets)}")
-            App.Console.PrintMessage(f"   Piezas no colocadas: {len(unplaced)}")
+            self._imprimir_eficiencia(sheets)
 
-            for i, sheet in enumerate(sheets):
-                efficiency = (sheet.used_area / (sheet.width * sheet.height)) * 100
-                App.Console.PrintMessage(f"     Sheet {i+1}: {len(sheet.parts)} piezas, {efficiency:.1f}% utilización")
-
-            # Dibujar layouts en documento
-            App.Console.PrintMessage("\n📐 Dibujando layouts...")
-            layout_group = crear_grupo(doc, "NestingLayout")
-
-            for _sheet_idx, sheet in enumerate(sheets):
-                sheet.parent_group_name = layout_group.Name
-                sheet.draw(doc, {
-                    'show_bounds': True,
-                    'add_labels': True,
-                    'label_height': 25,
-                    'label_size': 10
-                }, parent_group=layout_group)
+            layout_group = self._dibujar_layouts(doc, sheets)
 
             recalcular(doc)
 
@@ -280,6 +226,82 @@ class NestingDialog(QtWidgets.QDialog):
             App.Console.PrintError(f"Error: {e}\n")
             import traceback
             traceback.print_exc()
+
+    def _preparar_formas(self, doc):
+        preparer = ShapePreparer(doc, {
+            'deflection': 0.05,
+            'simplification': 1.0
+        })
+
+        shapes = []
+        for obj in self.selected_parts:
+            try:
+                shape = preparer.prepare_shape(
+                    obj,
+                    quantity=1,
+                    rotation_steps=4,
+                    up_direction="Z+"
+                )
+                shapes.append(shape)
+                App.Console.PrintMessage(f"  ✅ {obj.Label}")
+            except Exception as e:
+                App.Console.PrintMessage(f"  ❌ {obj.Label}: {e}")
+        return shapes
+
+    def _leer_parametros(self):
+        # Parámetros
+        width = self.spin_width.value()
+        height = self.spin_height.value()
+        spacing = self.spin_spacing.value()
+        algo = "Minkowski" if "Minkowski" in self.combo_algo.currentText() else "Physics"
+        generations = self.spin_generations.value()
+        return width, height, spacing, algo, generations
+
+    def _ejecutar_nesting(self, shapes, width, height, spacing, algo, generations):
+        # Ejecutar nesting
+        App.Console.PrintMessage(f"\n🔄 Ejecutando nesting ({algo})...")
+        App.Console.PrintMessage(f"   Tablero: {width}×{height} mm, Espaciado: {spacing} mm")
+
+        sheets, unplaced, _steps, elapsed = nest(
+            parts=shapes,
+            width=width,
+            height=height,
+            rotation_steps=4,
+            spacing=spacing,
+            simulate=False,
+            algorithm=algo,
+            generations=generations if algo == "Minkowski" else 1,
+            population_size=1,
+            gravity_direction=0,
+            verbose=True
+        )
+        return sheets, unplaced, _steps, elapsed
+
+    def _imprimir_resultados(self, sheets, unplaced, elapsed):
+        # Resultados
+        App.Console.PrintMessage(f"\n✅ Nesting completado en {elapsed:.2f}s")
+        App.Console.PrintMessage(f"   Tableros utilizados: {len(sheets)}")
+        App.Console.PrintMessage(f"   Piezas no colocadas: {len(unplaced)}")
+
+    def _imprimir_eficiencia(self, sheets):
+        for i, sheet in enumerate(sheets):
+            efficiency = (sheet.used_area / (sheet.width * sheet.height)) * 100
+            App.Console.PrintMessage(f"     Sheet {i+1}: {len(sheet.parts)} piezas, {efficiency:.1f}% utilización")
+
+    def _dibujar_layouts(self, doc, sheets):
+        # Dibujar layouts en documento
+        App.Console.PrintMessage("\n📐 Dibujando layouts...")
+        layout_group = crear_grupo(doc, "NestingLayout")
+
+        for _sheet_idx, sheet in enumerate(sheets):
+            sheet.parent_group_name = layout_group.Name
+            sheet.draw(doc, {
+                'show_bounds': True,
+                'add_labels': True,
+                'label_height': 25,
+                'label_size': 10
+            }, parent_group=layout_group)
+        return layout_group
 
 
 def main():
