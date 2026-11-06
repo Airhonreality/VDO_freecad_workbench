@@ -466,3 +466,8 @@ Decisión pendiente para el humano: aprobar el cambio de rutas `factory` en `mod
 
 - **D-39 (decisión del director):** M7 cad/coco. `CocoFeature` se queda en `cad/coco.py` con su nombre y ruta (sin reexportación, P6). Se extrae el cuerpo de `execute` y `_cortar_shape` a módulos por concepto dentro de `cad/`: `coco_cortes.py` (resta de formas y tiras de carcasa frente a divisiones y núcleos), `coco_carcasa.py`, `coco_shell.py`, `coco_divisiones.py` y `coco_propiedades.py`. Cada bloque es una función de módulo que recibe exactamente las variables que lee y devuelve las que escribe, en el mismo orden de operaciones. Meta: `cad/coco.py` < 400 líneas y ninguna función > 60 líneas.
 - Revertir: `git revert --no-edit` de los commits de esta extracción.
+
+## D-40 (ola 28)
+
+- **D-40:** M7 ui/vdo_widgets_coco partido por concepto, sin reexportaciones (P6). Verificación visual pendiente (M10).
+- Decisión de implementación: `DivisionesEditor` (una sola clase de ~1.600 líneas) se reparte en mixins por concepto, uno por módulo; la clase raíz queda en `ui/coco_construccion_widgets.py`. Los métodos se mueven sin cambios de código. Son cinco módulos nuevos (`coco_construccion`, `coco_inspector`, `coco_arbol`, `coco_edicion`, `coco_reengrose`), todos bajo 400 líneas. `PanelHeaderWidget` va con el inspector, porque `_actualizar_header_pieza` es quien lo actualiza.

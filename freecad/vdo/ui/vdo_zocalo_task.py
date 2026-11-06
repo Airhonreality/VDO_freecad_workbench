@@ -18,7 +18,7 @@ from freecad.vdo.core.vdo_zocalo_core import ZocaloError, calcular_geometria_zoc
 from freecad.vdo.qt_compat import QtGui, QtWidgets
 from freecad.vdo.ui.vdo_form_builder import FormBuilder
 from freecad.vdo.ui.vdo_task_base import VDOTransactionMixin, cerrar_dialogo
-from freecad.vdo.ui.vdo_widgets_coco import PanelHeaderWidget
+from freecad.vdo.ui.coco_inspector_widgets import PanelHeaderWidget
 
 CANTOS_FRENTE = {
     "norte": "RIG", "sur": "RIG", "este": "RIG", "oeste": "RIG"}
