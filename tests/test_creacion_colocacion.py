@@ -19,7 +19,7 @@ import math
 from freecad.vdo.creacion import crear_modulo_interactivo
 from freecad.vdo.core.vdo_coco_core import make_coco
 from freecad.vdo.core.vdo_panel_core import crear_pieza
-from freecad.vdo.cad.zocalo import make_zocalo
+from freecad.vdo.core.vdo_zocalo_core import make_zocalo
 from freecad.vdo.ui.vdo_placement import iniciar_colocacion
 from tests.soporte.requisitos import requiere_freecad, requiere_qt
 
