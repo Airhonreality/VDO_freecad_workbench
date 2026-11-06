@@ -5,6 +5,7 @@
 # =====================================================================
 
 import json
+from typing import Any
 
 from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import defaults as VDO_D
@@ -17,7 +18,7 @@ from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 class ZocaloFeature:
     """FeaturePython que genera la geometría de un zócalo."""
 
-    def __init__(self, obj):
+    def __init__(self, obj: Any) -> None:  # objeto FreeCAD, sin tipo estatico
         obj.addProperty("App::PropertyLength", "Ancho", "Dimensiones",
                         "Ancho total del mueble (mm)").Ancho = 600.0
         obj.addProperty("App::PropertyLength", "Fondo", "Dimensiones",
@@ -62,7 +63,7 @@ class ZocaloFeature:
 
         obj.Proxy = self
 
-    def _config(self, fp):
+    def _config(self, fp: Any) -> dict[str, Any]:  # fp: objeto FreeCAD, sin tipo estatico
         return {
             "ancho": float(fp.Ancho),
             "fondo": float(fp.Fondo),
@@ -76,7 +77,7 @@ class ZocaloFeature:
             "material_ref": fp.VDO_Material_Ref,
         }
 
-    def execute(self, fp):
+    def execute(self, fp: Any) -> None:  # fp: objeto FreeCAD, sin tipo estatico
         try:
             geo = calcular_geometria_zocalo(**self._config(fp))
         except ValueError as exc:
@@ -87,7 +88,7 @@ class ZocaloFeature:
             return
 
         alto = float(fp.AltoZocalo)
-        solidos = []
+        solidos: list[Any] = []  # solidos FreeCAD, sin tipo estatico
         for tira in geo["tiras"]:
             solidos.append(_get_part().makeBox(
                 tira["w"], tira["h"], alto,
@@ -99,7 +100,7 @@ class ZocaloFeature:
 
         fp.Shape = _get_part().makeCompound(solidos)
 
-        piezas = []
+        piezas: list[dict[str, Any]] = []
         for pieza in geo["piezas"]:
             dato = dict(pieza)
             dato["grupo"] = fp.Label
@@ -108,14 +109,15 @@ class ZocaloFeature:
         fp.VDO_Paneles_JSON = json.dumps(piezas, ensure_ascii=False)
         fp.VDO_ResumenDespiece = geo["resumen"]
 
-    def dumps(self):
+    def dumps(self) -> None:
         return None
 
-    def loads(self, state):
+    def loads(self, state: Any) -> None:  # estado de FreeCAD, sin tipo estatico
         return None
 
 
-def make_zocalo(doc, configuracion):
+# doc y retorno: objetos FreeCAD, sin tipo estatico
+def make_zocalo(doc: Any, configuracion: dict[str, Any]) -> Any | None:
     """Crea un zócalo paramétrico (FeaturePython).
 
     Args:
