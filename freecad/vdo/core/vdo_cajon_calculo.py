@@ -172,6 +172,17 @@ def _fachada_base(alto_frente, holg_sup, holg_inf, ancho_ext, tipo_montaje_facha
     return ancho_fachada, alto_fachada_nominal
 
 
+def _sistema_apertura(config, alto_fachada_nominal):
+    """Aplica el sistema de apertura a la fachada y devuelve sus cantos y operacion."""
+    # --- Aplicar sistema de apertura (contrato universal de fachadas) ---
+    sistema_apertura = config.get("sistema_apertura", APERTURA_TIRADOR)
+    alto_fachada, operacion_canto = aplicar_sistema_apertura(
+        alto_fachada_nominal, sistema_apertura,
+        descuento_gola=GOLA_DESCUENTO_ALTURA_DEFAULT)
+    cantos_fachada = cantos_por_sistema_apertura(sistema_apertura)
+    return sistema_apertura, alto_fachada, operacion_canto, cantos_fachada
+
+
 def calcular_despiece(config):
     """Calcula el despiece completo del cajón con corredera oculta.
 
@@ -222,12 +233,8 @@ def calcular_despiece(config):
     ancho_fachada, alto_fachada_nominal = _fachada_base(
         alto_frente, holg_sup, holg_inf, ancho_ext, tipo_montaje_fachada, holg_lat)
 
-    # --- Aplicar sistema de apertura (contrato universal de fachadas) ---
-    sistema_apertura = config.get("sistema_apertura", APERTURA_TIRADOR)
-    alto_fachada, operacion_canto = aplicar_sistema_apertura(
-        alto_fachada_nominal, sistema_apertura,
-        descuento_gola=GOLA_DESCUENTO_ALTURA_DEFAULT)
-    cantos_fachada = cantos_por_sistema_apertura(sistema_apertura)
+    (sistema_apertura, alto_fachada, operacion_canto,
+     cantos_fachada) = _sistema_apertura(config, alto_fachada_nominal)
 
     # --- 7. Posiciones 3D (origen = esquina frontales-inferior-izquierda
     #        exterior de la caja, coordenadas puramente locales al cajón) ---
