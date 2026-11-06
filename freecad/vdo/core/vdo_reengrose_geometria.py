@@ -57,6 +57,49 @@ def _refuerzos_bordes_reengrose(largo, ancho, espesor, nombre, mod):
     return refuerzos, tiras
 
 
+def _posicion_refuerzo(largo, ancho, mod):
+    """Devuelve largo, ancho, x0 e y0 de un refuerzo sin pacha total."""
+    ancho_ref = mod["ancho"]
+    if mod["orientacion"] == "paralela":
+        if ancho_ref > ancho + 1e-6:
+            raise ReengroseError(
+                "El ancho del reengrose paralelo no cabe en la pieza.")
+        y0 = _inicio_alineado(
+            ancho, ancho_ref, mod["alineacion_profundidad"])
+        return largo, ancho_ref, 0.0, y0
+    if ancho_ref > largo + 1e-6:
+        raise ReengroseError(
+            "El ancho del reengrose transversal no cabe en la pieza.")
+    x0 = _inicio_alineado(largo, ancho_ref, "centrado")
+    return ancho, ancho_ref, x0, 0.0
+
+
+def _refuerzo_pieza(nombre, largo, ancho, esp_ref, z0, sufijo, mod):
+    """Construye la pieza de refuerzo de una cara."""
+    if mod["modo_fabricacion"] == "pacha" and mod["alcance"] == "total":
+        return {
+            "nombre": f"{nombre}_Pacha{sufijo}",
+            "rol": "refuerzo",
+            "largo": largo,
+            "ancho": ancho,
+            "espesor": esp_ref,
+            "x": 0.0,
+            "y": 0.0,
+            "z": z0,
+        }
+    largo_ref, ancho_ref, x0, y0 = _posicion_refuerzo(largo, ancho, mod)
+    return {
+        "nombre": f"{nombre}_Reengrose{sufijo}",
+        "rol": "refuerzo",
+        "largo": largo_ref,
+        "ancho": ancho_ref,
+        "espesor": esp_ref,
+        "x": x0,
+        "y": y0,
+        "z": z0,
+    }
+
+
 def calcular_geometria_reengrose(panel_base, modifier):
     """Calcula la pieza base y los refuerzos en coordenadas del tablero."""
     mod = normalizar_modificador(modifier)
@@ -103,49 +146,8 @@ def calcular_geometria_reengrose(panel_base, modifier):
         sufijo = ""
         if len(caras) > 1:
             sufijo = "_A" if cara == "cara_a" else "_B"
-
-        if mod["modo_fabricacion"] == "pacha" and mod["alcance"] == "total":
-            refuerzo = {
-                "nombre": f"{nombre}_Pacha{sufijo}",
-                "rol": "refuerzo",
-                "largo": largo,
-                "ancho": ancho,
-                "espesor": esp_ref,
-                "x": 0.0,
-                "y": 0.0,
-                "z": z0,
-            }
-        else:
-            if mod["orientacion"] == "paralela":
-                largo_ref = largo
-                ancho_ref = mod["ancho"]
-                if ancho_ref > ancho + 1e-6:
-                    raise ReengroseError(
-                        "El ancho del reengrose paralelo no cabe en la pieza.")
-                x0 = 0.0
-                y0 = _inicio_alineado(
-                    ancho, ancho_ref, mod["alineacion_profundidad"])
-            else:
-                largo_ref = ancho
-                ancho_ref = mod["ancho"]
-                if ancho_ref > largo + 1e-6:
-                    raise ReengroseError(
-                        "El ancho del reengrose transversal no cabe en la pieza.")
-                x0 = _inicio_alineado(largo, ancho_ref, "centrado")
-                y0 = 0.0
-
-            refuerzo = {
-                "nombre": f"{nombre}_Reengrose{sufijo}",
-                "rol": "refuerzo",
-                "largo": largo_ref,
-                "ancho": ancho_ref,
-                "espesor": esp_ref,
-                "x": x0,
-                "y": y0,
-                "z": z0,
-            }
-
-        resultado["refuerzos"].append(refuerzo)
+        resultado["refuerzos"].append(_refuerzo_pieza(
+            nombre, largo, ancho, esp_ref, z0, sufijo, mod))
     if mod["modo_fabricacion"] == "pacha":
         resultado["grupo_pacha"] = f"Pacha_{nombre}"
     return resultado
