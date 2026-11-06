@@ -7,6 +7,9 @@ puerta_despiece, ui/puerta_task) leen de esta tabla. Los motores de cálculo de
 cajón y puerta siguen separados: solo se unifica la tabla de reglas.
 """
 
+from collections.abc import Mapping
+from typing import Any, Final
+
 from freecad.vdo.datos.valores import TIRADOR
 
 # 1. DATOS -------------------------------------------------------------
@@ -22,7 +25,7 @@ APERTURA_45_GRADOS = "inglete_45"
 APERTURA_PUSH_OPEN = "push_open"
 
 # Orden: el mismo que muestra el selector de puerta.
-SISTEMAS = {
+SISTEMAS: Final[Mapping[str, Mapping[str, Any]]] = {
     APERTURA_TIRADOR: {
         "etiqueta": "Tirador Tradicional", "operacion": OPERACION_CANTO_ESTANDAR,
         "descuento_alto": 0.0, "descuento_gola": False, "bisel_45": False, "expulsor": False,
@@ -58,11 +61,11 @@ DESCUENTO_ALTO = {k: v["descuento_alto"] for k, v in SISTEMAS.items()}
 # 3. CÁLCULO (predicados puros) ----------------------------------------
 
 
-def _clave(sistema_apertura):
+def _clave(sistema_apertura: Any) -> str:
     return str(sistema_apertura).strip().lower()
 
 
-def normalizar_apertura(tipo_apertura):
+def normalizar_apertura(tipo_apertura: Any) -> str:
     """Normaliza un nombre de apertura (legado o canónico) a la clave del contrato."""
     tipo = _clave(tipo_apertura)
     return LEGADO_A_CONTRATO.get(tipo, tipo)
