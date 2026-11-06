@@ -4,10 +4,12 @@
 # expresiones de Params. Sin FreeCAD. La escritura vive en cad/panel.py.
 # =====================================================================
 
+from typing import Any
+
 from freecad.vdo.core import defaults as VDO_D
 
 
-def _validar_orientacion(configuracion):
+def _validar_orientacion(configuracion: dict[str, Any]) -> str:
     """Valida de forma estricta la clave 'orientacion'."""
     if "orientacion" not in configuracion:
         raise ValueError(
@@ -15,7 +17,7 @@ def _validar_orientacion(configuracion):
             "Ningún panel puede crearse sin definir su orientación "
             f"({', '.join(VDO_D.ORIENTACIONES_VALIDAS)}).")
 
-    orientacion = configuracion["orientacion"]
+    orientacion: str = configuracion["orientacion"]
     if orientacion not in VDO_D.ORIENTACIONES_VALIDAS:
         raise ValueError(
             f"Orientación inválida: '{orientacion}'. "
@@ -23,7 +25,7 @@ def _validar_orientacion(configuracion):
     return orientacion
 
 
-def expresiones_orientacion(orientacion):
+def expresiones_orientacion(orientacion: str) -> tuple[str, str, str]:
     """Devuelve (largo, ancho, espesor) como nombres de Params según la orientación.
 
     `Largo`/`Ancho` son siempre las caras del tablero y `Espesor` su grosor

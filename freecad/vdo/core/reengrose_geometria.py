@@ -102,7 +102,8 @@ def _refuerzo_pieza(nombre, largo, ancho, esp_ref, z0, sufijo, mod):
     }
 
 
-def calcular_geometria_reengrose(panel_base, modifier):
+def calcular_geometria_reengrose(panel_base: dict[str, Any],
+                                 modifier: ReengroseModifier) -> dict[str, Any]:
     """Calcula la pieza base y los refuerzos en coordenadas del tablero."""
     mod = normalizar_modificador(modifier)
     largo = float(panel_base.get("largo", 0.0))

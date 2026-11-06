@@ -4,6 +4,8 @@
 # expresiones de propiedades). El cálculo vive en core/panel_core.py.
 # =====================================================================
 
+from typing import Any
+
 from freecad.vdo.cad.geometria import forma_ref
 from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import defaults as VDO_D
@@ -56,7 +58,7 @@ _PROPS_REENGROSE = (
 )
 
 
-def add_reengrose_props(obj):
+def add_reengrose_props(obj: Any) -> None:
     """Anade las propiedades del motor de reengrose a un panel L1."""
     for nombre, tipo, descripcion, defecto, opciones in _PROPS_REENGROSE:
         if hasattr(obj, nombre):
@@ -67,12 +69,12 @@ def add_reengrose_props(obj):
         setattr(obj, nombre, defecto)
 
 
-def _limpiar_expresion(obj, prop):
+def _limpiar_expresion(obj: Any, prop: str) -> None:
     """Limpia la expresión de una propiedad si existe."""
     obj.clearExpression(prop)
 
 
-def aplicar_mapeo_orientacion(obj, orientacion):
+def aplicar_mapeo_orientacion(obj: Any, orientacion: str) -> None:
     """Aplica las expresiones de Params según la orientación.
 
     `Largo`/`Ancho` son siempre las caras del tablero y `Espesor` su grosor
@@ -92,7 +94,7 @@ def aplicar_mapeo_orientacion(obj, orientacion):
 class PanelFeature:
     """FeaturePython que genera la geometría de un tablero VDO."""
 
-    def __init__(self, obj):
+    def __init__(self, obj: Any) -> None:
         obj.addProperty(
             "App::PropertyLength", "Largo", "Dimensiones",
             "Largo del tablero (mm)").Largo = VDO_D.ANCHO_DEFAULT
@@ -136,7 +138,7 @@ class PanelFeature:
 
         obj.Proxy = self
 
-    def execute(self, fp):
+    def execute(self, fp: Any) -> None:
         largo = float(fp.Largo)
         ancho = float(fp.Ancho)
         espesor = float(fp.Espesor)
@@ -162,14 +164,14 @@ class PanelFeature:
                 shapes.append(forma)
         fp.Shape = _get_part().makeCompound(shapes)
 
-    def dumps(self):
+    def dumps(self) -> None:
         return None
 
-    def loads(self, state):
+    def loads(self, state: Any) -> None:
         return None
 
 
-def _obtener_o_crear_panel(doc, nombre):
+def _obtener_o_crear_panel(doc: Any, nombre: str) -> tuple[Any, bool]:
     """Devuelve (panel, es_nuevo): reutiliza un panel VDO existente o crea uno."""
     panel = doc.getObject(nombre)
     if panel is not None and not isinstance(
@@ -191,7 +193,7 @@ def _obtener_o_crear_panel(doc, nombre):
     return panel, True
 
 
-def _aplicar_cantos(panel, cantos):
+def _aplicar_cantos(panel: Any, cantos: dict[str, str]) -> None:
     """Valida y asigna los cuatro cantos (Norte, Sur, Este, Oeste)."""
     for direccion in ["Norte", "Sur", "Este", "Oeste"]:
         prop_name = f"VDO_Canto_{direccion}"
@@ -203,7 +205,7 @@ def _aplicar_cantos(panel, cantos):
         setattr(panel, prop_name, canto_value)
 
 
-def _aplicar_dimensiones(panel, configuracion, orientacion):
+def _aplicar_dimensiones(panel: Any, configuracion: dict[str, Any], orientacion: str) -> None:
     """Dimensiones por expresiones de Params o por valores explícitos."""
     usar_params = configuracion.get(
         "usar_params",
@@ -221,7 +223,7 @@ def _aplicar_dimensiones(panel, configuracion, orientacion):
         panel.Espesor = configuracion["espesor"]
 
 
-def _aplicar_rotacion_anclaje(panel, configuracion, es_nuevo):
+def _aplicar_rotacion_anclaje(panel: Any, configuracion: dict[str, Any], es_nuevo: bool) -> None:
     """Rotación Z, anclaje y Placement del panel."""
     rotacion = float(configuracion.get("rotacion", 0.0))
     panel.VDO_RotacionZ = rotacion
@@ -235,7 +237,7 @@ def _aplicar_rotacion_anclaje(panel, configuracion, es_nuevo):
         panel.Placement = _get_app().Placement()
 
 
-def crear_pieza(doc, configuracion):
+def crear_pieza(doc: Any, configuracion: dict[str, Any]) -> Any | None:
     """Función principal del motor de paneles (agnóstica de semántica).
 
     Args:

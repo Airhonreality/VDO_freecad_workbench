@@ -44,6 +44,7 @@ class ReengroseModifier:
     de modificador universal.
     """
 
+    activo: bool
     bordes: dict[str, BordeConfig]
     esquinas: dict[str, str] | str
     fabricacion: str
