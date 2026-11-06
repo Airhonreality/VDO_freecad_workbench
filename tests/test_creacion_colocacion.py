@@ -17,7 +17,7 @@ import FreeCAD as App
 import math
 
 from freecad.vdo.creacion import crear_modulo_interactivo
-from freecad.vdo.core.vdo_coco_core import make_coco
+from freecad.vdo.cad.coco import make_coco
 from freecad.vdo.cad.panel import crear_pieza
 from freecad.vdo.cad.zocalo import make_zocalo
 from freecad.vdo.ui.vdo_placement import iniciar_colocacion

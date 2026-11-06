@@ -12,7 +12,7 @@ except BaseException:
 
 app = None
 
-from freecad.vdo.core import vdo_coco_core as C
+from freecad.vdo.cad import coco as C
 from freecad.vdo.core.vdo_layout import Layout
 
 try:

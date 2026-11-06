@@ -30,7 +30,7 @@ from freecad.vdo.core.dto import (
     ZocaloResultado,
 )
 from freecad.vdo.cad.cajon import make_cajon
-from freecad.vdo.core.vdo_coco_core import make_coco
+from freecad.vdo.cad.coco import make_coco
 from freecad.vdo.core.vdo_module_specs import get_spec
 from freecad.vdo.cad.panel import crear_pieza
 from freecad.vdo.cad.puerta import make_puerta

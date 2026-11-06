@@ -4,7 +4,7 @@
     "menu": "Propiedades del COCO",
     "icon": "vdo_coco.svg",
     "factory": [
-      "freecad.vdo.core.vdo_coco_core",
+      "freecad.vdo.cad.coco",
       "make_coco"
     ],
     "panel": "panel.coco",
