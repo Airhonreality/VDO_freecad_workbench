@@ -55,6 +55,27 @@ class PuertaTaskConstruccionMixin:
         grid_fam.addWidget(self.combo_sistema, 0, 1)
         main.addWidget(grp_fam)
 
+        self._crear_grupo_montaje(main, grp_fam)
+        self._crear_grupo_dimensiones(main, grp_fam)
+        self._crear_grupo_apertura(main, grp_fam)
+        self._crear_grupo_herraje(main, grp_fam)
+        self._crear_grupo_piston(main, grp_fam)
+
+
+        # --- Expulsor magnético (solo push) ---
+        self.chk_expulsor = QtWidgets.QCheckBox("Inyectar expulsor magnético al BOM")
+        self.chk_expulsor.setStyleSheet(f"color: {COLOR_TEXTO};")
+        main.addWidget(self.chk_expulsor)
+        self._crear_grupo_posicion(main, grp_fam)
+
+        main.addStretch()
+        self._crear_botones(main)
+
+        self._conectar_senales()
+
+        return widget
+
+    def _crear_grupo_montaje(self, main, grp_fam):
         # --- Montaje (solo batiente) ---
         self.grp_montaje = QtWidgets.QGroupBox("Montaje (batiente)")
         self.grp_montaje.setStyleSheet(grp_fam.styleSheet())
@@ -69,6 +90,7 @@ class PuertaTaskConstruccionMixin:
         grid_m.addWidget(self.combo_sentido, 1, 1)
         main.addWidget(self.grp_montaje)
 
+    def _crear_grupo_dimensiones(self, main, grp_fam):
         # --- Dimensiones ---
         grp_dim = QtWidgets.QGroupBox("Dimensiones de la puerta (mm)")
         grp_dim.setStyleSheet(grp_fam.styleSheet())
@@ -97,6 +119,7 @@ class PuertaTaskConstruccionMixin:
 
         main.addWidget(grp_dim)
 
+    def _crear_grupo_apertura(self, main, grp_fam):
         # --- Sistema de apertura ---
         grp_ape = QtWidgets.QGroupBox("Sistema de apertura / fachada")
         grp_ape.setStyleSheet(grp_fam.styleSheet())
@@ -108,6 +131,7 @@ class PuertaTaskConstruccionMixin:
         grid_a.addWidget(self.combo_apertura, 0, 1)
         main.addWidget(grp_ape)
 
+    def _crear_grupo_herraje(self, main, grp_fam):
         # --- Herraje comercial (dropdown poblado desde Capa H) ---
         self.grp_herraje = QtWidgets.QGroupBox("Herraje comercial")
         self.grp_herraje.setStyleSheet(grp_fam.styleSheet())
@@ -123,6 +147,7 @@ class PuertaTaskConstruccionMixin:
         grid_h.addWidget(self.lbl_herraje_info, 1, 0, 1, 2)
         main.addWidget(self.grp_herraje)
 
+    def _crear_grupo_piston(self, main, grp_fam):
         # --- Pistón a gas (solo basculante) ---
         self.grp_piston = QtWidgets.QGroupBox("Cálculo de pistón a gas")
         self.grp_piston.setStyleSheet(grp_fam.styleSheet())
@@ -135,11 +160,7 @@ class PuertaTaskConstruccionMixin:
         grid_p.addWidget(self.lbl_piston, 0, 0, 1, 2)
         main.addWidget(self.grp_piston)
 
-        # --- Expulsor magnético (solo push) ---
-        self.chk_expulsor = QtWidgets.QCheckBox("Inyectar expulsor magnético al BOM")
-        self.chk_expulsor.setStyleSheet(f"color: {COLOR_TEXTO};")
-        main.addWidget(self.chk_expulsor)
-
+    def _crear_grupo_posicion(self, main, grp_fam):
         # --- Posición ---
         grp_pos = QtWidgets.QGroupBox("Posición (mm)")
         grp_pos.setStyleSheet(grp_fam.styleSheet())
@@ -172,8 +193,7 @@ class PuertaTaskConstruccionMixin:
             self.combo_anclaje.addItem(ANCLAJE_LABELS.get(a, a), a)
         grid_p.addWidget(self.combo_anclaje, 3, 1)
 
-        main.addStretch()
-
+    def _crear_botones(self, main):
         # Botones
         botones = QtWidgets.QDialogButtonBox()
         botones.addButton(
@@ -185,6 +205,7 @@ class PuertaTaskConstruccionMixin:
         botones.rejected.connect(self._on_cancel)
         main.addWidget(botones)
 
+    def _conectar_senales(self):
         # Señales de cambio
         self.combo_sistema.currentIndexChanged.connect(self._on_cambio_sistema)
         self.combo_apertura.currentIndexChanged.connect(self._actualizar_todo)
@@ -195,4 +216,3 @@ class PuertaTaskConstruccionMixin:
         self.spin_alto.valueChanged.connect(self._actualizar_todo)
         self.spin_espesor.valueChanged.connect(self._actualizar_todo)
 
-        return widget
