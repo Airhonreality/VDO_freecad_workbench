@@ -603,30 +603,34 @@ def _esquina_bordes(esquina):
     }[esquina]
 
 
+#: Esquina -> funcion(h0, h1, v0, v1) que devuelve los argumentos de recorte
+#: (a, b, c, sentido) del borde horizontal y del vertical.
+_RECORTE_INGLETE_POR_ESQUINA = {
+    "frente_izquierda": lambda h0, h1, v0, v1: (
+        (-1.0, 1.0, h0 - v0, -1.0),
+        (1.0, -1.0, v0 - h0, -1.0)),
+    "frente_derecha": lambda h0, h1, v0, v1: (
+        (1.0, 1.0, v1 + h0, -1.0),
+        (1.0, 1.0, v1 + h0, 1.0)),
+    "fondo_izquierda": lambda h0, h1, v0, v1: (
+        (1.0, 1.0, v0 + h1, 1.0),
+        (1.0, 1.0, v0 + h1, -1.0)),
+    "fondo_derecha": lambda h0, h1, v0, v1: (
+        (-1.0, 1.0, h1 - v1, 1.0),
+        (-1.0, 1.0, h1 - v1, -1.0)),
+}
+
+
 def _inglete_clip(poligonos, rects, esquina, borde_h, borde_v, largo, ancho):
     """Aplica corte a 45° (miter) en una esquina entre dos bordes activos."""
     h0, h1 = rects[borde_h][1], rects[borde_h][3]  # rango Y del borde horizontal
     v0, v1 = rects[borde_v][0], rects[borde_v][2]  # rango X del borde vertical
-    if esquina == "frente_izquierda":
-        poligonos[borde_h] = _clip_poligono(
-            poligonos[borde_h], -1.0, 1.0, h0 - v0, -1.0)
-        poligonos[borde_v] = _clip_poligono(
-            poligonos[borde_v], 1.0, -1.0, v0 - h0, -1.0)
-    elif esquina == "frente_derecha":
-        poligonos[borde_h] = _clip_poligono(
-            poligonos[borde_h], 1.0, 1.0, v1 + h0, -1.0)
-        poligonos[borde_v] = _clip_poligono(
-            poligonos[borde_v], 1.0, 1.0, v1 + h0, 1.0)
-    elif esquina == "fondo_izquierda":
-        poligonos[borde_h] = _clip_poligono(
-            poligonos[borde_h], 1.0, 1.0, v0 + h1, 1.0)
-        poligonos[borde_v] = _clip_poligono(
-            poligonos[borde_v], 1.0, 1.0, v0 + h1, -1.0)
-    elif esquina == "fondo_derecha":
-        poligonos[borde_h] = _clip_poligono(
-            poligonos[borde_h], -1.0, 1.0, h1 - v1, 1.0)
-        poligonos[borde_v] = _clip_poligono(
-            poligonos[borde_v], -1.0, 1.0, h1 - v1, -1.0)
+    recorte = _RECORTE_INGLETE_POR_ESQUINA.get(esquina)
+    if recorte is None:
+        return
+    args_h, args_v = recorte(h0, h1, v0, v1)
+    poligonos[borde_h] = _clip_poligono(poligonos[borde_h], *args_h)
+    poligonos[borde_v] = _clip_poligono(poligonos[borde_v], *args_v)
 
 
 def generar_tiras_perimetrales(largo_tablero, ancho_tablero, bordes,
