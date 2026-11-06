@@ -13,6 +13,13 @@ _LOG = logging.getLogger(__name__)
 QDOUBLESPINBOX_BASE = getattr(QtWidgets, "QDoubleSpinBox", getattr(QtGui, "QDoubleSpinBox", None))
 
 
+def seleccionar_por_dato(combo, valor):
+    """Selecciona en `combo` el item cuyo userData es `valor`; sin efecto si no existe."""
+    idx = combo.findData(valor)
+    if idx >= 0:
+        combo.setCurrentIndex(idx)
+
+
 class VDO_DoubleSpinBox(QDOUBLESPINBOX_BASE):
     """QDoubleSpinBox que acepta punto/coma y cualquier nº de decimales."""
 

@@ -14,6 +14,7 @@ app = None
 
 from freecad.vdo.cad import coco as C  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
 from freecad.vdo.core.layout_matriz import Layout  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
+from freecad.vdo.ui.qt import seleccionar_por_dato  # noqa: E402 - mismo orden de importes que el resto de este archivo
 
 try:
     from freecad.vdo.ui import export_cutting_list as E
@@ -188,7 +189,7 @@ class CocoReengroseTests(unittest.TestCase):
         self.assertGreaterEqual(idx, 0)
         editor.combo_elemento_reengrose.setCurrentIndex(idx)
         editor.chk_reengrose.setChecked(True)
-        editor._set_combo_data(editor.combo_re_cara, "cara_b")
+        seleccionar_por_dato(editor.combo_re_cara, "cara_b")
         editor.spin_re_ancho.setValue(50)
         editor._on_reengrose_changed()
         self.assertIn("division_x:x2", editor.reengroses)

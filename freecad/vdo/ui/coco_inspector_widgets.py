@@ -22,6 +22,7 @@ from freecad.vdo.core.facade_contract import (
 from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui import tema
+from freecad.vdo.ui.qt import seleccionar_por_dato
 
 _LOG = logging.getLogger(__name__)
 
@@ -195,10 +196,10 @@ class InspectorDivisionesMixin:
         self._building = True
         self.spin_cajon_cantidad.setValue(
             int(cfg.get("cantidad", 1)))
-        self._set_combo_data(
+        seleccionar_por_dato(
             self.combo_cajon_corredera,
             cfg.get("corredera", "Oculta"))
-        self._set_combo_data(
+        seleccionar_por_dato(
             self.combo_cajon_apertura,
             cfg.get("apertura", "Tirador"))
         self._building = False
@@ -211,10 +212,10 @@ class InspectorDivisionesMixin:
         self.widget_cajon.setVisible(False)
         # Cargar valores actuales en los combos
         self._building = True
-        self._set_combo_data(
+        seleccionar_por_dato(
             self.combo_puerta_familia,
             cfg.get("tipo_sistema", "Batiente Vertical"))
-        self._set_combo_data(
+        seleccionar_por_dato(
             self.combo_puerta_montaje,
             cfg.get("tipo_montaje", "Parche"))
         apertura_val = cfg.get("sistema_apertura", APERTURA_TIRADOR)
@@ -224,9 +225,9 @@ class InspectorDivisionesMixin:
             APERTURA_45_GRADOS: "45°",
             APERTURA_PUSH_OPEN: "Push Open",
         }.get(apertura_val, "Tirador")
-        self._set_combo_data(
+        seleccionar_por_dato(
             self.combo_puerta_apertura, apertura_label)
-        self._set_combo_data(
+        seleccionar_por_dato(
             self.combo_puerta_herraje,
             cfg.get("hardware_sku", ""))
         self._building = False

@@ -3,6 +3,7 @@
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
 from freecad.vdo.core import reengrose_modificador_normalizacion as VDO_RE_NORMALIZACION
+from freecad.vdo.ui.qt import seleccionar_por_dato
 
 
 class ReengroseConfigMixin:
@@ -19,9 +20,9 @@ class ReengroseConfigMixin:
         self._cargando = True
         self._aplicar_bordes_ui(mod, bordes, ancho, offset, largo_tira, uniforme)
         self._aplicar_esquinas_ui(esquinas, uniforme_esq)
-        self._set_combo_data(self.combo_fabricacion, mod.fabricacion)
-        self._set_combo_data(self.combo_choque, mod.choque_nucleo)
-        self._set_combo_data(self.combo_cara, mod.cara)
+        seleccionar_por_dato(self.combo_fabricacion, mod.fabricacion)
+        seleccionar_por_dato(self.combo_choque, mod.choque_nucleo)
+        seleccionar_por_dato(self.combo_cara, mod.cara)
         self._cargando = False
         self._actualizar_estado()
 
@@ -96,22 +97,16 @@ class ReengroseConfigMixin:
                 float(cfg.offset_borde))
         self.spin_ancho.setValue(float(ancho))
         self.spin_offset.setValue(float(offset))
-        self._set_combo_data(self.combo_largo_tira, largo_tira)
+        seleccionar_por_dato(self.combo_largo_tira, largo_tira)
         self.spin_espesor.setValue(
             0.0 if mod.espesor is None else float(mod.espesor))
         self.chk_uniforme.setChecked(uniforme)
 
     def _aplicar_esquinas_ui(self, esquinas, uniforme_esq):
         for esquina in VDO_RE_MODELO.ESQUINAS_2D:
-            self._set_combo_data(
+            seleccionar_por_dato(
                 self.combo_esquina[esquina], esquinas[esquina])
         self.chk_sync_esquinas.setChecked(uniforme_esq)
-
-    @staticmethod
-    def _set_combo_data(combo, valor):
-        idx = combo.findData(valor)
-        if idx >= 0:
-            combo.setCurrentIndex(idx)
 
     def _datos_bordes(self):
         espesor = self.spin_espesor.value()

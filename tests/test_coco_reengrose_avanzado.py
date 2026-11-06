@@ -18,6 +18,7 @@ from freecad.vdo.core import reengrose_geometria as R_GEOMETRIA  # noqa: E402 - 
 from freecad.vdo.core import reengrose_modelo as R_MODELO  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
 from freecad.vdo.core import reengrose_modificador as R_MODIFICADOR  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
 from freecad.vdo.core.layout_matriz import Layout  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
+from freecad.vdo.ui.qt import seleccionar_por_dato  # noqa: E402 - mismo orden de importes que el resto de este archivo
 
 try:
     from freecad.vdo.ui.coco_unified_task import CocoUnifiedTaskPanel
@@ -340,8 +341,8 @@ class CocoReengroseAvanzadoTests(unittest.TestCase):
         self.assertGreaterEqual(idx, 0)
         editor.combo_elemento_reengrose.setCurrentIndex(idx)
         editor.chk_reengrose.setChecked(True)
-        editor._set_combo_data(editor.combo_re_politica, "mocheo")
-        editor._set_combo_data(
+        seleccionar_por_dato(editor.combo_re_politica, "mocheo")
+        seleccionar_por_dato(
             editor.combo_re_prioridad, "inglete_45")
         editor._on_reengrose_changed()
         self.assertTrue(panel.accept())
@@ -374,7 +375,7 @@ class CocoReengroseAvanzadoTests(unittest.TestCase):
             "fondo_derecha": "marco_interior",
         }
         for esquina, tipo in mezcla.items():
-            editor._set_combo_data(
+            seleccionar_por_dato(
                 editor.combo_esquina[esquina], tipo)
         editor._on_reengrose_changed()
         self.assertTrue(panel.accept())
@@ -396,7 +397,7 @@ class CocoReengroseAvanzadoTests(unittest.TestCase):
         for borde in R_MODELO.BORDES_2D:
             editor.btn_borde[borde].setChecked(True)
         self.assertTrue(editor.chk_sync_esquinas.isChecked())
-        editor._set_combo_data(
+        seleccionar_por_dato(
             editor.combo_esquina["fondo_derecha"], "inglete_45")
         for esquina in R_MODELO.ESQUINAS_2D:
             self.assertEqual(

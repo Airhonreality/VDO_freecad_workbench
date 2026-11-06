@@ -1,6 +1,7 @@
 """Manejadores de eventos del editor de reengrose y sincronizacion de bordes/esquinas."""
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.ui.qt import seleccionar_por_dato
 
 
 class ReengroseEventosMixin:
@@ -104,7 +105,7 @@ class ReengroseEventosMixin:
                 if otra == esquina:
                     continue
                 combo.blockSignals(True)
-                self._set_combo_data(combo, valor)
+                seleccionar_por_dato(combo, valor)
                 combo.blockSignals(False)
             self._cargando = False
         self._emitir()
@@ -117,7 +118,7 @@ class ReengroseEventosMixin:
             self._cargando = True
             for combo in self.combo_esquina.values():
                 combo.blockSignals(True)
-                self._set_combo_data(combo, valor)
+                seleccionar_por_dato(combo, valor)
                 combo.blockSignals(False)
             self._cargando = False
         self._emitir()

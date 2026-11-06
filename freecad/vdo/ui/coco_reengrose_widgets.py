@@ -14,6 +14,7 @@ from freecad.vdo.core import (
 from freecad.vdo.core.layout_matriz import Layout
 from freecad.vdo.core.layout_modelo import cavidad_interior
 from freecad.vdo.qt_compat import QtWidgets
+from freecad.vdo.ui.qt import seleccionar_por_dato
 
 _LOG = logging.getLogger(__name__)
 
@@ -107,7 +108,6 @@ class ReengroseDivisionesMixin:
         self.re_editor.combo_choque = self.combo_choque
         self.re_editor.combo_cara = self.combo_cara
         self.re_editor.combo_fabricacion = self.combo_fabricacion
-        self.re_editor._set_combo_data = self._set_combo_data
 
     def _crear_controles_legacy(self):
         # Controles legacy ocultos para compatibilidad de API
@@ -250,22 +250,16 @@ class ReengroseDivisionesMixin:
             _LOG.warning("coco_reengrose_widgets: reengrose invalido, usa modificador vacio: %s", exc)
             mod = VDO_RE_MODIFICADOR.ReengroseModifier()
         self.re_editor.cargar(mod)
-        self._set_combo_data(
+        seleccionar_por_dato(
             self.combo_fabricacion, getattr(mod, "fabricacion", "pacha"))
         choque = getattr(mod, "choque_nucleo", "retroceso")
         if not datos and str(clave) in ("techo", "base"):
             choque = "mocheo"
-        self._set_combo_data(self.combo_choque, choque)
-        self._set_combo_data(
+        seleccionar_por_dato(self.combo_choque, choque)
+        seleccionar_por_dato(
             self.combo_cara, getattr(mod, "cara", "cara_a"))
         self.re_editor._actualizar_resumen()
         self._actualizar_estado_reengrose()
-
-    @staticmethod
-    def _set_combo_data(combo, valor):
-        idx = combo.findData(valor)
-        if idx >= 0:
-            combo.setCurrentIndex(idx)
 
     def _leer_reengrose_ui(self):
         datos = self.re_editor.getConfig()

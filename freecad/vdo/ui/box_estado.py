@@ -2,6 +2,7 @@
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.ui.box_constantes import _TEXTO_BOTON_BORDE, ENCUENTRO_LABELS
+from freecad.vdo.ui.qt import seleccionar_por_dato
 
 
 class BoxEstadoMixin:
@@ -39,13 +40,6 @@ class BoxEstadoMixin:
     def _actualizar_estado(self):
         """Alias retrocompatible."""
         self._actualizar_estado_habilitacion()
-
-    @staticmethod
-    def _set_combo_data(combo, valor):
-        """Establece el valor de un QComboBox buscando en su userData."""
-        idx = combo.findData(valor)
-        if idx >= 0:
-            combo.setCurrentIndex(idx)
 
     def _actualizar_resumen(self):
         if not self.chk_activo.isChecked():
@@ -94,7 +88,5 @@ class BoxEstadoMixin:
     @staticmethod
     def _set_combo_silencioso(combo, valor):
         combo.blockSignals(True)
-        idx = combo.findData(valor)
-        if idx >= 0:
-            combo.setCurrentIndex(idx)
+        seleccionar_por_dato(combo, valor)
         combo.blockSignals(False)
