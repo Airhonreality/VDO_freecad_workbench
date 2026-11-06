@@ -142,7 +142,7 @@ REQUIRED_API = [
     ("freecad.vdo.core.vdo_layout", "Layout"),
     ("freecad.vdo.core.vdo_layout", "resolve_layout"),
     ("freecad.vdo.core.vdo_layout", "Track"),
-    ("freecad.vdo.cad.coco_espacios", "generar_divisiones_matriz"),
+    ("freecad.vdo.core.vdo_coco_spaces", "generar_divisiones_matriz"),
     ("freecad.vdo.cad.coco", "make_coco"),
     ("freecad.vdo.cad.cajon", "make_cajon"),
     ("freecad.vdo.cad.cajon", "CajonFeature"),

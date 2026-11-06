@@ -335,7 +335,7 @@ class CocoFeature:
         indice_divs = None
         fondo_divisiones = max(0.0, f_y) if tiene_fondo else fondo
         if divisiones_json:
-            from freecad.vdo.cad.coco_espacios import generar_divisiones_matriz
+            from freecad.vdo.core.vdo_coco_spaces import generar_divisiones_matriz
             divs, resumen, piezas, resuelto = generar_divisiones_matriz(
                 divisiones_json, ancho_util, altura_util,
                 fondo_divisiones, espesor, x_util, z_util,
@@ -349,8 +349,7 @@ class CocoFeature:
 
         # --- Resolucion general tira contra tira y tira contra nucleo ---
         division_tiras = list(getattr(resuelto, "tiras", []) or [])
-        from freecad.vdo.cad.coco_espacios import _shape_tira
-        from freecad.vdo.core.vdo_coco_spaces import resolver_tiras
+        from freecad.vdo.core.vdo_coco_spaces import _shape_tira, resolver_tiras
 
         # Las tiras de carcasa con "interrumpir_tira" se segmentan
         # de forma controlada alrededor de las divisiones.
