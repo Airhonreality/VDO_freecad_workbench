@@ -16,6 +16,7 @@
 # =====================================================================
 
 import json
+from typing import Any
 
 from freecad.vdo.cad.cajon_geometria import _solidos_cajon
 from freecad.vdo.cad.propiedades import add_common_props
@@ -44,7 +45,7 @@ from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR
 # CajonFeature
 # =====================================================================
 
-def _props_entrada_cajon(obj):
+def _props_entrada_cajon(obj: Any) -> None:
     """Propiedades de entrada: espacio interior del mueble."""
     obj.addProperty("App::PropertyLength", "AnchoLibre", "Dimensiones",
                     "Ancho libre interior del mueble LI (mm)"
@@ -60,7 +61,7 @@ def _props_entrada_cajon(obj):
                     ).AltoFrente = 225.0
 
 
-def _props_caja_cajon(obj):
+def _props_caja_cajon(obj: Any) -> None:
     """Propiedades de la caja: alto y espesores del tablero."""
     obj.addProperty("App::PropertyLength", "AltoCaja", "Caja",
                     "Alto de los laterales de la caja (85/120/150)"
@@ -76,7 +77,7 @@ def _props_caja_cajon(obj):
                     ).GrosorFachada = VDO_D.CAJON_FACHADA_DEFAULT
 
 
-def _props_herraje_cajon(obj):
+def _props_herraje_cajon(obj: Any) -> None:
     """Propiedades de herraje: marca de corredera, guía y montaje de la trasera."""
     marcas = listar_marcas()
     obj.addProperty("App::PropertyEnumeration", "MarcaCorredera",
@@ -92,7 +93,7 @@ def _props_herraje_cajon(obj):
     obj.MontajeTrasera = "entre_laterales"
 
 
-def _props_tipologia_cajon(obj):
+def _props_tipologia_cajon(obj: Any) -> None:
     """Propiedad de tipologia de corredera."""
     obj.addProperty("App::PropertyEnumeration", "TipoCorredera",
                     "Herraje",
@@ -102,7 +103,7 @@ def _props_tipologia_cajon(obj):
     obj.TipoCorredera = CORREDERA_OCULTA
 
 
-def _props_fachada_cajon(obj):
+def _props_fachada_cajon(obj: Any) -> None:
     """Propiedades de fachada: sistema de apertura y tipo de montaje."""
     obj.addProperty("App::PropertyEnumeration", "SistemaApertura",
                     "Fachada",
@@ -119,7 +120,7 @@ def _props_fachada_cajon(obj):
     obj.TipoMontaje = MONTAJE_PARCHE
 
 
-def _props_vdo_cajon(obj):
+def _props_vdo_cajon(obj: Any) -> None:
     """Propiedades VDO de exportacion (cutting list) y de resumen del despiece."""
     obj.addProperty("App::PropertyString", "VDO_Tipo", "VDO",
                     "Tipo de objeto").VDO_Tipo = "contenedor"
@@ -140,7 +141,7 @@ def _props_vdo_cajon(obj):
 class CajonFeature:
     """FeaturePython que genera la geometría de un cajón (Trinidad v2)."""
 
-    def __init__(self, obj):
+    def __init__(self, obj: Any) -> None:
         _props_entrada_cajon(obj)
         _props_caja_cajon(obj)
         _props_herraje_cajon(obj)
@@ -160,7 +161,7 @@ class CajonFeature:
         obj.Proxy = self
 
     # -----------------------------------------------------------------
-    def _config(self, fp):
+    def _config(self, fp: Any) -> dict[str, Any]:
         """Construye el dict de entrada para calcular_despiece()."""
         # Para telescópica: grosor de piso 5.5 mm y eje de ranura a 10 mm
         grosor_fondo = float(fp.GrosorFondo)
@@ -193,7 +194,7 @@ class CajonFeature:
         }
 
     # -----------------------------------------------------------------
-    def execute(self, fp):
+    def execute(self, fp: Any) -> None:
         """Reconstruir la geometría del cajón con booleanos limpios."""
         try:
             d = calcular_despiece(self._config(fp))
@@ -223,14 +224,14 @@ class CajonFeature:
         _normalizar_local_placement(fp)
 
     # -----------------------------------------------------------------
-    def dumps(self):
+    def dumps(self) -> None:
         return None
 
-    def loads(self, state):
+    def loads(self, state: Any) -> None:
         return None
 
 
-def _paneles_json(piezas, tipo_corredera, label):
+def _paneles_json(piezas: list[dict[str, Any]], tipo_corredera: str, label: str) -> str:
     """JSON de las piezas del despiece con nombre prefijado por el Label."""
     paneles = json.loads(json.dumps(piezas, ensure_ascii=False))
     if tipo_corredera == CAJA_METALICA:
@@ -243,7 +244,7 @@ def _paneles_json(piezas, tipo_corredera, label):
     return json.dumps(paneles, ensure_ascii=False)
 
 
-def _resumen_despiece(d):
+def _resumen_despiece(d: dict[str, Any]) -> str:
     """Resumen legible del despiece (texto de solo lectura)."""
     tipo_corredera = d.get("tipo_corredera", CORREDERA_OCULTA)
     sistema_apertura = d.get("sistema_apertura", APERTURA_TIRADOR)
@@ -273,7 +274,7 @@ def _resumen_despiece(d):
     )
 
 
-def _normalizar_local_placement(fp):
+def _normalizar_local_placement(fp: Any) -> None:
     """Restablece LocalPlacement si su base contiene valores no numéricos."""
     lp = fp.LocalPlacement
     base = lp.Base
@@ -286,7 +287,7 @@ def _normalizar_local_placement(fp):
             _get_app().Vector(0.0, 0.0, 0.0), _get_app().Rotation())
 
 
-def make_cajon(doc, configuracion):
+def make_cajon(doc: Any, configuracion: dict[str, Any]) -> Any | None:
     """
     Crea un cajón con corredera (FeaturePython, Trinidad v2).
     """

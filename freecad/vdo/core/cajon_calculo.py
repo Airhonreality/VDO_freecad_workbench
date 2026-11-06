@@ -23,6 +23,8 @@
 #   "avisos":      lista de advertencias (str)
 # =====================================================================
 
+from typing import Any
+
 from freecad.vdo.core.cajon_calculo_bloques import (
     _ancho_exterior,
     _fachada_base,
@@ -216,7 +218,7 @@ def _filtrar_piezas(piezas, tipo_corredera):
             if p["nombre"] not in ("Cajon_Lateral_Izq", "Cajon_Lateral_Der")]
 
 
-def calcular_despiece(config):
+def calcular_despiece(config: dict[str, Any]) -> dict[str, Any]:
     """Calcula el despiece del cajón (corredera oculta, telescópica o metálica).
 
     Entradas y valores por defecto: ver _leer_entradas y _leer_defectos.

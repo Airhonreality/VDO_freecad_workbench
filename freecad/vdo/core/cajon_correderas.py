@@ -106,7 +106,7 @@ def obtener_marca(marca_id):
         f"Disponibles: {', '.join(_marcas_disponibles())}")
 
 
-def listar_marcas():
+def listar_marcas() -> list[str]:
     """Lista las claves de correderas ocultas disponibles.
 
     Combina los SKUs del catálogo de Capa H con las claves del manifest,
