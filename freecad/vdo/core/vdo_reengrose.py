@@ -13,6 +13,7 @@ Nota: ``forma_ref`` (Part.Shape) se movió a ``freecad.vdo.cad.geometria``
 """
 
 import json
+import operator
 
 from freecad.vdo.core.vdo_finish import BORDES, CANTOS_VALIDOS
 from freecad.vdo.core.vdo_helpers import DIMENSION_POR_EJE
@@ -633,6 +634,50 @@ def _inglete_clip(poligonos, rects, esquina, borde_h, borde_v, largo, ancho):
     poligonos[borde_v] = _clip_poligono(poligonos[borde_v], *args_v)
 
 
+#: Borde -> eje del rango largo ("x" o "y").
+_EJE_RANGO_LARGO = {
+    "frente": "x",
+    "fondo": "x",
+    "izquierda": "y",
+    "derecha": "y",
+}
+
+#: Borde -> funcion(off, w, largo, ancho) que devuelve el rango corto (inicio, fin).
+_RANGO_CORTO_POR_BORDE = {
+    "frente": lambda off, w, largo, ancho: (off, off + w),
+    "fondo": lambda off, w, largo, ancho: (ancho - off - w, ancho - off),
+    "izquierda": lambda off, w, largo, ancho: (off, off + w),
+    "derecha": lambda off, w, largo, ancho: (largo - off - w, largo - off),
+}
+
+#: Tope de extremo de un borde contra el borde vecino de una esquina.
+#: Cada regla: (borde que se topa, extremo 0=inicio 1=fin, limite, clave de
+#: la caja, operador de la distancia, borde cuyo ancho se aplica).
+_TOPE_VERTICAL_POR_ESQUINA = {
+    "frente_izquierda": (("frente", 0, max, "x0", operator.add, "izquierda"),),
+    "frente_derecha": (("frente", 1, min, "x1", operator.sub, "derecha"),),
+    "fondo_izquierda": (("fondo", 0, max, "x0", operator.add, "izquierda"),),
+    "fondo_derecha": (("fondo", 1, min, "x1", operator.sub, "derecha"),),
+}
+_TOPE_HORIZONTAL_POR_ESQUINA = {
+    "frente_izquierda": (("izquierda", 0, max, "y0", operator.add, "frente"),),
+    "frente_derecha": (("derecha", 0, max, "y0", operator.add, "frente"),),
+    "fondo_izquierda": (("izquierda", 1, min, "y1", operator.sub, "fondo"),),
+    "fondo_derecha": (("derecha", 1, min, "y1", operator.sub, "fondo"),),
+}
+
+#: Esquina -> tipo de encuentro -> reglas de tope que aplica.
+_REGLAS_ESQUINA = {
+    esquina: {
+        "vertical_domina": _TOPE_VERTICAL_POR_ESQUINA[esquina],
+        "horizontal_domina": _TOPE_HORIZONTAL_POR_ESQUINA[esquina],
+        "marco_interior": (_TOPE_VERTICAL_POR_ESQUINA[esquina]
+                           + _TOPE_HORIZONTAL_POR_ESQUINA[esquina]),
+    }
+    for esquina in ESQUINAS_2D
+}
+
+
 def generar_tiras_perimetrales(largo_tablero, ancho_tablero, bordes,
                                espesor_madre,
                                encuentro_esquinas=ENCUENTRO_ESQUINAS_DEFAULT):
@@ -691,110 +736,46 @@ def generar_tiras_perimetrales(largo_tablero, ancho_tablero, bordes,
     y0_box = cfgs["frente"]["distancia"] if "frente" in cfgs else 0.0
     y1_box = ancho - (cfgs["fondo"]["distancia"] if "fondo" in cfgs else 0.0)
 
-    # Rangos largos base segun largo_tira.
-    def long_range(borde):
-        cfg = cfgs[borde]
-        lt = cfg["largo_tira"]
-        es_punta = lt == "punta_a_punta"
-        if borde == "frente":
-            return (0.0 if es_punta else x0_box,
-                    largo if es_punta else x1_box)
-        if borde == "fondo":
-            return (0.0 if es_punta else x0_box,
-                    largo if es_punta else x1_box)
-        if borde == "izquierda":
-            return (0.0 if es_punta else y0_box,
-                    ancho if es_punta else y1_box)
-        return (0.0 if es_punta else y0_box,
-                ancho if es_punta else y1_box)
-
-    frentex0, frentex1 = long_range("frente")
-    fondox0, fondox1 = long_range("fondo")
-    izquierday0, izquierday1 = long_range("izquierda")
-    derechay0, derechay1 = long_range("derecha")
-
-    # Dimension corta (fija por distancia_al_canto).
-    def short_range(borde):
-        cfg = cfgs[borde]
-        w = max(0.0, cfg["ancho"])
-        off = cfg["distancia"]
-        if borde == "frente":
-            return off, off + w
-        if borde == "fondo":
-            y1 = ancho - off
-            return y1 - w, y1
-        if borde == "izquierda":
-            return off, off + w
-        x1 = largo - off
-        return x1 - w, x1
-
-    frente_y0, frente_y1 = short_range("frente")
-    fondo_y0, fondo_y1 = short_range("fondo")
-    izquierda_x0, izquierda_x1 = short_range("izquierda")
-    derecha_x0, derecha_x1 = short_range("derecha")
-    izquierday0, izquierday1 = long_range("izquierda")
-    derechay0, derechay1 = long_range("derecha")
+    caja = {"x0": x0_box, "x1": x1_box, "y0": y0_box, "y1": y1_box}
+    dimension = {"x": largo, "y": ancho}
 
     def wd(borde):
         return max(0.0, cfgs[borde]["ancho"])
 
+    # Rango largo base por borde segun largo_tira: [inicio, fin].
+    largos = {}
+    for borde in BORDES_2D:
+        es_punta = cfgs[borde]["largo_tira"] == "punta_a_punta"
+        eje = _EJE_RANGO_LARGO[borde]
+        largos[borde] = [
+            0.0 if es_punta else caja[eje + "0"],
+            dimension[eje] if es_punta else caja[eje + "1"]]
+
     # Recorte por esquina: el tipo de esquina manda sobre el recorte final.
-    if "frente" in activos and "izquierda" in activos:
-        tipo = encuentro_por_esquina["frente_izquierda"]
-        if tipo == "vertical_domina":
-            frentex0 = max(frentex0, x0_box + wd("izquierda"))
-        elif tipo == "horizontal_domina":
-            izquierday0 = max(izquierday0, y0_box + wd("frente"))
-        elif tipo == "marco_interior":
-            frentex0 = max(frentex0, x0_box + wd("izquierda"))
-            izquierday0 = max(izquierday0, y0_box + wd("frente"))
-
-    if "frente" in activos and "derecha" in activos:
-        tipo = encuentro_por_esquina["frente_derecha"]
-        if tipo == "vertical_domina":
-            frentex1 = min(frentex1, x1_box - wd("derecha"))
-        elif tipo == "horizontal_domina":
-            derechay0 = max(derechay0, y0_box + wd("frente"))
-        elif tipo == "marco_interior":
-            frentex1 = min(frentex1, x1_box - wd("derecha"))
-            derechay0 = max(derechay0, y0_box + wd("frente"))
-
-    if "fondo" in activos and "izquierda" in activos:
-        tipo = encuentro_por_esquina["fondo_izquierda"]
-        if tipo == "vertical_domina":
-            fondox0 = max(fondox0, x0_box + wd("izquierda"))
-        elif tipo == "horizontal_domina":
-            izquierday1 = min(izquierday1, y1_box - wd("fondo"))
-        elif tipo == "marco_interior":
-            fondox0 = max(fondox0, x0_box + wd("izquierda"))
-            izquierday1 = min(izquierday1, y1_box - wd("fondo"))
-
-    if "fondo" in activos and "derecha" in activos:
-        tipo = encuentro_por_esquina["fondo_derecha"]
-        if tipo == "vertical_domina":
-            fondox1 = min(fondox1, x1_box - wd("derecha"))
-        elif tipo == "horizontal_domina":
-            derechay1 = min(derechay1, y1_box - wd("fondo"))
-        elif tipo == "marco_interior":
-            fondox1 = min(fondox1, x1_box - wd("derecha"))
-            derechay1 = min(derechay1, y1_box - wd("fondo"))
+    for esquina in ESQUINAS_2D:
+        borde_h, borde_v = _esquina_bordes(esquina)
+        if borde_h not in activos or borde_v not in activos:
+            continue
+        reglas = _REGLAS_ESQUINA[esquina].get(
+            encuentro_por_esquina[esquina], ())
+        for borde, extremo, limite, clave, operar, borde_ancho in reglas:
+            valor = operar(caja[clave], wd(borde_ancho))
+            largos[borde][extremo] = limite(largos[borde][extremo], valor)
 
     def sane(x0, x1):
         if x1 < x0:
             x1 = x0
         return x0, x1
 
-    frentex0, frentex1 = sane(frentex0, frentex1)
-    fondox0, fondox1 = sane(fondox0, fondox1)
-    izquierday0, izquierday1 = sane(izquierday0, izquierday1)
-    derechay0, derechay1 = sane(derechay0, derechay1)
-
-    rects = {
-        "frente": [frentex0, frente_y0, frentex1, frente_y1],
-        "fondo": [fondox0, fondo_y0, fondox1, fondo_y1],
-        "izquierda": [izquierda_x0, izquierday0, izquierda_x1, izquierday1],
-        "derecha": [derecha_x0, derechay0, derecha_x1, derechay1],
-    }
+    rects = {}
+    for borde in BORDES_2D:
+        largo0, largo1 = sane(*largos[borde])
+        corto0, corto1 = _RANGO_CORTO_POR_BORDE[borde](
+            cfgs[borde]["distancia"], wd(borde), largo, ancho)
+        if _EJE_RANGO_LARGO[borde] == "x":
+            rects[borde] = [largo0, corto0, largo1, corto1]
+        else:
+            rects[borde] = [corto0, largo0, corto1, largo1]
 
     poligonos = {}
     for borde in activos:
