@@ -29,7 +29,7 @@ def _modificador_mapa(mapa: Any, clave: str) -> VDO_RE_MODIFICADOR.ReengroseModi
 
 
 
-def _expandir_reengrose(pieza):
+def _expandir_reengrose(pieza: dict[str, Any]) -> list[dict[str, Any]]:
     mod = pieza.get("reengrose")
     caja = pieza.get("caja")
     ejes = pieza.get("ejes")
