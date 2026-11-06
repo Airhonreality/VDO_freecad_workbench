@@ -202,22 +202,20 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
         return layout
 
     def _leer_reengroses(self, obj):
-        texto_reeng = getattr(obj, "VDO_Reengrose_JSON", "{}") or "{}"
-        try:
-            reengroses = json.loads(texto_reeng) if isinstance(texto_reeng, str) else dict(texto_reeng)
-        except Exception as exc:
-            App.Console.PrintWarning(f"[VDO] universal_inspector: reengroses no leidos, usa vacio: {exc}\n")
-            reengroses = {}
-        return reengroses
+        return self._leer_dict_json(obj, "VDO_Reengrose_JSON", "reengroses no leidos")
 
     def _leer_contenido(self, obj):
-        texto_contenido = getattr(obj, "VDO_Contenido_JSON", "{}") or "{}"
+        return self._leer_dict_json(obj, "VDO_Contenido_JSON", "contenido por celda no leido")
+
+    @staticmethod
+    def _leer_dict_json(obj, atributo, aviso):
+        """Lee un atributo JSON de `obj` como dict; ante error avisa con `aviso` y devuelve {}."""
+        texto = getattr(obj, atributo, "{}") or "{}"
         try:
-            contenido_por_celda = json.loads(texto_contenido) if isinstance(texto_contenido, str) else dict(texto_contenido)
+            return json.loads(texto) if isinstance(texto, str) else dict(texto)
         except Exception as exc:
-            App.Console.PrintWarning(f"[VDO] universal_inspector: contenido por celda no leido, usa vacio: {exc}\n")
-            contenido_por_celda = {}
-        return contenido_por_celda
+            App.Console.PrintWarning(f"[VDO] universal_inspector: {aviso}, usa vacio: {exc}\n")
+            return {}
 
     def _resolver_layout(self, layout, alto, ancho, espesor, reengroses):
         resolved = None
