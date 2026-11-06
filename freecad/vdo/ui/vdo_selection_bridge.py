@@ -18,6 +18,19 @@ except ImportError:  # FreeCADCmd / entorno headless
     Gui = None
 
 
+# Tabla de despacho (P3): nombre de clase del Proxy -> TARGET.
+# Claves distintas entre sí: no hay solapamiento, el orden no altera el resultado.
+_TARGET_POR_PROXY = {
+    "CocoFeature": "COCO",
+    "PanelFeature": "PANEL",
+    "CajonFeature": "CAJON",
+    "PuertaFeature": "PUERTA",
+    "ZocaloFeature": "ZOCALO",
+    "VanoFeature": "VANO",
+    "Vano": "VANO",
+}
+
+
 class VDOSelectionBridge:
     """Observer de selección nativa de FreeCAD.
 
@@ -99,19 +112,9 @@ class VDOSelectionBridge:
         try:
             proxy = getattr(obj, "Proxy", None)
             if proxy is not None:
-                nombre_proxy = type(proxy).__name__
-                if nombre_proxy == "CocoFeature":
-                    return self.TARGET_COCO
-                if nombre_proxy == "PanelFeature":
-                    return self.TARGET_PANEL
-                if nombre_proxy == "CajonFeature":
-                    return self.TARGET_CAJON
-                if nombre_proxy == "PuertaFeature":
-                    return self.TARGET_PUERTA
-                if nombre_proxy == "ZocaloFeature":
-                    return self.TARGET_ZOCALO
-                if nombre_proxy in ("VanoFeature", "Vano"):
-                    return self.TARGET_VANO
+                target = _TARGET_POR_PROXY.get(type(proxy).__name__)
+                if target is not None:
+                    return target
         except Exception:
             App.Console.PrintWarning(
                 "[VDO] Error clasificando objeto de selección")
