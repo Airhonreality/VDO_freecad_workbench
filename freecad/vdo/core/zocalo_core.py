@@ -7,6 +7,8 @@
 # y la extruye verticalmente en Z.
 # =====================================================================
 
+import operator
+from collections.abc import Callable
 from typing import Any
 
 from freecad.vdo.core import reengrose_tiras as VDO_RE_TIRAS
@@ -41,25 +43,22 @@ CANTOS_BORDE = {
 }
 
 
-# Any: valor de usuario, se convierte con float().
-def _float_positivo(valor: Any, nombre: str) -> float:
+# Regla de medida -> (comparación que rechaza el número frente a 0, mensaje).
+_REGLAS_MEDIDA: dict[str, tuple[Callable[[float, float], bool], str]] = {
+    "positivo": (operator.le, "'{nombre}' debe ser mayor que 0."),
+    "no_negativo": (operator.lt, "'{nombre}' no puede ser negativo."),
+}
+
+
+# Any: valor de usuario, se convierte con float() y se valida con la regla.
+def _medida(valor: Any, nombre: str, regla: str) -> float:
+    rechaza, mensaje = _REGLAS_MEDIDA[regla]
     try:
         numero = float(valor)
     except (TypeError, ValueError) as exc:
         raise ZocaloError(f"Valor inválido para '{nombre}': {valor!r}.") from exc
-    if numero <= 0:
-        raise ZocaloError(f"'{nombre}' debe ser mayor que 0.")
-    return numero
-
-
-# Any: valor de usuario, se convierte con float().
-def _float_no_negativo(valor: Any, nombre: str) -> float:
-    try:
-        numero = float(valor)
-    except (TypeError, ValueError) as exc:
-        raise ZocaloError(f"Valor inválido para '{nombre}': {valor!r}.") from exc
-    if numero < 0:
-        raise ZocaloError(f"'{nombre}' no puede ser negativo.")
+    if rechaza(numero, 0.0):
+        raise ZocaloError(mensaje.format(nombre=nombre))
     return numero
 
 
@@ -71,15 +70,15 @@ def _validar_parametros(
     amarres_intermedios: Any,
 ) -> tuple[float, float, float, float, float, float, float, bool]:
     """Convierte y valida los parámetros de entrada."""
-    ancho = _float_positivo(ancho, "ancho")
-    fondo = _float_positivo(fondo, "fondo")
-    alto_zocalo = _float_positivo(alto_zocalo, "alto_zocalo")
-    espesor = _float_positivo(espesor_tablero, "espesor_tablero")
-    dist_frente = _float_no_negativo(distancia_frente, "distancia_frente")
-    dist_costados = _float_no_negativo(
-        distancia_costados, "distancia_costados")
-    dist_trasera = _float_no_negativo(
-        distancia_trasera, "distancia_trasera")
+    ancho = _medida(ancho, "ancho", "positivo")
+    fondo = _medida(fondo, "fondo", "positivo")
+    alto_zocalo = _medida(alto_zocalo, "alto_zocalo", "positivo")
+    espesor = _medida(espesor_tablero, "espesor_tablero", "positivo")
+    dist_frente = _medida(distancia_frente, "distancia_frente", "no_negativo")
+    dist_costados = _medida(
+        distancia_costados, "distancia_costados", "no_negativo")
+    dist_trasera = _medida(
+        distancia_trasera, "distancia_trasera", "no_negativo")
     tiene_trasera = bool(tiene_trasera)
     try:
         amarres = int(amarres_intermedios)
