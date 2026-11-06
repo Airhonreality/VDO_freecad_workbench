@@ -72,12 +72,6 @@ class ReengroseModifier:
     def from_dict(cls, datos: Any) -> "ReengroseModifier":
         return cls(datos)
 
-    @classmethod
-    def from_json(cls, texto: str | None) -> "ReengroseModifier":
-        if not texto:
-            return cls()
-        return cls(json.loads(texto))
-
 
 # Any: datos puede ser DTO, objeto, dict, None o envoltorio.
 def _datos_modificador(datos: Any) -> dict[str, Any]:

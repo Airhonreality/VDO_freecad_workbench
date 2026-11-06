@@ -18,16 +18,10 @@ with open(_RUTA_MODULOS, encoding="utf-8") as _fh:
     MODULE_SPECS: dict[str, Any] = json.load(_fh)  # JSON: valores sin tipo fijo
 
 
-
 def _resolver(referencia: Sequence[str]) -> Any:  # atributo importado, sin tipo
     modulo, atributo = referencia
     mod = importlib.import_module(modulo)
     return getattr(mod, atributo)
-
-
-def resolver_panel(spec: dict[str, Any]) -> Any:  # valor JSON 'panel_ref'
-    """Devuelve la referencia del panel (string) para que app/ resuelva la vista. D24."""
-    return spec.get("panel_ref")
 
 
 def get_spec(module_key: str) -> dict[str, Any]:

@@ -43,18 +43,6 @@ class ResolvedTrack:
     def end(self) -> float:
         return self.start + self.size
 
-    @property
-    def clear_end(self) -> float:
-        return self.clear_start + self.clear_size
-
-    @property
-    def nominal_start(self) -> float:
-        return self.start
-
-    @property
-    def nominal_size(self) -> float:
-        return self.size
-
     def __repr__(self) -> str:
         return (f"ResolvedTrack({self.id}, start={self.start:.1f}, "
                 f"size={self.size:.1f}, clear={self.clear_size:.1f}, "
@@ -99,11 +87,6 @@ class ResolvedCell:
     @property
     def rect(self) -> tuple[float, float, float, float]:
         return (self.x, self.z, self.w, self.h)
-
-    @property
-    def nominal_rect(self) -> tuple[float, float, float, float]:
-        return (self.nominal_x, self.nominal_z,
-                self.nominal_w, self.nominal_h)
 
     def walk(self) -> Iterator["ResolvedCell"]:
         yield self
@@ -183,9 +166,6 @@ class ResolvedLayout:
     def walk_cells(self) -> Iterator[ResolvedCell]:
         for cell in self.cells:
             yield from cell.walk()
-
-    def total_panels(self) -> int:
-        return len(self.pieces)
 
     def summary(self) -> str:
         lineas = [

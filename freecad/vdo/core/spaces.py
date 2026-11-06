@@ -83,17 +83,6 @@ class SpaceNode:
                 f"id={self.space_id}, children={len(self.children)})")
 
 
-def serializar_espacios(nodes: list[SpaceNode]) -> str:
-    """Serializa una lista de SpaceNode a JSON para PropertyStringList.
-
-    Una lista vacía se serializa como cadena vacía para que el motor
-    distinga "sin divisiones" de un JSON con una lista vacía.
-    """
-    if not nodes:
-        return ""
-    return json.dumps([n.to_dict() for n in nodes], ensure_ascii=False)
-
-
 def deserializar_espacios(json_str: str) -> list[SpaceNode]:
     """Deserializa JSON a lista de SpaceNode."""
     if not json_str or not json_str.strip():
