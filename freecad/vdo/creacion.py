@@ -55,7 +55,7 @@ def _nombre_unico(doc: Any, base: str) -> str:
     return f"{base}_{i:03d}"
 
 
-def crear_modulo_interactivo(  # noqa: C901 - complejidad 16 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
+def crear_modulo_interactivo(
     module_key: str,
     config: dict[str, Any] | None = None,
     *,
@@ -77,17 +77,8 @@ def crear_modulo_interactivo(  # noqa: C901 - complejidad 16 (max 12): funcion c
             "[VDO] No hay documento activo para crear el módulo.\n")
         return None
 
-    cfg = dict(spec.get("config", {}))
-    if config:
-        cfg.update(config)
-    cfg["nombre"] = _nombre_unico(
-        doc, cfg.get("nombre") or spec.get("label", module_key))
-
-    tx_propia = False
-    if not doc.HasPendingTransaction:
-        doc.openTransaction(
-            f"Crear y colocar {spec.get('label', module_key)}")
-        tx_propia = True
+    cfg = _config_creacion(spec, doc, config, module_key)
+    tx_propia = _abrir_transaccion(doc, spec, module_key)
 
     obj = spec["factory_fn"](doc, cfg)
     if obj is None:
@@ -111,6 +102,32 @@ def crear_modulo_interactivo(  # noqa: C901 - complejidad 16 (max 12): funcion c
         confirmar()
         return obj
 
+    _colocar_interactivo(obj, spec, abrir_panel, colocar, confirmar, cancelar)
+    return obj
+
+
+def _config_creacion(spec: dict[str, Any], doc: Any, config: dict[str, Any] | None,
+                     module_key: str) -> dict[str, Any]:
+    cfg = dict(spec.get("config", {}))
+    if config:
+        cfg.update(config)
+    cfg["nombre"] = _nombre_unico(
+        doc, cfg.get("nombre") or spec.get("label", module_key))
+    return cfg
+
+
+def _abrir_transaccion(doc: Any, spec: dict[str, Any], module_key: str) -> bool:
+    """Abre transacción propia si no hay una pendiente; devuelve si es propia."""
+    if doc.HasPendingTransaction:
+        return False
+    doc.openTransaction(
+        f"Crear y colocar {spec.get('label', module_key)}")
+    return True
+
+
+def _colocar_interactivo(obj: Any, spec: dict[str, Any], abrir_panel: Callable[..., None],
+                         colocar: Callable[..., None], confirmar: Callable[[], None],
+                         cancelar: Callable[[], None]) -> None:
     import FreeCAD as App
     App.Console.PrintMessage("[VDO] " + diagnostico_viewprovider(obj) + "\n")
     _cad_ocultar_vista(obj)
@@ -136,7 +153,6 @@ def crear_modulo_interactivo(  # noqa: C901 - complejidad 16 (max 12): funcion c
         # Error de la interfaz: se deshace lo creado y se propaga (no se oculta).
         cancelar()
         raise
-    return obj
 
 
 def crear_hoja(doc, dto: HojaDTO) -> HojaResultado:

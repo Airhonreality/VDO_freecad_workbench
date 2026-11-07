@@ -74,7 +74,7 @@ class AccionesInspectorMixin:
                     "[VDO] No se pudieron actualizar las dimensiones del header")
         self._actualizar_vista_completa()
 
-    def _on_habitante_vano_cambiado(self, tipo_hab, cfg):  # noqa: C901 - complejidad 15 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
+    def _on_habitante_vano_cambiado(self, tipo_hab, cfg):
         obj = self._obj_actual
         if obj is None or Layout is None:
             return
@@ -93,30 +93,9 @@ class AccionesInspectorMixin:
         celda_lbl = cfg.get("celda", "(x1, y1)")
         texto_div = getattr(obj, "VDO_Divisiones", "") or ""
         layout = Layout.loads(texto_div)
+        contenido = self._leer_contenido_vano(obj)
 
-        texto_contenido = getattr(obj, "VDO_Contenido_JSON", "{}") or "{}"
-        try:
-            contenido = json.loads(texto_contenido) if isinstance(texto_contenido, str) else dict(texto_contenido)
-        except Exception as exc:
-            App.Console.PrintWarning(f"[VDO] inspector_acciones: contenido no leido, usa vacio: {exc}\n")
-            contenido = {}
-
-        if tipo_hab == "subdividir":
-            cell = layout.find_label(celda_lbl)
-            if cell is not None:
-                layout.set_split(cell, cfg.get("eje", "Y"), int(cfg.get("n_partes", 2)))
-                _guardar_prop("VDO_Divisiones", layout.dumps())
-        elif tipo_hab == "cajon" or tipo_hab == "puerta":
-            contenido[celda_lbl] = cfg
-            _guardar_prop("VDO_Contenido_JSON", json.dumps(contenido))
-        elif tipo_hab == "vacio":
-            cell = layout.find_label(celda_lbl)
-            if cell is not None:
-                layout.disable_split(cell)
-                _guardar_prop("VDO_Divisiones", layout.dumps())
-            if celda_lbl in contenido:
-                del contenido[celda_lbl]
-                _guardar_prop("VDO_Contenido_JSON", json.dumps(contenido))
+        self._aplicar_habitante_celda(tipo_hab, cfg, celda_lbl, layout, contenido, _guardar_prop)
 
         try:
             doc = getattr(obj, "Document", None)
@@ -127,3 +106,29 @@ class AccionesInspectorMixin:
                 "[VDO] No se pudo recomputar el documento")
 
         self._actualizar_vista_completa()
+
+    def _leer_contenido_vano(self, obj):
+        texto_contenido = getattr(obj, "VDO_Contenido_JSON", "{}") or "{}"
+        try:
+            return json.loads(texto_contenido) if isinstance(texto_contenido, str) else dict(texto_contenido)
+        except Exception as exc:
+            App.Console.PrintWarning(f"[VDO] inspector_acciones: contenido no leido, usa vacio: {exc}\n")
+            return {}
+
+    def _aplicar_habitante_celda(self, tipo_hab, cfg, celda_lbl, layout, contenido, guardar_prop):
+        if tipo_hab == "subdividir":
+            cell = layout.find_label(celda_lbl)
+            if cell is not None:
+                layout.set_split(cell, cfg.get("eje", "Y"), int(cfg.get("n_partes", 2)))
+                guardar_prop("VDO_Divisiones", layout.dumps())
+        elif tipo_hab == "cajon" or tipo_hab == "puerta":
+            contenido[celda_lbl] = cfg
+            guardar_prop("VDO_Contenido_JSON", json.dumps(contenido))
+        elif tipo_hab == "vacio":
+            cell = layout.find_label(celda_lbl)
+            if cell is not None:
+                layout.disable_split(cell)
+                guardar_prop("VDO_Divisiones", layout.dumps())
+            if celda_lbl in contenido:
+                del contenido[celda_lbl]
+                guardar_prop("VDO_Contenido_JSON", json.dumps(contenido))

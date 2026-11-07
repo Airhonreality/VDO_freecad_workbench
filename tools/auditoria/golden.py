@@ -23,6 +23,7 @@ import importlib
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 GOLDEN_DIR = ROOT / "tests" / "golden"
@@ -245,323 +246,383 @@ def _cargar_modulo(modulo: str):
     return importlib.import_module(f"freecad.vdo.core.{modulo}")
 
 
-def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:  # noqa: C901 - complejidad 15 (max 12): herramienta de auditoria fuera del runtime; dividirla no aporta (D-81)
+def _entradas_facade_contract(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    entradas["calcular_fachada_base"] = [
+        {"w_vano": 500.0, "h_vano": 700.0, "tipo_montaje": "parche"},
+        {"w_vano": 500.0, "h_vano": 700.0, "tipo_montaje": "semiparche"},
+        {"w_vano": 500.0, "h_vano": 700.0, "tipo_montaje": "embebida"},
+        {"w_vano": 1000.0, "h_vano": 500.0, "tipo_montaje": "parche",
+         "holgura": 4.0, "solape": 10.0},
+    ]
+    entradas["aplicar_sistema_apertura"] = [
+        {"h_fachada": 700.0, "sistema_apertura": "gola_aluminio"},
+        {"h_fachada": 700.0, "sistema_apertura": "inglete_45"},
+        {"h_fachada": 700.0, "sistema_apertura": "tirador"},
+        {"h_fachada": 700.0, "sistema_apertura": "push_open"},
+    ]
+    entradas["necesita_descuento_gola"] = [
+        {"sistema_apertura": "gola_aluminio"},
+        {"sistema_apertura": "tirador"},
+        {"sistema_apertura": "inglete_45"},
+    ]
+    entradas["necesita_bisel_45"] = [
+        {"sistema_apertura": "inglete_45"},
+        {"sistema_apertura": "tirador"},
+        {"sistema_apertura": "gola_aluminio"},
+    ]
+    entradas["necesita_cantos_45"] = [
+        {"sistema_apertura": "inglete_45"},
+        {"sistema_apertura": "tirador"},
+        {"sistema_apertura": "gola_aluminio"},
+    ]
+    entradas["necesita_expulsor_magnetico"] = [
+        {"sistema_apertura": "push_open"},
+        {"sistema_apertura": "tirador"},
+        {"sistema_apertura": "gola_aluminio"},
+    ]
+    entradas["cantos_por_sistema_apertura"] = [
+        {"sistema_apertura": "tirador"},
+        {"sistema_apertura": "gola_aluminio"},
+        {"sistema_apertura": "inglete_45"},
+    ]
+    return entradas
+
+
+def _entradas_frames(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    entradas["normal"] = [
+        {"lado": "frente"},
+        {"lado": "fondo"},
+        {"lado": "izquierda"},
+    ]
+    entradas["opuesto"] = [
+        {"lado": "frente"},
+        {"lado": "fondo"},
+        {"lado": "izquierda"},
+    ]
+    entradas["rotar_z"] = [
+        {"vector": [1.0, 0.0, 0.0], "grados": 90.0},
+        {"vector": [0.0, 1.0, 0.0], "grados": 180.0},
+        {"vector": [1.0, 1.0, 0.0], "grados": 45.0},
+    ]
+    entradas["normal_global"] = [
+        {"lado": "frente", "rotacion_z": 0.0},
+        {"lado": "fondo", "rotacion_z": 90.0},
+        {"lado": "izquierda", "rotacion_z": 45.0},
+    ]
+    entradas["interpretar_lados"] = [
+        {"valor": '["frente", "fondo"]', "por_defecto": ["izquierda"]},
+        {"valor": "frente,derecha"},
+        {"valor": None, "por_defecto": ["superior"]},
+    ]
+    entradas["serializar_lados"] = [
+        {"lados": ["frente", "fondo"]},
+        {"lados": "izquierda,derecha"},
+        {"lados": []},
+    ]
+    return entradas
+
+
+def _entradas_finish(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    entradas["cantos_para_rol"] = [
+        {"rol": "lateral_izquierdo", "lados_vistos": "frente"},
+        {"rol": "lateral_izquierdo", "lados_vistos": "frente, fondo"},
+        {"rol": "base", "lados_vistos": "frente", "tapa": "externo", "base": "externo"},
+    ]
+    entradas["aplicar_cantos"] = [
+        {"piezas": [{"rol": "lateral_izquierdo"}], "lados_vistos": "frente"},
+        {"piezas": [{"rol": "base"}, {"rol": "techo"}], "lados_vistos": "frente, fondo"},
+        {"piezas": [{"rol": "fondo"}], "lados_vistos": "frente"},
+    ]
+    return entradas
+
+
+def _entradas_reengrose(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    entradas["normalizar_modificador"] = [
+        {},
+        {"activo": False},
+        {"activo": True, "orientacion": "paralela", "ancho": 70.0, "cara": "cara_a"},
+    ]
+    entradas["generar_tiras_perimetrales"] = [
+        {"largo_tablero": 600.0, "ancho_tablero": 500.0, "bordes": {}, "espesor_madre": 18.0},
+        {"largo_tablero": 600.0, "ancho_tablero": 500.0,
+         "bordes": {"frente": {"activo": True, "ancho": 70.0}}, "espesor_madre": 18.0},
+        {"largo_tablero": 600.0, "ancho_tablero": 500.0,
+         "bordes": {"frente": {"activo": True, "ancho": 70.0},
+                    "fondo": {"activo": True, "ancho": 70.0},
+                    "izquierda": {"activo": True, "ancho": 70.0},
+                    "derecha": {"activo": True, "ancho": 70.0}},
+         "espesor_madre": 18.0},
+    ]
+    entradas["calcular_geometria_reengrose"] = [
+        {"panel_base": {"nombre": "P", "largo": 600.0, "ancho": 500.0, "espesor": 18.0},
+         "modifier": {"activo": False}},
+        {"panel_base": {"nombre": "P", "largo": 600.0, "ancho": 500.0, "espesor": 18.0},
+         "modifier": {"activo": True, "orientacion": "paralela", "ancho": 70.0}},
+        {"panel_base": {"nombre": "P", "largo": 800.0, "ancho": 450.0, "espesor": 18.0},
+         "modifier": {"activo": True, "orientacion": "transversal", "ancho": 50.0}},
+    ]
+    entradas["calcular_geometria_caja"] = [
+        {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 600, "h": 500, "d": 18},
+         "modifier": {"activo": False}},
+        {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 600, "h": 500, "d": 18},
+         "modifier": {"activo": True, "orientacion": "paralela", "ancho": 70.0}},
+        {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 800, "h": 450, "d": 18},
+         "modifier": {"activo": True, "orientacion": "transversal", "ancho": 50.0}},
+    ]
+    entradas["despiece_panel"] = [
+        {"nombre": "Panel", "largo": 600.0, "ancho": 500.0, "espesor": 18.0,
+         "modifier": {"activo": False}},
+        {"nombre": "Panel", "largo": 600.0, "ancho": 500.0, "espesor": 18.0,
+         "modifier": {"activo": True, "orientacion": "paralela", "ancho": 70.0}},
+        {"nombre": "Panel", "largo": 800.0, "ancho": 450.0, "espesor": 18.0,
+         "modifier": {"activo": True, "orientacion": "transversal", "ancho": 50.0}},
+    ]
+    entradas["despiece_caja"] = [
+        {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 600, "h": 500, "d": 18},
+         "modifier": {"activo": False}, "ejes": {"largo": "x", "ancho": "y", "espesor": "z"}},
+        {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 600, "h": 500, "d": 18},
+         "modifier": {"activo": True, "orientacion": "paralela", "ancho": 70.0},
+         "ejes": {"largo": "x", "ancho": "y", "espesor": "z"}},
+        {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 800, "h": 450, "d": 18},
+         "modifier": {"activo": True, "orientacion": "transversal", "ancho": 50.0},
+         "ejes": {"largo": "y", "ancho": "x", "espesor": "z"}},
+    ]
+    entradas["resolver_politica_cantos"] = [
+        {"panel_base": {"cantos": {}}, "modifier": {"activo": False}},
+        {"panel_base": {"cantos": {}},
+         "modifier": {"activo": True, "modo_fabricacion": "independiente"}},
+        {"panel_base": {"cantos": {"frente": "FX"}},
+         "modifier": {"activo": True, "modo_fabricacion": "pacha"}},
+    ]
+    entradas["detectar_colision"] = [
+        {"a": {"x": 0, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10},
+         "b": {"x": 20, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10}},
+        {"a": {"x": 0, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10},
+         "b": {"x": 5, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10}},
+        {"a": {"x": 0, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10},
+         "b": {"x": 10, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10}},
+    ]
+    return entradas
+
+
+def _entradas_cajon_despiece(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    base = {
+        "ancho_libre": 600.0, "prof_libre": 580.0, "ancho_modulo": 640.0,
+        "alto_frente": 225.0, "marca": "blum_tandem", "alto_caja": 120.0,
+        "grosor_caja": 16.0, "grosor_fondo": 6.0, "grosor_fachada": 18.0,
+        "longitud_guia": 0.0, "montaje_trasera": "entre_laterales",
+        "penetracion_ranura": 10.0, "eje_ranura": 11.5,
+        "holgura_lateral_fachada": 2.0, "holgura_superior_fachada": 2.0,
+        "holgura_inferior_fachada": 2.0, "material_ref": "melamina_standar",
+        "tipo_corredera": mod.CORREDERA_OCULTA,
+    }
+    entradas["calcular_despiece"] = [
+        dict(base),
+        dict(base, tipo_corredera=mod.CORREDERA_TELESCOPICA),
+        dict(base, tipo_corredera=mod.CAJA_METALICA,
+             sistema_apertura=importlib.import_module(
+                 "freecad.vdo.core.facade_contract").APERTURA_GOLA),
+    ]
+    return entradas
+
+
+def _entradas_puerta_despiece(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    entradas["calcular_dimensiones_batiente"] = [
+        {"W_neto": 600, "H_neto": 800, "tipo_montaje": "parche"},
+        {"W_neto": 600, "H_neto": 800, "tipo_montaje": "semiparche"},
+        {"W_neto": 600, "H_neto": 800, "tipo_montaje": "embebida"},
+    ]
+    entradas["cantidad_bisagras"] = [
+        {"H": 900},
+        {"H": 1000},
+        {"H": 1500},
+    ]
+    entradas["posiciones_cazoleta"] = [
+        {"H": 800, "n_bisagras": 2},
+        {"H": 1200, "n_bisagras": 3},
+        {"H": 1500},
+    ]
+    return entradas
+
+
+def _entradas_coco_spaces(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    entradas["generar_divisiones_matriz"] = [
+        {"divisiones_json": _fixture("layout_2x2.json"), "ancho_cavidad": 600.0,
+         "alto_cavidad": 700.0, "fondo": 580.0, "espesor": 18.0},
+        {"divisiones_json": _fixture("layout_3x1.json"), "ancho_cavidad": 1000.0,
+         "alto_cavidad": 2000.0, "fondo": 560.0, "espesor": 18.0},
+        {"divisiones_json": _fixture("layout_1x2.json"), "ancho_cavidad": 400.0,
+         "alto_cavidad": 500.0, "fondo": 580.0, "espesor": 16.0},
+    ]
+    return entradas
+
+
+def _entradas_hardware_hub(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    entradas["resolve_hinge"] = [
+        {"tipo_montaje": "parche"},
+        {"tipo_montaje": "semiparche"},
+        {"tipo_montaje": "embebida"},
+    ]
+    entradas["resolve_sliding"] = [
+        {"tipo_mueble": "closet"},
+        {"tipo_mueble": "mueble"},
+        {"tipo_mueble": "alacena"},
+    ]
+    entradas["resolve_drawer_slide"] = [
+        {"tipo": "oculta", "marca": "blum_tandem"},
+        {"tipo": "oculta", "marca": "generica"},
+        {"tipo": "oculta", "marca": "HAFELE-OCULTA"},
+    ]
+    entradas["calculate_sliding_doors"] = [
+        {"inner_w": 1000.0, "inner_h": 2000.0, "sku": "DUC-KIT-D52", "n_hojas": 2},
+        {"inner_w": 1200.0, "inner_h": 2200.0, "sku": "DUC-AL-1535-MAD", "n_hojas": 3},
+        {"inner_w": 1500.0, "inner_h": 2100.0, "sku": "DUC-AL-1535-VID", "n_hojas": 2},
+    ]
+    return entradas
+
+
+def _entradas_module_props(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    entradas["rotacion_z"] = [
+        {"grados": 0.0},
+        {"grados": 90.0},
+        {"grados": 45.0},
+    ]
+    return entradas
+
+
+def _entradas_zocalo_core(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    entradas["calcular_geometria_zocalo"] = [
+        {"ancho": 600.0, "fondo": 580.0, "alto_zocalo": 100.0, "espesor_tablero": 18.0},
+        {"ancho": 900.0, "fondo": 560.0, "alto_zocalo": 80.0, "espesor_tablero": 18.0,
+         "tiene_trasera": False},
+        {"ancho": 450.0, "fondo": 580.0, "alto_zocalo": 100.0, "espesor_tablero": 16.0,
+         "amarres_intermedios": 2},
+    ]
+    return entradas
+
+
+def _entradas_layout(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    entradas["cavidad_interior"] = [
+        {"alto": 720.0, "ancho": 600.0, "espesor": 18.0},
+        {"alto": 2100.0, "ancho": 900.0, "espesor": 18.0},
+        {"alto": 500.0, "ancho": 400.0, "espesor": 16.0},
+    ]
+    return entradas
+
+
+def _entradas_spaces(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    entradas["calcular_espacio_libre"] = [
+        {"espacios_json": "", "espacio_total": 600.0, "espesor": 18.0},
+        {"espacios_json": "", "espacio_total": 1000.0, "espesor": 16.0},
+        {"espacios_json": "", "espacio_total": 300.0, "espesor": 18.0},
+    ]
+    return entradas
+
+
+def _entradas_optimizer_core(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    piezas_a = [{"name": "A", "w": 600.0, "h": 700.0, "thickness": 18.0,
+                 "material": "melamina_standar", "cantos": {}}]
+    piezas_b = [
+        {"name": "Lateral", "w": 580.0, "h": 720.0, "thickness": 18.0,
+         "material": "melamina_standar", "cantos": {}},
+        {"name": "Estante #1", "w": 560.0, "h": 600.0, "thickness": 18.0,
+         "material": "melamina_standar", "cantos": {"frente": "FX"}},
+        {"name": "Estante #2", "w": 560.0, "h": 600.0, "thickness": 18.0,
+         "material": "melamina_standar", "cantos": {"frente": "FX"}},
+        {"name": "Fondo", "w": 600.0, "h": 700.0, "thickness": 6.0,
+         "material": "fondo_mdf", "cantos": {}},
+    ]
+    # Pieza mayor que el tablero: debe quedar sin colocar, no excepción.
+    piezas_c = [{"name": "Grande", "w": 2500.0, "h": 1900.0, "thickness": 18.0,
+                 "material": "melamina_standar", "cantos": {}}]
+    entradas["expand_pieces"] = [
+        [{"name": "Lateral", "qty": 2, "width": 580.0, "length": 720.0,
+          "thickness": 18.0, "material": "melamina_standar"}],
+        [{"name": "Estante", "qty": 3, "width": 560.0, "length": 600.0,
+          "thickness": 18.0, "material": "melamina_standar", "cantos": {"frente": "FX"}},
+         {"name": "Tapa", "qty": 1, "width": 600.0, "length": 600.0,
+          "thickness": 18.0, "material": "melamina_standar"}],
+        [{"name": "Fondo", "qty": 1, "width": 600.0, "length": 700.0,
+          "thickness": 6.0, "material": "fondo_mdf"}],
+    ]
+    entradas["optimize"] = [
+        {"pieces": piezas_a, "board_w": 2440.0, "board_h": 1830.0},
+        {"pieces": piezas_b, "board_w": 2440.0, "board_h": 1830.0},
+        {"pieces": piezas_c, "board_w": 2440.0, "board_h": 1830.0},
+    ]
+    return entradas
+
+
+def _entradas_guardian(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    entradas["asegurar_hoja_global"] = [
+        {"preexistente": "vacio"},
+        {"preexistente": "hoja_global_vacia"},
+        {"preexistente": "hoja_global_editada"},
+    ]
+    entradas["asegurar_params_local"] = [
+        {"preexistente": "vacio"},
+        {"preexistente": "hoja_local_vacia"},
+        {"preexistente": "hoja_local_editada"},
+    ]
+    entradas["vdo_guard"] = [
+        {"preexistente": "vacio"},
+        {"preexistente": "hoja_global_vacia"},
+        {"preexistente": "ambas_editadas"},
+    ]
+    return entradas
+
+
+def _entradas_nesting_presets(mod: Any) -> dict[str, list[dict]]:
+    entradas: dict[str, list[dict]] = {}
+    entradas["get_preset"] = [
+        {"name": "Estándar EN"},
+        {"name": "Cuadrado"},
+        {"name": "No existe"},
+    ]
+    return entradas
+
+
+_ENTRADAS_POR_MODULO = {
+    "facade_contract": _entradas_facade_contract,
+    "frames": _entradas_frames,
+    "finish": _entradas_finish,
+    "reengrose": _entradas_reengrose,
+    "cajon_despiece": _entradas_cajon_despiece,
+    "puerta_despiece": _entradas_puerta_despiece,
+    "coco_spaces": _entradas_coco_spaces,
+    "hardware_hub": _entradas_hardware_hub,
+    "module_props": _entradas_module_props,
+    "zocalo_core": _entradas_zocalo_core,
+    "layout": _entradas_layout,
+    "spaces": _entradas_spaces,
+    "optimizer_core": _entradas_optimizer_core,
+    "guardian": _entradas_guardian,
+    "nesting_presets": _entradas_nesting_presets,
+}
+
+def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:
     """Devuelve entradas representativas por función para un módulo."""
     mod = _cargar_modulo(modulo)
     entradas: dict[str, list[dict]] = {}
-
-    if modulo == "facade_contract":
-        entradas["calcular_fachada_base"] = [
-            {"w_vano": 500.0, "h_vano": 700.0, "tipo_montaje": "parche"},
-            {"w_vano": 500.0, "h_vano": 700.0, "tipo_montaje": "semiparche"},
-            {"w_vano": 500.0, "h_vano": 700.0, "tipo_montaje": "embebida"},
-            {"w_vano": 1000.0, "h_vano": 500.0, "tipo_montaje": "parche",
-             "holgura": 4.0, "solape": 10.0},
-        ]
-        entradas["aplicar_sistema_apertura"] = [
-            {"h_fachada": 700.0, "sistema_apertura": "gola_aluminio"},
-            {"h_fachada": 700.0, "sistema_apertura": "inglete_45"},
-            {"h_fachada": 700.0, "sistema_apertura": "tirador"},
-            {"h_fachada": 700.0, "sistema_apertura": "push_open"},
-        ]
-        entradas["necesita_descuento_gola"] = [
-            {"sistema_apertura": "gola_aluminio"},
-            {"sistema_apertura": "tirador"},
-            {"sistema_apertura": "inglete_45"},
-        ]
-        entradas["necesita_bisel_45"] = [
-            {"sistema_apertura": "inglete_45"},
-            {"sistema_apertura": "tirador"},
-            {"sistema_apertura": "gola_aluminio"},
-        ]
-        entradas["necesita_cantos_45"] = [
-            {"sistema_apertura": "inglete_45"},
-            {"sistema_apertura": "tirador"},
-            {"sistema_apertura": "gola_aluminio"},
-        ]
-        entradas["necesita_expulsor_magnetico"] = [
-            {"sistema_apertura": "push_open"},
-            {"sistema_apertura": "tirador"},
-            {"sistema_apertura": "gola_aluminio"},
-        ]
-        entradas["cantos_por_sistema_apertura"] = [
-            {"sistema_apertura": "tirador"},
-            {"sistema_apertura": "gola_aluminio"},
-            {"sistema_apertura": "inglete_45"},
-        ]
-
-    elif modulo == "frames":
-        entradas["normal"] = [
-            {"lado": "frente"},
-            {"lado": "fondo"},
-            {"lado": "izquierda"},
-        ]
-        entradas["opuesto"] = [
-            {"lado": "frente"},
-            {"lado": "fondo"},
-            {"lado": "izquierda"},
-        ]
-        entradas["rotar_z"] = [
-            {"vector": [1.0, 0.0, 0.0], "grados": 90.0},
-            {"vector": [0.0, 1.0, 0.0], "grados": 180.0},
-            {"vector": [1.0, 1.0, 0.0], "grados": 45.0},
-        ]
-        entradas["normal_global"] = [
-            {"lado": "frente", "rotacion_z": 0.0},
-            {"lado": "fondo", "rotacion_z": 90.0},
-            {"lado": "izquierda", "rotacion_z": 45.0},
-        ]
-        entradas["interpretar_lados"] = [
-            {"valor": '["frente", "fondo"]', "por_defecto": ["izquierda"]},
-            {"valor": "frente,derecha"},
-            {"valor": None, "por_defecto": ["superior"]},
-        ]
-        entradas["serializar_lados"] = [
-            {"lados": ["frente", "fondo"]},
-            {"lados": "izquierda,derecha"},
-            {"lados": []},
-        ]
-
-    elif modulo == "finish":
-        entradas["cantos_para_rol"] = [
-            {"rol": "lateral_izquierdo", "lados_vistos": "frente"},
-            {"rol": "lateral_izquierdo", "lados_vistos": "frente, fondo"},
-            {"rol": "base", "lados_vistos": "frente", "tapa": "externo", "base": "externo"},
-        ]
-        entradas["aplicar_cantos"] = [
-            {"piezas": [{"rol": "lateral_izquierdo"}], "lados_vistos": "frente"},
-            {"piezas": [{"rol": "base"}, {"rol": "techo"}], "lados_vistos": "frente, fondo"},
-            {"piezas": [{"rol": "fondo"}], "lados_vistos": "frente"},
-        ]
-
-    elif modulo == "reengrose":
-        entradas["normalizar_modificador"] = [
-            {},
-            {"activo": False},
-            {"activo": True, "orientacion": "paralela", "ancho": 70.0, "cara": "cara_a"},
-        ]
-        entradas["generar_tiras_perimetrales"] = [
-            {"largo_tablero": 600.0, "ancho_tablero": 500.0, "bordes": {}, "espesor_madre": 18.0},
-            {"largo_tablero": 600.0, "ancho_tablero": 500.0,
-             "bordes": {"frente": {"activo": True, "ancho": 70.0}}, "espesor_madre": 18.0},
-            {"largo_tablero": 600.0, "ancho_tablero": 500.0,
-             "bordes": {"frente": {"activo": True, "ancho": 70.0},
-                        "fondo": {"activo": True, "ancho": 70.0},
-                        "izquierda": {"activo": True, "ancho": 70.0},
-                        "derecha": {"activo": True, "ancho": 70.0}},
-             "espesor_madre": 18.0},
-        ]
-        entradas["calcular_geometria_reengrose"] = [
-            {"panel_base": {"nombre": "P", "largo": 600.0, "ancho": 500.0, "espesor": 18.0},
-             "modifier": {"activo": False}},
-            {"panel_base": {"nombre": "P", "largo": 600.0, "ancho": 500.0, "espesor": 18.0},
-             "modifier": {"activo": True, "orientacion": "paralela", "ancho": 70.0}},
-            {"panel_base": {"nombre": "P", "largo": 800.0, "ancho": 450.0, "espesor": 18.0},
-             "modifier": {"activo": True, "orientacion": "transversal", "ancho": 50.0}},
-        ]
-        entradas["calcular_geometria_caja"] = [
-            {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 600, "h": 500, "d": 18},
-             "modifier": {"activo": False}},
-            {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 600, "h": 500, "d": 18},
-             "modifier": {"activo": True, "orientacion": "paralela", "ancho": 70.0}},
-            {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 800, "h": 450, "d": 18},
-             "modifier": {"activo": True, "orientacion": "transversal", "ancho": 50.0}},
-        ]
-        entradas["despiece_panel"] = [
-            {"nombre": "Panel", "largo": 600.0, "ancho": 500.0, "espesor": 18.0,
-             "modifier": {"activo": False}},
-            {"nombre": "Panel", "largo": 600.0, "ancho": 500.0, "espesor": 18.0,
-             "modifier": {"activo": True, "orientacion": "paralela", "ancho": 70.0}},
-            {"nombre": "Panel", "largo": 800.0, "ancho": 450.0, "espesor": 18.0,
-             "modifier": {"activo": True, "orientacion": "transversal", "ancho": 50.0}},
-        ]
-        entradas["despiece_caja"] = [
-            {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 600, "h": 500, "d": 18},
-             "modifier": {"activo": False}, "ejes": {"largo": "x", "ancho": "y", "espesor": "z"}},
-            {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 600, "h": 500, "d": 18},
-             "modifier": {"activo": True, "orientacion": "paralela", "ancho": 70.0},
-             "ejes": {"largo": "x", "ancho": "y", "espesor": "z"}},
-            {"caja": {"nombre": "C", "x": 0, "y": 0, "z": 0, "w": 800, "h": 450, "d": 18},
-             "modifier": {"activo": True, "orientacion": "transversal", "ancho": 50.0},
-             "ejes": {"largo": "y", "ancho": "x", "espesor": "z"}},
-        ]
-        entradas["resolver_politica_cantos"] = [
-            {"panel_base": {"cantos": {}}, "modifier": {"activo": False}},
-            {"panel_base": {"cantos": {}},
-             "modifier": {"activo": True, "modo_fabricacion": "independiente"}},
-            {"panel_base": {"cantos": {"frente": "FX"}},
-             "modifier": {"activo": True, "modo_fabricacion": "pacha"}},
-        ]
-        entradas["detectar_colision"] = [
-            {"a": {"x": 0, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10},
-             "b": {"x": 20, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10}},
-            {"a": {"x": 0, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10},
-             "b": {"x": 5, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10}},
-            {"a": {"x": 0, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10},
-             "b": {"x": 10, "y": 0, "z": 0, "w": 10, "h": 10, "d": 10}},
-        ]
-
-    elif modulo == "cajon_despiece":
-        base = {
-            "ancho_libre": 600.0, "prof_libre": 580.0, "ancho_modulo": 640.0,
-            "alto_frente": 225.0, "marca": "blum_tandem", "alto_caja": 120.0,
-            "grosor_caja": 16.0, "grosor_fondo": 6.0, "grosor_fachada": 18.0,
-            "longitud_guia": 0.0, "montaje_trasera": "entre_laterales",
-            "penetracion_ranura": 10.0, "eje_ranura": 11.5,
-            "holgura_lateral_fachada": 2.0, "holgura_superior_fachada": 2.0,
-            "holgura_inferior_fachada": 2.0, "material_ref": "melamina_standar",
-            "tipo_corredera": mod.CORREDERA_OCULTA,
-        }
-        entradas["calcular_despiece"] = [
-            dict(base),
-            dict(base, tipo_corredera=mod.CORREDERA_TELESCOPICA),
-            dict(base, tipo_corredera=mod.CAJA_METALICA,
-                 sistema_apertura=importlib.import_module(
-                     "freecad.vdo.core.facade_contract").APERTURA_GOLA),
-        ]
-
-    elif modulo == "puerta_despiece":
-        # Firmas de b78de04: calcular_dimensiones_batiente(W_neto, H_neto, tipo_montaje, ...),
-        # cantidad_bisagras(H), posiciones_cazoleta(H, n_bisagras=None, ...).
-        entradas["calcular_dimensiones_batiente"] = [
-            {"W_neto": 600, "H_neto": 800, "tipo_montaje": "parche"},
-            {"W_neto": 600, "H_neto": 800, "tipo_montaje": "semiparche"},
-            {"W_neto": 600, "H_neto": 800, "tipo_montaje": "embebida"},
-        ]
-        entradas["cantidad_bisagras"] = [
-            {"H": 900},
-            {"H": 1000},
-            {"H": 1500},
-        ]
-        entradas["posiciones_cazoleta"] = [
-            {"H": 800, "n_bisagras": 2},
-            {"H": 1200, "n_bisagras": 3},
-            {"H": 1500},
-        ]
-
-    elif modulo == "coco_spaces":
-        # Firma de b78de04: generar_divisiones_matriz(divisiones_json, ancho_cavidad,
-        # alto_cavidad, fondo, espesor, ..., espacios_x, espacios_y). Con divisiones_json
-        # vacío usa el camino legado (espacios_x/espacios_y).
-        entradas["generar_divisiones_matriz"] = [
-            {"divisiones_json": _fixture("layout_2x2.json"), "ancho_cavidad": 600.0,
-             "alto_cavidad": 700.0, "fondo": 580.0, "espesor": 18.0},
-            {"divisiones_json": _fixture("layout_3x1.json"), "ancho_cavidad": 1000.0,
-             "alto_cavidad": 2000.0, "fondo": 560.0, "espesor": 18.0},
-            {"divisiones_json": _fixture("layout_1x2.json"), "ancho_cavidad": 400.0,
-             "alto_cavidad": 500.0, "fondo": 580.0, "espesor": 16.0},
-        ]
-
-    elif modulo == "hardware_hub":
-        entradas["resolve_hinge"] = [
-            {"tipo_montaje": "parche"},
-            {"tipo_montaje": "semiparche"},
-            {"tipo_montaje": "embebida"},
-        ]
-        entradas["resolve_sliding"] = [
-            {"tipo_mueble": "closet"},
-            {"tipo_mueble": "mueble"},
-            {"tipo_mueble": "alacena"},
-        ]
-        entradas["resolve_drawer_slide"] = [
-            {"tipo": "oculta", "marca": "blum_tandem"},
-            {"tipo": "oculta", "marca": "generica"},
-            {"tipo": "oculta", "marca": "HAFELE-OCULTA"},
-        ]
-        entradas["calculate_sliding_doors"] = [
-            {"inner_w": 1000.0, "inner_h": 2000.0, "sku": "DUC-KIT-D52", "n_hojas": 2},
-            {"inner_w": 1200.0, "inner_h": 2200.0, "sku": "DUC-AL-1535-MAD", "n_hojas": 3},
-            {"inner_w": 1500.0, "inner_h": 2100.0, "sku": "DUC-AL-1535-VID", "n_hojas": 2},
-        ]
-
-    elif modulo == "module_props":
-        entradas["rotacion_z"] = [
-            {"grados": 0.0},
-            {"grados": 90.0},
-            {"grados": 45.0},
-        ]
-
-    elif modulo == "zocalo_core":
-        entradas["calcular_geometria_zocalo"] = [
-            {"ancho": 600.0, "fondo": 580.0, "alto_zocalo": 100.0, "espesor_tablero": 18.0},
-            {"ancho": 900.0, "fondo": 560.0, "alto_zocalo": 80.0, "espesor_tablero": 18.0,
-             "tiene_trasera": False},
-            {"ancho": 450.0, "fondo": 580.0, "alto_zocalo": 100.0, "espesor_tablero": 16.0,
-             "amarres_intermedios": 2},
-        ]
-
-    elif modulo == "layout":
-        entradas["cavidad_interior"] = [
-            {"alto": 720.0, "ancho": 600.0, "espesor": 18.0},
-            {"alto": 2100.0, "ancho": 900.0, "espesor": 18.0},
-            {"alto": 500.0, "ancho": 400.0, "espesor": 16.0},
-        ]
-
-    elif modulo == "spaces":
-        entradas["calcular_espacio_libre"] = [
-            {"espacios_json": "", "espacio_total": 600.0, "espesor": 18.0},
-            {"espacios_json": "", "espacio_total": 1000.0, "espesor": 16.0},
-            {"espacios_json": "", "espacio_total": 300.0, "espesor": 18.0},
-        ]
-
-    elif modulo == "optimizer_core":
-        piezas_a = [{"name": "A", "w": 600.0, "h": 700.0, "thickness": 18.0,
-                     "material": "melamina_standar", "cantos": {}}]
-        piezas_b = [
-            {"name": "Lateral", "w": 580.0, "h": 720.0, "thickness": 18.0,
-             "material": "melamina_standar", "cantos": {}},
-            {"name": "Estante #1", "w": 560.0, "h": 600.0, "thickness": 18.0,
-             "material": "melamina_standar", "cantos": {"frente": "FX"}},
-            {"name": "Estante #2", "w": 560.0, "h": 600.0, "thickness": 18.0,
-             "material": "melamina_standar", "cantos": {"frente": "FX"}},
-            {"name": "Fondo", "w": 600.0, "h": 700.0, "thickness": 6.0,
-             "material": "fondo_mdf", "cantos": {}},
-        ]
-        # Pieza mayor que el tablero: debe quedar sin colocar, no excepción.
-        piezas_c = [{"name": "Grande", "w": 2500.0, "h": 1900.0, "thickness": 18.0,
-                     "material": "melamina_standar", "cantos": {}}]
-        entradas["expand_pieces"] = [
-            [{"name": "Lateral", "qty": 2, "width": 580.0, "length": 720.0,
-              "thickness": 18.0, "material": "melamina_standar"}],
-            [{"name": "Estante", "qty": 3, "width": 560.0, "length": 600.0,
-              "thickness": 18.0, "material": "melamina_standar", "cantos": {"frente": "FX"}},
-             {"name": "Tapa", "qty": 1, "width": 600.0, "length": 600.0,
-              "thickness": 18.0, "material": "melamina_standar"}],
-            [{"name": "Fondo", "qty": 1, "width": 600.0, "length": 700.0,
-              "thickness": 6.0, "material": "fondo_mdf"}],
-        ]
-        entradas["optimize"] = [
-            {"pieces": piezas_a, "board_w": 2440.0, "board_h": 1830.0},
-            {"pieces": piezas_b, "board_w": 2440.0, "board_h": 1830.0},
-            {"pieces": piezas_c, "board_w": 2440.0, "board_h": 1830.0},
-        ]
-
-    elif modulo == "guardian":
-        # Escenario = estado del documento antes de llamar (ver _ejecutar_guardian).
-        entradas["asegurar_hoja_global"] = [
-            {"preexistente": "vacio"},
-            {"preexistente": "hoja_global_vacia"},
-            {"preexistente": "hoja_global_editada"},
-        ]
-        entradas["asegurar_params_local"] = [
-            {"preexistente": "vacio"},
-            {"preexistente": "hoja_local_vacia"},
-            {"preexistente": "hoja_local_editada"},
-        ]
-        entradas["vdo_guard"] = [
-            {"preexistente": "vacio"},
-            {"preexistente": "hoja_global_vacia"},
-            {"preexistente": "ambas_editadas"},
-        ]
-    elif modulo == "nesting_presets":
-        # Solo lectura: no escribe preferencias. Golden nuevo, no de origen (D-99).
-        entradas["get_preset"] = [
-            {"name": "Estándar EN"},
-            {"name": "Cuadrado"},
-            {"name": "No existe"},
-        ]
-
+    generador = _ENTRADAS_POR_MODULO.get(modulo)
+    if generador is not None:
+        entradas = generador(mod)
     return entradas
+
 
 
 def _preparar_guardian(doc, estado: str) -> None:

@@ -20,6 +20,21 @@ from freecad.vdo.core.layout_modelo import (
 _LOG = logging.getLogger(__name__)
 
 
+def _normalizar_pistas(pistas: list[Any], eje: str) -> list[Track]:
+    vistos: set[str] = set()
+    resultado: list[Track] = []
+    for i, pista in enumerate(pistas):
+        if isinstance(pista, str):
+            pista = Track(pista)
+        elif isinstance(pista, dict):
+            pista = Track.from_dict(pista, eje, i)
+        if pista.id in vistos:
+            pista.id = _id_unico(eje, vistos)
+        vistos.add(pista.id)
+        resultado.append(pista)
+    return resultado
+
+
 class Layout:
     """Matriz raíz de columnas/filas con contenido anidado por celda."""
 
@@ -43,38 +58,16 @@ class Layout:
     def key(col_id: str, row_id: str) -> str:
         return f"{col_id}|{row_id}"
 
-    def _normalizar(self) -> None:  # noqa: C901 - complejidad 14 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
+    def _normalizar(self) -> None:
         if not self.columns:
             self.columns = [Track("x1")]
         if not self.rows:
             self.rows = [Track("y1")]
+        self.columns = _normalizar_pistas(self.columns, "x")
+        self.rows = _normalizar_pistas(self.rows, "y")
+        self._normalizar_celdas()
 
-        vistos: set[str] = set()
-        columnas: list[Track] = []
-        for i, col in enumerate(self.columns):
-            if isinstance(col, str):
-                col = Track(col)
-            elif isinstance(col, dict):
-                col = Track.from_dict(col, "x", i)
-            if col.id in vistos:
-                col.id = _id_unico("x", vistos)
-            vistos.add(col.id)
-            columnas.append(col)
-        self.columns = columnas
-
-        vistos = set()
-        filas: list[Track] = []
-        for i, row in enumerate(self.rows):
-            if isinstance(row, str):
-                row = Track(row)
-            elif isinstance(row, dict):
-                row = Track.from_dict(row, "y", i)
-            if row.id in vistos:
-                row.id = _id_unico("y", vistos)
-            vistos.add(row.id)
-            filas.append(row)
-        self.rows = filas
-
+    def _normalizar_celdas(self) -> None:
         nuevas: dict[str, Cell] = {}
         for col in self.columns:
             for row in self.rows:
@@ -264,7 +257,7 @@ class Layout:
         return layout, warnings
 
 
-def _legacy_tracks(texto: str, eje: str, warnings: list[str]) -> list[Track]:  # noqa: C901 - complejidad 13 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
+def _leer_nodos_legacy(texto: str, eje: str, warnings: list[str]) -> list[Any]:
     nodos: list[Any] = []
     if texto:
         try:
@@ -274,27 +267,35 @@ def _legacy_tracks(texto: str, eje: str, warnings: list[str]) -> list[Track]:  #
         except (TypeError, ValueError) as exc:
             _LOG.warning("layout_matriz: JSON legacy de eje invalido: %s", exc)
             warnings.append(f"JSON legacy de {eje} inválido.")
+    return nodos
 
-    tracks: list[Track] = []
-    for nodo in nodos:
-        if not isinstance(nodo, dict):
-            continue
-        tipo = nodo.get("type", "fijo")
-        if tipo == "iguales":
-            count = max(1, int(nodo.get("count", 1) or 1))
-            for _ in range(count):
-                tracks.append(Track(f"_{len(tracks) + 1}", None))
-            if nodo.get("children"):
-                warnings.append(
-                    f"{eje}: sub-árbol dentro de 'iguales' no migrado.")
-        elif tipo == "fijo":
-            tracks.append(Track(f"_{len(tracks) + 1}",
-                                nodo.get("value", 0.0)))
-        else:
+
+def _agregar_tracks_legacy(nodo: dict[str, Any], eje: str, tracks: list[Track],
+                           warnings: list[str]) -> None:
+    tipo = nodo.get("type", "fijo")
+    if tipo == "iguales":
+        count = max(1, int(nodo.get("count", 1) or 1))
+        for _ in range(count):
             tracks.append(Track(f"_{len(tracks) + 1}", None))
         if nodo.get("children"):
             warnings.append(
-                f"{eje}: sub-árbol de {nodo.get('id', '?')} no migrado.")
+                f"{eje}: sub-árbol dentro de 'iguales' no migrado.")
+    elif tipo == "fijo":
+        tracks.append(Track(f"_{len(tracks) + 1}",
+                            nodo.get("value", 0.0)))
+    else:
+        tracks.append(Track(f"_{len(tracks) + 1}", None))
+    if nodo.get("children"):
+        warnings.append(
+            f"{eje}: sub-árbol de {nodo.get('id', '?')} no migrado.")
+
+
+def _legacy_tracks(texto: str, eje: str, warnings: list[str]) -> list[Track]:
+    tracks: list[Track] = []
+    for nodo in _leer_nodos_legacy(texto, eje, warnings):
+        if not isinstance(nodo, dict):
+            continue
+        _agregar_tracks_legacy(nodo, eje, tracks, warnings)
 
     prefijo = "x" if eje == "X" else "y"
     if not tracks:

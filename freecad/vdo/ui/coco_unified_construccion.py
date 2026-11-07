@@ -165,55 +165,64 @@ class CocoUnifiedConstruccionMixin:
         main_layout.addWidget(grupo_resumen)
 
 
-    def _on_chassis_changed(self, cfg):  # noqa: C901 - complejidad 15 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
+    def _on_chassis_changed(self, cfg):
         """Reacciona al cambio interactivo en el chasis 2D y actualiza el objeto."""
         if getattr(self, "_building", False):
             return
         if self.obj is not None:
-            enc_sup = cfg.get("encuentros", {}).get("superior_izq", "tapa_domina")
-            tapa_val = "externo" if enc_sup == "tapa_domina" else "interno"
-            if hasattr(self.obj, "Tapa"):
-                asignar_propiedades(self.obj, {"Tapa": tapa_val})
+            self._aplicar_encuentros_chassis(cfg)
+            self._aplicar_fondo_y_zocalo_chassis(cfg)
+            self._guardar_chassis_json(cfg)
+            self._recomputar_chassis()
+        self._actualizar_resumen()
 
-            enc_inf = cfg.get("encuentros", {}).get("inferior_izq", "lateral_domina")
-            base_val = "externo" if enc_inf == "base_domina" else "interno"
-            if hasattr(self.obj, "Base"):
-                asignar_propiedades(self.obj, {"Base": base_val})
+    def _aplicar_encuentros_chassis(self, cfg):
+        enc_sup = cfg.get("encuentros", {}).get("superior_izq", "tapa_domina")
+        tapa_val = "externo" if enc_sup == "tapa_domina" else "interno"
+        if hasattr(self.obj, "Tapa"):
+            asignar_propiedades(self.obj, {"Tapa": tapa_val})
 
-            fondo_act = cfg.get("caras", {}).get("fondo", {}).get("activa", True)
-            if hasattr(self.obj, "TieneFondo"):
-                asignar_propiedades(self.obj, {"TieneFondo": bool(fondo_act)})
+        enc_inf = cfg.get("encuentros", {}).get("inferior_izq", "lateral_domina")
+        base_val = "externo" if enc_inf == "base_domina" else "interno"
+        if hasattr(self.obj, "Base"):
+            asignar_propiedades(self.obj, {"Base": base_val})
 
-            base_info = cfg.get("base", {})
-            if "altura" in base_info and hasattr(self.obj, "AltoZocalo"):
-                try:
-                    asignar_propiedades(self.obj, {"AltoZocalo": float(base_info["altura"])})
-                except Exception:
-                    App.Console.PrintWarning(
-                        "[VDO] No se pudo establecer AltoZocalo")
-            if "separacion_frente" in base_info and hasattr(self.obj, "DistanciaFrente"):
-                try:
-                    asignar_propiedades(self.obj, {"DistanciaFrente": float(base_info["separacion_frente"])})
-                except Exception:
-                    App.Console.PrintWarning(
-                        "[VDO] No se pudo establecer DistanciaFrente")
+    def _aplicar_fondo_y_zocalo_chassis(self, cfg):
+        fondo_act = cfg.get("caras", {}).get("fondo", {}).get("activa", True)
+        if hasattr(self.obj, "TieneFondo"):
+            asignar_propiedades(self.obj, {"TieneFondo": bool(fondo_act)})
 
+        base_info = cfg.get("base", {})
+        if "altura" in base_info and hasattr(self.obj, "AltoZocalo"):
             try:
-                if hasattr(self.obj, "VDO_Chassis_JSON"):
-                    asignar_propiedades(self.obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
-                elif hasattr(self.obj, "addProperty"):
-                    anadir_propiedad_texto(self.obj, "VDO_Chassis_JSON", "VDO",
-                                           "Configuración semiótica de Capa 1")
-                    asignar_propiedades(self.obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
+                asignar_propiedades(self.obj, {"AltoZocalo": float(base_info["altura"])})
             except Exception:
                 App.Console.PrintWarning(
-                    "[VDO] No se pudo guardar VDO_Chassis_JSON")
+                    "[VDO] No se pudo establecer AltoZocalo")
+        if "separacion_frente" in base_info and hasattr(self.obj, "DistanciaFrente"):
+            try:
+                asignar_propiedades(self.obj, {"DistanciaFrente": float(base_info["separacion_frente"])})
+            except Exception:
+                App.Console.PrintWarning(
+                    "[VDO] No se pudo establecer DistanciaFrente")
 
-            doc = getattr(self.obj, "Document", None)
-            if doc is not None:
-                try:
-                    recalcular(doc)
-                except Exception:
-                    App.Console.PrintWarning(
-                        "[VDO] No se pudo recomputar el documento")
-        self._actualizar_resumen()
+    def _guardar_chassis_json(self, cfg):
+        try:
+            if hasattr(self.obj, "VDO_Chassis_JSON"):
+                asignar_propiedades(self.obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
+            elif hasattr(self.obj, "addProperty"):
+                anadir_propiedad_texto(self.obj, "VDO_Chassis_JSON", "VDO",
+                                       "Configuración semiótica de Capa 1")
+                asignar_propiedades(self.obj, {"VDO_Chassis_JSON": json.dumps(cfg)})
+        except Exception:
+            App.Console.PrintWarning(
+                "[VDO] No se pudo guardar VDO_Chassis_JSON")
+
+    def _recomputar_chassis(self):
+        doc = getattr(self.obj, "Document", None)
+        if doc is not None:
+            try:
+                recalcular(doc)
+            except Exception:
+                App.Console.PrintWarning(
+                    "[VDO] No se pudo recomputar el documento")

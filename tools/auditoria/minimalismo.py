@@ -19,6 +19,7 @@ import collections
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 FREECAD = ROOT / "freecad"
@@ -110,7 +111,40 @@ def _es_tabla(valor) -> bool:
     return False
 
 
-def _duplicados() -> dict:  # noqa: C901 - complejidad 13 (max 12): herramienta de auditoria fuera del runtime; dividirla no aporta (D-81)
+def _registrar_tablas(t: ast.Module, rel: str,
+                      tablas: dict[str, list[tuple[str, str]]]) -> None:
+    # Tablas: asignaciones de nivel módulo cuyo valor es un contenedor literal
+    # (dict, list, tuple, set) con al menos 2 elementos. Los escalares no son tablas.
+    for nodo in t.body:
+        if isinstance(nodo, ast.Assign):
+            for target in nodo.targets:
+                if (isinstance(target, ast.Name) and target.id.isupper()
+                        and _es_tabla(nodo.value)):
+                    dump = _ast_dump_canonico(nodo.value)
+                    tablas[dump].append((target.id, rel))
+        elif (isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name)
+              and nodo.target.id.isupper() and nodo.value is not None
+              and _es_tabla(nodo.value)):
+            dump = _ast_dump_canonico(nodo.value)
+            tablas[dump].append((nodo.target.id, rel))
+
+
+def _registrar_cuerpos(t: ast.Module, rel: str,
+                       cuerpos: dict[str, list[tuple[str, str, int]]]) -> None:
+    # Funciones con cuerpo idéntico (>= 2 statements, sin docstring al inicio)
+    for nodo in ast.walk(t):
+        if isinstance(nodo, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            body = nodo.body
+            if (isinstance(body[0], ast.Expr)
+                    and isinstance(getattr(body[0], "value", None), ast.Constant)
+                    and isinstance(body[0].value.value, str)):
+                body = body[1:]
+            if len(body) >= 2:
+                dump = "\n".join(_ast_dump_canonico(s) for s in body)
+                cuerpos[dump].append((nodo.name, rel, nodo.lineno))
+
+
+def _duplicados() -> dict:
     # 1. Tablas constantes idénticas por AST
     tablas: dict[str, list[tuple[str, str]]] = collections.defaultdict(list)
     # 2. Funciones con cuerpo idéntico
@@ -124,31 +158,8 @@ def _duplicados() -> dict:  # noqa: C901 - complejidad 13 (max 12): herramienta 
             except SyntaxError:
                 continue
             rel = str(p.relative_to(ROOT))
-            # Tablas: asignaciones de nivel módulo cuyo valor es un contenedor literal
-            # (dict, list, tuple, set) con al menos 2 elementos. Los escalares no son tablas.
-            for nodo in t.body:
-                if isinstance(nodo, ast.Assign):
-                    for target in nodo.targets:
-                        if (isinstance(target, ast.Name) and target.id.isupper()
-                                and _es_tabla(nodo.value)):
-                            dump = _ast_dump_canonico(nodo.value)
-                            tablas[dump].append((target.id, rel))
-                elif (isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name)
-                      and nodo.target.id.isupper() and nodo.value is not None
-                      and _es_tabla(nodo.value)):
-                    dump = _ast_dump_canonico(nodo.value)
-                    tablas[dump].append((nodo.target.id, rel))
-            # Funciones con cuerpo idéntico (>= 2 statements, sin docstring al inicio)
-            for nodo in ast.walk(t):
-                if isinstance(nodo, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    body = nodo.body
-                    if (isinstance(body[0], ast.Expr)
-                            and isinstance(getattr(body[0], "value", None), ast.Constant)
-                            and isinstance(body[0].value.value, str)):
-                        body = body[1:]
-                    if len(body) >= 2:
-                        dump = "\n".join(_ast_dump_canonico(s) for s in body)
-                        cuerpos[dump].append((nodo.name, rel, nodo.lineno))
+            _registrar_tablas(t, rel, tablas)
+            _registrar_cuerpos(t, rel, cuerpos)
 
     tablas_dup = {k: v for k, v in tablas.items() if len(v) > 1}
     cuerpos_dup = {k: v for k, v in cuerpos.items() if len(v) > 1}
@@ -245,7 +256,25 @@ def _contar_cadena_ifelif(nodo_func) -> int:
 # ---------------------------------------------------------------------------
 # Subcomando: fachadas
 # ---------------------------------------------------------------------------
-def _fachadas() -> dict:  # noqa: C901 - complejidad 13 (max 12): herramienta de auditoria fuera del runtime; dividirla no aporta (D-81)
+def _es_fachada(t: ast.Module) -> bool:
+    for nodo in t.body:
+        if isinstance(nodo, (ast.Import, ast.ImportFrom)):
+            continue
+        if isinstance(nodo, ast.Assign):
+            for target in nodo.targets:
+                if isinstance(target, ast.Name) and target.id == "__all__":
+                    continue
+            return False
+        if isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name):
+            if nodo.target.id == "__all__":
+                continue
+            return False
+        # Cualquier otra cosa (función, clase, cálculo) rompe la fachada
+        return False
+    return len(t.body) > 0
+
+
+def _fachadas() -> dict:
     """Módulos cuyo cuerpo son solo imports y reexportaciones."""
     fachadas = []
     for _nombre, base in CAPAS:
@@ -257,25 +286,7 @@ def _fachadas() -> dict:  # noqa: C901 - complejidad 13 (max 12): herramienta de
                 t = ast.parse(src)
             except SyntaxError:
                 continue
-            solo_imports = True
-            for nodo in t.body:
-                if isinstance(nodo, (ast.Import, ast.ImportFrom)):
-                    continue
-                if isinstance(nodo, ast.Assign):
-                    for target in nodo.targets:
-                        if isinstance(target, ast.Name) and target.id == "__all__":
-                            continue
-                    solo_imports = False
-                    break
-                if isinstance(nodo, ast.AnnAssign) and isinstance(nodo.target, ast.Name):
-                    if nodo.target.id == "__all__":
-                        continue
-                    solo_imports = False
-                    break
-                # Cualquier otra cosa (función, clase, cálculo) rompe la fachada
-                solo_imports = False
-                break
-            if solo_imports and len(t.body) > 0:
+            if _es_fachada(t):
                 fachadas.append(str(p.relative_to(ROOT)))
     return {"fachadas": len(fachadas), "detalle": fachadas}
 
@@ -312,7 +323,28 @@ def _tamano() -> dict:
 # ---------------------------------------------------------------------------
 # Subcomando: excepciones
 # ---------------------------------------------------------------------------
-def _excepciones() -> dict:  # noqa: C901 - complejidad 13 (max 12): herramienta de auditoria fuera del runtime; dividirla no aporta (D-81)
+def _handler_tragado(handler: ast.ExceptHandler) -> bool:
+    """True si el except no re-lanza ni registra el error."""
+    tiene_raise = any(
+        isinstance(s, ast.Raise)
+        for s in ast.walk(handler) if isinstance(s, ast.Raise)
+    )
+    tiene_log = False
+    for s in ast.walk(handler):
+        if isinstance(s, ast.Call):
+            func = s.func
+            if isinstance(func, ast.Attribute):
+                if func.attr in ("PrintError", "PrintWarning", "PrintMessage",
+                                 "error", "warning", "info",
+                                 "debug", "exception"):
+                    tiene_log = True
+            elif (isinstance(func, ast.Name)
+                  and func.id in ("logging", "print")):
+                tiene_log = True
+    return not tiene_raise and not tiene_log
+
+
+def _excepciones() -> dict:
     """except sin re-lanzamiento (raise) ni registro (App.Console / logging)."""
     problemas = []
     for _nombre, base in CAPAS:
@@ -326,23 +358,7 @@ def _excepciones() -> dict:  # noqa: C901 - complejidad 13 (max 12): herramienta
             for nodo in ast.walk(t):
                 if isinstance(nodo, ast.Try):
                     for handler in nodo.handlers:
-                        tiene_raise = any(
-                            isinstance(s, ast.Raise)
-                            for s in ast.walk(handler) if isinstance(s, ast.Raise)
-                        )
-                        tiene_log = False
-                        for s in ast.walk(handler):
-                            if isinstance(s, ast.Call):
-                                func = s.func
-                                if isinstance(func, ast.Attribute):
-                                    if func.attr in ("PrintError", "PrintWarning", "PrintMessage",
-                                                     "error", "warning", "info",
-                                                     "debug", "exception"):
-                                        tiene_log = True
-                                elif (isinstance(func, ast.Name)
-                                      and func.id in ("logging", "print")):
-                                    tiene_log = True
-                        if not tiene_raise and not tiene_log:
+                        if _handler_tragado(handler):
                             problemas.append({
                                 "archivo": rel,
                                 "funcion": getattr(nodo, "name", "<modulo>"),
@@ -363,81 +379,92 @@ def _imprimir_tabla(titulo: str, filas: list[list[str]], cabecera: list[str]) ->
         print(" | ".join(fila))
 
 
-def main() -> int:  # noqa: C901 - complejidad 18 (max 12): herramienta de auditoria fuera del runtime; dividirla no aporta (D-81)
+def _cmd_resumen(salida_json: dict[str, Any]) -> None:
+    data = _resumen()
+    salida_json["resultado"] = data
+    filas = []
+    for capa, d in data["capas"].items():
+        filas.append([capa, str(d["archivos"]), str(d["lineas"]),
+                      str(d["funciones"]), str(d["api_publica"])])
+    filas.append(["TOTAL", str(data["total_archivos"]), str(data["total_lineas"]),
+                  str(data["total_funciones"]), "-"])
+    _imprimir_tabla("RESUMEN por capa", filas,
+                    ["capa", "archivos", "lineas", "funciones", "api_publica"])
+
+def _cmd_duplicados(salida_json: dict[str, Any]) -> None:
+    data = _duplicados()
+    salida_json["resultado"] = data
+    filas = [[str(data["tablas_identicas"]), "tablas constantes idénticas (AST)"]]
+    filas.append([str(data["cuerpos_identicos"]), "funciones con cuerpo idéntico"])
+    _imprimir_tabla("DUPLICADOS", filas, ["cantidad", "tipo"])
+    for _k, v in data["detalle_tablas"].items():
+        print(f"  Tabla duplicada: {v}")
+    for _k, v in data["detalle_cuerpos"].items():
+        print(f"  Función duplicada: {v}")
+
+def _cmd_literales(salida_json: dict[str, Any]) -> None:
+    data = _literales()
+    salida_json["resultado"] = data
+    filas = [[str(data["total"]), "literales vigilados fuera de datos/"]]
+    for valor, archivos in sorted(data["hallazgos"].items()):
+        filas.append([valor, str(len(archivos)), ", ".join(archivos[:3])])
+    _imprimir_tabla("LITERALES vigilados", filas, ["valor", "archivos", "detalle"])
+
+def _cmd_ramas(salida_json: dict[str, Any]) -> None:
+    data = _ramas()
+    salida_json["resultado"] = data
+    filas = [[str(data["funciones_con_ramas"]), "funciones con 4+ ramas if/elif"]]
+    for archivo, funcs in data["detalle"].items():
+        for f in funcs:
+            filas.append([archivo, f["funcion"], str(f["ramas"]), f"L{f['linea']}"])
+    _imprimir_tabla("RAMAS if/elif >= 4", filas, ["archivo", "funcion", "ramas", "linea"])
+
+def _cmd_fachadas(salida_json: dict[str, Any]) -> None:
+    data = _fachadas()
+    salida_json["resultado"] = data
+    filas = [[str(data["fachadas"]), "módulos fachada (solo imports/reexport)"]]
+    for f in data["detalle"]:
+        filas.append([f, ""])
+    _imprimir_tabla("FACHADAS", filas, ["cantidad", "modulo"])
+
+def _cmd_tamano(salida_json: dict[str, Any]) -> None:
+    data = _tamano()
+    salida_json["resultado"] = data
+    filas = [[str(len(data["archivos_grandes"])), "archivos > 400 líneas"]]
+    for a in data["archivos_grandes"]:
+        filas.append([a["archivo"], str(a["lineas"])])
+    filas.append([str(len(data["funciones_largas"])), "funciones > 60 líneas"])
+    for f in data["funciones_largas"]:
+        filas.append([f"{f['archivo']}:{f['funcion']}", str(f["lineas"])])
+    _imprimir_tabla("TAMAÑO", filas, ["cantidad/detalle", "valor"])
+
+def _cmd_excepciones(salida_json: dict[str, Any]) -> None:
+    data = _excepciones()
+    salida_json["resultado"] = data
+    filas = [[str(data["excepciones_tragadas"]), "except que tragan errores"]]
+    for e in data["detalle"]:
+        filas.append([f"{e['archivo']}:{e['linea']}", e["funcion"]])
+    _imprimir_tabla("EXCEPCIONES tragadas", filas, ["ubicacion", "funcion"])
+
+_COMANDOS = {
+    "resumen": _cmd_resumen,
+    "duplicados": _cmd_duplicados,
+    "literales": _cmd_literales,
+    "ramas": _cmd_ramas,
+    "fachadas": _cmd_fachadas,
+    "tamano": _cmd_tamano,
+    "excepciones": _cmd_excepciones,
+}
+
+def main() -> int:
     sub = sys.argv[1] if len(sys.argv) > 1 else "resumen"
     salida_json = {"subcomando": sub, "resultado": {}}
-
-    if sub == "resumen":
-        data = _resumen()
-        salida_json["resultado"] = data
-        filas = []
-        for capa, d in data["capas"].items():
-            filas.append([capa, str(d["archivos"]), str(d["lineas"]),
-                          str(d["funciones"]), str(d["api_publica"])])
-        filas.append(["TOTAL", str(data["total_archivos"]), str(data["total_lineas"]),
-                      str(data["total_funciones"]), "-"])
-        _imprimir_tabla("RESUMEN por capa", filas,
-                        ["capa", "archivos", "lineas", "funciones", "api_publica"])
-
-    elif sub == "duplicados":
-        data = _duplicados()
-        salida_json["resultado"] = data
-        filas = [[str(data["tablas_identicas"]), "tablas constantes idénticas (AST)"]]
-        filas.append([str(data["cuerpos_identicos"]), "funciones con cuerpo idéntico"])
-        _imprimir_tabla("DUPLICADOS", filas, ["cantidad", "tipo"])
-        for _k, v in data["detalle_tablas"].items():
-            print(f"  Tabla duplicada: {v}")
-        for _k, v in data["detalle_cuerpos"].items():
-            print(f"  Función duplicada: {v}")
-
-    elif sub == "literales":
-        data = _literales()
-        salida_json["resultado"] = data
-        filas = [[str(data["total"]), "literales vigilados fuera de datos/"]]
-        for valor, archivos in sorted(data["hallazgos"].items()):
-            filas.append([valor, str(len(archivos)), ", ".join(archivos[:3])])
-        _imprimir_tabla("LITERALES vigilados", filas, ["valor", "archivos", "detalle"])
-
-    elif sub == "ramas":
-        data = _ramas()
-        salida_json["resultado"] = data
-        filas = [[str(data["funciones_con_ramas"]), "funciones con 4+ ramas if/elif"]]
-        for archivo, funcs in data["detalle"].items():
-            for f in funcs:
-                filas.append([archivo, f["funcion"], str(f["ramas"]), f"L{f['linea']}"])
-        _imprimir_tabla("RAMAS if/elif >= 4", filas, ["archivo", "funcion", "ramas", "linea"])
-
-    elif sub == "fachadas":
-        data = _fachadas()
-        salida_json["resultado"] = data
-        filas = [[str(data["fachadas"]), "módulos fachada (solo imports/reexport)"]]
-        for f in data["detalle"]:
-            filas.append([f, ""])
-        _imprimir_tabla("FACHADAS", filas, ["cantidad", "modulo"])
-
-    elif sub == "tamano":
-        data = _tamano()
-        salida_json["resultado"] = data
-        filas = [[str(len(data["archivos_grandes"])), "archivos > 400 líneas"]]
-        for a in data["archivos_grandes"]:
-            filas.append([a["archivo"], str(a["lineas"])])
-        filas.append([str(len(data["funciones_largas"])), "funciones > 60 líneas"])
-        for f in data["funciones_largas"]:
-            filas.append([f"{f['archivo']}:{f['funcion']}", str(f["lineas"])])
-        _imprimir_tabla("TAMAÑO", filas, ["cantidad/detalle", "valor"])
-
-    elif sub == "excepciones":
-        data = _excepciones()
-        salida_json["resultado"] = data
-        filas = [[str(data["excepciones_tragadas"]), "except que tragan errores"]]
-        for e in data["detalle"]:
-            filas.append([f"{e['archivo']}:{e['linea']}", e["funcion"]])
-        _imprimir_tabla("EXCEPCIONES tragadas", filas, ["ubicacion", "funcion"])
-
-    else:
+    comando = _COMANDOS.get(sub)
+    if comando is None:
         print(f"Subcomando desconocido: {sub}")
         print("Opciones: resumen, duplicados, literales, ramas, fachadas, tamano, excepciones")
         return 1
+    comando(salida_json)
 
     print(json.dumps(salida_json, indent=2, ensure_ascii=False))
     return 0

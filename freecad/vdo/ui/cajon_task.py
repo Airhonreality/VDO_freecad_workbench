@@ -115,8 +115,14 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
     # -----------------------------------------------------------------
     # Carga de valores
     # -----------------------------------------------------------------
-    def _cargar_valores(self, obj):  # noqa: C901 - complejidad 20 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
+    def _cargar_valores(self, obj):
         """Carga las propiedades del objeto en los controles."""
+        self._cargar_medidas(obj)
+        self._cargar_marca_guia_montaje(obj)
+        self._cargar_tipo_apertura_sku(obj)
+        self._cargar_rotacion_anclaje(obj)
+
+    def _cargar_medidas(self, obj):
         if hasattr(obj, "AnchoLibre"):
             self.spin_li.setValue(float(obj.AnchoLibre))
         if hasattr(obj, "ProfLibre"):
@@ -133,6 +139,8 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
             self.spin_g_fondo.setValue(round(float(obj.GrosorFondo)))
         if hasattr(obj, "GrosorFachada"):
             self.spin_g_fachada.setValue(round(float(obj.GrosorFachada)))
+
+    def _cargar_marca_guia_montaje(self, obj):
         if hasattr(obj, "MarcaCorredera"):
             idx = self.combo_marca.findText(obj.MarcaCorredera)
             if idx >= 0:
@@ -143,6 +151,8 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
             idx = self.combo_montaje.findText(obj.MontajeTrasera)
             if idx >= 0:
                 self.combo_montaje.setCurrentIndex(idx)
+
+    def _cargar_tipo_apertura_sku(self, obj):
         if hasattr(obj, "TipoCorredera"):
             tipo_map_rev = {
                 CORREDERA_OCULTA: 0,
@@ -169,8 +179,6 @@ class CajonTaskPanel(CajonTaskConstruccionMixin, VDOTransactionMixin):
             sku_idx = self.combo_sku.findData(sku)
             if sku_idx >= 0:
                 self.combo_sku.setCurrentIndex(sku_idx)
-
-        self._cargar_rotacion_anclaje(obj)
 
     def _cargar_rotacion_anclaje(self, obj):
         self.spin_rotacion.setValue(

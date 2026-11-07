@@ -213,105 +213,113 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
                f"{len(REQUIRED_API)} símbolos de API presentes")
 
     # --------------------------------------------------- 1. Subdivisión torre
-    def test_01_chain1_subdivision_torre_cajones(self):  # noqa: C901 - complejidad 13 (max 12): escenario de prueba de cadena larga; partirlo oculta el caso
+    def test_01_chain1_subdivision_torre_cajones(self):
         cadena = "1. Subdivisión torre de cajones"
         alto, ancho, fondo, zocalo = 700.0, 450.0, 550.0, 70.0
         inner_w = ancho - 2 * ESP          # 414
         cav_h = alto - zocalo - ESP        # 612 (cavidad para cajones)
 
         try:
-            layout = VL_MATRIZ.Layout()
-            layout.rows = [VL_MODELO.Track("y1"), VL_MODELO.Track("y2"), VL_MODELO.Track("y3")]
-            layout._normalizar()
-            resuelto = VL_RESOLUCION.resolve_layout(layout, inner_w, cav_h, ESP)
-            cells = [c for c in resuelto.walk_cells() if not c.children]
-            ok_celdas = len(cells) == 3
-            motivo = f"{len(cells)} celdas hoja"
-            if ok_celdas:
-                esperada_h = (cav_h - 2 * ESP) / 3
-                for c in cells:
-                    ok_celdas = ok_celdas and abs(c.w - inner_w) < 1e-6
-                    ok_celdas = ok_celdas and abs(c.h - esperada_h) < 1e-6
-                motivo += f"; coto neto ancho={cells[0].w:.3f} alto={cells[0].h:.3f}"
-            record(cadena, "1.1 Tres sub-vanos independientes con cotas netas",
-                   ok_celdas, motivo)
-
-            # 3 CajonFeature reactivos (uno por vano), consumiendo herraje
-            cajones = []
-            hw_ok = True
-            hw_motivo = ""
-            hw_oculta = hw_tel = None
-            try:
-                hw_oculta = HH.resolve_drawer_slide("oculta", "blum_tandem")
-                hw_tel = HH.resolve_drawer_slide("telescopica",
-                                                 "GEN-TELESCOPICA-45KG")
-            except _ERRORES_ESPERADOS as ex:
-                hw_ok = False
-                hw_motivo = f"herraje: {ex}"
-
-            for i, c in enumerate(cells):
-                if not hw_ok:
-                    break
-                cfg = {
-                    "nombre": f"Arturito_Cajon_{i+1}",
-                    "ancho_libre": c.w,
-                    "prof_libre": fondo - 2 * ESP,
-                    "ancho_modulo": ancho,
-                    "alto_frente": c.h,
-                    "alto_caja": VD.CAJON_ALTO_DEFAULT,
-                    "grosor_caja": VD.CAJON_GROSOR_DEFAULT,
-                    "grosor_fondo": VD.CAJON_FONDO_DEFAULT,
-                    "grosor_fachada": VD.CAJON_FACHADA_DEFAULT,
-                    "marca": "blum_tandem",
-                    "tipo_corredera": VCD.CORREDERA_OCULTA,
-                    "sistema_apertura": VFC.APERTURA_TIRADOR,
-                    "material_ref": "melamina_standar",
-                }
-                obj = VCJ.make_cajon(self.doc, cfg)
-                if obj is None:
-                    hw_ok = False
-                    hw_motivo = f"make_cajon devolvió None (cajon {i+1})"
-                    break
-                obj.Placement = stable_placement(
-                    (ESP + c.x, 0.0, zocalo + ESP + c.z))
-                cajones.append(obj)
-                if not obj.Shape.isValid():
-                    hw_ok = False
-                    hw_motivo = f"cajon {i+1} Shape no válido"
-                    break
-            self.doc.recompute()
-            record(cadena, "1.2 Inserción de 3 CajonFeature + corredera oculta",
-                   hw_ok and len(cajones) == 3,
-                   hw_motivo or (f"oculta={hw_oculta['sku'] if hw_oculta else '?'}, "
-                                 f"telescopica={hw_tel['sku'] if hw_tel else '?'}"))
-
-            # no colisión entre cajones apilados: sus intervalos Z (desde el
-            # Placement) no se solapan, lo que implica common().Volume == 0
-            no_col = True
-            col_detalle = []
-            cz_intervals = []
-            for _i, cj in enumerate(cajones):
-                pl = cj.Placement
-                bb = cj.Shape.BoundBox
-                z0 = pl.Base.z + bb.ZMin
-                z1 = pl.Base.z + bb.ZMax
-                cz_intervals.append((z0, z1))
-            for i in range(len(cz_intervals)):
-                for j in range(i + 1, len(cz_intervals)):
-                    a0, a1 = cz_intervals[i]
-                    b0, b1 = cz_intervals[j]
-                    solapa = not (a1 <= b0 + 1e-6 or b1 <= a0 + 1e-6)
-                    col_detalle.append(f"C{i+1}Z[{a0:.1f},{a1:.1f}] vs "
-                                       f"C{j+1}Z[{b0:.1f},{b1:.1f}] solapa={solapa}")
-                    if solapa:
-                        no_col = False
-            record(cadena, "1.3 Cajones sin colisión booleana entre sí",
-                   no_col, "intervalos Z disjuntos ⇒ common().Volume == 0; " +
-                   "; ".join(col_detalle))
+            cells = self._chain1_subdividir(cadena, inner_w, cav_h)
+            cajones = self._chain1_insertar_cajones(cadena, cells, ancho, fondo, zocalo)
+            self._chain1_sin_colision(cadena, cajones)
         except _ERRORES_ESPERADOS as ex:
             record(cadena, "1.1-1.3 Ejecución", False, f"Excepción: {ex}")
 
-    # --------------------------------------------------- 2. Sistemas apertura
+    def _chain1_subdividir(self, cadena, inner_w, cav_h):
+        layout = VL_MATRIZ.Layout()
+        layout.rows = [VL_MODELO.Track("y1"), VL_MODELO.Track("y2"), VL_MODELO.Track("y3")]
+        layout._normalizar()
+        resuelto = VL_RESOLUCION.resolve_layout(layout, inner_w, cav_h, ESP)
+        cells = [c for c in resuelto.walk_cells() if not c.children]
+        ok_celdas = len(cells) == 3
+        motivo = f"{len(cells)} celdas hoja"
+        if ok_celdas:
+            esperada_h = (cav_h - 2 * ESP) / 3
+            for c in cells:
+                ok_celdas = ok_celdas and abs(c.w - inner_w) < 1e-6
+                ok_celdas = ok_celdas and abs(c.h - esperada_h) < 1e-6
+            motivo += f"; coto neto ancho={cells[0].w:.3f} alto={cells[0].h:.3f}"
+        record(cadena, "1.1 Tres sub-vanos independientes con cotas netas",
+               ok_celdas, motivo)
+        return cells
+
+    def _chain1_insertar_cajones(self, cadena, cells, ancho, fondo, zocalo):
+        # 3 CajonFeature reactivos (uno por vano), consumiendo herraje
+        cajones = []
+        hw_ok = True
+        hw_motivo = ""
+        hw_oculta = hw_tel = None
+        try:
+            hw_oculta = HH.resolve_drawer_slide("oculta", "blum_tandem")
+            hw_tel = HH.resolve_drawer_slide("telescopica",
+                                             "GEN-TELESCOPICA-45KG")
+        except _ERRORES_ESPERADOS as ex:
+            hw_ok = False
+            hw_motivo = f"herraje: {ex}"
+
+        for i, c in enumerate(cells):
+            if not hw_ok:
+                break
+            cfg = {
+                "nombre": f"Arturito_Cajon_{i+1}",
+                "ancho_libre": c.w,
+                "prof_libre": fondo - 2 * ESP,
+                "ancho_modulo": ancho,
+                "alto_frente": c.h,
+                "alto_caja": VD.CAJON_ALTO_DEFAULT,
+                "grosor_caja": VD.CAJON_GROSOR_DEFAULT,
+                "grosor_fondo": VD.CAJON_FONDO_DEFAULT,
+                "grosor_fachada": VD.CAJON_FACHADA_DEFAULT,
+                "marca": "blum_tandem",
+                "tipo_corredera": VCD.CORREDERA_OCULTA,
+                "sistema_apertura": VFC.APERTURA_TIRADOR,
+                "material_ref": "melamina_standar",
+            }
+            obj = VCJ.make_cajon(self.doc, cfg)
+            if obj is None:
+                hw_ok = False
+                hw_motivo = f"make_cajon devolvió None (cajon {i+1})"
+                break
+            obj.Placement = stable_placement(
+                (ESP + c.x, 0.0, zocalo + ESP + c.z))
+            cajones.append(obj)
+            if not obj.Shape.isValid():
+                hw_ok = False
+                hw_motivo = f"cajon {i+1} Shape no válido"
+                break
+        self.doc.recompute()
+        record(cadena, "1.2 Inserción de 3 CajonFeature + corredera oculta",
+               hw_ok and len(cajones) == 3,
+               hw_motivo or (f"oculta={hw_oculta['sku'] if hw_oculta else '?'}, "
+                             f"telescopica={hw_tel['sku'] if hw_tel else '?'}"))
+        return cajones
+
+    def _chain1_sin_colision(self, cadena, cajones):
+        # no colisión entre cajones apilados: sus intervalos Z (desde el
+        # Placement) no se solapan, lo que implica common().Volume == 0
+        no_col = True
+        col_detalle = []
+        cz_intervals = []
+        for _i, cj in enumerate(cajones):
+            pl = cj.Placement
+            bb = cj.Shape.BoundBox
+            z0 = pl.Base.z + bb.ZMin
+            z1 = pl.Base.z + bb.ZMax
+            cz_intervals.append((z0, z1))
+        for i in range(len(cz_intervals)):
+            for j in range(i + 1, len(cz_intervals)):
+                a0, a1 = cz_intervals[i]
+                b0, b1 = cz_intervals[j]
+                solapa = not (a1 <= b0 + 1e-6 or b1 <= a0 + 1e-6)
+                col_detalle.append(f"C{i+1}Z[{a0:.1f},{a1:.1f}] vs "
+                                   f"C{j+1}Z[{b0:.1f},{b1:.1f}] solapa={solapa}")
+                if solapa:
+                    no_col = False
+        record(cadena, "1.3 Cajones sin colisión booleana entre sí",
+               no_col, "intervalos Z disjuntos ⇒ common().Volume == 0; " +
+               "; ".join(col_detalle))
+
     def test_02_chain2_sistemas_apertura_fachadas(self):
         cadena = "2. Sistemas de apertura en fachadas"
         try:

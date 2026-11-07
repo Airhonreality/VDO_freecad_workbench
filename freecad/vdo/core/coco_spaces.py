@@ -45,54 +45,61 @@ def _prioridad_par(a: dict[str, Any], b: dict[str, Any]) -> Any:
     return pa or pb or "vertical_domina"
 
 
-def _resolver_tiras_entre_si(tiras: list[dict[str, Any]]) -> None:  # noqa: C901 - complejidad 15 (max 12): funcion con ramas por caso; dividirla cambia el flujo sin golden por rama (D-81)
+def _resolver_tiras_entre_si(tiras: list[dict[str, Any]]) -> None:
     """Matriz de prioridades tira contra tira (X/Z, L y T)."""
     for i in range(len(tiras)):
         for j in range(i + 1, len(tiras)):
-            a = tiras[i]
-            b = tiras[j]
-            if a.get("host") and a.get("host") == b.get("host"):
-                continue
-            segs_a = list(a.get("segmentos") or [])
-            segs_b = list(b.get("segmentos") or [])
-            if not segs_a or not segs_b:
-                continue
-            par = None
-            for sa in segs_a:
-                for sb in segs_b:
-                    if VDO_RE_ENCUENTROS.detectar_colision(sa, sb):
-                        par = (sa, sb)
-                        break
-                if par:
-                    break
-            if par is None:
-                continue
-            prioridad = _prioridad_par(a, b)
-            if prioridad == "inglete_45":
-                plan = VDO_RE_ENCUENTROS.resolver_encuentro_tiras(
-                    par[0], par[1], "inglete_45")
-                if plan.get("inglete"):
-                    a.setdefault("ingletes", []).append({
-                        "otra": b.get("clave"),
-                        "rol": plan["orientacion_a"],
-                        "plan": plan["inglete"],
-                    })
-                    b.setdefault("ingletes", []).append({
-                        "otra": a.get("clave"),
-                        "rol": plan["orientacion_b"],
-                        "plan": plan["inglete"],
-                    })
-                continue
-            res = VDO_RE_ENCUENTROS.resolver_encuentro_tiras(
-                par[0], par[1], prioridad)
-            if res["perdedor"] == "a":
-                for ganadora in segs_b:
-                    segs_a = _cortar_segmentos(segs_a, ganadora)
-            else:
-                for ganadora in segs_a:
-                    segs_b = _cortar_segmentos(segs_b, ganadora)
-            a["segmentos"] = segs_a
-            b["segmentos"] = segs_b
+            _resolver_par_tiras(tiras[i], tiras[j])
+
+
+def _par_colisionante(segs_a: list[Any], segs_b: list[Any]) -> tuple[Any, Any] | None:
+    for sa in segs_a:
+        for sb in segs_b:
+            if VDO_RE_ENCUENTROS.detectar_colision(sa, sb):
+                return (sa, sb)
+    return None
+
+
+def _registrar_inglete(a: dict[str, Any], b: dict[str, Any], par: tuple[Any, Any]) -> None:
+    plan = VDO_RE_ENCUENTROS.resolver_encuentro_tiras(
+        par[0], par[1], "inglete_45")
+    if plan.get("inglete"):
+        a.setdefault("ingletes", []).append({
+            "otra": b.get("clave"),
+            "rol": plan["orientacion_a"],
+            "plan": plan["inglete"],
+        })
+        b.setdefault("ingletes", []).append({
+            "otra": a.get("clave"),
+            "rol": plan["orientacion_b"],
+            "plan": plan["inglete"],
+        })
+
+
+def _resolver_par_tiras(a: dict[str, Any], b: dict[str, Any]) -> None:
+    if a.get("host") and a.get("host") == b.get("host"):
+        return
+    segs_a = list(a.get("segmentos") or [])
+    segs_b = list(b.get("segmentos") or [])
+    if not segs_a or not segs_b:
+        return
+    par = _par_colisionante(segs_a, segs_b)
+    if par is None:
+        return
+    prioridad = _prioridad_par(a, b)
+    if prioridad == "inglete_45":
+        _registrar_inglete(a, b, par)
+        return
+    res = VDO_RE_ENCUENTROS.resolver_encuentro_tiras(
+        par[0], par[1], prioridad)
+    if res["perdedor"] == "a":
+        for ganadora in segs_b:
+            segs_a = _cortar_segmentos(segs_a, ganadora)
+    else:
+        for ganadora in segs_a:
+            segs_b = _cortar_segmentos(segs_b, ganadora)
+    a["segmentos"] = segs_a
+    b["segmentos"] = segs_b
 
 
 def _aplicar_interrupciones(tira: dict[str, Any]) -> None:
