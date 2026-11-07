@@ -766,3 +766,12 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
   - **Cambio adicional necesario:** `ViewProviderCajon` y `ViewProviderPuerta` se mueven también a `view_provider_base.py`. `coco_unified_task` las importa para crear objetos hijos; si siguieran en `view_providers`, quedaría la arista `coco_unified_task -> view_providers` y el ciclo seguiría. Sus dependencias (`cajon_task`, `puerta_task`) no vuelven a importar la base.
   - **Sin reexportación (P6):** `commands.py` y los tests que importaban `enfocar_inspector_universal` o `VDOViewProviderBase` de `view_providers` apuntan ahora a `view_provider_base`.
   - **Criterio de verificación:** `tools/auditoria/ciclos.py` debe dar 0 componentes en `ui/`.
+
+## D-104
+
+- D-104: diagnóstico de la caída al importar. Resultado: no reproducida; B5 sigue cerrado como no reproducido (D-90), sin cambio de código.
+  - **Comando:** `timeout 180 freecadcmd -c "import freecad.vdo.ui.cutting_list_preview, freecad.vdo.ui.export_cutting_list, freecad.vdo.ui.coco_unified_task, freecad.vdo.ui.drag_handles, freecad.vdo.ui.view_providers, freecad.vdo.cad.lista_corte; print('OK_TODOS')"`.
+  - **Antes de D-103 (`12ccf8c`):** 3 repeticiones, código 0 y `OK_TODOS` en las 3.
+  - **Después de D-103 (`1e488df`):** 3 repeticiones, código 0 y `OK_TODOS` en las 3.
+  - **Bisección:** no aplica, porque la caída no aparece con la lista completa.
+  - **B5:** la caída de B5 es un SIGSEGV al cerrar la suite de nivel 2, no un fallo de import. Este diagnóstico no la reproduce. Si reaparece, hay que reabrirlo con su log, como indica la fila B5.
