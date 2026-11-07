@@ -28,14 +28,9 @@ import FreeCAD as App
 
 from freecad.vdo.cad.coco import CocoFeature
 from freecad.vdo.cad.panel import PanelFeature
-from freecad.vdo.ui.inspector_dock import (
-    PAGE_CHASIS,
-    PAGE_CIERRE,
-    PAGE_PIEZA,
-    PAGE_VANO,
-    VDOUniversalInspectorWidget,
-    obtener_o_crear_dock_inspector,
-)
+from freecad.vdo.ui.inspector_dock import obtener_o_crear_dock_inspector
+from freecad.vdo.ui.inspector_paginas import PAGE_CHASIS, PAGE_CIERRE, PAGE_PIEZA, PAGE_VANO
+from freecad.vdo.ui.universal_inspector import VDOUniversalInspectorWidget
 from freecad.vdo.ui.view_provider_base import enfocar_inspector_universal
 from freecad.vdo.ui.view_providers import (
     ViewProviderCoco,

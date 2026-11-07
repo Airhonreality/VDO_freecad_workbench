@@ -79,13 +79,3 @@ def obtener_o_crear_dock_inspector(mw=None):
             return None
     return dock
 
-
-__all__ = [
-    "PAGE_CHASIS",
-    "PAGE_CIERRE",
-    "PAGE_PIEZA",
-    "PAGE_VANO",
-    "VDOInspectorDockWidget",
-    "VDOUniversalInspectorWidget",
-    "obtener_o_crear_dock_inspector",
-]
