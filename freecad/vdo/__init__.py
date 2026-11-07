@@ -9,3 +9,8 @@ import os
 # Fijar la plataforma Qt antes de cualquier import de Qt del paquete (P1: un solo lugar).
 if os.environ.get("QT_QPA_PLATFORM") is None:
     os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+
+# Logs del paquete a la consola de FreeCAD (E1). Un solo punto; sin FreeCAD no hace nada.
+from .registro import instalar_consola_freecad as _instalar_consola_freecad
+
+_instalar_consola_freecad()
