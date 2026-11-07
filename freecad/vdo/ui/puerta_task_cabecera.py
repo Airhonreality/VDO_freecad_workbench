@@ -3,6 +3,7 @@
 # Cabecera universal de pieza (PanelHeaderWidget) para el panel de puerta.
 # =====================================================================
 
+from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui import tema
 
@@ -31,7 +32,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
 
         self.lbl_dimensiones = QtWidgets.QLabel("—")
         self.lbl_dimensiones.setToolTip(
-            f"Dimensiones brutas de corte: Largo {tema.SIMBOLO_MULTIPLICAR} Ancho {tema.SIMBOLO_MULTIPLICAR} Espesor (mm).")
+            f"Dimensiones brutas de corte: Largo {SIMBOLO_MULTIPLICAR} Ancho {SIMBOLO_MULTIPLICAR} Espesor (mm).")
         layout.addWidget(self.lbl_dimensiones)
 
         self.lbl_cantos = QtWidgets.QLabel("")
@@ -42,7 +43,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
     def set_pieza(self, identificador, largo, ancho, espesor, cantos=None):
         self.lbl_id.setText(str(identificador or "Pieza"))
         self.lbl_dimensiones.setText(
-            f"{float(largo):.1f} {tema.SIMBOLO_MULTIPLICAR} {float(ancho):.1f} {tema.SIMBOLO_MULTIPLICAR} "
+            f"{float(largo):.1f} {SIMBOLO_MULTIPLICAR} {float(ancho):.1f} {SIMBOLO_MULTIPLICAR} "
             f"{float(espesor):.1f} mm")
         cantos = cantos or {}
         partes = []

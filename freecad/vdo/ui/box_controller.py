@@ -20,7 +20,7 @@ import sys
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema, tema_colores
 from freecad.vdo.ui.box_config import BoxConfigMixin
 from freecad.vdo.ui.box_constantes import ESQUINAS
 from freecad.vdo.ui.box_construccion import BoxConstruccionMixin
@@ -88,17 +88,17 @@ if __name__ == "__main__":
 
     # Paleta oscura global
     paleta = QtGui.QPalette()
-    paleta.setColor(QtGui.QPalette.Window, QtGui.QColor(tema.FONDO))
-    paleta.setColor(QtGui.QPalette.WindowText, QtGui.QColor(tema.TEXTO))
-    paleta.setColor(QtGui.QPalette.Base, QtGui.QColor(tema.COLOR_FONDO_BASE))
-    paleta.setColor(QtGui.QPalette.AlternateBase, QtGui.QColor(tema.FONDO))
-    paleta.setColor(QtGui.QPalette.ToolTipBase, QtGui.QColor(tema.TEXTO_CLARO))
-    paleta.setColor(QtGui.QPalette.ToolTipText, QtGui.QColor(tema.TEXTO_CLARO))
-    paleta.setColor(QtGui.QPalette.Text, QtGui.QColor(tema.TEXTO))
-    paleta.setColor(QtGui.QPalette.Button, QtGui.QColor(tema.COLOR_FONDO_BOTON))
-    paleta.setColor(QtGui.QPalette.ButtonText, QtGui.QColor(tema.TEXTO_CLARO))
-    paleta.setColor(QtGui.QPalette.Highlight, QtGui.QColor(tema.ACEINTO))
-    paleta.setColor(QtGui.QPalette.HighlightedText, QtGui.QColor(tema.TEXTO_CLARO))
+    paleta.setColor(QtGui.QPalette.Window, QtGui.QColor(tema_colores.FONDO))
+    paleta.setColor(QtGui.QPalette.WindowText, QtGui.QColor(tema_colores.TEXTO))
+    paleta.setColor(QtGui.QPalette.Base, QtGui.QColor(tema_colores.COLOR_FONDO_BASE))
+    paleta.setColor(QtGui.QPalette.AlternateBase, QtGui.QColor(tema_colores.FONDO))
+    paleta.setColor(QtGui.QPalette.ToolTipBase, QtGui.QColor(tema_colores.TEXTO_CLARO))
+    paleta.setColor(QtGui.QPalette.ToolTipText, QtGui.QColor(tema_colores.TEXTO_CLARO))
+    paleta.setColor(QtGui.QPalette.Text, QtGui.QColor(tema_colores.TEXTO))
+    paleta.setColor(QtGui.QPalette.Button, QtGui.QColor(tema_colores.COLOR_FONDO_BOTON))
+    paleta.setColor(QtGui.QPalette.ButtonText, QtGui.QColor(tema_colores.TEXTO_CLARO))
+    paleta.setColor(QtGui.QPalette.Highlight, QtGui.QColor(tema_colores.ACEINTO))
+    paleta.setColor(QtGui.QPalette.HighlightedText, QtGui.QColor(tema_colores.TEXTO_CLARO))
     app.setPalette(paleta)
 
     ventana = QtWidgets.QMainWindow()

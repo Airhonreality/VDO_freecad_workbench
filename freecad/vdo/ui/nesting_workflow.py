@@ -23,6 +23,7 @@ except ImportError:
     raise ImportError("Nesting Workbench no instalado") from None
 
 from freecad.vdo.core import nesting_presets as presets_mgr
+from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.ui import qt, tema
 
 _presets_inicializados = False
@@ -274,7 +275,7 @@ class NestingDialog(QtWidgets.QDialog):
     def _ejecutar_nesting(self, shapes, width, height, spacing, algo, generations):
         # Ejecutar nesting
         App.Console.PrintMessage(f"\n🔄 Ejecutando nesting ({algo})...")
-        App.Console.PrintMessage(f"   Tablero: {width}{tema.SIMBOLO_MULTIPLICAR}{height} mm, Espaciado: {spacing} mm")
+        App.Console.PrintMessage(f"   Tablero: {width}{SIMBOLO_MULTIPLICAR}{height} mm, Espaciado: {spacing} mm")
 
         sheets, unplaced, _steps, elapsed = nest(
             parts=shapes,

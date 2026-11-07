@@ -1,6 +1,6 @@
 """Constantes del editor de reengrose: etiquetas, opciones de esquina y colores."""
 
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_colores
 
 LABEL_BORDE = {
     "frente": "Frente",
@@ -24,8 +24,8 @@ OPCIONES_ESQUINA = (
 )
 
 COLOR_ESQUINA = {
-    "vertical_domina": tema.COLOR_CATEGORIA_VERTICAL,
-    "horizontal_domina": tema.COLOR_NARANJA,
-    "inglete_45": tema.COLOR_CATEGORIA_INGLETE,
-    "marco_interior": tema.COLOR_CATEGORIA_MARCO,
+    "vertical_domina": tema_colores.COLOR_CATEGORIA_VERTICAL,
+    "horizontal_domina": tema_colores.COLOR_NARANJA,
+    "inglete_45": tema_colores.COLOR_CATEGORIA_INGLETE,
+    "marco_interior": tema_colores.COLOR_CATEGORIA_MARCO,
 }

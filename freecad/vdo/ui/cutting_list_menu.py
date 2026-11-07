@@ -6,6 +6,7 @@ de piezas de melamina antes de exportar el CSV.
 
 import FreeCAD as App
 
+from freecad.vdo.core.simbolos import SIMBOLO_INFO
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui import cutting_list_preview, qt, tema
 
@@ -72,7 +73,7 @@ def _crear_opciones(layout):
 def _agregar_info(layout):
     # Info
     info = QtWidgets.QLabel(
-        f"{tema.SIMBOLO_INFO}️ Se exportarán SOLO paneles de melamina\n"
+        f"{SIMBOLO_INFO}️ Se exportarán SOLO paneles de melamina\n"
         "   (Se excluyen muros, paneles BIM, etc)\n\n"
         "El siguiente paso mostrará un PREVIEW\n"
         "con las piezas coloreadas en ROJO para confirmar"

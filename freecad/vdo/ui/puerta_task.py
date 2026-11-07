@@ -29,7 +29,7 @@ from freecad.vdo.core.puerta_despiece import (
     calcular_corrediza,
     descripcion_piston,
 )
-from freecad.vdo.ui import tema
+from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.ui.puerta_task_constantes import (
     SENTIDOS_BASCULANTE,
     SENTIDOS_BATIENTE,
@@ -173,7 +173,7 @@ class PuertaTaskPanel(PuertaTaskConstruccionMixin, VDOTransactionMixin):
                 lineas.append(f"Montaje: {tecnicos['tipo_montaje']}")
             if "diametro_cazoleta" in tecnicos:
                 lineas.append(
-                    f"Cazoleta: Ø{tecnicos['diametro_cazoleta']} mm {tema.SIMBOLO_MULTIPLICAR} "
+                    f"Cazoleta: Ø{tecnicos['diametro_cazoleta']} mm {SIMBOLO_MULTIPLICAR} "
                     f"{tecnicos['profundidad_cazoleta']} mm profundo")
             if "descuento_altura_hoja" in tecnicos:
                 lineas.append(

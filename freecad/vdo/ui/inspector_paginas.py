@@ -8,6 +8,7 @@ import FreeCAD as App
 from freecad.vdo.cad.documento import recalcular
 from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades
 from freecad.vdo.core import hardware_hub as HH
+from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui import tema
@@ -280,7 +281,7 @@ class PaginaCierre(_PaginaBase):
                 self.lbl_precio.setText(f"${h.get('precio_unitario', 0.0):.2f} {h.get('moneda', 'USD')}")
                 params = h.get("parametros_tecnicos", {})
                 self.lbl_fresado.setText(
-                    f"Cazoleta {params.get('diametro_cazoleta', 35):.0f}mm {tema.SIMBOLO_MULTIPLICAR} {params.get('profundidad_cazoleta', 11.5):.1f}mm | K={params.get('cota_k_default', 4):.0f}mm")
+                    f"Cazoleta {params.get('diametro_cazoleta', 35):.0f}mm {SIMBOLO_MULTIPLICAR} {params.get('profundidad_cazoleta', 11.5):.1f}mm | K={params.get('cota_k_default', 4):.0f}mm")
                 return
 
         elif target_type == "CAJON":
@@ -316,7 +317,7 @@ class PaginaCierre(_PaginaBase):
                 self.lbl_sku.setText(h.get("sku", "GEN-CAZ-35-PARCHE"))
                 self.lbl_proveedor.setText(h.get("proveedor", "Genérico"))
                 self.lbl_precio.setText(f"${h.get('precio_unitario', 0.0):.2f} {h.get('moneda', 'USD')}")
-                self.lbl_fresado.setText(f"Cazoleta 35mm {tema.SIMBOLO_MULTIPLICAR} 11.5mm | K=4mm")
+                self.lbl_fresado.setText(f"Cazoleta 35mm {SIMBOLO_MULTIPLICAR} 11.5mm | K=4mm")
         else:
             s = HH.resolve_drawer_slide(OCULTA, BLUM_TANDEM)
             if s:

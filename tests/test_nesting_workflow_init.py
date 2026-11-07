@@ -24,7 +24,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 from freecad.vdo import qt_compat
 from freecad.vdo.cad import documento
 from freecad.vdo.core import nesting_presets as NP
-from freecad.vdo.ui import qt, tema
+from freecad.vdo.ui import qt
 
 
 class _Grupo:

@@ -1,8 +1,9 @@
 """Construccion de widgets y disposicion del editor de reengrose."""
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core.simbolos import SIMBOLO_MENOS
 from freecad.vdo.qt_compat import QtCore, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema, tema_colores
 from freecad.vdo.ui.qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.reengrose_ui_constantes import LABEL_BORDE, LABEL_ESQUINA, OPCIONES_ESQUINA
 from freecad.vdo.ui.reengrose_ui_preview import VDOBoardPreview
@@ -120,10 +121,10 @@ class ReengroseConstruccionMixin:
         caja_preview.setContentsMargins(0, 0, 0, 0)
         caja_preview.addWidget(self.preview)
         leyenda = QtWidgets.QLabel(
-            f'<span style="color:{tema.COLOR_CATEGORIA_VERTICAL}">■</span> Vertical &nbsp;'
-            f'<span style="color:{tema.COLOR_NARANJA}">■</span> Horizontal &nbsp;'
-            f'<span style="color:{tema.COLOR_CATEGORIA_INGLETE}">■</span> Inglete &nbsp;'
-            f'<span style="color:{tema.COLOR_CATEGORIA_MARCO}">■</span> Marco')
+            f'<span style="color:{tema_colores.COLOR_CATEGORIA_VERTICAL}">■</span> Vertical &nbsp;'
+            f'<span style="color:{tema_colores.COLOR_NARANJA}">■</span> Horizontal &nbsp;'
+            f'<span style="color:{tema_colores.COLOR_CATEGORIA_INGLETE}">■</span> Inglete &nbsp;'
+            f'<span style="color:{tema_colores.COLOR_CATEGORIA_MARCO}">■</span> Marco')
         leyenda.setTextFormat(QtCore.Qt.RichText)
         tema.aplicar_estilo(leyenda, tema.ESTILO_TEXTO_10PX)
         caja_preview.addWidget(leyenda)
@@ -168,7 +169,7 @@ class ReengroseConstruccionMixin:
 
         self.combo_cara = QtWidgets.QComboBox()
         self.combo_cara.addItem("Cara A (+)", "cara_a")
-        self.combo_cara.addItem(f"Cara B ({tema.SIMBOLO_MENOS})", "cara_b")
+        self.combo_cara.addItem(f"Cara B ({SIMBOLO_MENOS})", "cara_b")
         self.combo_cara.addItem("Ambas caras", "ambos")
         self.combo_cara.setToolTip(
             "Cara del tablero donde se pegan las tiras.")
@@ -245,26 +246,26 @@ class ReengroseConstruccionMixin:
         """QSS para los botones checkables de bordes."""
         estilo = f"""
         QPushButton, QToolButton {{
-            background-color: {tema.FONDO3};
-            color: {tema.TEXTO};
-            border: 1px solid {tema.COLOR_BORDE_MEDIO};
+            background-color: {tema_colores.FONDO3};
+            color: {tema_colores.TEXTO};
+            border: 1px solid {tema_colores.COLOR_BORDE_MEDIO};
             border-radius: 4px;
             padding: 5px 10px;
             font-weight: bold;
         }}
         QPushButton:hover, QToolButton:hover {{
-            background-color: {tema.BORDE};
-            border-color: {tema.COLOR_TEXTO_MUTED};
+            background-color: {tema_colores.BORDE};
+            border-color: {tema_colores.COLOR_TEXTO_MUTED};
         }}
         QPushButton:checked, QToolButton:checked {{
-            background-color: {tema.ACEINTO};
-            color: {tema.TEXTO_CLARO};
-            border: 1px solid {tema.ACEINTO};
+            background-color: {tema_colores.ACEINTO};
+            color: {tema_colores.TEXTO_CLARO};
+            border: 1px solid {tema_colores.ACEINTO};
         }}
         QPushButton:disabled, QToolButton:disabled {{
-            background-color: {tema.COLOR_FONDO_HUB};
-            color: {tema.COLOR_TEXTO_MUTED};
-            border: 1px solid {tema.FONDO3};
+            background-color: {tema_colores.COLOR_FONDO_HUB};
+            color: {tema_colores.COLOR_TEXTO_MUTED};
+            border: 1px solid {tema_colores.FONDO3};
         }}
         """
         tema.aplicar_estilo(self.btn_all, estilo)

@@ -5,7 +5,7 @@ import logging
 
 from freecad.vdo.core import frames as VDO_FR
 from freecad.vdo.core.module_props import ANCLAJE_DEFAULT
-from freecad.vdo.ui import tema
+from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.ui.qt import seleccionar_por_dato
 from freecad.vdo.ui.task_base import cerrar_dialogo
 
@@ -115,9 +115,9 @@ class CocoUnifiedValoresMixin:
         ancho_util = valores["ancho"] - (espesor * 2)
         alto_util = valores["alto"] - (espesor * 2)
         texto = (
-            f"COCO {valores['ancho']:.0f} {tema.SIMBOLO_MULTIPLICAR} {valores['alto']:.0f} {tema.SIMBOLO_MULTIPLICAR} "
+            f"COCO {valores['ancho']:.0f} {SIMBOLO_MULTIPLICAR} {valores['alto']:.0f} {SIMBOLO_MULTIPLICAR} "
             f"{valores['fondo']:.0f} mm\n"
-            f"Cavidad interior: {ancho_util:.1f} {tema.SIMBOLO_MULTIPLICAR} {alto_util:.1f} mm\n"
+            f"Cavidad interior: {ancho_util:.1f} {SIMBOLO_MULTIPLICAR} {alto_util:.1f} mm\n"
             f"Tapa: {valores['tapa']} · Base: {valores['base']} · "
             f"Espesor: {espesor:.0f} mm\n\n")
         texto += self.editor_divisiones.resumen()

@@ -19,7 +19,7 @@ from freecad.vdo.core import optimizer_core_resumen as resumen_core
 from freecad.vdo.core import optimizer_lista_corte as lista
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui import optimizer_view as view
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema, tema_colores
 
 
 class OptimizerDialog(QtWidgets.QDialog):
@@ -220,7 +220,7 @@ class OptimizerDialog(QtWidgets.QDialog):
                f"retal {tot['retal_m2']:.2f} m² · "
                f"desperdicio {tot['waste_m2']:.2f} m²")
         if tot["n_unplaced"]:
-            txt += f" · <span style='color:{tema.COLOR_ROJO_TEXTO}'>no colocadas: {tot['n_unplaced']}</span>"
+            txt += f" · <span style='color:{tema_colores.COLOR_ROJO_TEXTO}'>no colocadas: {tot['n_unplaced']}</span>"
         self.lbl_summary.setText(txt)
 
         App.Console.PrintMessage(

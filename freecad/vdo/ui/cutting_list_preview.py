@@ -23,6 +23,7 @@ except ImportError:
 
 from freecad.vdo.cad import lista_corte
 from freecad.vdo.core import manifest
+from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 from freecad.vdo.ui import qt, tema
 
@@ -66,7 +67,7 @@ class CuttingListPreviewPanel:
         # Tabla de piezas
         self.tabla = QtWidgets.QTableWidget()
         self.tabla.setColumnCount(5)
-        self.tabla.setHorizontalHeaderLabels(["Nombre", "Material", f"L{tema.SIMBOLO_MULTIPLICAR}A{tema.SIMBOLO_MULTIPLICAR}E", "Cantidad", "Costo"])
+        self.tabla.setHorizontalHeaderLabels(["Nombre", "Material", f"L{SIMBOLO_MULTIPLICAR}A{SIMBOLO_MULTIPLICAR}E", "Cantidad", "Costo"])
         self.tabla.setRowCount(len(piezas))
         self.tabla.setMaximumHeight(200)
 
@@ -79,7 +80,7 @@ class CuttingListPreviewPanel:
             mat_str = material["nombre"] if material else mat_id
             mat_item = QtWidgets.QTableWidgetItem(mat_str)
 
-            dims = f"{pieza.get('largo', 0)}{tema.SIMBOLO_MULTIPLICAR}{pieza.get('ancho', 0)}{tema.SIMBOLO_MULTIPLICAR}{pieza.get('espesor', 0)}"
+            dims = f"{pieza.get('largo', 0)}{SIMBOLO_MULTIPLICAR}{pieza.get('ancho', 0)}{SIMBOLO_MULTIPLICAR}{pieza.get('espesor', 0)}"
             dims_item = QtWidgets.QTableWidgetItem(dims)
 
             qty = QtWidgets.QTableWidgetItem(str(pieza.get("cantidad", 1)))

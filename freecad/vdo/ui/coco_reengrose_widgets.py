@@ -13,8 +13,8 @@ from freecad.vdo.core import (
 )
 from freecad.vdo.core.layout_matriz import Layout
 from freecad.vdo.core.layout_modelo import cavidad_interior
+from freecad.vdo.core.simbolos import SIMBOLO_MENOS
 from freecad.vdo.qt_compat import QtWidgets
-from freecad.vdo.ui import tema
 from freecad.vdo.ui.qt import seleccionar_por_dato
 
 _LOG = logging.getLogger(__name__)
@@ -75,7 +75,7 @@ class ReengroseDivisionesMixin:
         grid.addWidget(QtWidgets.QLabel("Cara de pegado:"), 4, 0)
         self.combo_cara = QtWidgets.QComboBox()
         self.combo_cara.addItem("Cara A (+)", "cara_a")
-        self.combo_cara.addItem(f"Cara B ({tema.SIMBOLO_MENOS})", "cara_b")
+        self.combo_cara.addItem(f"Cara B ({SIMBOLO_MENOS})", "cara_b")
         self.combo_cara.addItem("Ambas caras", "ambos")
         self.combo_cara.setToolTip("Cara del tablero donde se pegan las tiras.")
         grid.addWidget(self.combo_cara, 4, 1, 1, 3)

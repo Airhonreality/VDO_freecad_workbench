@@ -8,7 +8,7 @@
 
 from freecad.vdo.core import optimizer_core as core
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_colores
 
 _PAD = 14
 _GROUP_H = 26
@@ -72,11 +72,11 @@ class BoardView(QtWidgets.QWidget):
     def paintEvent(self, ev):
         p = QtGui.QPainter(self)
         p.setRenderHint(QtGui.QPainter.Antialiasing, True)
-        p.fillRect(self.rect(), QtGui.QColor(tema.COLOR_FONDO_CLARO))
+        p.fillRect(self.rect(), QtGui.QColor(tema_colores.COLOR_FONDO_CLARO))
         p.setFont(QtGui.QFont("Sans", _FONT_PX))
 
         if not self._blocks:
-            p.setPen(QtGui.QColor(tema.COLOR_OPT_CUADRICULA))
+            p.setPen(QtGui.QColor(tema_colores.COLOR_OPT_CUADRICULA))
             p.drawText(self.rect(), QtCore.Qt.AlignCenter,
                        "Configurá el tablero y pulsá «Optimizar».")
             p.end()
@@ -95,7 +95,7 @@ class BoardView(QtWidgets.QWidget):
         placed = g["n_pieces"] - len(g["unplaced"])
         text = (f"{g['label']}   —   {len(g['sheets'])} tablero(s), "
                 f"{placed}/{g['n_pieces']} piezas")
-        p.setPen(QtGui.QPen(QtGui.QColor(tema.COLOR_TRAZO_AZUL_OSCURO)))
+        p.setPen(QtGui.QPen(QtGui.QColor(tema_colores.COLOR_TRAZO_AZUL_OSCURO)))
         f = p.font()
         f.setBold(True)
         p.setFont(f)
@@ -109,12 +109,12 @@ class BoardView(QtWidgets.QWidget):
         x0, y0, bw, bh = _PAD, b["y"], b["bw"], b["bh"]
 
         # Tablero
-        p.fillRect(QtCore.QRectF(x0, y0, bw, bh), QtGui.QColor(tema.COLOR_PAPEL_TABLERO))
-        p.setPen(QtGui.QPen(QtGui.QColor(tema.COLOR_OPT_TRAZO), 1.4))
+        p.fillRect(QtCore.QRectF(x0, y0, bw, bh), QtGui.QColor(tema_colores.COLOR_PAPEL_TABLERO))
+        p.setPen(QtGui.QPen(QtGui.QColor(tema_colores.COLOR_OPT_TRAZO), 1.4))
         p.drawRect(QtCore.QRectF(x0, y0, bw, bh))
 
         # Retales (sobrante reutilizable)
-        hatch = QtGui.QBrush(QtGui.QColor(*tema.COLOR_HATCH_RGB),
+        hatch = QtGui.QBrush(QtGui.QColor(*tema_colores.COLOR_HATCH_RGB),
                              QtCore.Qt.BDiagPattern)
         for o in s.get("offcuts", []):
             if min(o["w"], o["h"]) < core.MIN_OFFCUT:
@@ -124,11 +124,11 @@ class BoardView(QtWidgets.QWidget):
             ow = o["w"] * scale
             oh = o["h"] * scale
             p.setBrush(hatch)
-            p.setPen(QtGui.QPen(QtGui.QColor(tema.COLOR_OPT_CUADRICULA), 0.8,
+            p.setPen(QtGui.QPen(QtGui.QColor(tema_colores.COLOR_OPT_CUADRICULA), 0.8,
                                 QtCore.Qt.DashLine))
             p.drawRect(QtCore.QRectF(ox, oy, ow, oh))
             if ow > 44 and oh > 16:
-                p.setPen(QtGui.QColor(tema.COLOR_OPT_EJE))
+                p.setPen(QtGui.QColor(tema_colores.COLOR_OPT_EJE))
                 p.drawText(QtCore.QRectF(ox, oy, ow, oh),
                            QtCore.Qt.AlignCenter,
                            f"retal\n{o['w']:.0f}x{o['h']:.0f}")
@@ -140,10 +140,10 @@ class BoardView(QtWidgets.QWidget):
             pw = pl["w"] * scale
             ph = pl["h"] * scale
             p.setBrush(QtGui.QBrush(_color(pl["material"])))
-            p.setPen(QtGui.QPen(QtGui.QColor(tema.COLOR_OPT_TRAZO_SUAVE), 0.7))
+            p.setPen(QtGui.QPen(QtGui.QColor(tema_colores.COLOR_OPT_TRAZO_SUAVE), 0.7))
             p.drawRect(QtCore.QRectF(px, py, pw, ph))
             if pw > 46 and ph > 20:
-                p.setPen(QtGui.QColor(tema.COLOR_OPT_TEXTO))
+                p.setPen(QtGui.QColor(tema_colores.COLOR_OPT_TEXTO))
                 name = pl["name"]
                 if len(name) > 16:
                     name = name[:15] + "…"
@@ -153,7 +153,7 @@ class BoardView(QtWidgets.QWidget):
                            f"{name}{mark}\n{pl['w']:.0f}x{pl['h']:.0f}")
 
         # Eficiencia por tablero
-        p.setPen(QtGui.QColor(tema.COLOR_OPT_REGLA))
+        p.setPen(QtGui.QColor(tema_colores.COLOR_OPT_REGLA))
         p.drawText(QtCore.QRectF(x0, y0 + bh + 2, bw, 14),
                    QtCore.Qt.AlignLeft,
                    f"Tablero {s['index']} · {len(s['placements'])} piezas · "

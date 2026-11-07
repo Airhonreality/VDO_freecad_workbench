@@ -1,5 +1,6 @@
 """Cabecera del inspector: migas de pan y micro-cabecera de dimensiones."""
 
+from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR, SIMBOLO_SEPARADOR
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui import tema
 from freecad.vdo.ui.inspector_paginas import PAGE_CHASIS, PAGE_CIERRE, PAGE_PIEZA, PAGE_VANO
@@ -74,7 +75,7 @@ class _BreadcrumbBar(QtWidgets.QWidget):
         self._nivel_activo = activo
 
         for label, clave in niveles:
-            sep = QtWidgets.QLabel(f" {tema.SIMBOLO_SEPARADOR} ")
+            sep = QtWidgets.QLabel(f" {SIMBOLO_SEPARADOR} ")
             tema.aplicar_estilo(sep, tema.ESTILO_SEPARADOR)
             self.layout.insertWidget(self.layout.count() - 1, sep)
 
@@ -135,7 +136,7 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
         self.spin_w.setFixedWidth(64)
         layout.addWidget(self.spin_w)
 
-        layout.addWidget(QtWidgets.QLabel(f"{tema.SIMBOLO_MULTIPLICAR}"))
+        layout.addWidget(QtWidgets.QLabel(f"{SIMBOLO_MULTIPLICAR}"))
 
         # Alto (H)
         self.spin_h = VDO_DoubleSpinBox()
@@ -146,7 +147,7 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
         self.spin_h.setFixedWidth(64)
         layout.addWidget(self.spin_h)
 
-        layout.addWidget(QtWidgets.QLabel(f"{tema.SIMBOLO_MULTIPLICAR}"))
+        layout.addWidget(QtWidgets.QLabel(f"{SIMBOLO_MULTIPLICAR}"))
 
         # Fondo (D)
         self.spin_d = VDO_DoubleSpinBox()

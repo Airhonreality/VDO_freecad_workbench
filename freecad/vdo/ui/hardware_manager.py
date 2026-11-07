@@ -10,8 +10,9 @@ import logging
 import os
 
 from freecad.vdo.core import hardware_hub as H
+from freecad.vdo.core.simbolos import SIMBOLO_MAS
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema, tema_colores
 from freecad.vdo.ui.hardware_constantes import CLAVES_BOOL, ETIQUETAS, FAMILIAS
 from freecad.vdo.ui.hardware_resumen import _resumen_cotas
 from freecad.vdo.ui.qt import VDO_DoubleSpinBox
@@ -128,7 +129,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
         # ---- Botones de accion ----
         fila_botones = QtWidgets.QHBoxLayout()
         self.btn_guardar = QtWidgets.QPushButton("💾 Guardar Cambios")
-        self.btn_nuevo = QtWidgets.QPushButton(f"{tema.SIMBOLO_MAS} Nuevo Herraje")
+        self.btn_nuevo = QtWidgets.QPushButton(f"{SIMBOLO_MAS} Nuevo Herraje")
         self.btn_cerrar = QtWidgets.QPushButton("Cerrar")
         for btn in (self.btn_guardar, self.btn_nuevo, self.btn_cerrar):
             btn.setMinimumHeight(30)
@@ -140,54 +141,54 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
 
     def _aplicar_estilo_oscuro(self):
         estilo = f"""
-        QDialog {{ background-color: {tema.COLOR_FONDO_BOTON}; color: {tema.TEXTO}; }}
-        QLabel {{ color: {tema.TEXTO}; }}
+        QDialog {{ background-color: {tema_colores.COLOR_FONDO_BOTON}; color: {tema_colores.TEXTO}; }}
+        QLabel {{ color: {tema_colores.TEXTO}; }}
         QComboBox {{
-            background-color: {tema.BORDE_SUAVE}; color: {tema.TEXTO};
-            border: 1px solid {tema.COLOR_BORDE_MEDIO}; border-radius: 4px; padding: 4px;
+            background-color: {tema_colores.BORDE_SUAVE}; color: {tema_colores.TEXTO};
+            border: 1px solid {tema_colores.COLOR_BORDE_MEDIO}; border-radius: 4px; padding: 4px;
         }}
         QComboBox QAbstractItemView {{
-            background-color: {tema.BORDE_SUAVE}; color: {tema.TEXTO};
-            selection-background-color: {tema.ACEINTO};
+            background-color: {tema_colores.BORDE_SUAVE}; color: {tema_colores.TEXTO};
+            selection-background-color: {tema_colores.ACEINTO};
         }}
         QTableWidget {{
-            background-color: {tema.FONDO3}; color: {tema.TEXTO};
-            gridline-color: {tema.BORDE}; border: 1px solid {tema.COLOR_BORDE_MEDIO};
+            background-color: {tema_colores.FONDO3}; color: {tema_colores.TEXTO};
+            gridline-color: {tema_colores.BORDE}; border: 1px solid {tema_colores.COLOR_BORDE_MEDIO};
         }}
         QTableWidget::item:selected {{
-            background-color: {tema.ACEINTO}; color: {tema.TEXTO_CLARO};
+            background-color: {tema_colores.ACEINTO}; color: {tema_colores.TEXTO_CLARO};
         }}
         QTableWidget::item:alternate {{
-            background-color: {tema.BORDE_SUAVE};
+            background-color: {tema_colores.BORDE_SUAVE};
         }}
         QHeaderView::section {{
-            background-color: {tema.BORDE_SUAVE}; color: {tema.TEXTO};
-            border: 1px solid {tema.COLOR_BORDE_MEDIO}; padding: 4px; font-weight: bold;
+            background-color: {tema_colores.BORDE_SUAVE}; color: {tema_colores.TEXTO};
+            border: 1px solid {tema_colores.COLOR_BORDE_MEDIO}; padding: 4px; font-weight: bold;
         }}
         QDoubleSpinBox, QLineEdit, QSpinBox {{
-            background-color: {tema.BORDE_SUAVE}; color: {tema.TEXTO};
-            border: 1px solid {tema.COLOR_BORDE_MEDIO}; border-radius: 3px; padding: 3px;
+            background-color: {tema_colores.BORDE_SUAVE}; color: {tema_colores.TEXTO};
+            border: 1px solid {tema_colores.COLOR_BORDE_MEDIO}; border-radius: 3px; padding: 3px;
         }}
         QDoubleSpinBox:focus, QLineEdit:focus {{
-            border-color: {tema.ACEINTO};
+            border-color: {tema_colores.ACEINTO};
         }}
-        QCheckBox {{ color: {tema.TEXTO}; }}
+        QCheckBox {{ color: {tema_colores.TEXTO}; }}
         QCheckBox::indicator {{
             width: 16px; height: 16px;
-            background-color: {tema.BORDE_SUAVE}; border: 1px solid {tema.COLOR_BORDE_MEDIO};
+            background-color: {tema_colores.BORDE_SUAVE}; border: 1px solid {tema_colores.COLOR_BORDE_MEDIO};
         }}
         QCheckBox::indicator:checked {{
-            background-color: {tema.ACEINTO}; border: 1px solid {tema.ACEINTO};
+            background-color: {tema_colores.ACEINTO}; border: 1px solid {tema_colores.ACEINTO};
         }}
         QPushButton {{
-            background-color: {tema.BORDE_SUAVE}; color: {tema.TEXTO};
-            border: 1px solid {tema.COLOR_BORDE_MEDIO}; border-radius: 4px;
+            background-color: {tema_colores.BORDE_SUAVE}; color: {tema_colores.TEXTO};
+            border: 1px solid {tema_colores.COLOR_BORDE_MEDIO}; border-radius: 4px;
             padding: 6px 14px; font-weight: bold;
         }}
-        QPushButton:hover {{ background-color: {tema.BORDE}; border-color: {tema.COLOR_TEXTO_MUTED}; }}
-        QPushButton:pressed {{ background-color: {tema.ACEINTO}; color: {tema.TEXTO_CLARO}; }}
-        QGroupBox {{ color: {tema.TEXTO}; }}
-        QScrollArea {{ background-color: {tema.COLOR_FONDO_BOTON}; border: none; }}
+        QPushButton:hover {{ background-color: {tema_colores.BORDE}; border-color: {tema_colores.COLOR_TEXTO_MUTED}; }}
+        QPushButton:pressed {{ background-color: {tema_colores.ACEINTO}; color: {tema_colores.TEXTO_CLARO}; }}
+        QGroupBox {{ color: {tema_colores.TEXTO}; }}
+        QScrollArea {{ background-color: {tema_colores.COLOR_FONDO_BOTON}; border: none; }}
         """
         tema.aplicar_estilo(self, estilo)
 

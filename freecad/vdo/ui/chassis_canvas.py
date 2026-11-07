@@ -1,7 +1,7 @@
 """Canvas 2D de seccion transversal del chasis. Parte de ui/chassis_widget.py (M7, D-45)."""
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_colores
 
 
 # ----------------------------------------------------------------------
@@ -79,10 +79,10 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
         caras = self._caras
         enc = self._encuentros
 
-        color_activa = QtGui.QColor(tema.COLOR_FONDO_ACTIVO)
-        border_activa = QtGui.QColor(tema.ACEINTO)
-        color_ausente = QtGui.QColor(tema.COLOR_FONDO_AUSENTE)
-        border_ausente = QtGui.QColor(tema.BORDE)
+        color_activa = QtGui.QColor(tema_colores.COLOR_FONDO_ACTIVO)
+        border_activa = QtGui.QColor(tema_colores.ACEINTO)
+        color_ausente = QtGui.QColor(tema_colores.COLOR_FONDO_AUSENTE)
+        border_ausente = QtGui.QColor(tema_colores.BORDE)
 
         # Configuración de límites por encuentro
         # Superior:
@@ -110,13 +110,13 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
         p.end()
 
     def _pintar_fondo(self, p, rect):
-        p.fillRect(rect, QtGui.QColor(tema.COLOR_FONDO_ESTRUCTURA))
-        p.setPen(QtGui.QPen(QtGui.QColor(tema.FONDO2), 1))
+        p.fillRect(rect, QtGui.QColor(tema_colores.COLOR_FONDO_ESTRUCTURA))
+        p.setPen(QtGui.QPen(QtGui.QColor(tema_colores.FONDO2), 1))
         p.drawRoundedRect(rect.adjusted(1, 1, -1, -1), 6, 6)
 
     def _pintar_cavidad(self, p, x0, y0, w, h, T):
         cavidad_rect = QtCore.QRectF(x0 + T, y0 + T, w - (2 * T), h - (2 * T))
-        p.fillRect(cavidad_rect, QtGui.QColor(tema.COLOR_FONDO_CAVIDAD))
+        p.fillRect(cavidad_rect, QtGui.QColor(tema_colores.COLOR_FONDO_CAVIDAD))
 
         tipo_fondo = self._caras["fondo"].get("tipo", "ranurado_5mm")
         activa_fondo = self._caras["fondo"].get("activa", True)
@@ -124,28 +124,28 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
         if activa_fondo and tipo_fondo != "abierto":
             if "ranurado" in tipo_fondo:
                 # Línea cian discontinua representando canal fresado
-                pen_ranura = QtGui.QPen(QtGui.QColor(tema.COLOR_CIAN_VIVO), 1.5, QtCore.Qt.DashLine)
+                pen_ranura = QtGui.QPen(QtGui.QColor(tema_colores.COLOR_CIAN_VIVO), 1.5, QtCore.Qt.DashLine)
                 p.setPen(pen_ranura)
                 # Canal a 8px del borde exterior
                 inset = 6
                 p.drawRect(QtCore.QRectF(x0 + inset, y0 + inset, w - 2 * inset, h - 2 * inset))
             elif tipo_fondo == "galce":
                 # Rebaje escalonado perimetral ámbar
-                pen_galce = QtGui.QPen(QtGui.QColor(tema.AVISO), 1.5, QtCore.Qt.DotLine)
+                pen_galce = QtGui.QPen(QtGui.QColor(tema_colores.AVISO), 1.5, QtCore.Qt.DotLine)
                 p.setPen(pen_galce)
                 p.drawRect(QtCore.QRectF(x0 + 4, y0 + 4, w - 8, h - 8))
             elif tipo_fondo == "atornillado":
                 # Tapa posterior sólida completa con tornillos verdes en esquinas
-                p.fillRect(cavidad_rect.adjusted(2, 2, -2, -2), QtGui.QColor(tema.COLOR_FONDO_CAVIDAD_BRILLO))
+                p.fillRect(cavidad_rect.adjusted(2, 2, -2, -2), QtGui.QColor(tema_colores.COLOR_FONDO_CAVIDAD_BRILLO))
                 p.setPen(QtCore.Qt.NoPen)
-                p.setBrush(QtGui.QColor(tema.COLOR_VERDE_HERRAJE))
+                p.setBrush(QtGui.QColor(tema_colores.COLOR_VERDE_HERRAJE))
                 p.drawEllipse(QtCore.QPointF(cavidad_rect.left() + 8, cavidad_rect.top() + 8), 2.5, 2.5)
                 p.drawEllipse(QtCore.QPointF(cavidad_rect.right() - 8, cavidad_rect.top() + 8), 2.5, 2.5)
                 p.drawEllipse(QtCore.QPointF(cavidad_rect.left() + 8, cavidad_rect.bottom() - 8), 2.5, 2.5)
                 p.drawEllipse(QtCore.QPointF(cavidad_rect.right() - 8, cavidad_rect.bottom() - 8), 2.5, 2.5)
         else:
             # Abierto: rayitas de vacío diagonal suave
-            p.setPen(QtGui.QPen(QtGui.QColor(tema.COLOR_FONDO_RANURA), 1, QtCore.Qt.DotLine))
+            p.setPen(QtGui.QPen(QtGui.QColor(tema_colores.COLOR_FONDO_RANURA), 1, QtCore.Qt.DotLine))
             p.drawLine(cavidad_rect.topLeft(), cavidad_rect.bottomRight())
             p.drawLine(cavidad_rect.bottomLeft(), cavidad_rect.topRight())
 
@@ -157,10 +157,10 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
         y_piso = y0 + h + 24
 
         # Línea de piso de taller
-        pen_piso = QtGui.QPen(QtGui.QColor(tema.BORDE), 1, QtCore.Qt.DashLine)
+        pen_piso = QtGui.QPen(QtGui.QColor(tema_colores.BORDE), 1, QtCore.Qt.DashLine)
         p.setPen(pen_piso)
         p.drawLine(x0 - 15, int(y_piso), x0 + w + 15, int(y_piso))
-        p.setPen(QtGui.QColor(tema.COLOR_TEXTO_MUTED))
+        p.setPen(QtGui.QColor(tema_colores.COLOR_TEXTO_MUTED))
         p.setFont(QtGui.QFont("SansSerif", 7))
         p.drawText(x0 - 15, int(y_piso) + 10, "PISO")
 
@@ -170,10 +170,10 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
             z_w = w - (2 * z_offset)
             z_h = y_piso - (y0 + h)
             rect_zocalo = QtCore.QRectF(x0 + z_offset, y0 + h, z_w, z_h)
-            p.fillRect(rect_zocalo, QtGui.QColor(tema.COLOR_FONDO_BOTON))
-            p.setPen(QtGui.QPen(QtGui.QColor(tema.ACEINTO), 1.5))
+            p.fillRect(rect_zocalo, QtGui.QColor(tema_colores.COLOR_FONDO_BOTON))
+            p.setPen(QtGui.QPen(QtGui.QColor(tema_colores.ACEINTO), 1.5))
             p.drawRect(rect_zocalo)
-            p.setPen(QtGui.QColor(tema.COLOR_CIAN_VIVO))
+            p.setPen(QtGui.QColor(tema_colores.COLOR_CIAN_VIVO))
             p.drawText(rect_zocalo, QtCore.Qt.AlignCenter, "ZÓCALO")
 
         elif estrategia_base == "patas":
@@ -183,18 +183,18 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
             pata_x1 = x0 + 16
             pata_x2 = x0 + w - 16 - pata_w
             # Pata izquierda
-            p.fillRect(QtCore.QRectF(pata_x1, y0 + h, pata_w, pata_h), QtGui.QColor(tema.ACEINTO))
-            p.fillRect(QtCore.QRectF(pata_x1 - 4, y_piso - 3, pata_w + 8, 3), QtGui.QColor(tema.ACEINTO))
+            p.fillRect(QtCore.QRectF(pata_x1, y0 + h, pata_w, pata_h), QtGui.QColor(tema_colores.ACEINTO))
+            p.fillRect(QtCore.QRectF(pata_x1 - 4, y_piso - 3, pata_w + 8, 3), QtGui.QColor(tema_colores.ACEINTO))
             # Pata derecha
-            p.fillRect(QtCore.QRectF(pata_x2, y0 + h, pata_w, pata_h), QtGui.QColor(tema.ACEINTO))
-            p.fillRect(QtCore.QRectF(pata_x2 - 4, y_piso - 3, pata_w + 8, 3), QtGui.QColor(tema.ACEINTO))
+            p.fillRect(QtCore.QRectF(pata_x2, y0 + h, pata_w, pata_h), QtGui.QColor(tema_colores.ACEINTO))
+            p.fillRect(QtCore.QRectF(pata_x2 - 4, y_piso - 3, pata_w + 8, 3), QtGui.QColor(tema_colores.ACEINTO))
 
         elif estrategia_base == "suspendido":
             # Módulo flotando; soportes laterales en pared
-            pen_muro = QtGui.QPen(QtGui.QColor(tema.AVISO), 3)
+            pen_muro = QtGui.QPen(QtGui.QColor(tema_colores.AVISO), 3)
             p.setPen(pen_muro)
             p.drawLine(x0 - 4, y0 + 10, x0 - 4, y0 + 40)
-            p.setPen(QtGui.QColor(tema.AVISO))
+            p.setPen(QtGui.QColor(tema_colores.AVISO))
             p.drawText(x0 - 25, y0 + 28, "🧗")
 
     def _pintar_caras_horizontales(self, p, caras, color_activa, border_activa, color_ausente, border_ausente, sup_x1, sup_x2, sup_y, inf_x1, inf_x2, inf_y, T):
@@ -208,7 +208,7 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
             p.fillRect(rect_sup, color_ausente)
             p.setPen(QtGui.QPen(border_ausente, 1, QtCore.Qt.DashLine))
             p.drawRect(rect_sup)
-            p.setPen(QtGui.QColor(tema.BORDE_CLARO))
+            p.setPen(QtGui.QColor(tema_colores.BORDE_CLARO))
             p.drawText(rect_sup, QtCore.Qt.AlignCenter, "TAPA AUSENTE")
 
         # B. Cara Inferior
@@ -221,7 +221,7 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
             p.fillRect(rect_inf, color_ausente)
             p.setPen(QtGui.QPen(border_ausente, 1, QtCore.Qt.DashLine))
             p.drawRect(rect_inf)
-            p.setPen(QtGui.QColor(tema.BORDE_CLARO))
+            p.setPen(QtGui.QColor(tema_colores.BORDE_CLARO))
             p.drawText(rect_inf, QtCore.Qt.AlignCenter, "BASE AUSENTE")
 
     def _pintar_caras_verticales(self, p, caras, color_activa, border_activa, color_ausente, border_ausente, izq_x, izq_y1, izq_y2, der_x, der_y1, der_y2, T):
@@ -251,7 +251,7 @@ class _VDOChassisCrossSectionCanvas(QtWidgets.QWidget):
         # -------------------------------------------------------------
         # 4. Líneas Diagonales de Inglete 45°
         # -------------------------------------------------------------
-        pen_inglete = QtGui.QPen(QtGui.QColor(tema.COLOR_CIAN_VIVO), 2)
+        pen_inglete = QtGui.QPen(QtGui.QColor(tema_colores.COLOR_CIAN_VIVO), 2)
         if enc["superior_izq"] == "inglete_45" and caras["superior"]["activa"] and caras["izquierda"]["activa"]:
             p.setPen(pen_inglete)
             p.drawLine(QtCore.QPointF(x0, y0), QtCore.QPointF(x0 + T, y0 + T))

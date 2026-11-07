@@ -1,6 +1,7 @@
 """Pagina de vano del inspector: luz neta y dock de habitantes."""
 
 from freecad.vdo.core import hardware_hub as HH
+from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui import tema
@@ -40,7 +41,7 @@ class PaginaVano(_PaginaBase):
         lay_b = QtWidgets.QHBoxLayout(self.banner_luz)
         lay_b.setContentsMargins(6, 3, 6, 3)
 
-        self.lbl_luz_banner = QtWidgets.QLabel(f"📐 <b>LUZ LIBRE NETA:</b> 564 {tema.SIMBOLO_MULTIPLICAR} 280 {tema.SIMBOLO_MULTIPLICAR} 550 mm")
+        self.lbl_luz_banner = QtWidgets.QLabel(f"📐 <b>LUZ LIBRE NETA:</b> 564 {SIMBOLO_MULTIPLICAR} 280 {SIMBOLO_MULTIPLICAR} 550 mm")
         tema.aplicar_estilo(self.lbl_luz_banner, tema.ESTILO_LUZ_10PX)
         lay_b.addWidget(self.lbl_luz_banner)
         self.contenedor_datos.addWidget(self.banner_luz)
@@ -220,7 +221,7 @@ class PaginaVano(_PaginaBase):
 
     def _aplicar_subdivision(self):
         cfg = self.get_habitante_config()
-        self.lbl_subdiv.setText(f"{cfg['eje']} {tema.SIMBOLO_MULTIPLICAR} {cfg['n_partes']}")
+        self.lbl_subdiv.setText(f"{cfg['eje']} {SIMBOLO_MULTIPLICAR} {cfg['n_partes']}")
         self.sigHabitanteCambiado.emit("subdividir", cfg)
 
     def _aplicar_cajon(self):
@@ -280,7 +281,7 @@ class PaginaVano(_PaginaBase):
         self.lbl_luz_w.setText(f"{w:.1f} mm")
         self.lbl_luz_h.setText(f"{h:.1f} mm")
         self.lbl_luz_d.setText(f"{d:.1f} mm")
-        self.lbl_luz_banner.setText(f"📐 <b>LUZ LIBRE NETA:</b> {w:.1f} {tema.SIMBOLO_MULTIPLICAR} {h:.1f} {tema.SIMBOLO_MULTIPLICAR} {d:.1f} mm")
+        self.lbl_luz_banner.setText(f"📐 <b>LUZ LIBRE NETA:</b> {w:.1f} {SIMBOLO_MULTIPLICAR} {h:.1f} {SIMBOLO_MULTIPLICAR} {d:.1f} mm")
 
     def cargar_vano_cell(self, cell, fondo=550.0):
         """Carga medidas desde una ResolvedCell de vdo_layout."""
@@ -294,4 +295,4 @@ class PaginaVano(_PaginaBase):
         self.lbl_luz_w.setText(f"{w:.1f} mm")
         self.lbl_luz_h.setText(f"{h:.1f} mm")
         self.lbl_luz_d.setText(f"{d:.1f} mm")
-        self.lbl_luz_banner.setText(f"📐 <b>LUZ {self._celda_actual}:</b> {w:.1f} {tema.SIMBOLO_MULTIPLICAR} {h:.1f} {tema.SIMBOLO_MULTIPLICAR} {d:.1f} mm")
+        self.lbl_luz_banner.setText(f"📐 <b>LUZ {self._celda_actual}:</b> {w:.1f} {SIMBOLO_MULTIPLICAR} {h:.1f} {SIMBOLO_MULTIPLICAR} {d:.1f} mm")

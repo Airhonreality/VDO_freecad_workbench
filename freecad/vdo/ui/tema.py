@@ -5,40 +5,16 @@
 # D-24: definición única de get_svg_icon.
 # =====================================================================
 
-from freecad.vdo.core.simbolos import (
-    SIMBOLO_INFO,
-    SIMBOLO_MAS,
-    SIMBOLO_MENOS,
-    SIMBOLO_MULTIPLICAR,
-    SIMBOLO_SEPARADOR,
-)
 from freecad.vdo.qt_compat import QtCore, QtGui, QtSvg
-
-# --- Fondos ---
-FONDO = "#1e1e1e"       # fondo principal de paneles y diálogos
-FONDO2 = "#262626"      # fondo secundario (grupos, secciones, barras)
-FONDO3 = "#333333"      # fondo terciario (entradas activas, resaltado leve)
-
-# --- Texto ---
-TEXTO = "#e0e0e0"       # texto primario
-TEXTO_SUAVE = "#888888" # texto secundario / atenuado
-TEXTO_CLARO = "#ffffff" # texto sobre fondos oscuros / acento
-TEXTO_SUAVE2 = "#cccccc"# texto terciario
-
-# --- Bordes y divisores ---
-BORDE = "#444444"       # borde principal
-BORDE_SUAVE = "#3a3a3a" # borde sutil
-BORDE_ACTIVO = "#007acc"# borde con foco / acento
-BORDE_CLARO = "#666666" # borde claro
-
-# --- Acento de marca (D-10: único cambio visual autorizado) ---
-ACEINTO = "#007acc"     # acento principal (unifica #0098ff)
-ACEINTO_HOVER = "#0d4a75"
-
-# --- Estados ---
-ERROR = "#b03a2e"       # error / advertencia grave
-EXITO = "#00cc00"       # éxito
-AVISO = "#ffaa00"       # aviso / atención
+from freecad.vdo.ui.tema_colores import (
+    ACEINTO,
+    BORDE,
+    BORDE_ACTIVO,
+    FONDO2,
+    FONDO3,
+    TEXTO,
+    TEXTO_CLARO,
+)
 
 # --- Estilos de botón / control (ensamblados a partir de tokens) ---
 ESTILO_BOTON_PRIMARIO = (
@@ -208,7 +184,6 @@ def estilo_breadcrumb(clave, activo_es):
             f"font-weight: {'bold' if activo_es else 'normal'}; "
             f"font-size: 10px; }}")
 
-
 # --- Iconos Lucide (tabla única; M2 H-23) ---
 LUCIDE_ICONS = {
     "tapa_domina": """<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2">
@@ -310,16 +285,7 @@ def obtener_svg_icon(name, size=22):
     """Icono Lucide de la paleta VDO, con caché compartida por nombre y tamaño."""
     return get_svg_icon(name, size, icons_map=LUCIDE_ICONS, cache=_ICON_CACHE)
 
-
 __all__ = [
-    "ACEINTO",
-    "ACEINTO_HOVER",
-    "AVISO",
-    "BORDE",
-    "BORDE_ACTIVO",
-    "BORDE_CLARO",
-    "BORDE_SUAVE",
-    "ERROR",
     "ESTILO_ACENTO_NEGRITA",
     "ESTILO_ARBOL_MAESTRO",
     "ESTILO_ARQUITECTURA_9PX",
@@ -386,80 +352,10 @@ __all__ = [
     "ESTILO_VALOR_11PX",
     "ESTILO_VALOR_11PX_NEGRITA",
     "ESTILO_VALOR_BLANCO_10PX",
-    "EXITO",
-    "FONDO",
-    "FONDO2",
-    "FONDO3",
     "LUCIDE_ICONS",
-    "TEXTO",
-    "TEXTO_CLARO",
-    "TEXTO_SUAVE",
-    "TEXTO_SUAVE2",
     "aplicar_estilo",
     "estilo_boton",
     "estilo_breadcrumb",
     "get_svg_icon",
     "obtener_svg_icon",
 ]
-
-# --- Colores fuera de tema (F8, D-94): literales movidas desde ui/* ---
-COLOR_ACENTO_PRESIONADO = "#005a9e"
-COLOR_ACENTO_CIAN = "#00b4d8"
-COLOR_FONDO_PROFUNDO = "#141414"
-COLOR_FONDO_CANVAS = "#161616"
-COLOR_ACENTO_FONDO = "#192a3a"
-COLOR_FONDO_CAJA = "#1b1b1b"
-COLOR_FONDO_ENTRADA = "#202020"
-COLOR_FONDO_BASE = "#252525"
-COLOR_FONDO_BOTON = "#2b2b2b"
-COLOR_FONDO_INACTIVO = "#2c2c2c"
-COLOR_FONDO_ELEVADO = "#303030"
-COLOR_FONDO_SECUNDARIO = "#383838"
-COLOR_TEXTO_AZUL_CLARO = "#4da3ff"
-COLOR_BORDE_MEDIO = "#555555"
-COLOR_TEXTO_ATENUADO = "#aaaaaa"
-COLOR_TEXTO_SECUNDARIO = "#d0d0d0"
-COLOR_NARANJA = "#e67e22"
-COLOR_CIAN_VIVO = "#00d4ff"
-COLOR_FONDO_ESTRUCTURA = "#181818"
-COLOR_FONDO_CHASIS_OSCURO = "#1a1a1a"
-COLOR_FONDO_AUSENTE = "#1c1c1c"
-COLOR_FONDO_CAVIDAD = "#1f1f1f"
-COLOR_FONDO_CAVIDAD_BRILLO = "#24272b"
-COLOR_FONDO_CHASIS = "#25282c"
-COLOR_FONDO_MEDIO = "#282828"
-COLOR_VERDE_HERRAJE = "#28a745"
-COLOR_FONDO_RANURA = "#2a2a2a"
-COLOR_BORDE_OSCURO = "#2d2d2d"
-COLOR_FONDO_ACTIVO = "#2f353d"
-COLOR_BORDE_MEDIO_OSCURO = "#3d3d3d"
-COLOR_TEXTO_MUTED = "#777777"
-COLOR_CATEGORIA_VERTICAL = "#00b894"
-COLOR_TRAZO_NEGRO = "#111111"
-COLOR_FONDO_HUB = "#222222"
-COLOR_CATEGORIA_MARCO = "#7f8c8d"
-COLOR_TRAZO_NEUTRO = "#8a8a8a"
-COLOR_CATEGORIA_INGLETE = "#9b59b6"
-COLOR_TRAZO_CLARO = "#bdc3c7"
-COLOR_VERDE_TABLERO = "#0a5"
-COLOR_TRAZO_AZUL_OSCURO = "#114488"
-COLOR_OPT_TEXTO = "#222"
-COLOR_OPT_TRAZO = "#333"
-COLOR_OPT_TRAZO_SUAVE = "#444"
-COLOR_BORDE_GRIS = "#4a4a4a"
-COLOR_OPT_DIMENSION = "#555"
-COLOR_OPT_EJE = "#666"
-COLOR_OPT_REGLA = "#777"
-COLOR_TRAZO_GRIS = "#7a7a7a"
-COLOR_OPT_CUADRICULA = "#999"
-COLOR_NARANJA_OSCURO = "#a04000"
-COLOR_CELDA_GRIS = "#b8b8b8"
-COLOR_ROJO_TEXTO = "#c00"
-COLOR_ROJO_ERROR = "#c0392b"
-COLOR_PAPEL_BORDE = "#c9c2b0"
-COLOR_PAPEL_TABLERO = "#f6f2e8"
-COLOR_PAPEL_COCO = "#f7f7f5"
-COLOR_FONDO_CLARO = "#fafafa"
-COLOR_NARANJA_TIRA_RGBA = (230, 126, 34, 150)
-COLOR_NARANJA_HALO_RGBA = (230, 126, 34, 28)
-COLOR_HATCH_RGB = (180, 180, 180)

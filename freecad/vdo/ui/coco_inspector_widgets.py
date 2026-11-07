@@ -20,6 +20,7 @@ from freecad.vdo.core.facade_contract import (
     APERTURA_TIRADOR,
 )
 from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y
+from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui import tema
 from freecad.vdo.ui.qt import seleccionar_por_dato
@@ -46,7 +47,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
 
         self.lbl_dimensiones = QtWidgets.QLabel("—")
         self.lbl_dimensiones.setToolTip(
-            f"Dimensiones brutas de corte: Largo {tema.SIMBOLO_MULTIPLICAR} Ancho {tema.SIMBOLO_MULTIPLICAR} Espesor.")
+            f"Dimensiones brutas de corte: Largo {SIMBOLO_MULTIPLICAR} Ancho {SIMBOLO_MULTIPLICAR} Espesor.")
         layout.addWidget(self.lbl_dimensiones)
 
         self.lbl_cantos = QtWidgets.QLabel("")
@@ -71,7 +72,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
             nombre = f"{nombre} {sufijo}"
         self.lbl_nombre.setText(nombre)
         self.lbl_dimensiones.setText(
-            f"{float(largo):.1f} {tema.SIMBOLO_MULTIPLICAR} {float(ancho):.1f} {tema.SIMBOLO_MULTIPLICAR} "
+            f"{float(largo):.1f} {SIMBOLO_MULTIPLICAR} {float(ancho):.1f} {SIMBOLO_MULTIPLICAR} "
             f"{float(espesor):.1f} mm")
         datos = self._normalizar_cantos(cantos)
         self.lbl_cantos.setText(" · ".join(
@@ -290,9 +291,9 @@ class InspectorDivisionesMixin:
             self.spin_n.setValue(2)
 
         self.lbl_nominal_neto.setText(
-            f"Nominal: {resuelto.nominal_w:.1f} {tema.SIMBOLO_MULTIPLICAR} "
+            f"Nominal: {resuelto.nominal_w:.1f} {SIMBOLO_MULTIPLICAR} "
             f"{resuelto.nominal_h:.1f} mm\n"
-            f"Neto: {resuelto.w:.1f} {tema.SIMBOLO_MULTIPLICAR} {resuelto.h:.1f} mm")
+            f"Neto: {resuelto.w:.1f} {SIMBOLO_MULTIPLICAR} {resuelto.h:.1f} mm")
         invasores = self._reengroses_invasores(resuelto)
         self.lbl_invasores.setText(
             ("Reengroses invasores: " + ", ".join(invasores))
