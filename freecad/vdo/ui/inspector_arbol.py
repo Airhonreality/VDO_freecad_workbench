@@ -3,6 +3,7 @@
 import FreeCAD as App
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui import tema
 from freecad.vdo.ui.inspector_paginas import (
     _TARGET_TO_PAGE,
     PAGE_CHASIS,
@@ -34,7 +35,7 @@ class ArbolInspectorMixin:
         raiz.addChild(item_piezas)
 
         for p in piezas:
-            it = QtWidgets.QTreeWidgetItem([f"🪵 {p['nombre']} [{p['largo']:.0f}×{p['ancho']:.0f}]"])  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+            it = QtWidgets.QTreeWidgetItem([f"🪵 {p['nombre']} [{p['largo']:.0f}{tema.SIMBOLO_MULTIPLICAR}{p['ancho']:.0f}]"])
             it.setData(0, QtCore.Qt.UserRole, {"tipo": "pieza", "clave": p["key"], "pieza": p})
             item_piezas.addChild(it)
 
@@ -46,7 +47,7 @@ class ArbolInspectorMixin:
         if resolved is not None:
             for cell in resolved.walk_cells():
                 lbl = getattr(cell, "label", "(x1, y1)")
-                it_cell = QtWidgets.QTreeWidgetItem([f"🔲 {lbl} [{cell.w:.0f}×{cell.h:.0f}]"])  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+                it_cell = QtWidgets.QTreeWidgetItem([f"🔲 {lbl} [{cell.w:.0f}{tema.SIMBOLO_MULTIPLICAR}{cell.h:.0f}]"])
                 it_cell.setData(0, QtCore.Qt.UserRole, {"tipo": "vano", "label": lbl, "cell": cell})
                 item_vanos.addChild(it_cell)
 

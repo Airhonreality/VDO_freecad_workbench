@@ -291,7 +291,7 @@ class CocoPreview2D(QtWidgets.QGraphicsView):
             item.setAcceptHoverEvents(True)
             item.setToolTip(
                 f"{pieza.get('nombre', clave)}\n"
-                f"{caja.get('w', 0.0):.1f} × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+                f"{caja.get('w', 0.0):.1f} {tema.SIMBOLO_MULTIPLICAR} "
                 f"{caja.get('d', 0.0):.1f} mm")
             scene.addItem(item)
             if clave:

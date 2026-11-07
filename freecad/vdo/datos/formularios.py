@@ -16,6 +16,7 @@ from freecad.vdo.core.facade_contract import (
 from freecad.vdo.core.finish import CANTOS_VALIDOS
 from freecad.vdo.core.module_props import ANCLAJE_LABELS, ANCLAJES
 from freecad.vdo.core.puerta_despiece import SISTEMAS_APERTURA
+from freecad.vdo.core.simbolos import SIMBOLO_MENOS
 
 ITEMS_ANCLAJE = [(ANCLAJE_LABELS.get(a, a), a) for a in ANCLAJES]
 
@@ -245,7 +246,8 @@ def cajon_bloques(marcas):
         )),
         ("apertura", "Sistema de apertura (fachada)", (
             {"tipo": "combo", "clave": "apertura", "etiqueta": "Sistema:",
-             "items": [(a, None) for a in ("Tirador", "Gola aluminio (−35 mm altura)",  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+             "items": [(a, None) for a in ("Tirador",
+                                           f"Gola aluminio ({SIMBOLO_MENOS}35 mm altura)",
                                            "45° (bisel en arista superior)",
                                            "Push open (expulsor magnético)")],
              "tooltip": ("Tirador: manija postiza, altura completa.\n"

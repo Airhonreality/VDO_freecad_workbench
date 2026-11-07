@@ -11,6 +11,7 @@ from freecad.vdo.cad.propiedades import add_common_props, rotacion_z
 from freecad.vdo.core import defaults as VDO_D
 from freecad.vdo.core import module_props as VDO_MOD
 from freecad.vdo.core.helpers import _get_app, _get_part
+from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.core.zocalo_core import calcular_geometria_zocalo
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
@@ -167,6 +168,7 @@ def make_zocalo(doc: Any, configuracion: dict[str, Any]) -> Any | None:
     doc.recompute()
     _get_app().Console.PrintMessage(
         f"[VDO] Zócalo '{nombre}' creado "
-        f"({float(obj.Ancho):.0f} × {float(obj.Fondo):.0f} × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+        f"({float(obj.Ancho):.0f} {SIMBOLO_MULTIPLICAR} {float(obj.Fondo):.0f} "
+        f"{SIMBOLO_MULTIPLICAR} "
         f"{float(obj.AltoZocalo):.0f} mm).\n")
     return obj

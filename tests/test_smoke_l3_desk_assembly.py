@@ -20,6 +20,8 @@ import os
 import sys
 import unittest
 
+from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
+
 _MACRO_DIR = os.environ.get(
     "FREECAD_USER_MACRO_DIR",
     os.path.join(os.path.expanduser("~"), ".local", "share", "FreeCAD", "Macro"),
@@ -326,7 +328,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
             ok_espacio = total_alto <= (700 - 70 - ESP) + 1e-6
             record(cadena, "2.2 Tres fachadas respetan calle de 2.5 mm",
                    ok_espacio,
-                   f"3×{h_f:.2f} + 2×{calle} = {total_alto:.2f} mm ≤ cavidad")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+                   f"3{SIMBOLO_MULTIPLICAR}{h_f:.2f} + 2{SIMBOLO_MULTIPLICAR}{calle} = {total_alto:.2f} mm ≤ cavidad")
 
             # 2a) Frentes con corte a 45° (makeChamfer en arista superior)
             fach = Part.makeBox(w_f, ESP, h_f)
@@ -384,7 +386,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
             })
             self.doc.recompute()
             ok_shape = obj.Shape.isValid()
-            record(cadena, "3.1 PanelFeature L1 1500×700×18 + reengrose 4 bordes",  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+            record(cadena, f"3.1 PanelFeature L1 1500{SIMBOLO_MULTIPLICAR}700{SIMBOLO_MULTIPLICAR}18 + reengrose 4 bordes",
                    ok_shape,
                    f"solids={len(obj.Shape.Solids)}, válido={ok_shape}")
 

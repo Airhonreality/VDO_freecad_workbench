@@ -74,7 +74,7 @@ class _BreadcrumbBar(QtWidgets.QWidget):
         self._nivel_activo = activo
 
         for label, clave in niveles:
-            sep = QtWidgets.QLabel(" › ")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+            sep = QtWidgets.QLabel(f" {tema.SIMBOLO_SEPARADOR} ")
             tema.aplicar_estilo(sep, tema.ESTILO_SEPARADOR)
             self.layout.insertWidget(self.layout.count() - 1, sep)
 
@@ -135,7 +135,7 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
         self.spin_w.setFixedWidth(64)
         layout.addWidget(self.spin_w)
 
-        layout.addWidget(QtWidgets.QLabel("×"))  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+        layout.addWidget(QtWidgets.QLabel(f"{tema.SIMBOLO_MULTIPLICAR}"))
 
         # Alto (H)
         self.spin_h = VDO_DoubleSpinBox()
@@ -146,7 +146,7 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
         self.spin_h.setFixedWidth(64)
         layout.addWidget(self.spin_h)
 
-        layout.addWidget(QtWidgets.QLabel("×"))  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+        layout.addWidget(QtWidgets.QLabel(f"{tema.SIMBOLO_MULTIPLICAR}"))
 
         # Fondo (D)
         self.spin_d = VDO_DoubleSpinBox()

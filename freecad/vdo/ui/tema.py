@@ -5,6 +5,13 @@
 # D-24: definición única de get_svg_icon.
 # =====================================================================
 
+from freecad.vdo.core.simbolos import (
+    SIMBOLO_INFO,
+    SIMBOLO_MAS,
+    SIMBOLO_MENOS,
+    SIMBOLO_MULTIPLICAR,
+    SIMBOLO_SEPARADOR,
+)
 from freecad.vdo.qt_compat import QtCore, QtGui, QtSvg
 
 # --- Fondos ---

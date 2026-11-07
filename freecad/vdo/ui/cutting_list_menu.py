@@ -72,7 +72,7 @@ def _crear_opciones(layout):
 def _agregar_info(layout):
     # Info
     info = QtWidgets.QLabel(
-        "ℹ️ Se exportarán SOLO paneles de melamina\n"  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+        f"{tema.SIMBOLO_INFO}️ Se exportarán SOLO paneles de melamina\n"
         "   (Se excluyen muros, paneles BIM, etc)\n\n"
         "El siguiente paso mostrará un PREVIEW\n"
         "con las piezas coloreadas en ROJO para confirmar"

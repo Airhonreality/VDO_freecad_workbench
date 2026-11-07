@@ -168,7 +168,7 @@ class ReengroseConstruccionMixin:
 
         self.combo_cara = QtWidgets.QComboBox()
         self.combo_cara.addItem("Cara A (+)", "cara_a")
-        self.combo_cara.addItem("Cara B (−)", "cara_b")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+        self.combo_cara.addItem(f"Cara B ({tema.SIMBOLO_MENOS})", "cara_b")
         self.combo_cara.addItem("Ambas caras", "ambos")
         self.combo_cara.setToolTip(
             "Cara del tablero donde se pegan las tiras.")

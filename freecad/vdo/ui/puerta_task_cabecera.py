@@ -31,7 +31,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
 
         self.lbl_dimensiones = QtWidgets.QLabel("—")
         self.lbl_dimensiones.setToolTip(
-            "Dimensiones brutas de corte: Largo × Ancho × Espesor (mm).")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+            f"Dimensiones brutas de corte: Largo {tema.SIMBOLO_MULTIPLICAR} Ancho {tema.SIMBOLO_MULTIPLICAR} Espesor (mm).")
         layout.addWidget(self.lbl_dimensiones)
 
         self.lbl_cantos = QtWidgets.QLabel("")
@@ -42,7 +42,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
     def set_pieza(self, identificador, largo, ancho, espesor, cantos=None):
         self.lbl_id.setText(str(identificador or "Pieza"))
         self.lbl_dimensiones.setText(
-            f"{float(largo):.1f} × {float(ancho):.1f} × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+            f"{float(largo):.1f} {tema.SIMBOLO_MULTIPLICAR} {float(ancho):.1f} {tema.SIMBOLO_MULTIPLICAR} "
             f"{float(espesor):.1f} mm")
         cantos = cantos or {}
         partes = []

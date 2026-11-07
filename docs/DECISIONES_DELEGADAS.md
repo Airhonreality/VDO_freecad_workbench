@@ -775,3 +775,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
   - **Después de D-103 (`1e488df`):** 3 repeticiones, código 0 y `OK_TODOS` en las 3.
   - **Bisección:** no aplica, porque la caída no aparece con la lista completa.
   - **B5:** la caída de B5 es un SIGSEGV al cerrar la suite de nivel 2, no un fallo de import. Este diagnóstico no la reproduce. Si reaparece, hay que reabrirlo con su log, como indica la fila B5.
+
+## D-105
+
+- **D-105: noqa reducidos resolviendo causas.** Medido antes: 167 líneas con `noqa` (RUF001 40, E402 111, C901 13, F401 2 y 1 sin código en tests). Paso 1 (RUF001 sin noqa): los caracteres ambiguos (× 49 usos, − 3, › 1, ➕ 1, ℹ 1) pasan a constantes con nombre. Las de texto de interfaz viven en `ui/tema.py` (reexportadas desde `core/simbolos.py`, porque core no puede importar Qt); el literal de código usa escape `\uXXXX`, así el fuente no contiene caracteres ambiguos. Verificación: comparación AST con HEAD de los 22 archivos tocados, con las constantes sustituidas por su valor: sin diferencias. Tras el paso 1: 127 líneas con `noqa` (E402 111, C901 13, F401 2, sin código 1; el resto de cifras se actualiza al cierre).

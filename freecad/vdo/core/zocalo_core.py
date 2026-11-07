@@ -15,6 +15,7 @@ from freecad.vdo.core import reengrose_tiras as VDO_RE_TIRAS
 from freecad.vdo.core.layout_matriz import Layout
 from freecad.vdo.core.layout_modelo import AXIS_X, Track
 from freecad.vdo.core.layout_resolucion import resolve_layout
+from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 
@@ -271,13 +272,14 @@ def _resumen_zocalo(
 ) -> str:
     """Texto de resumen del zócalo y sus piezas."""
     lineas = [
-        f"Zócalo: {ancho:.0f} × {fondo:.0f} × {alto_zocalo:.0f} mm "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+        f"Zócalo: {ancho:.0f} {SIMBOLO_MULTIPLICAR} {fondo:.0f} {SIMBOLO_MULTIPLICAR} "
+        f"{alto_zocalo:.0f} mm "
         f"(e={espesor:.0f}, trasera={'sí' if tiene_trasera else 'no'})"
     ]
     for pieza in piezas:
         lineas.append(
-            f"{pieza['nombre']}: {pieza['largo']:.1f} × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
-            f"{pieza['ancho']:.1f} × {pieza['espesor']:.0f} mm "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+            f"{pieza['nombre']}: {pieza['largo']:.1f} {SIMBOLO_MULTIPLICAR} "
+            f"{pieza['ancho']:.1f} {SIMBOLO_MULTIPLICAR} {pieza['espesor']:.0f} mm "
             f"({pieza['largo_tira']}, "
             f"canto={pieza['distancia_al_canto']:.1f})")
     return "\n".join(lineas)

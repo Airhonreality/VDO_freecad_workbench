@@ -128,7 +128,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
         # ---- Botones de accion ----
         fila_botones = QtWidgets.QHBoxLayout()
         self.btn_guardar = QtWidgets.QPushButton("💾 Guardar Cambios")
-        self.btn_nuevo = QtWidgets.QPushButton("➕ Nuevo Herraje")  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+        self.btn_nuevo = QtWidgets.QPushButton(f"{tema.SIMBOLO_MAS} Nuevo Herraje")
         self.btn_cerrar = QtWidgets.QPushButton("Cerrar")
         for btn in (self.btn_guardar, self.btn_nuevo, self.btn_cerrar):
             btn.setMinimumHeight(30)

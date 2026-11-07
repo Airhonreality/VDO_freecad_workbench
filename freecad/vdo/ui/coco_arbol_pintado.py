@@ -4,6 +4,7 @@ Extraido de coco_arbol_widgets.py (M7, D-66). Sin cambios de codigo."""
 
 from freecad.vdo.datos.valores import TIRADOR
 from freecad.vdo.qt_compat import QtCore, QtWidgets
+from freecad.vdo.ui import tema
 
 ROLE_DATA = QtCore.Qt.UserRole + 1
 ROLE_KIND = QtCore.Qt.UserRole + 2
@@ -34,7 +35,7 @@ class ArbolPintadoMixin:
 
     def _crear_raiz_vanos(self):
         root = QtWidgets.QTreeWidgetItem([
-            f"COCO — Matriz {len(self.layout.columns)} × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+            f"COCO — Matriz {len(self.layout.columns)} {tema.SIMBOLO_MULTIPLICAR} "
             f"{len(self.layout.rows)}", "", "", ""])
         root.setFlags(root.flags() & ~QtCore.Qt.ItemIsSelectable)
         self.tree.addTopLevelItem(root)
@@ -90,7 +91,7 @@ class ArbolPintadoMixin:
                 corredera = cfg.get("corredera", "Oculta")
                 apertura = cfg.get("apertura", "Tirador")
                 child = QtWidgets.QTreeWidgetItem([
-                    f"🗄️ Cajón ×{cantidad} ({corredera} · {apertura})",  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+                    f"🗄️ Cajón {tema.SIMBOLO_MULTIPLICAR}{cantidad} ({corredera} · {apertura})",
                     "", "", ""])
                 child.setData(0, ROLE_DATA, {
                     "kind": "contenido_hijo",
@@ -153,7 +154,7 @@ class ArbolPintadoMixin:
         })
         item.setToolTip(
             0, f"{pieza['nombre']}\n"
-               f"{pieza['largo']:.1f} × {pieza['ancho']:.1f} × "  # noqa: RUF001 - etiqueta de interfaz: signo tipografico visible (x o -) que el usuario ve; cambiarlo altera el texto
+               f"{pieza['largo']:.1f} {tema.SIMBOLO_MULTIPLICAR} {pieza['ancho']:.1f} {tema.SIMBOLO_MULTIPLICAR} "
                f"{pieza['espesor']:.1f} mm")
         parent.addChild(item)
         return item
