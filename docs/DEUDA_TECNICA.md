@@ -64,7 +64,7 @@ Fecha propuesta para toda la sección: 2026-11-20. Responsable: ejecutor, salvo 
 
 | ID | Ítem | Estado | Responsable | Fecha |
 |---|---|---|---|---|
-| E1 | `core/` registra con `logging` de la biblioteca estándar, sin handler configurado (D-79: `_LOG = logging.getLogger(__name__)`). | Por lectura: los avisos de nivel WARNING o superior salen por **stderr**, con el handler de último recurso de Python, y **no** por la consola de FreeCAD (`App.Console`). Comportamiento estándar de `logging`; no reproducido dentro de FreeCAD. | ejecutor (configurar un handler que llegue a `App.Console`, o documentar el comportamiento); usuario decide | 2026-11-20 (propuesta; revisado 2026-11-06, texto sin cambios) |
+| E1 | `core/` registra con `logging` de la biblioteca estándar, sin handler configurado (D-79: `_LOG = logging.getLogger(__name__)`). | **RESUELTO (D-101, commit `d589286`).** Handler único sobre el logger `freecad.vdo`, instalado desde `freecad/vdo/__init__.py` (no desde `Init.py`: importar el paquete fija `QT_QPA_PLATFORM`, y en la fase de consola eso iría antes de la QApplication de la GUI). Código: `freecad/vdo/registro.py`. Medido 2026-11-06 con `freecadcmd`: un `warning` de `freecad.vdo.core.hardware_hub` sale por `App.Console.PrintWarning`; DEBUG no sale. Prueba: `tests/test_logging_consola.py` (falló antes del fix, pasa después; nivel 1 y 2 `fallos=0`). | Ninguna. | 2026-11-06 |
 
 ---
 
