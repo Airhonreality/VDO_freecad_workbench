@@ -755,6 +755,6 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 
 ## D-102
 
-- D-102: ciclos de ui/ U-01 a U-03 rompidos moviendo símbolos compartidos. Resultado: 2 componentes → 1 (en curso; U-02 ya no era ciclo desde D-91; se actualiza al cierre de la ola).
+- D-102: ciclos de ui/ U-01 a U-03 rompidos moviendo símbolos compartidos. Resultado: 3 componentes → 1 (U-01 y U-02 resueltos; U-03 no hecho en esta ola: depende de mover la clase grande `VDOViewProviderBase`). Al inicio de la ola ciclos.py ya marcaba 2 componentes, porque U-02 se había resuelto antes en D-91.
   - **U-01:** `generar_csv_opencutlist`, `extraer_piezas_del_documento` y sus helpers se mueven de `ui/export_cutting_list.py` a `cad/lista_corte.py`. `cutting_list_preview` y `export_cutting_list` importan de ahí. Se añaden anotaciones de tipo (`mypy --strict` las exige en `cad/`). Los tests que usaban `export_cutting_list` para esas funciones apuntan a `cad/lista_corte`; no hay reexportación.
   - **U-02:** no requiere cambio. El ciclo `inspector_dock` ↔ `universal_inspector` ya no existe: la importación inversa se eliminó en `8909e31` (D-91).
