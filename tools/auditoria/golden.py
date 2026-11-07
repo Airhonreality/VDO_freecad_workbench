@@ -122,6 +122,11 @@ MODULOS_FUNCIONES: dict[str, list[str]] = {
 RELOCALIZADAS: dict[tuple[str, str], str] = {
     ("module_props", "rotacion_z"): "freecad.vdo.cad.propiedades",
     ("coco_spaces", "generar_divisiones_matriz"): "freecad.vdo.cad.coco_espacios",
+    # facade_contract ya no reexporta (P6, D-107): estas funciones viven en core/aperturas.
+    ("facade_contract", "necesita_descuento_gola"): "freecad.vdo.core.aperturas",
+    ("facade_contract", "necesita_bisel_45"): "freecad.vdo.core.aperturas",
+    ("facade_contract", "necesita_cantos_45"): "freecad.vdo.core.aperturas",
+    ("facade_contract", "necesita_expulsor_magnetico"): "freecad.vdo.core.aperturas",
 }
 
 # Módulos que cambiaron de capa después de b78de04. Se importa el primero que exista.
@@ -426,7 +431,7 @@ def _entradas_cajon_despiece(mod: Any) -> dict[str, list[dict]]:
         dict(base, tipo_corredera=mod.CORREDERA_TELESCOPICA),
         dict(base, tipo_corredera=mod.CAJA_METALICA,
              sistema_apertura=importlib.import_module(
-                 "freecad.vdo.core.facade_contract").APERTURA_GOLA),
+                 "freecad.vdo.core.aperturas").APERTURA_GOLA),
     ]
     return entradas
 

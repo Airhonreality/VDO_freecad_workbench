@@ -259,7 +259,7 @@ class TestImportacionYEnums(unittest.TestCase):
         for attr in ("APERTURA_TIRADOR", "APERTURA_GOLA",
                       "APERTURA_45_GRADOS", "APERTURA_PUSH_OPEN"):
             v_puerta = getattr(D_PUERTA, attr)
-            v_contrato = getattr(__import__("freecad.vdo.core.facade_contract", fromlist=["_"]), attr)
+            v_contrato = getattr(__import__("freecad.vdo.core.aperturas", fromlist=["_"]), attr)
             self.assertEqual(v_puerta, v_contrato,
                              f"Discrepancia en {attr}: puerta={v_puerta}, "
                              f"contrato={v_contrato}")
