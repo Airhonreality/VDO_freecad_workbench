@@ -1,19 +1,24 @@
 # =====================================================================
 # nesting_presets.py
 # Gestor de presets de tableros para nesting.
-# Nota: FreeCAD se importa de forma opcional al cargar el modulo. Sin FreeCAD
-# el modulo carga igualmente (R2): los presets se leen de DEFAULT_PRESETS y no
-# se puede guardar nada (no hay preferencias donde escribir).
+# Nota: FreeCAD se importa de forma opcional y perezosa (en cada llamada, no al
+# cargar el modulo). Sin FreeCAD el modulo carga igualmente (R2): los presets se
+# leen de DEFAULT_PRESETS y no se puede guardar nada (no hay preferencias donde escribir).
 # =====================================================================
 
 import json
 from collections.abc import Mapping
 from typing import Any, Final
 
-try:
-    import FreeCAD as _FreeCAD
-except ImportError:
-    _FreeCAD = None
+
+def _freecad() -> Any:
+    """FreeCAD si está instalado, o None. Import dentro de try (R2)."""
+    try:
+        import FreeCAD as app
+    except ImportError:
+        return None
+    return app
+
 
 # Presets estándar del taller (2440x1830 es estándar EN)
 DEFAULT_PRESETS: Final[Mapping[str, Mapping[str, int]]] = {
@@ -29,8 +34,9 @@ PREFS_PATH: Final = "User parameter:BaseApp/Preferences/NestingWorkbench/VDO"
 
 def _mensaje(texto: str) -> None:
     """Escribe en la consola de FreeCAD si está disponible."""
-    if _FreeCAD is not None:
-        _FreeCAD.Console.PrintMessage(texto)
+    app = _freecad()
+    if app is not None:
+        app.Console.PrintMessage(texto)
 
 
 def _exigir_prefs() -> Any:
@@ -49,9 +55,10 @@ class NestingPresetManager:
     @staticmethod
     def get_prefs() -> Any:  # ParamGet de FreeCAD: sin tipos
         """Obtiene el objeto de preferencias, o None si FreeCAD no está disponible."""
-        if _FreeCAD is None:
+        app = _freecad()
+        if app is None:
             return None
-        return _FreeCAD.ParamGet(NestingPresetManager.PREFS_PATH)
+        return app.ParamGet(NestingPresetManager.PREFS_PATH)
 
     @staticmethod
     def initialize_defaults() -> None:

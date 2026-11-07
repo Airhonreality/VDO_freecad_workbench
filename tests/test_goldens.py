@@ -122,7 +122,9 @@ class GoldensEstructuraTests(unittest.TestCase):
 # Módulos cuyo golden necesita FreeCAD al ejecutarse, aunque su import sea puro.
 # Medido en el nivel 1 del runner: module_props falla con "False is not true" sin FreeCAD real.
 # Causa: rotacion_z (cad/propiedades) construye App.Rotation en tiempo de llamada.
-SOLO_NIVEL_2_POR_EJECUCION = {"module_props"}
+# nesting_presets: get_preset lee las preferencias de FreeCAD (D-99). Sin FreeCAD real, el
+# golden no tiene dónde leer y se omite con motivo en el nivel 1.
+SOLO_NIVEL_2_POR_EJECUCION = {"module_props", "nesting_presets"}
 
 # Goldens que comparan formas OCC grabadas con FreeCAD real. Requisito declarado (D-30).
 GOLDEN_FORMAS_OCC = {"coco_spaces"}
@@ -135,7 +137,7 @@ def _crear_test_verificacion(modulo: str):
         necesita = _necesita_freecad(modulo) or modulo in SOLO_NIVEL_2_POR_EJECUCION
         if _freecad_real() is None and necesita:
             if modulo in SOLO_NIVEL_2_POR_EJECUCION:
-                motivo = f"{modulo} necesita FreeCAD al ejecutarse (rotacion_z); requiere FreeCAD real"
+                motivo = f"{modulo} necesita FreeCAD al ejecutarse; requiere FreeCAD real"
             else:
                 motivo = f"{modulo} importa FreeCAD a nivel de módulo; requiere FreeCAD real"
             raise unittest.SkipTest(motivo)
