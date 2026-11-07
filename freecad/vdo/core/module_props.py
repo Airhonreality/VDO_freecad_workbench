@@ -10,14 +10,22 @@
 
 import json
 import os
+from typing import Any
 
 # Tabla de anclajes: datos en freecad/vdo/datos/anclajes.json (MN-04).
-# Se carga aquí y en cad/propiedades.py. Unificar el cargador cuando core deje de
-# importar cad (M5, ver DEUDA_TECNICA.md D-10).
+# Fuente única de carga (D-97, B7b): cad/propiedades.py importa de aquí.
 _RUTA_ANCLAJES = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "datos", "anclajes.json")
-with open(_RUTA_ANCLAJES, encoding="utf-8") as _fh:
-    _DATOS_ANCLAJES = json.load(_fh)
+
+
+def cargar_anclajes() -> dict[str, Any]:
+    """Lee la tabla de anclajes desde datos/anclajes.json."""
+    with open(_RUTA_ANCLAJES, encoding="utf-8") as _fh:
+        datos: dict[str, Any] = json.load(_fh)
+    return datos
+
+
+_DATOS_ANCLAJES = cargar_anclajes()
 
 ANCLAJES = list(_DATOS_ANCLAJES["anclajes"])
 ANCLAJE_DEFAULT = _DATOS_ANCLAJES["defecto"]

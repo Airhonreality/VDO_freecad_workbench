@@ -7,26 +7,12 @@ No contiene lógica de dominio: solo adapta datos de core/ al documento.
 
 from __future__ import annotations
 
-import json
-import os
 from typing import Any
 
 import FreeCAD as App
 
 from freecad.vdo.core import frames as VDO_FR
-
-# Tabla de anclajes: datos en freecad/vdo/datos/anclajes.json (MN-04).
-# Se carga aquí y en cad/propiedades.py. Unificar el cargador cuando core deje de
-# importar cad (M5, ver DEUDA_TECNICA.md D-10).
-_RUTA_ANCLAJES = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "datos", "anclajes.json")
-with open(_RUTA_ANCLAJES, encoding="utf-8") as _fh:
-    _DATOS_ANCLAJES = json.load(_fh)
-
-ANCLAJES = list(_DATOS_ANCLAJES["anclajes"])
-ANCLAJE_DEFAULT = _DATOS_ANCLAJES["defecto"]
-ANCLAJE_LABELS = dict(_DATOS_ANCLAJES["etiquetas"])
-ANCLAJE_IDS = {label: idx for idx, label in ANCLAJE_LABELS.items()}
+from freecad.vdo.core.module_props import ANCLAJE_DEFAULT, ANCLAJES
 
 
 def add_common_props(obj: Any) -> None:
