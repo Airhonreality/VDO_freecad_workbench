@@ -3,7 +3,7 @@
 # Símbolos tipográficos usados en textos visibles al usuario.
 # RUF001 marca estos caracteres como ambiguos con ASCII (x, -, >, +, i);
 # se nombran aquí para que el literal de código sea ASCII y el texto
-# mostrado no cambie. ui/tema.py los reexporta para la interfaz.
+# mostrado no cambie. La interfaz los importa de aquí (D-106).
 # =====================================================================
 
 SIMBOLO_MULTIPLICAR = "\u00d7"  # multiplicacion
