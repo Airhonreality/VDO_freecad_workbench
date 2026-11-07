@@ -21,10 +21,10 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 # Modulos del paquete que se importan ANTES de parchear sys.modules, para que
 # patch.dict no los retire al terminar (solo se retira nesting_workflow).
-from freecad.vdo.core import nesting_presets as NP  # noqa: E402
-from freecad.vdo.cad import documento  # noqa: E402,F401
-from freecad.vdo import qt_compat  # noqa: E402,F401
-from freecad.vdo.ui import qt, tema  # noqa: E402,F401
+from freecad.vdo import qt_compat
+from freecad.vdo.cad import documento
+from freecad.vdo.core import nesting_presets as NP
+from freecad.vdo.ui import qt, tema
 
 
 class _Grupo:
