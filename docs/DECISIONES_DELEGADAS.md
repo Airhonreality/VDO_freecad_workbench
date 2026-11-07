@@ -789,6 +789,17 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 
 - **D-106: ui/tema.py (465 líneas) partido por concepto. Sin reexportaciones (P6). Valores y nombres intactos.** Destinos: `ui/tema_colores.py` (tokens y `COLOR_*`), `ui/tema_estilos.py` (hojas `ESTILO_*`, `estilo_boton`, `aplicar_estilo`, `estilo_breadcrumb`), `ui/tema_iconos.py` (`LUCIDE_ICONS`, `get_svg_icon`, `obtener_svg_icon`). Los símbolos `SIMBOLO_*` se importan de `core/simbolos.py`. Los consumidores importan del módulo de concepto. Verificación: comparación AST de nombres y valores de nivel superior contra HEAD; AST normalizado de cada consumidor modificado; volcado de valores en tiempo de ejecución bajo `freecadcmd`. Pasos: T-01 colores, T-02 estilos, T-03 iconos, T-04 retirada de `tema.py`. Revertir: `git revert` de cada commit T-0X en orden inverso.
 
+## D-107
+
+- **D-107: ruff a cero en la raíz, reglas de tema con ruta eximida y fin de reexportaciones (P6).** Sin cambio de lógica de producto.
+  - **(a) ruff en la raíz (`0549486`):** `ruff check .` pasa de 8 a 0 errores. Solo cambios de estilo en `Init.py` e `InitGui.py`, sin cambio de lógica.
+  - **(b) `tools/auditoria/verificar.py` (`c1ee6e9`):** solo cambia la ruta eximida de R10 (cero hex fuera del tema) a los tres módulos `tema_*.py`. No cambian reglas ni umbrales. El conteo de hex pasa de 242 a 0 porque los 242 literales están en esos tres módulos (`tema_colores.py` 65, `tema_estilos.py` 107, `tema_iconos.py` 70); el resto del repo tiene 0.
+  - **(c) P6, quitar reexportaciones (`52e4f30`, `6f6c2d3`, `39123d7`):** se quitan tres `__all__` que reexportaban nombres: `core/facade_contract.py` (13 nombres de `core/aperturas.py`), `core/puerta_despiece.py` (19 nombres de `facade_contract` y `aperturas`) y `ui/inspector_dock.py` (`PAGE_*` e `VDOUniversalInspectorWidget`). Los consumidores importan de su módulo de origen. `qt_compat.py` se conserva: no es una reexportación de dominio, elige el enlace de Qt.
+  - **(d) Test eliminado (`6f6c2d3`):** `tests/test_facade_harmony.py::TestImportacionYEnums::test_no_discrepancias_strings` SE ELIMINÓ. Su única comparación dependía de la reexportación que P6 prohíbe. La aserción de identidad con el contrato se mantiene en otros tests del mismo fichero (p. ej. `test_contrato_importable`). `test_puerta_consume_contrato` pasa a afirmar que `puerta` NO reexporta el contrato (`test_puerta_no_reexporta_contrato`).
+  - **(e) Golden de `facade_contract` (`e964711`):** `tools/auditoria/golden.py` resuelve `necesita_*` mediante RELOCALIZADAS, en `core/aperturas`. Sin cambio de valores ni de `tests/golden/`. Sin este ajuste, `52e4f30` fallaba 1 test y 1 error en nivel 1.
+  - **Matriz de API del smoke L3 (`647af52`):** `tests/test_smoke_l3_desk_assembly.py` apunta `necesita_bisel_45` y `necesita_descuento_gola` a `core/aperturas`. Lo detectó el nivel 2.
+  - **Revertir:** `git revert --no-edit` de cada commit citado, en orden inverso: `647af52`, `39123d7`, `6f6c2d3`, `e964711`, `52e4f30`, `c1ee6e9`, `0549486`.
+
 ## D-108
 
 - **D-108: decisiones de alcance cerradas (C4, J1, C5, D2).** Sin cambio de código.
