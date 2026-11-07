@@ -174,8 +174,8 @@ REQUIRED_API = [
     ("freecad.vdo.core.facade_contract", "calcular_fachada_base"),
     ("freecad.vdo.core.facade_contract", "aplicar_sistema_apertura"),
     ("freecad.vdo.core.facade_contract", "CALLE_ENTRE_FRENTES_DEFAULT"),
-    ("freecad.vdo.core.facade_contract", "necesita_bisel_45"),
-    ("freecad.vdo.core.facade_contract", "necesita_descuento_gola"),
+    ("freecad.vdo.core.aperturas", "necesita_bisel_45"),
+    ("freecad.vdo.core.aperturas", "necesita_descuento_gola"),
     ("freecad.vdo.core.facade_contract", "APERTURA_GOLA"),
     ("freecad.vdo.core.facade_contract", "APERTURA_45_GRADOS"),
 ]
