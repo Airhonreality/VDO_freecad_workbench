@@ -70,13 +70,13 @@ Fecha propuesta para toda la sección: 2026-11-20. Responsable: ejecutor, salvo 
 
 ## F. Ciclos en `ui/` (no cubiertos por el plan)
 
-Medidos con `python3 -I tools/auditoria/ciclos.py`: 3 componentes. Romper cualquiera requiere mover lógica entre módulos de UI, no solo datos.
+Medidos con `python3 -I tools/auditoria/ciclos.py`: 3 componentes al inicio de la ola D-102; ahora 1 (U-03). Romper cualquiera requiere mover lógica entre módulos de UI, no solo datos.
 
 | ID | Componente | Módulos | Responsable | Fecha |
 |---|---|---|---|---|
-| U-01 | A | `ui/cutting_list_preview.py` ↔ `ui/export_cutting_list.py`. Las aristas usan funciones (`generar_csv_opencutlist`, `extraer_piezas_del_documento`, `main`). | ejecutor | 2026-11-20 (propuesta) |
-| U-02 | B | `ui/inspector_dock.py` ↔ `ui/universal_inspector.py`. Las `PAGE_*` son constantes; la clase `VDOUniversalInspectorWidget` sigue en el camino. | ejecutor | 2026-11-20 (propuesta) |
-| U-03 | C | `ui/coco_unified_task.py`, `ui/drag_handles.py`, `ui/view_providers.py` (7 aristas, 6 diferidas y 1 a nivel de módulo: `drag_handles.py` importa `VDOViewProviderBase`). Son clases. | ejecutor | 2026-11-20 (propuesta) |
+| U-01 | A | RESUELTO en `c9f8075` (D-102): `generar_csv_opencutlist` y `extraer_piezas_del_documento` pasan a `cad/lista_corte.py`. | ejecutor | 2026-11-20 (propuesta) |
+| U-02 | B | RESUELTO en `8909e31` (D-91, F5): la importación inversa desde `universal_inspector.py` ya no existe. D-102 lo verificó. | ejecutor | 2026-11-20 (propuesta) |
+| U-03 | C | `ui/coco_unified_task.py`, `ui/drag_handles.py`, `ui/view_providers.py` (7 aristas, 6 diferidas y 1 a nivel de módulo: `drag_handles.py` importa `VDOViewProviderBase`). NO HECHO en D-102: el ciclo depende de la clase `VDOViewProviderBase` (`view_providers.py`, unas 125 líneas), que `drag_handles` hereda y de la que heredan `ViewProviderCajon`/`ViewProviderPuerta`. Romperlo exige mover esa clase grande, así que queda para una ola propia. | ejecutor | 2026-11-20 (propuesta) |
 
 Fecha objetivo original "M5": ya pasó y los ciclos siguen.
 
@@ -132,3 +132,5 @@ Fecha objetivo original "M5": ya pasó y los ciclos siguen.
 | F14 (anotaciones de tipo) | Parcial: `mypy` a cero en `core/` y `cad/` (C4). |
 | `sys` sin importar en `tests/test_single_dock_convergence.py` | Hay `import sys` en el estado actual. |
 | D4 (`nesting_presets` escribe preferencias al importarse) | D4 resuelto (D-100, commit `8619878`). Importar el módulo ya no escribe; la inicialización es explícita al abrir el workflow de Nesting. |
+| U-01 (ciclo `cutting_list_preview` ↔ `export_cutting_list`) | Resuelto en `c9f8075` (D-102): funciones compartidas en `cad/lista_corte.py`. |
+| U-02 (ciclo `inspector_dock` ↔ `universal_inspector`) | Resuelto en `8909e31` (D-91); verificado en D-102. |
