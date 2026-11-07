@@ -1,0 +1,32 @@
+{
+  "get_preset": [
+    {
+      "entrada": {
+        "name": "Estándar EN"
+      },
+      "salida": {
+        "width": 2440,
+        "height": 1830,
+        "spacing": 15,
+        "thickness": 3
+      }
+    },
+    {
+      "entrada": {
+        "name": "Cuadrado"
+      },
+      "salida": {
+        "width": 1000,
+        "height": 1000,
+        "spacing": 15,
+        "thickness": 3
+      }
+    },
+    {
+      "entrada": {
+        "name": "No existe"
+      },
+      "salida": null
+    }
+  ]
+}

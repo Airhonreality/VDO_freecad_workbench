@@ -24,8 +24,8 @@ _GOLDEN_PY = ROOT / "tools" / "auditoria" / "golden.py"
 GOLDEN_DIR = ROOT / "tests" / "golden"
 
 # Módulos sin funciones con golden, con motivo registrado en docs/metricas/goldens_origen.md.
-# Decisión P-10 (DECISIONES_DELEGADAS.md): N/A con motivo y deuda con responsable.
-NA_JUSTIFICADOS = {"nesting_presets"}
+# Vacío desde D-99 (B4): nesting_presets tiene golden nuevo, no de origen.
+NA_JUSTIFICADOS: set[str] = set()
 
 # Flujos de creación cubiertos por golden_creacion (creacion_modulos.json): 3 entradas cada uno.
 FLUJOS_CREACION = ("crear_pieza", "make_coco", "make_zocalo", "make_cajon", "make_puerta")

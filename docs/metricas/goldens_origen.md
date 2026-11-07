@@ -81,7 +81,7 @@ Total: **140 entradas en 15 ficheros, 0 entradas en error** (medido con un scrip
 | Módulo | Motivo |
 |---|---|
 | `panel_core`, `cajon_core`, `puerta_core`, `coco_core` | Son flujos de creación. Cubiertos por `creacion_modulos.json`. |
-| `nesting_presets` | **N/A con motivo (P-10, decisión delegada, ver `DECISIONES_DELEGADAS.md`).** En `b78de04` el módulo no se puede importar dentro de FreeCAD: `initialize_defaults()` se ejecuta al cargar y llama a `FreeCAD.ParamGet` sin tener `FreeCAD` en el ámbito (`NameError`, medido con `freecadcmd`). No hay comportamiento de origen que capturar, y generar un golden contra el código actual no probaría nada de origen. Tiene 9 métodos estáticos. **Deuda:** responsable `ejecutor`, plazo antes de M5, porque toca escritura de preferencias. Hay que arreglar la carga en el código actual y generar un golden de ese comportamiento, marcado como "nuevo, no de origen". |
+| `nesting_presets` | **Golden NUEVO, no de origen (D-99, aprobado por delegación del usuario).** En `b78de04` el módulo no cargaba: `initialize_defaults()` llamaba a `FreeCAD.ParamGet` sin `FreeCAD` en el ámbito (`NameError`). No hay comportamiento de origen que capturar. El golden fija `get_preset` (tabla `DEFAULT_PRESETS` vía preferencias de FreeCAD). Solo lectura: no cubre `save_preset`, `delete_preset` ni `import_presets_from_json`, que escriben preferencias. Cuando no hay FreeCAD, el módulo carga y lee `DEFAULT_PRESETS`. Ver `tests/test_nesting_presets.py`. |
 | — | `module_props` ya tiene golden (ver tabla). |
 
 ## Guardián (`guardian.json`)

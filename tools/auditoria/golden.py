@@ -106,7 +106,9 @@ MODULOS_FUNCIONES: dict[str, list[str]] = {
         "expand_pieces",
         "optimize",
     ],
-    "nesting_presets": [],
+    "nesting_presets": [
+        "get_preset",
+    ],
     "spaces": [
         "calcular_espacio_libre",
     ],
@@ -237,6 +239,9 @@ def _cargar_modulo(modulo: str):
         if mod is None:
             raise ultimo_error  # type: ignore[misc]
         return mod
+    if modulo == "nesting_presets":
+        # La función pública es el método estático de la clase, no un nivel de módulo.
+        return importlib.import_module("freecad.vdo.core.nesting_presets").NestingPresetManager
     return importlib.import_module(f"freecad.vdo.core.{modulo}")
 
 
@@ -547,6 +552,13 @@ def _entradas_por_funcion(modulo: str) -> dict[str, list[dict]]:  # noqa: C901 -
             {"preexistente": "vacio"},
             {"preexistente": "hoja_global_vacia"},
             {"preexistente": "ambas_editadas"},
+        ]
+    elif modulo == "nesting_presets":
+        # Solo lectura: no escribe preferencias. Golden nuevo, no de origen (D-99).
+        entradas["get_preset"] = [
+            {"name": "Estándar EN"},
+            {"name": "Cuadrado"},
+            {"name": "No existe"},
         ]
 
     return entradas
