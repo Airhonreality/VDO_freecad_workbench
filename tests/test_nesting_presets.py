@@ -13,6 +13,7 @@ registra un paquete ``freecad`` de stub cuyo __path__ apunta al repo.
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import unittest
@@ -59,9 +60,16 @@ print("NESTING_RESULT " + json.dumps({{
 """
 
 
+def _python() -> str:
+    """Interprete de Python para el hijo. Bajo freecadcmd, sys.executable es freecadcmd."""
+    if os.path.basename(sys.executable).startswith("python"):
+        return sys.executable
+    return shutil.which("python3") or "python3"
+
+
 def _ejecutar(modo: str) -> dict:
     codigo = _SCRIPT_HIJO.format(raiz=RAIZ, modo=modo)
-    r = subprocess.run([sys.executable, "-I", "-c", codigo],
+    r = subprocess.run([_python(), "-I", "-c", codigo],
                        capture_output=True, text=True, timeout=120)
     for linea in r.stdout.splitlines():
         if linea.startswith("NESTING_RESULT "):
