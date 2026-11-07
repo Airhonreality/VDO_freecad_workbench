@@ -47,8 +47,8 @@ Fecha propuesta para toda la sección: 2026-11-20. Responsable: ejecutor, salvo 
 | C1 | **Códigos `noqa` pendientes de revisión humana.** | **RESUELTO (D-105).** Medido con `grep -rn noqa freecad tests tools --include='*.py' \| wc -l`: antes **167** líneas (RUF001 40, E402 111, C901 13, F401 2, sin código 1; la cifra de 164 que había aquí estaba desactualizada). Después **0** líneas. RUF001: constantes en `core/simbolos.py` y `ui/tema.py`. E402: guardas de la UI movidas bajo los imports; helpers de `tests/soporte/` (`entorno`, `con_mock`, `qt_offscreen`). Commits `fac6d99`, `1a1b218`, `3ad60d0`. Pendiente de verificación visual (M10): el orden de la guarda de `FreeCADGui` en `ui/` (ver D-105). | — | 2026-11-06 |
 | C2 | Funciones con complejidad alta marcadas como C901 (13 a 20) | **RESUELTO (D-105, commit `1a1b218`).** Las 13 funciones se dividieron en auxiliares por extracción literal. Medido: C901 antes **13**, después **0**. Verificación: comparación AST de sentencias por función y nivel 1 y 2 sin fallos. Riesgo residual: las ramas nuevas sin golden propio. | — | 2026-11-06 |
 | C3 | `ruff` fuera de `freecad/vdo/` | 0 en `freecad/vdo/`. 8 en `ruff check .` (raíz). D-81 registra 9 errores en `tools/auditoria/verificar.py`, congelado y vetado. | usuario decide si se levanta el veto | 2026-11-13 (propuesta) |
-| C4 | `mypy` fuera de `core/` y `cad/` | `pyproject.toml`: `packages = ["freecad.vdo.core", "freecad.vdo.cad"]`, strict. Resultado a cero en `core/` y `cad/` (D-83). `ui/`, `tools/` y `tests/` no entran. | usuario decide si se amplía el alcance | 2026-11-13 (propuesta) |
-| C5 | Excepción tragada en `ui/` | 1 (`minimalismo.py excepciones`): `ui/coco_unified_task.py`. El error se registra en `_fallar_accept` (D-79). | usuario confirma que se acepta | 2026-11-13 (propuesta) |
+| C4 | `mypy` fuera de `core/` y `cad/` | **RESUELTO (decisión D-108).** Alcance cerrado: mypy strict queda en `core/` y `cad/` (MN-10). `ui/`, `tools/` y `tests/` quedan fuera por decisión del director (motivo: MN-10 y el coste de tipar la UI antes de la fase de UI). Medida previa: `pyproject.toml`: `packages = ["freecad.vdo.core", "freecad.vdo.cad"]`, strict. Resultado a cero en `core/` y `cad/` (D-83). `ui/`, `tools/` y `tests/` no entran. | — | 2026-11-06 |
+| C5 | Excepción tragada en `ui/` | **RESUELTO (decisión D-108).** Se acepta: `_fallar_accept` registra con `App.Console` y devuelve el valor de fallo (D-79). Medida previa: 1 (`minimalismo.py excepciones`): `ui/coco_unified_task.py`. El error se registra en `_fallar_accept` (D-79). | — | 2026-11-06 |
 
 ---
 
@@ -57,7 +57,7 @@ Fecha propuesta para toda la sección: 2026-11-20. Responsable: ejecutor, salvo 
 | ID | Ítem | Medida | Responsable | Fecha |
 |---|---|---|---|---|
 | D1 | **Colores hex fuera de `ui/tema.py`** en SVG, HTML y `QColor` de `ui/`. D-76 los dejó fuera de alcance. | Re-medido 2026-11-06 en `freecad/vdo/ui` y `freecad/vdo/cad`, fuera de `ui/tema.py`: `#[0-9a-fA-F]{6}`: **0**; `rgb(`: **0**; `QColor(` con literal numérico: **0** (las 88 llamadas `QColor(` usan constantes `tema.*`). **0 en código; quedan 32 ocurrencias hex en 11 archivos de `docs/`.** Cifras anteriores: 417 (plan §2) y 436 (F12). D-94 movió los 249 literales de color a `ui/tema.py`. | ejecutor (docs: decisión del usuario) | 2026-11-20 (propuesta) |
-| D2 | Cuatro hojas de estilo locales fuera de `tema.py` | `ESTILO_WIDGET` (`ui/box_hoja_estilos.py`), `_ESTILO_CHASSIS` (`ui/chassis_estilos.py`), hoja `estilo` en `ui/hardware_manager.py` y en `ui/reengrose_ui_construccion.py`. Aceptadas en D-76 por ser hojas de ventana completa. | usuario confirma que se aceptan | 2026-11-13 (propuesta) |
+| D2 | Cuatro hojas de estilo locales fuera de `tema.py` | **RESUELTO (decisión D-108).** Se aceptan las cuatro hojas de ventana completa fuera de `tema_estilos.py` (D-76). Medida previa: `ESTILO_WIDGET` (`ui/box_hoja_estilos.py`), `_ESTILO_CHASSIS` (`ui/chassis_estilos.py`), hoja `estilo` en `ui/hardware_manager.py` y en `ui/reengrose_ui_construccion.py`. Aceptadas en D-76 por ser hojas de ventana completa. | — | 2026-11-06 |
 
 ---
 
@@ -111,7 +111,7 @@ Fecha objetivo original "M5": ya pasó y los ciclos siguen.
 
 | ID | Ítem | Origen | Estado | Responsable | Fecha |
 |---|---|---|---|---|---|
-| J1 | Motor de despiece compartido cajón/puerta | F5 del historial | Diferido. M3 unificó la tabla de aperturas, no los motores (MN-06). | usuario decide si se abre | 2026-11-20 (propuesta) |
+| J1 | Motor de despiece compartido cajón/puerta | F5 del historial | **RESUELTO (decisión D-108).** No se unifica el motor de despiece cajón/puerta (MN-06: solo se unifica la tabla de reglas de aperturas). Estado previo: Diferido. M3 unificó la tabla de aperturas, no los motores (MN-06). | — | 2026-11-06 |
 | J2 | Verificar que los tests de otra sesión (P-04) están resueltos | **RESUELTO (2026-11-06).** `git status --short` vacío, y `git diff --stat HEAD -- tests/test_gui_wiring.py tests/test_single_dock_convergence.py` vacío. Ambos archivos usan `sys.exit` (`test_gui_wiring.py:159`, `test_single_dock_convergence.py:218`) desde el commit `ef4ecd0` (D-80). | — | — |
 
 ---

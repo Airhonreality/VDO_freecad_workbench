@@ -788,3 +788,13 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-106
 
 - **D-106: ui/tema.py (465 líneas) partido por concepto. Sin reexportaciones (P6). Valores y nombres intactos.** Destinos: `ui/tema_colores.py` (tokens y `COLOR_*`), `ui/tema_estilos.py` (hojas `ESTILO_*`, `estilo_boton`, `aplicar_estilo`, `estilo_breadcrumb`), `ui/tema_iconos.py` (`LUCIDE_ICONS`, `get_svg_icon`, `obtener_svg_icon`). Los símbolos `SIMBOLO_*` se importan de `core/simbolos.py`. Los consumidores importan del módulo de concepto. Verificación: comparación AST de nombres y valores de nivel superior contra HEAD; AST normalizado de cada consumidor modificado; volcado de valores en tiempo de ejecución bajo `freecadcmd`. Pasos: T-01 colores, T-02 estilos, T-03 iconos, T-04 retirada de `tema.py`. Revertir: `git revert` de cada commit T-0X en orden inverso.
+
+## D-108
+
+- **D-108: decisiones de alcance cerradas (C4, J1, C5, D2).** Sin cambio de código.
+  - **C4 (mypy):** `mypy --strict` queda en `core/` y `cad/` (MN-10). `ui/`, `tools/` y `tests/` quedan fuera por decisión del director. Motivo: MN-10 y el coste de tipar la UI antes de la fase de UI.
+  - **J1 (despiece cajón/puerta):** el motor no se unifica. MN-06 solo unifica la tabla de reglas de aperturas.
+  - **C5 (`ui/coco_unified_task.py`, `_fallar_accept`):** la excepción tragada se acepta. Registra con `App.Console` y devuelve el valor de fallo (D-79).
+  - **D2 (hojas de ventana completa):** las cuatro hojas fuera de `tema_estilos.py` se aceptan (D-76).
+  - Estado en `docs/DEUDA_TECNICA.md`: C4, J1, C5 y D2 marcados RESUELTO (decisión D-108).
+  - Revertir: `git revert` del commit de esta sección.
