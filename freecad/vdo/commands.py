@@ -196,10 +196,8 @@ class CmdEditarVDO(_ComandoBase):
         import FreeCADGui as Gui
 
         from freecad.vdo.core.view_base import diagnostico_viewprovider
-        from freecad.vdo.ui.view_providers import (
-            abrir_panel_objeto,
-            enfocar_inspector_universal,
-        )
+        from freecad.vdo.ui.view_provider_base import enfocar_inspector_universal
+        from freecad.vdo.ui.view_providers import abrir_panel_objeto
         seleccion = Gui.Selection.getSelection()
         if not seleccion:
             App.Console.PrintWarning(

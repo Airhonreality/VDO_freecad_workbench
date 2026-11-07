@@ -45,10 +45,10 @@ from freecad.vdo.ui.inspector_dock import (  # noqa: E402 - rutas, entorno o moc
     VDOUniversalInspectorWidget,
     obtener_o_crear_dock_inspector,
 )
+from freecad.vdo.ui.view_provider_base import enfocar_inspector_universal  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 from freecad.vdo.ui.view_providers import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
     ViewProviderCoco,
     abrir_panel_objeto,
-    enfocar_inspector_universal,
 )
 
 

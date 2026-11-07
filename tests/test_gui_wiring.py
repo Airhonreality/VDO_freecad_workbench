@@ -29,10 +29,10 @@ try:
     from freecad.vdo.ui.coco_unified_task import CocoUnifiedTaskPanel
     from freecad.vdo.ui.inspector_dock import obtener_o_crear_dock_inspector
     from freecad.vdo.ui.universal_inspector import VDOUniversalInspectorWidget
+    from freecad.vdo.ui.view_provider_base import enfocar_inspector_universal
     from freecad.vdo.ui.view_providers import (
         ViewProviderCoco,
         abrir_panel_objeto,
-        enfocar_inspector_universal,
     )
 except BaseException:
     make_coco = None

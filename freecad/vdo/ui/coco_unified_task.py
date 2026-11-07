@@ -187,7 +187,7 @@ class CocoUnifiedTaskPanel(
             from freecad.vdo.cad.puerta import PuertaFeature
             PuertaFeature(existente)
             if App.GuiUp:
-                from freecad.vdo.ui.view_providers import ViewProviderPuerta
+                from freecad.vdo.ui.view_provider_base import ViewProviderPuerta
                 ViewProviderPuerta(existente.ViewObject)
 
         # Propiedades de la puerta
@@ -257,7 +257,7 @@ class CocoUnifiedTaskPanel(
                 from freecad.vdo.cad.cajon import CajonFeature
                 CajonFeature(existente)
                 if App.GuiUp:
-                    from freecad.vdo.ui.view_providers import ViewProviderCajon
+                    from freecad.vdo.ui.view_provider_base import ViewProviderCajon
                     ViewProviderCajon(existente.ViewObject)
 
             # Propiedades del cajón
