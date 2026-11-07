@@ -6,7 +6,7 @@ from freecad.vdo.ui.box_constantes import (
     TIPOS_ENCUENTRO,
 )
 from freecad.vdo.ui.qt import seleccionar_por_dato
-from freecad.vdo.ui.tema import obtener_svg_icon
+from freecad.vdo.ui.tema_iconos import obtener_svg_icon
 
 
 class BoxEsquinasMixin:

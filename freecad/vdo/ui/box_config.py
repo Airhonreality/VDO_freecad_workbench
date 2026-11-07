@@ -10,7 +10,7 @@ from freecad.vdo.core import (
     reengrose_modificador_normalizacion as VDO_RE_NORMALIZACION,
 )
 from freecad.vdo.ui.box_constantes import ESQUINAS
-from freecad.vdo.ui.tema import obtener_svg_icon
+from freecad.vdo.ui.tema_iconos import obtener_svg_icon
 
 
 class BoxConfigMixin:

@@ -2,7 +2,7 @@
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.qt_compat import QtCore, QtWidgets
-from freecad.vdo.ui import tema, tema_estilos
+from freecad.vdo.ui import tema_estilos
 from freecad.vdo.ui.box_canvas import _VDOConcentricCenterCanvas
 from freecad.vdo.ui.box_constantes import (
     ENCUENTRO_LABELS,
@@ -10,7 +10,7 @@ from freecad.vdo.ui.box_constantes import (
     TIPOS_ENCUENTRO,
 )
 from freecad.vdo.ui.qt import VDO_DoubleSpinBox
-from freecad.vdo.ui.tema import obtener_svg_icon
+from freecad.vdo.ui.tema_iconos import obtener_svg_icon
 
 
 class BoxConstruccionMixin:
