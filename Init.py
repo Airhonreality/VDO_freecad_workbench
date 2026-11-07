@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Fase de consola del workbench VDO.
 
 FreeCAD ejecuta este archivo siempre, también sin interfaz gráfica (FreeCADCmd, CI).
@@ -18,9 +17,11 @@ def _module_dir():
     except NameError:
         for entrada in sys.path:
             manifiesto = os.path.join(entrada, "package.xml")
-            if os.path.isfile(manifiesto) and "<name>VDO</name>" in open(manifiesto, encoding="utf-8").read():
-                return os.path.abspath(entrada)
+            if os.path.isfile(manifiesto):
+                with open(manifiesto, encoding="utf-8") as archivo:
+                    if "<name>VDO</name>" in archivo.read():
+                        return os.path.abspath(entrada)
         return None
 
 
-App.Console.PrintMessage("[VDO] Módulo cargado desde: {}\n".format(_module_dir()))
+App.Console.PrintMessage(f"[VDO] Módulo cargado desde: {_module_dir()}\n")

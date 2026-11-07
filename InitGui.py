@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Fase visual del workbench VDO.
 
 FreeCAD ejecuta este archivo solo cuando hay interfaz gráfica (FreeCAD.GuiUp).
@@ -23,9 +22,11 @@ def _module_dir():
     except NameError:
         for entrada in sys.path:
             manifiesto = os.path.join(entrada, "package.xml")
-            if os.path.isfile(manifiesto) and "<name>VDO</name>" in open(manifiesto, encoding="utf-8").read():
-                return os.path.abspath(entrada)
-        raise RuntimeError("No se encontró la carpeta del módulo VDO en sys.path")
+            if os.path.isfile(manifiesto):
+                with open(manifiesto, encoding="utf-8") as archivo:
+                    if "<name>VDO</name>" in archivo.read():
+                        return os.path.abspath(entrada)
+        raise RuntimeError("No se encontró la carpeta del módulo VDO en sys.path") from None
 
 
 _MODULE_DIR = _module_dir()
