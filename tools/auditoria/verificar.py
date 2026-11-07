@@ -467,7 +467,7 @@ def _m10_consistencia():
         if "__pycache__" in p.parts:
             continue
         rel = str(p.relative_to(ROOT))
-        if rel.endswith("ui/tema.py"):
+        if rel.endswith(("ui/tema_colores.py", "ui/tema_estilos.py", "ui/tema_iconos.py")):
             continue
         src = p.read_text(encoding="utf-8")
         import re
