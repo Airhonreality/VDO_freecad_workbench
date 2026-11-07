@@ -13,9 +13,9 @@
 
 | ID | Ítem | Medida | Responsable | Fecha |
 |---|---|---|---|---|
-| A1 | **Reducción de líneas ≥ 30 % no cumplida.** | 23.608 líneas (base, `minimalismo_base.json`) → 25.171 (final, `minimalismo_final.json`): **+6,6 %**. Frente a las 23.920 del plan §1, el cálculo da +5,2 %. Se acepta o se abre una fase de reducción. | usuario | 2026-11-13 (propuesta) |
-| A2 | Otras metas de §1 no cumplidas | Tablas idénticas: 1 grupo (meta 0). Funciones con 4 o más ramas: 3 (meta 0). Bloques `__all__`: 11 archivos (meta 0; aumentaron). `QLabel(`: **109** líneas (medido 2026-11-06 con `grep -rc`; 123 en M11; de 171). `addWidget`: **239** líneas (medido 2026-11-06; 286 en M11; de 401). Suma medida 2026-11-06: **348**. `setStyleSheet` fuera de `ui/tema.py`: 0 (medido en M11; la cifra de 2 del grep de M10 eran una línea de docstring y la única llamada, ambas en `tema.py`). Capa `ui`: 14.374 líneas (de 13.507; meta: reducir a presentación) en M11. Re-medido 2026-11-06 con `wc -l` sobre `freecad/vdo/ui/*.py` (incl. subcarpetas): 13.461. La diferencia con 14.374 no está explicada. | usuario decide si se aceptan con justificación o se abre fase. Ejecutor, si se abre. | 2026-11-13 (propuesta) |
-| A3 | Método de conteo del plan | El plan §1 cita 88 archivos y 23.920 líneas; la herramienta mide 85 y 23.608 sobre la base. Hay que fijar un solo método (D-03). | usuario | 2026-11-13 (propuesta) |
+| A1 | **Reducción de líneas ≥ 30 % no cumplida.** | **RESUELTO (decisión, D-109).** No se persigue el número: el código repetido ya se eliminó (F5 a F8). Medida oficial: `minimalismo.py`. 23.608 líneas (base, `minimalismo_base.json`) → 25.171 (final, `minimalismo_final.json`): **+6,6 %**. Frente a las 23.920 del plan §1, el cálculo da +5,2 %. Se acepta o se abre una fase de reducción. | usuario | 2026-11-13 (propuesta) |
+| A2 | Otras metas de §1 no cumplidas | **RESUELTO (decisión, D-109).** Fuente única de métricas: `tools/auditoria/minimalismo.py`, según el plan. Tablas idénticas: 1 grupo (meta 0). Funciones con 4 o más ramas: 3 (meta 0). Bloques `__all__`: 11 archivos (meta 0; aumentaron). `QLabel(`: **109** líneas (medido 2026-11-06 con `grep -rc`; 123 en M11; de 171). `addWidget`: **239** líneas (medido 2026-11-06; 286 en M11; de 401). Suma medida 2026-11-06: **348**. `setStyleSheet` fuera de `ui/tema.py`: 0 (medido en M11; la cifra de 2 del grep de M10 eran una línea de docstring y la única llamada, ambas en `tema.py`). Capa `ui`: 14.374 líneas (de 13.507; meta: reducir a presentación) en M11. Re-medido 2026-11-06 con `wc -l` sobre `freecad/vdo/ui/*.py` (incl. subcarpetas): 13.461. La diferencia con 14.374 no está explicada. | usuario decide si se aceptan con justificación o se abre fase. Ejecutor, si se abre. | 2026-11-13 (propuesta) |
+| A3 | Método de conteo del plan | **RESUELTO (decisión, D-109).** Método oficial: `tools/auditoria/minimalismo.py`, fuente única. El plan §1 cita 88 archivos y 23.920 líneas; la herramienta mide 85 y 23.608 sobre la base. Hay que fijar un solo método (D-03). | usuario | 2026-11-13 (propuesta) |
 | A4 | Línea base de `app/` | El plan cita 518 líneas; `minimalismo_base.json` mide 21 archivos y 941 líneas. `app/` ya está eliminado; la diferencia queda sin explicar en el registro. | usuario (solo informativo) | 2026-11-13 (propuesta) |
 | A5 | **P5: `ui/tema.py` (465 líneas) por encima de 400** (PLAN §0 P5). | **RESUELTO (D-106, hash `f5639a2`).** Partido por concepto: `ui/tema_colores.py` (168 líneas), `ui/tema_estilos.py` (251), `ui/tema_iconos.py` (110). `ui/tema.py` retirado: sin fachada ni reexportaciones (P6). Verificado: AST de nivel superior, 149 nombres sin diferencias respecto a la base `f775d76`; 44 consumidores equivalentes; volcado de valores bajo `freecadcmd` sin diferencias; nivel 1 y nivel 2 con `fallos=0`. Pendiente: `tools/auditoria/verificar.py` R10 solo exime `ui/tema.py` del conteo de hex y ahora cuenta 242 en los tres módulos nuevos (archivo congelado, decisión del usuario). | ejecutor | 2026-11-06 |
 
@@ -87,7 +87,7 @@ Fecha objetivo original "M5": ya pasó y los ciclos siguen.
 
 | ID | Ítem | Medida | Responsable | Fecha |
 |---|---|---|---|---|
-| G1 | **Documentos guardados con `canto_fino = 0`** por el locale de coma decimal (D-15, antes U-04). | En este equipo: 0 documentos `.FCStd` en el repo (M10). Búsqueda previa en este equipo: 23 `.FCStd`, 7 con hoja de cálculo, ninguno con el alias `canto_fino`. **Falta revisar la otra máquina.** Los documentos ya guardados no se corrigen por código. | usuario | 2026-11-13 (propuesta) |
+| G1 | **Documentos guardados con `canto_fino = 0`** por el locale de coma decimal (D-15, antes U-04). | **RESUELTO (decisión, D-109).** El usuario confirmó que no existen documentos VDO que conservar. En este equipo: 0 documentos `.FCStd` en el repo (M10). Búsqueda previa en este equipo: 23 `.FCStd`, 7 con hoja de cálculo, ninguno con el alias `canto_fino`. **Falta revisar la otra máquina.** Los documentos ya guardados no se corrigen por código. | usuario | 2026-11-13 (propuesta) |
 
 ---
 
@@ -95,7 +95,7 @@ Fecha objetivo original "M5": ya pasó y los ciclos siguen.
 
 | ID | Ítem | Estado | Responsable | Fecha |
 |---|---|---|---|---|
-| H1 | **`dist/VDO-1.1.0.zip` sobrescrito** el día de la verificación M10. | `dist/` no contiene hoy ningún zip. El build de M10 (172 ficheros, según PROGRESO) quedó en `/tmp/ola79_build/VDO-1.1.0.zip`, fuera del repo. Ese directorio temporal puede desaparecer. | usuario decide si se regenera en `dist/`; ejecutor lo regenera con `tools/build_zip.py` | 2026-11-13 (propuesta) |
+| H1 | **`dist/VDO-1.1.0.zip` sobrescrito** el día de la verificación M10. | **RESUELTO (decisión, D-109).** Es el complemento completo empaquetado desde este repo para instalarlo en FreeCAD; se regenera al final, al preparar la instalación, y no afecta al desarrollo. `dist/` no contiene hoy ningún zip. El build de M10 (172 ficheros, según PROGRESO) quedó en `/tmp/ola79_build/VDO-1.1.0.zip`, fuera del repo. Ese directorio temporal puede desaparecer. | usuario decide si se regenera en `dist/`; ejecutor lo regenera con `tools/build_zip.py` | 2026-11-13 (propuesta) |
 
 ---
 
@@ -103,7 +103,7 @@ Fecha objetivo original "M5": ya pasó y los ciclos siguen.
 
 | ID | Ítem | Estado | Responsable | Fecha |
 |---|---|---|---|---|
-| I1 | **Verificación visual en FreeCAD GUI** de los paneles cambiados en M6 y M7 (zócalo, panel, puerta, cajón y coco; D-70 a D-75), del panel de coco en M7 (D-40) y del icono de M4. Incluye las capturas comparadas contra M0 del paso 3 de M10. | Pendiente. Nivel 3 de la verificación. Sin sesión gráfica revisada por una persona, la fase no se da por cerrada en este punto. | usuario | 2026-11-13 (propuesta) |
+| I1 | **Verificación visual en FreeCAD GUI** de los paneles cambiados en M6 y M7 (zócalo, panel, puerta, cajón y coco; D-70 a D-75), del panel de coco en M7 (D-40) y del icono de M4. Incluye las capturas comparadas contra M0 del paso 3 de M10. | **PENDIENTE DE REVISIÓN VISUAL (al final)** (D-109): se hace cuando no quede deuda técnica, por el usuario. Pendiente. Nivel 3 de la verificación. Sin sesión gráfica revisada por una persona, la fase no se da por cerrada en este punto. | usuario | 2026-11-13 (propuesta) |
 
 ---
 

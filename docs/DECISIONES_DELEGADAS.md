@@ -809,3 +809,15 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
   - **D2 (hojas de ventana completa):** las cuatro hojas fuera de `tema_estilos.py` se aceptan (D-76).
   - Estado en `docs/DEUDA_TECNICA.md`: C4, J1, C5 y D2 marcados RESUELTO (decisión D-108).
   - Revertir: `git revert` del commit de esta sección.
+
+## D-109
+
+- **D-109: cierre de decisiones pendientes de la deuda técnica (A1, A2, A3, G1, H1, I1).** Sin cambio de código.
+  - **1. Reducción de líneas (A1): no cumplida y cerrada.** El código repetido ya se eliminó (F5 a F8). Reducir más exigiría borrar funcionalidad o reescribir la UI sin beneficio de calidad. No se persigue el número. Medida oficial: `minimalismo.py`.
+  - **2. Migración de formularios:** se incluye en la fase de UI (`docs/PLAN_FASE_UI_Y_REDUCCION.md`). No es una tarea aparte.
+  - **3. Revisión visual de paneles cambiados (I1):** se hace al final, cuando no quede deuda técnica, por el usuario.
+  - **4. `dist/VDO-1.1.0.zip` (H1):** es el complemento completo empaquetado desde este repo para instalarlo en FreeCAD. Se regenera al final, al preparar la instalación. No afecta al desarrollo.
+  - **5. Documentos de otra máquina (G1):** el usuario confirmó que no existen documentos VDO que conservar. Cerrado.
+  - **6. Métricas (A2, A3):** el método oficial es `tools/auditoria/minimalismo.py`, según el plan. Fuente única.
+  - Estado en `docs/DEUDA_TECNICA.md`: A1, A2, A3, G1 y H1 marcados "RESUELTO (decisión, D-109)"; I1 queda "PENDIENTE DE REVISIÓN VISUAL (al final)".
+  - Revertir: `git revert` del commit de esta sección.
