@@ -758,3 +758,11 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 - D-102: ciclos de ui/ U-01 a U-03 rompidos moviendo símbolos compartidos. Resultado: 3 componentes → 1 (U-01 y U-02 resueltos; U-03 no hecho en esta ola: depende de mover la clase grande `VDOViewProviderBase`). Al inicio de la ola ciclos.py ya marcaba 2 componentes, porque U-02 se había resuelto antes en D-91.
   - **U-01:** `generar_csv_opencutlist`, `extraer_piezas_del_documento` y sus helpers se mueven de `ui/export_cutting_list.py` a `cad/lista_corte.py`. `cutting_list_preview` y `export_cutting_list` importan de ahí. Se añaden anotaciones de tipo (`mypy --strict` las exige en `cad/`). Los tests que usaban `export_cutting_list` para esas funciones apuntan a `cad/lista_corte`; no hay reexportación.
   - **U-02:** no requiere cambio. El ciclo `inspector_dock` ↔ `universal_inspector` ya no existe: la importación inversa se eliminó en `8909e31` (D-91).
+
+## D-103
+
+- D-103: U-03 se resuelve moviendo `VDOViewProviderBase` (con `_gui` y `enfocar_inspector_universal`, de los que depende) a `ui/view_provider_base.py`. Revertir: `git revert --no-edit <hash del commit de código>`.
+  - **Por qué:** `drag_handles` hereda de `VDOViewProviderBase` y la base vivía en `view_providers`, que a su vez importa (de forma diferida) `coco_unified_task` y `drag_handles`. Eso cerraba el ciclo.
+  - **Cambio adicional necesario:** `ViewProviderCajon` y `ViewProviderPuerta` se mueven también a `view_provider_base.py`. `coco_unified_task` las importa para crear objetos hijos; si siguieran en `view_providers`, quedaría la arista `coco_unified_task -> view_providers` y el ciclo seguiría. Sus dependencias (`cajon_task`, `puerta_task`) no vuelven a importar la base.
+  - **Sin reexportación (P6):** `commands.py` y los tests que importaban `enfocar_inspector_universal` o `VDOViewProviderBase` de `view_providers` apuntan ahora a `view_provider_base`.
+  - **Criterio de verificación:** `tools/auditoria/ciclos.py` debe dar 0 componentes en `ui/`.
