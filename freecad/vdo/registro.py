@@ -11,7 +11,10 @@ Se instala una vez, desde freecad/vdo/__init__.py. Sin FreeCAD no instala nada.
 Revertir: git revert del commit de E1 (b).
 """
 
+from __future__ import annotations
+
 import logging
+from typing import Any
 
 _NOMBRE_PAQUETE = "freecad.vdo"
 _MARCA = "es_consola_freecad_vdo"
@@ -22,11 +25,11 @@ class HandlerConsolaFreeCAD(logging.Handler):
 
     es_consola_freecad_vdo = True
 
-    def __init__(self, app):
+    def __init__(self, app: Any) -> None:
         super().__init__(level=logging.INFO)
         self._app = app
 
-    def emit(self, record):
+    def emit(self, record: logging.LogRecord) -> None:
         try:
             texto = self.format(record) + "\n"
             consola = self._app.Console
@@ -40,7 +43,7 @@ class HandlerConsolaFreeCAD(logging.Handler):
             self.handleError(record)
 
 
-def instalar_consola_freecad():
+def instalar_consola_freecad() -> logging.Handler | None:
     """Instala el handler una sola vez. Devuelve el handler, o None sin FreeCAD."""
     try:
         import FreeCAD as app
