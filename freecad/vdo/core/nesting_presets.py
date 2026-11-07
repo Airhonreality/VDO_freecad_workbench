@@ -171,7 +171,3 @@ class NestingPresetManager:
         prefs.SetString("Presets", json.dumps(existing_data))
         _mensaje(f"[VDO Nesting] Presets importados desde: {filepath}")
         return True
-
-
-# Inicializar presets al cargar el módulo (no hace nada sin FreeCAD)
-NestingPresetManager.initialize_defaults()

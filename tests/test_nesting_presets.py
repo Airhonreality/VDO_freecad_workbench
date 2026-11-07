@@ -51,6 +51,7 @@ sys.modules["freecad"] = pkg
 from freecad.vdo.core import nesting_presets as NP
 M = NP.NestingPresetManager
 tabla = json.loads(json.dumps(NP.DEFAULT_PRESETS))
+M.initialize_defaults()
 print("NESTING_RESULT " + json.dumps({{
     "presets": M.get_all_presets(),
     "nombres": M.get_preset_names(),

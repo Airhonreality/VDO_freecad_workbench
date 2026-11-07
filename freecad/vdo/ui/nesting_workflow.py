@@ -25,6 +25,16 @@ except ImportError:
 from freecad.vdo.core import nesting_presets as presets_mgr
 from freecad.vdo.ui import qt, tema
 
+_presets_inicializados = False
+
+
+def _inicializar_presets_una_vez():
+    """Escribe los presets por defecto si la preferencia está vacía. Una vez por sesión (D-100)."""
+    global _presets_inicializados
+    if not _presets_inicializados:
+        presets_mgr.NestingPresetManager.initialize_defaults()
+        _presets_inicializados = True
+
 
 class NestingDialog(QtWidgets.QDialog):
     """Diálogo para configurar y ejecutar nesting."""
@@ -37,6 +47,7 @@ class NestingDialog(QtWidgets.QDialog):
         self.selected_parts = []
         self.mode = "todo"  # seleccion, grupo, todo
 
+        _inicializar_presets_una_vez()
         self.init_ui()
 
     def init_ui(self):
