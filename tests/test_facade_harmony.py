@@ -225,12 +225,10 @@ class TestImportacionYEnums(unittest.TestCase):
             necesita_expulsor_magnetico,
         )
 
-    def test_puerta_consume_contrato(self):
-        """puerta_despiece reexporta los enums del contrato."""
-        self.assertEqual(D_PUERTA.APERTURA_TIRADOR, APERTURA_TIRADOR)
-        self.assertEqual(D_PUERTA.APERTURA_GOLA, APERTURA_GOLA)
-        self.assertEqual(D_PUERTA.APERTURA_45_GRADOS, APERTURA_45_GRADOS)
-        self.assertEqual(D_PUERTA.APERTURA_PUSH_OPEN, APERTURA_PUSH_OPEN)
+    def test_puerta_no_reexporta_contrato(self):
+        """puerta_despiece no reexporta los enums del contrato (P6, D-107)."""
+        for nombre in ("APERTURA_TIRADOR", "APERTURA_GOLA", "APERTURA_45_GRADOS", "APERTURA_PUSH_OPEN"):
+            self.assertFalse(hasattr(D_PUERTA, nombre), nombre)
 
     def test_cajon_consume_contrato(self):
         """Los bloques de cálculo del cajón usan las funciones del contrato (sin reexportarlas, D-36)."""
@@ -254,15 +252,6 @@ class TestImportacionYEnums(unittest.TestCase):
         self.assertIs(D_BLOQUES.aplicar_sistema_apertura, contrato.aplicar_sistema_apertura)
         self.assertIs(D_BLOQUES.calcular_fachada_base, contrato.calcular_fachada_base)
 
-    def test_no_discrepancias_strings(self):
-        """No hay discrepancias de strings entre puerta y cajón."""
-        for attr in ("APERTURA_TIRADOR", "APERTURA_GOLA",
-                      "APERTURA_45_GRADOS", "APERTURA_PUSH_OPEN"):
-            v_puerta = getattr(D_PUERTA, attr)
-            v_contrato = getattr(__import__("freecad.vdo.core.aperturas", fromlist=["_"]), attr)
-            self.assertEqual(v_puerta, v_contrato,
-                             f"Discrepancia en {attr}: puerta={v_puerta}, "
-                             f"contrato={v_contrato}")
 
 class TestFuncionesAuxiliares(unittest.TestCase):
     """Pruebas de funciones auxiliares del contrato."""

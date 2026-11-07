@@ -6,7 +6,7 @@ fila i de la rejilla del grupo.
 """
 
 from freecad.vdo.core import frames as VDO_FR
-from freecad.vdo.core.aperturas import ETIQUETAS
+from freecad.vdo.core.aperturas import ETIQUETAS, SISTEMAS_APERTURA
 from freecad.vdo.core.defaults import ORIENTACIONES_VALIDAS
 from freecad.vdo.core.facade_contract import (
     MONTAJE_EMBEBIDA,
@@ -15,7 +15,6 @@ from freecad.vdo.core.facade_contract import (
 )
 from freecad.vdo.core.finish import CANTOS_VALIDOS
 from freecad.vdo.core.module_props import ANCLAJE_LABELS, ANCLAJES
-from freecad.vdo.core.puerta_despiece import SISTEMAS_APERTURA
 from freecad.vdo.core.simbolos import SIMBOLO_MENOS
 
 ITEMS_ANCLAJE = [(ANCLAJE_LABELS.get(a, a), a) for a in ANCLAJES]

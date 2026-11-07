@@ -12,6 +12,7 @@ from freecad.vdo.core.aperturas import (
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
+    necesita_cantos_45,
 )
 from freecad.vdo.core.facade_contract import (
     HOLGURA_PERIMETRAL_DEFAULT,
@@ -27,7 +28,6 @@ from freecad.vdo.core.puerta_despiece import (
     bisagras_para_puerta,
     calcular_corrediza,
     descripcion_piston,
-    necesita_cantos_45,
 )
 
 # ---------------------------------------------------------------------

@@ -15,6 +15,7 @@ import sys
 import unittest
 
 from freecad.vdo.core import puerta_despiece as D
+from freecad.vdo.core.aperturas import necesita_cantos_45, necesita_expulsor_magnetico
 from tests.soporte.requisitos import requiere_freecad
 
 try:
@@ -143,12 +144,12 @@ class SistemasAperturaTests(unittest.TestCase):
         self.assertEqual(desc, 0.0)
 
     def test_necesita_expulsor(self):
-        self.assertTrue(D.necesita_expulsor_magnetico("push_open"))
-        self.assertFalse(D.necesita_expulsor_magnetico("tirador"))
+        self.assertTrue(necesita_expulsor_magnetico("push_open"))
+        self.assertFalse(necesita_expulsor_magnetico("tirador"))
 
     def test_necesita_cantos_45(self):
-        self.assertTrue(D.necesita_cantos_45("inglete_45"))
-        self.assertFalse(D.necesita_cantos_45("tirador"))
+        self.assertTrue(necesita_cantos_45("inglete_45"))
+        self.assertFalse(necesita_cantos_45("tirador"))
 
 class CoreImportTests(unittest.TestCase):
     """Pruebas de importación del núcleo (sin GUI)."""

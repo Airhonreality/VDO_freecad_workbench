@@ -11,28 +11,13 @@ from collections.abc import Sequence
 from typing import Any, Final
 
 from freecad.vdo.core.aperturas import (
-    APERTURA_45_GRADOS,
-    APERTURA_GOLA,
-    APERTURA_PUSH_OPEN,
-    APERTURA_TIRADOR,
     GOLA_DESCUENTO_ALTURA_DEFAULT,
-    SISTEMAS_APERTURA,
-    necesita_bisel_45,
-    necesita_cantos_45,
-    necesita_descuento_gola,
-    necesita_expulsor_magnetico,
     normalizar_apertura,
 )
 from freecad.vdo.core.facade_contract import (
-    BISEL_45_ANGULO_DEFAULT,
     HOLGURA_PERIMETRAL_DEFAULT,
-    MONTAJE_EMBEBIDA,
-    MONTAJE_PARCHE,
-    MONTAJE_SEMIPARCHE,
-    SOLAPE_PARCHE_NOMINAL,
     aplicar_sistema_apertura,
     calcular_fachada_base,
-    cantos_por_sistema_apertura,
 )
 from freecad.vdo.core.hardware_hub import (
     calculate_sliding_doors,
@@ -310,53 +295,3 @@ def ajuste_altura_apertura(tipo_apertura: str, H: float) -> tuple[float, float]:
     descuento = max(0.0, float(H) - h_ajustada)
     return (round(h_ajustada, 6), round(descuento, 6))
 
-
-
-
-
-__all__ = [
-    "APERTURA_45_GRADOS",
-    "APERTURA_GOLA",
-    "APERTURA_PUSH_OPEN",
-    # Contrato de fachadas (reexportados)
-    "APERTURA_TIRADOR",
-    "BISEL_45_ANGULO_DEFAULT",
-    "BRAZO_PALANCA_M",
-    "CAZALETA_DIAMETRO",
-    "CAZALETA_PROFUNDIDAD",
-    "COTA_CAZOLETA_X",
-    "COTA_CAZOLETA_Z_EXTREMO",
-    "COTA_K_DEFAULT",
-    "DENSIDAD_MELAMINA_KG_M3",
-    "ESPESOR_PANEL_M",
-    "FACTOR_SEGURIDAD",
-    "GOLA_DESCUENTO_ALTURA_DEFAULT",
-    "GRAVEDAD",
-    "HOLGURA_LUZ_DEFAULT",
-    "HOLGURA_PERIMETRAL_DEFAULT",
-    "MONTAJE_EMBEBIDA",
-    "MONTAJE_PARCHE",
-    "MONTAJE_SEMIPARCHE",
-    "NUM_PISTONES",
-    "PISTONES_COMERCIALES_N",
-    "SISTEMAS_APERTURA",
-    "SOLAPE_PARCHE_NOMINAL",
-    "SOLAPE_SEMIPARCHE_NOMINAL",
-    "aplicar_sistema_apertura",
-    "bisagras_para_puerta",
-    "calcular_corrediza",
-    "calcular_dimensiones_batiente",
-    "calcular_fachada_base",
-    "cantidad_bisagras",
-    "cantos_por_sistema_apertura",
-    "cazoleta_tecnica",
-    "descripcion_piston",
-    "fuerza_piston_teorica",
-    "masa_puerta",
-    "necesita_bisel_45",
-    "necesita_cantos_45",
-    "necesita_descuento_gola",
-    "necesita_expulsor_magnetico",
-    "piston_recomendado",
-    "posiciones_cazoleta",
-]
