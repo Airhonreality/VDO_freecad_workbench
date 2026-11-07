@@ -22,6 +22,12 @@ from freecad.vdo.cad.cajon_geometria import _solidos_cajon
 from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.core import defaults as VDO_D
 from freecad.vdo.core import module_props as VDO_MOD
+from freecad.vdo.core.aperturas import (
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+)
 from freecad.vdo.core.cajon_calculo import calcular_despiece
 from freecad.vdo.core.cajon_correderas import (
     CAJA_METALICA,
@@ -29,15 +35,7 @@ from freecad.vdo.core.cajon_correderas import (
     CORREDERA_TELESCOPICA,
     listar_marcas,
 )
-from freecad.vdo.core.facade_contract import (
-    APERTURA_45_GRADOS,
-    APERTURA_GOLA,
-    APERTURA_PUSH_OPEN,
-    APERTURA_TIRADOR,
-    MONTAJE_EMBEBIDA,
-    MONTAJE_PARCHE,
-    MONTAJE_SEMIPARCHE,
-)
+from freecad.vdo.core.facade_contract import MONTAJE_EMBEBIDA, MONTAJE_PARCHE, MONTAJE_SEMIPARCHE
 from freecad.vdo.core.helpers import _get_app, _get_part
 from freecad.vdo.datos.valores import BLUM_TANDEM, MELAMINA_ESTANDAR
 

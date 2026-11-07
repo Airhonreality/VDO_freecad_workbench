@@ -10,19 +10,20 @@ from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.cad.propiedades import add_common_props, asignar_propiedades
 from freecad.vdo.cad.transaccion import foto_propiedades, restaurar_propiedades
 from freecad.vdo.core import hardware_hub as H
-from freecad.vdo.core.aperturas import ETIQUETAS, SISTEMA_POR_ETIQUETA
-from freecad.vdo.core.facade_contract import (
+from freecad.vdo.core.aperturas import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
+    ETIQUETAS,
     OPERACION_CANTO_45,
     OPERACION_CANTO_ESTANDAR,
     OPERACION_CANTO_GOLA,
-    cantos_por_sistema_apertura,
+    SISTEMA_POR_ETIQUETA,
     necesita_cantos_45,
     necesita_expulsor_magnetico,
 )
+from freecad.vdo.core.facade_contract import cantos_por_sistema_apertura
 from freecad.vdo.core.puerta_despiece import (
     ajuste_altura_apertura,
     bisagras_para_puerta,

@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from freecad.vdo.core.aperturas import APERTURA_TIRADOR, GOLA_DESCUENTO_ALTURA_DEFAULT
 from freecad.vdo.core.cajon_correderas import (
     _MANIFEST,
     CORREDERA_OCULTA,
@@ -10,8 +11,6 @@ from freecad.vdo.core.cajon_correderas import (
     seleccionar_guia,
 )
 from freecad.vdo.core.facade_contract import (
-    APERTURA_TIRADOR,
-    GOLA_DESCUENTO_ALTURA_DEFAULT,
     MONTAJE_PARCHE,
     SOLAPE_PARCHE_NOMINAL,
     aplicar_sistema_apertura,

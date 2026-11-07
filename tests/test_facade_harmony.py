@@ -17,29 +17,31 @@ import sys
 import unittest
 
 from freecad.vdo.core import puerta_despiece as D_PUERTA
-from freecad.vdo.core.facade_contract import (
+from freecad.vdo.core.aperturas import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
-    BISEL_45_ANGULO_DEFAULT,
     GOLA_DESCUENTO_ALTURA_DEFAULT,
-    HOLGURA_PERIMETRAL_DEFAULT,
-    MONTAJE_EMBEBIDA,
-    MONTAJE_PARCHE,
-    MONTAJE_SEMIPARCHE,
     OPERACION_CANTO_45,
     OPERACION_CANTO_ESTANDAR,
     OPERACION_CANTO_GOLA,
     SISTEMAS_APERTURA_VALIDOS,
-    SOLAPE_PARCHE_NOMINAL,
-    aplicar_sistema_apertura,
-    calcular_fachada_base,
-    cantos_por_sistema_apertura,
     necesita_bisel_45,
     necesita_cantos_45,
     necesita_descuento_gola,
     necesita_expulsor_magnetico,
+)
+from freecad.vdo.core.facade_contract import (
+    BISEL_45_ANGULO_DEFAULT,
+    HOLGURA_PERIMETRAL_DEFAULT,
+    MONTAJE_EMBEBIDA,
+    MONTAJE_PARCHE,
+    MONTAJE_SEMIPARCHE,
+    SOLAPE_PARCHE_NOMINAL,
+    aplicar_sistema_apertura,
+    calcular_fachada_base,
+    cantos_por_sistema_apertura,
 )
 
 try:
@@ -207,6 +209,21 @@ class TestImportacionYEnums(unittest.TestCase):
     def test_contrato_importable(self):
         """facade_contract se importa sin errores."""
         from freecad.vdo.core import facade_contract
+        from freecad.vdo.core.aperturas import (
+            APERTURA_45_GRADOS,
+            APERTURA_GOLA,
+            APERTURA_PUSH_OPEN,
+            APERTURA_TIRADOR,
+            GOLA_DESCUENTO_ALTURA_DEFAULT,
+            OPERACION_CANTO_45,
+            OPERACION_CANTO_ESTANDAR,
+            OPERACION_CANTO_GOLA,
+            SISTEMAS_APERTURA_VALIDOS,
+            necesita_bisel_45,
+            necesita_cantos_45,
+            necesita_descuento_gola,
+            necesita_expulsor_magnetico,
+        )
 
     def test_puerta_consume_contrato(self):
         """puerta_despiece reexporta los enums del contrato."""
@@ -219,6 +236,21 @@ class TestImportacionYEnums(unittest.TestCase):
         """Los bloques de cálculo del cajón usan las funciones del contrato (sin reexportarlas, D-36)."""
         from freecad.vdo.core import cajon_calculo_bloques as D_BLOQUES
         from freecad.vdo.core import facade_contract as contrato
+        from freecad.vdo.core.aperturas import (
+            APERTURA_45_GRADOS,
+            APERTURA_GOLA,
+            APERTURA_PUSH_OPEN,
+            APERTURA_TIRADOR,
+            GOLA_DESCUENTO_ALTURA_DEFAULT,
+            OPERACION_CANTO_45,
+            OPERACION_CANTO_ESTANDAR,
+            OPERACION_CANTO_GOLA,
+            SISTEMAS_APERTURA_VALIDOS,
+            necesita_bisel_45,
+            necesita_cantos_45,
+            necesita_descuento_gola,
+            necesita_expulsor_magnetico,
+        )
         self.assertIs(D_BLOQUES.aplicar_sistema_apertura, contrato.aplicar_sistema_apertura)
         self.assertIs(D_BLOQUES.calcular_fachada_base, contrato.calcular_fachada_base)
 

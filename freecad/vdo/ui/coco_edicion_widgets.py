@@ -4,7 +4,7 @@ Extraido de vdo_widgets_coco.py (M7, D-40). Sin cambios de codigo."""
 
 import FreeCAD as App
 
-from freecad.vdo.core.facade_contract import (
+from freecad.vdo.core.aperturas import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,

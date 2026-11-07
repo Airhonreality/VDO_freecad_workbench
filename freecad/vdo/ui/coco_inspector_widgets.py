@@ -13,7 +13,7 @@ from freecad.vdo.core import (
 from freecad.vdo.core import (
     reengrose_modificador as VDO_RE_MODIFICADOR,
 )
-from freecad.vdo.core.facade_contract import (
+from freecad.vdo.core.aperturas import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,

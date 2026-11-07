@@ -21,13 +21,13 @@ from freecad.vdo.cad.propiedades import (
     asignar_propiedades,
 )
 from freecad.vdo.cad.transaccion import foto_propiedades, restaurar_propiedades
-from freecad.vdo.core.facade_contract import (
+from freecad.vdo.core.aperturas import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
-    CALLE_ENTRE_FRENTES_DEFAULT,
 )
+from freecad.vdo.core.facade_contract import CALLE_ENTRE_FRENTES_DEFAULT
 from freecad.vdo.datos.valores import BLUM_TANDEM
 from freecad.vdo.qt_compat import QtWidgets
 from freecad.vdo.ui.coco_unified_celdas import CocoUnifiedCeldasMixin

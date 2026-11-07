@@ -10,17 +10,11 @@ from __future__ import annotations
 from freecad.vdo.core.aperturas import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
-    APERTURA_PUSH_OPEN,
-    APERTURA_TIRADOR,
     GOLA_DESCUENTO_ALTURA_DEFAULT,
     OPERACION_CANTO_45,
     OPERACION_CANTO_ESTANDAR,
     OPERACION_CANTO_GOLA,
     SISTEMAS_APERTURA_VALIDOS,
-    necesita_bisel_45,
-    necesita_cantos_45,
-    necesita_descuento_gola,
-    necesita_expulsor_magnetico,
 )
 
 # ---------------------------------------------------------------------
@@ -151,36 +145,3 @@ def cantos_por_sistema_apertura(sistema_apertura: str,
 
     return cantos
 
-
-__all__ = [
-    "APERTURA_45_GRADOS",
-    "APERTURA_GOLA",
-    "APERTURA_PUSH_OPEN",
-    # Sistemas de apertura
-    "APERTURA_TIRADOR",
-    "BISEL_45_ANGULO_DEFAULT",
-    "CALLE_ENTRE_FRENTES_DEFAULT",
-    # Utilidades
-    "CANTO_ESTADOS",
-    "GOLA_DESCUENTO_ALTURA_DEFAULT",
-    # Constantes de taller
-    "HOLGURA_PERIMETRAL_DEFAULT",
-    "MONTAJE_EMBEBIDA",
-    # Montajes
-    "MONTAJE_PARCHE",
-    "MONTAJE_SEMIPARCHE",
-    "OPERACION_CANTO_45",
-    # Operaciones de canto
-    "OPERACION_CANTO_ESTANDAR",
-    "OPERACION_CANTO_GOLA",
-    "SISTEMAS_APERTURA_VALIDOS",
-    "SOLAPE_PARCHE_NOMINAL",
-    "aplicar_sistema_apertura",
-    # Funciones
-    "calcular_fachada_base",
-    "cantos_por_sistema_apertura",
-    "necesita_bisel_45",
-    "necesita_cantos_45",
-    "necesita_descuento_gola",
-    "necesita_expulsor_magnetico",
-]

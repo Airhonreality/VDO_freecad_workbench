@@ -11,39 +11,41 @@ from freecad.vdo.cad.documento import recalcular_activo
 from freecad.vdo.cad.propiedades import add_common_props
 from freecad.vdo.cad.transaccion import foto_propiedades, restaurar_propiedades
 from freecad.vdo.core import hardware_hub, module_props
+from freecad.vdo.core.aperturas import (
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+    OPERACION_CANTO_45,
+    OPERACION_CANTO_ESTANDAR,
+    OPERACION_CANTO_GOLA,
+    necesita_bisel_45,
+    necesita_cantos_45,
+    necesita_descuento_gola,
+    necesita_expulsor_magnetico,
+)
+from freecad.vdo.core.aperturas import (
+    APERTURA_45_GRADOS as FA_45,
+)
+from freecad.vdo.core.aperturas import (
+    APERTURA_GOLA as FA_GOLA,
+)
+from freecad.vdo.core.aperturas import (
+    APERTURA_PUSH_OPEN as FA_PUSH,
+)
+from freecad.vdo.core.aperturas import (
+    APERTURA_TIRADOR as FA_TIRADOR,
+)
 from freecad.vdo.core.cajon_correderas import (
     CAJA_METALICA,
     CORREDERA_OCULTA,
     CORREDERA_TELESCOPICA,
 )
 from freecad.vdo.core.facade_contract import (
-    APERTURA_45_GRADOS,
-    APERTURA_GOLA,
-    APERTURA_PUSH_OPEN,
-    APERTURA_TIRADOR,
     MONTAJE_EMBEBIDA,
     MONTAJE_PARCHE,
     MONTAJE_SEMIPARCHE,
-    OPERACION_CANTO_45,
-    OPERACION_CANTO_ESTANDAR,
-    OPERACION_CANTO_GOLA,
     cantos_por_sistema_apertura,
-    necesita_bisel_45,
-    necesita_cantos_45,
-    necesita_descuento_gola,
-    necesita_expulsor_magnetico,
-)
-from freecad.vdo.core.facade_contract import (
-    APERTURA_45_GRADOS as FA_45,
-)
-from freecad.vdo.core.facade_contract import (
-    APERTURA_GOLA as FA_GOLA,
-)
-from freecad.vdo.core.facade_contract import (
-    APERTURA_PUSH_OPEN as FA_PUSH,
-)
-from freecad.vdo.core.facade_contract import (
-    APERTURA_TIRADOR as FA_TIRADOR,
 )
 from freecad.vdo.core.hardware_hub import (
     _FAMILIAS as _HW_FAMILIAS,

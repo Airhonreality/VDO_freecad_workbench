@@ -25,6 +25,11 @@
 
 from typing import Any
 
+from freecad.vdo.core.aperturas import (
+    necesita_bisel_45,
+    necesita_descuento_gola,
+    necesita_expulsor_magnetico,
+)
 from freecad.vdo.core.cajon_calculo_bloques import (
     _ancho_exterior,
     _fachada_base,
@@ -38,11 +43,6 @@ from freecad.vdo.core.cajon_calculo_bloques import (
 )
 from freecad.vdo.core.cajon_correderas import (
     CAJA_METALICA,
-)
-from freecad.vdo.core.facade_contract import (
-    necesita_bisel_45,
-    necesita_descuento_gola,
-    necesita_expulsor_magnetico,
 )
 
 

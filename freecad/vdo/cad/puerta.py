@@ -7,11 +7,13 @@
 from typing import Any
 
 from freecad.vdo.cad.propiedades import add_common_props
-from freecad.vdo.core.facade_contract import (
+from freecad.vdo.core.aperturas import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
+)
+from freecad.vdo.core.facade_contract import (
     HOLGURA_PERIMETRAL_DEFAULT,
     MONTAJE_PARCHE,
     SOLAPE_PARCHE_NOMINAL,

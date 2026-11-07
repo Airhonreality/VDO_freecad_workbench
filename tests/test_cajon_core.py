@@ -47,8 +47,15 @@ from freecad.vdo.cad.cajon_geometria import (
     _corte_pin_trasero,
     _corte_ranura_piso,
 )
-from freecad.vdo.core import facade_contract as FC
 from freecad.vdo.core import hardware_hub as H
+from freecad.vdo.core.aperturas import (
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_PUSH_OPEN,
+    APERTURA_TIRADOR,
+    OPERACION_CANTO_45,
+    OPERACION_CANTO_GOLA,
+)
 from freecad.vdo.core.cajon_calculo import calcular_despiece
 from freecad.vdo.core.cajon_correderas import (
     CAJA_METALICA,
@@ -56,12 +63,6 @@ from freecad.vdo.core.cajon_correderas import (
     CORREDERA_TELESCOPICA,
     listar_marcas,
     obtener_marca,
-)
-from freecad.vdo.core.facade_contract import (
-    APERTURA_45_GRADOS,
-    APERTURA_GOLA,
-    APERTURA_PUSH_OPEN,
-    APERTURA_TIRADOR,
 )
 from tests.soporte.freecad_falso import instalado
 
@@ -167,7 +168,7 @@ class TestFacadeContractIntegracion(unittest.TestCase):
         self.assertAlmostEqual(d["fachada"]["alto"], 186.0)
         self.assertTrue(d["fachada"]["necesita_gola"])
         self.assertEqual(d["fachada"]["operacion_canto"],
-                         FC.OPERACION_CANTO_GOLA)
+                         OPERACION_CANTO_GOLA)
 
     def test_inglete_45_conserva_altura(self):
         """APERTURA_45_GRADOS conserva la altura y usa BISEL_45."""
@@ -178,7 +179,7 @@ class TestFacadeContractIntegracion(unittest.TestCase):
         self.assertAlmostEqual(d["fachada"]["alto"], 221.0)  # sin descuento
         self.assertTrue(d["fachada"]["necesita_bisel_45"])
         self.assertEqual(d["fachada"]["operacion_canto"],
-                         FC.OPERACION_CANTO_45)
+                         OPERACION_CANTO_45)
 
     def test_push_open_conserva_altura(self):
         """APERTURA_PUSH_OPEN conserva la altura."""
@@ -207,7 +208,7 @@ class TestFacadeContractIntegracion(unittest.TestCase):
                       sistema_apertura=APERTURA_45_GRADOS)
         d = calcular_despiece(config)
         cantos = d["fachada"]["cantos"]
-        self.assertEqual(cantos["norte"], FC.OPERACION_CANTO_45)
+        self.assertEqual(cantos["norte"], OPERACION_CANTO_45)
         self.assertEqual(cantos["sur"], "FX")
 
         config2 = dict(CONFIG_BASE,
@@ -215,7 +216,7 @@ class TestFacadeContractIntegracion(unittest.TestCase):
                        sistema_apertura=APERTURA_GOLA)
         d2 = calcular_despiece(config2)
         cantos2 = d2["fachada"]["cantos"]
-        self.assertEqual(cantos2["norte"], FC.OPERACION_CANTO_GOLA)
+        self.assertEqual(cantos2["norte"], OPERACION_CANTO_GOLA)
 
 # ---------------------------------------------------------------------
 # Tests de integración con hardware_hub

@@ -6,8 +6,9 @@
 
 from typing import Any
 
+from freecad.vdo.core.aperturas import necesita_bisel_45
 from freecad.vdo.core.cajon_correderas import CAJA_METALICA, CORREDERA_OCULTA, CORREDERA_TELESCOPICA
-from freecad.vdo.core.facade_contract import BISEL_45_ANGULO_DEFAULT, necesita_bisel_45
+from freecad.vdo.core.facade_contract import BISEL_45_ANGULO_DEFAULT
 from freecad.vdo.core.helpers import _get_app, _get_part
 
 

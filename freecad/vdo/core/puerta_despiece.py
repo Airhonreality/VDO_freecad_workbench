@@ -11,16 +11,20 @@ from collections.abc import Sequence
 from typing import Any, Final
 
 from freecad.vdo.core.aperturas import (
-    SISTEMAS_APERTURA,
-    normalizar_apertura,
-)
-from freecad.vdo.core.facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
-    BISEL_45_ANGULO_DEFAULT,
     GOLA_DESCUENTO_ALTURA_DEFAULT,
+    SISTEMAS_APERTURA,
+    necesita_bisel_45,
+    necesita_cantos_45,
+    necesita_descuento_gola,
+    necesita_expulsor_magnetico,
+    normalizar_apertura,
+)
+from freecad.vdo.core.facade_contract import (
+    BISEL_45_ANGULO_DEFAULT,
     HOLGURA_PERIMETRAL_DEFAULT,
     MONTAJE_EMBEBIDA,
     MONTAJE_PARCHE,
@@ -29,10 +33,6 @@ from freecad.vdo.core.facade_contract import (
     aplicar_sistema_apertura,
     calcular_fachada_base,
     cantos_por_sistema_apertura,
-    necesita_bisel_45,
-    necesita_cantos_45,
-    necesita_descuento_gola,
-    necesita_expulsor_magnetico,
 )
 from freecad.vdo.core.hardware_hub import (
     calculate_sliding_doors,

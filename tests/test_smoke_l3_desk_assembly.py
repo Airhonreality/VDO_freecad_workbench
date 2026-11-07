@@ -44,6 +44,15 @@ from freecad.vdo.core import layout_matriz as VL_MATRIZ
 from freecad.vdo.core import layout_modelo as VL_MODELO
 from freecad.vdo.core import layout_resolucion as VL_RESOLUCION
 from freecad.vdo.core import module_props as VMOD
+from freecad.vdo.core.aperturas import (
+    APERTURA_45_GRADOS,
+    APERTURA_GOLA,
+    APERTURA_TIRADOR,
+    GOLA_DESCUENTO_ALTURA_DEFAULT,
+    OPERACION_CANTO_GOLA,
+    necesita_bisel_45,
+    necesita_descuento_gola,
+)
 from freecad.vdo.core.errores import VDOError
 from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from tests.soporte.requisitos import requiere_freecad
@@ -270,7 +279,7 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
                 "grosor_fachada": VD.CAJON_FACHADA_DEFAULT,
                 "marca": "blum_tandem",
                 "tipo_corredera": VCD.CORREDERA_OCULTA,
-                "sistema_apertura": VFC.APERTURA_TIRADOR,
+                "sistema_apertura": APERTURA_TIRADOR,
                 "material_ref": "melamina_standar",
             }
             obj = VCJ.make_cajon(self.doc, cfg)
@@ -346,16 +355,16 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
             except _ERRORES_ESPERADOS:
                 ok_45 = False
             record(cadena, "2.3a Conmutación a frentes con corte 45° (makeChamfer)",
-                   ok_45 and VFC.necesita_bisel_45(VFC.APERTURA_45_GRADOS),
-                   f"bisel_45 requerido={VFC.necesita_bisel_45(VFC.APERTURA_45_GRADOS)}")
+                   ok_45 and necesita_bisel_45(APERTURA_45_GRADOS),
+                   f"bisel_45 requerido={necesita_bisel_45(APERTURA_45_GRADOS)}")
 
             # 2b) Frentes con rebaje Gola (-35 mm de altura)
             h_gola, op_gola = VFC.aplicar_sistema_apertura(
-                h_f, VFC.APERTURA_GOLA,
-                descuento_gola=VFC.GOLA_DESCUENTO_ALTURA_DEFAULT)
+                h_f, APERTURA_GOLA,
+                descuento_gola=GOLA_DESCUENTO_ALTURA_DEFAULT)
             ok_gola = (abs(h_gola - (h_f - 35.0)) < 1e-6
-                       and op_gola == VFC.OPERACION_CANTO_GOLA
-                       and VFC.necesita_descuento_gola(VFC.APERTURA_GOLA))
+                       and op_gola == OPERACION_CANTO_GOLA
+                       and necesita_descuento_gola(APERTURA_GOLA))
             record(cadena, "2.3b Conmutación a frentes con rebaje Gola (-35 mm)",
                    ok_gola,
                    f"h={h_gola:.1f} (nominal {h_f:.1f}-35), op={op_gola}")
