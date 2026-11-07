@@ -17,7 +17,7 @@ from freecad.vdo.core.layout_matriz import Layout  # noqa: E402 - guarda de impo
 from freecad.vdo.ui.qt import seleccionar_por_dato  # noqa: E402 - mismo orden de importes que el resto de este archivo
 
 try:
-    from freecad.vdo.ui import export_cutting_list as E
+    from freecad.vdo.cad import lista_corte as E
     from freecad.vdo.ui.coco_unified_task import CocoUnifiedTaskPanel
 except ImportError:
     E = None

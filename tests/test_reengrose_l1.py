@@ -13,7 +13,7 @@ from freecad.vdo.cad import panel as P
 from freecad.vdo.core import reengrose_modificador as R_MODIFICADOR
 
 try:
-    from freecad.vdo.ui import export_cutting_list as E
+    from freecad.vdo.cad import lista_corte as E
 except ImportError:
     E = None  # sin FreeCADGui el módulo se niega a cargar; los tests que lo usan lo exigen
 

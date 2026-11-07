@@ -46,7 +46,7 @@ from freecad.vdo.core.errores import VDOError  # noqa: E402 - rutas, entorno o m
 from tests.soporte.requisitos import requiere_freecad  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
 try:
-    from freecad.vdo.ui import export_cutting_list as VEL
+    from freecad.vdo.cad import lista_corte as VEL
 except ImportError:
     VEL = None  # sin FreeCADGui el módulo se niega a cargar; la clase lo exige
 
@@ -156,8 +156,8 @@ REQUIRED_API = [
     ("freecad.vdo.cad.panel", "PanelFeature"),
     ("freecad.vdo.core.reengrose_modificador", "aplicar_a_objeto"),
     ("freecad.vdo.core.reengrose_geometria", "calcular_geometria_reengrose"),
-    ("freecad.vdo.ui.export_cutting_list", "extraer_piezas_del_documento"),
-    ("freecad.vdo.ui.export_cutting_list", "generar_csv_opencutlist"),
+    ("freecad.vdo.cad.lista_corte", "extraer_piezas_del_documento"),
+    ("freecad.vdo.cad.lista_corte", "generar_csv_opencutlist"),
     ("freecad.vdo.cad.propiedades", "add_common_props"),
     ("freecad.vdo.cad.colocacion", "aplicar_rotacion"),
     ("freecad.vdo.cad.propiedades", "rotacion_z"),

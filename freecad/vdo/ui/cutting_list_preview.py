@@ -21,9 +21,10 @@ try:
 except ImportError:
     raise ImportError("Este módulo requiere FreeCAD con GUI") from None
 
+from freecad.vdo.cad import lista_corte
 from freecad.vdo.core import manifest
 from freecad.vdo.qt_compat import QtCore, QtWidgets
-from freecad.vdo.ui import export_cutting_list, qt, tema
+from freecad.vdo.ui import qt, tema
 
 _LOG = logging.getLogger(__name__)
 
@@ -192,7 +193,7 @@ class CuttingListPreviewPanel:
 
         # Generar CSV
         try:
-            ok = export_cutting_list.generar_csv_opencutlist(
+            ok = lista_corte.generar_csv_opencutlist(
                 self.piezas, output_file)
         except Exception as e:
             App.Console.PrintMessage(f"❌ Error generando CSV: {e}")
@@ -247,7 +248,7 @@ def main(modo="todo"):
 
     # Extraer piezas según modo (lógica unificada: paneles + contenedores)
     App.Console.PrintMessage(f"\n📦 Extrayendo piezas (modo: {modo})...")
-    piezas = export_cutting_list.extraer_piezas_del_documento(modo)
+    piezas = lista_corte.extraer_piezas_del_documento(modo)
 
     if not piezas:
         App.Console.PrintMessage("❌ No se encontraron piezas de melamina para exportar")
