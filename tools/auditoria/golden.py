@@ -117,7 +117,7 @@ MODULOS_FUNCIONES: dict[str, list[str]] = {
 # origen ya no tiene la función. Cada entrada debe quedar registrada en
 # docs/metricas/goldens_origen.md y en docs/DEUDA_TECNICA.md.
 RELOCALIZADAS: dict[tuple[str, str], str] = {
-    ("module_props", "rotacion_z"): "freecad.vdo.core.helpers",
+    ("module_props", "rotacion_z"): "freecad.vdo.cad.propiedades",
     ("coco_spaces", "generar_divisiones_matriz"): "freecad.vdo.cad.coco_espacios",
 }
 

@@ -723,3 +723,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-96
 
 - **D-96: registro de deuda corregido con mediciones; plan de fase UI en docs/PLAN_FASE_UI_Y_REDUCCION.md.** Sin cambio de código ni de pruebas. Cambios en `docs/DEUDA_TECNICA.md`: B1, B2, B5 (confirmado), B7 (c), J2 pasan a RESUELTO con su commit o D-xx; B7 (a) y (b), B8 y C1 se re-miden como abiertos; D1 queda en 0 en código y 32 ocurrencias hex en docs; A2 con `QLabel(` 109 y `addWidget` 239 (2026-11-06).
+
+## D-97
+
+- D-97: duplicados B7a y B7b resueltos: una definición cada uno. Revertir: git revert de los dos commits.

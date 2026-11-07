@@ -7,14 +7,14 @@
 from typing import Any
 
 from freecad.vdo.cad.geometria import forma_ref
-from freecad.vdo.cad.propiedades import add_common_props
+from freecad.vdo.cad.propiedades import add_common_props, rotacion_z
 from freecad.vdo.core import defaults as VDO_D
 from freecad.vdo.core import module_props as VDO_MOD
 from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
 from freecad.vdo.core.finish import CANTOS_VALIDOS
-from freecad.vdo.core.helpers import _get_app, _get_part, rotacion_z
+from freecad.vdo.core.helpers import _get_app, _get_part
 from freecad.vdo.core.panel_core import (
     _validar_orientacion,
     expresiones_orientacion,

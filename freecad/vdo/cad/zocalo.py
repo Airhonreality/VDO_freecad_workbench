@@ -7,10 +7,10 @@
 import json
 from typing import Any
 
-from freecad.vdo.cad.propiedades import add_common_props
+from freecad.vdo.cad.propiedades import add_common_props, rotacion_z
 from freecad.vdo.core import defaults as VDO_D
 from freecad.vdo.core import module_props as VDO_MOD
-from freecad.vdo.core.helpers import _get_app, _get_part, rotacion_z
+from freecad.vdo.core.helpers import _get_app, _get_part
 from freecad.vdo.core.zocalo_core import calcular_geometria_zocalo
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 

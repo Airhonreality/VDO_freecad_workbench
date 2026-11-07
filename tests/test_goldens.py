@@ -121,7 +121,7 @@ class GoldensEstructuraTests(unittest.TestCase):
 
 # Módulos cuyo golden necesita FreeCAD al ejecutarse, aunque su import sea puro.
 # Medido en el nivel 1 del runner: module_props falla con "False is not true" sin FreeCAD real.
-# Causa: rotacion_z reubicada a core/helpers construye App.Rotation en tiempo de llamada.
+# Causa: rotacion_z (cad/propiedades) construye App.Rotation en tiempo de llamada.
 SOLO_NIVEL_2_POR_EJECUCION = {"module_props"}
 
 # Goldens que comparan formas OCC grabadas con FreeCAD real. Requisito declarado (D-30).

@@ -59,7 +59,7 @@ def add_common_props(obj: Any) -> None:
 
 
 def rotacion_z(grados: float) -> Any:  # App.Rotation de FreeCAD sin tipo
-    """Crea una rotación Z a partir de grados.
+    """Crea una rotación Z a partir de grados (única definición, D-97).
 
     En FreeCAD 1.1.4 el constructor `App.Rotation(axis, angle)` recibe el
     ángulo en GRADOS; `Rotation.Angle` sí devuelve radianes.

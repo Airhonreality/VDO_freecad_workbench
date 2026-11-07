@@ -30,11 +30,11 @@ from freecad.vdo.cad.coco_shell import (
     aplicar_carcasa,
     preparar_carcasa,
 )
-from freecad.vdo.cad.propiedades import add_common_props
+from freecad.vdo.cad.propiedades import add_common_props, rotacion_z
 from freecad.vdo.core import defaults as VDO_D
 from freecad.vdo.core import frames as VDO_FR
 from freecad.vdo.core import module_props as VDO_MOD
-from freecad.vdo.core.helpers import _get_app, rotacion_z
+from freecad.vdo.core.helpers import _get_app
 from freecad.vdo.datos.valores import MELAMINA_ESTANDAR
 
 
