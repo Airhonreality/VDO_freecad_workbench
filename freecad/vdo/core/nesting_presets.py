@@ -1,16 +1,19 @@
 # =====================================================================
 # nesting_presets.py
 # Gestor de presets de tableros para nesting.
-# Nota: FreeCAD se importa de forma perezosa dentro de las funciones que
-# lo necesitan (no a nivel de modulo), para que este modulo pueda
-# importarse sin FreeCAD (R2).
+# Nota: FreeCAD se importa de forma opcional al cargar el modulo. Sin FreeCAD
+# el modulo carga igualmente (R2): los presets se leen de DEFAULT_PRESETS y no
+# se puede guardar nada (no hay preferencias donde escribir).
 # =====================================================================
 
 import json
 from collections.abc import Mapping
 from typing import Any, Final
 
-from freecad.vdo.core.helpers import _get_app
+try:
+    import FreeCAD as _FreeCAD
+except ImportError:
+    _FreeCAD = None
 
 # Presets estándar del taller (2440x1830 es estándar EN)
 DEFAULT_PRESETS: Final[Mapping[str, Mapping[str, int]]] = {
@@ -24,6 +27,20 @@ DEFAULT_PRESETS: Final[Mapping[str, Mapping[str, int]]] = {
 PREFS_PATH: Final = "User parameter:BaseApp/Preferences/NestingWorkbench/VDO"
 
 
+def _mensaje(texto: str) -> None:
+    """Escribe en la consola de FreeCAD si está disponible."""
+    if _FreeCAD is not None:
+        _FreeCAD.Console.PrintMessage(texto)
+
+
+def _exigir_prefs() -> Any:
+    """Preferencias para escribir. Sin FreeCAD no hay dónde guardar: error explícito."""
+    prefs = NestingPresetManager.get_prefs()
+    if prefs is None:
+        raise RuntimeError("FreeCAD no disponible: no se pueden guardar presets")
+    return prefs
+
+
 class NestingPresetManager:
     """Gestiona presets de tableros para nesting."""
 
@@ -31,13 +48,17 @@ class NestingPresetManager:
 
     @staticmethod
     def get_prefs() -> Any:  # ParamGet de FreeCAD: sin tipos
-        """Obtiene el objeto de preferencias."""
-        return _get_app().ParamGet(NestingPresetManager.PREFS_PATH)
+        """Obtiene el objeto de preferencias, o None si FreeCAD no está disponible."""
+        if _FreeCAD is None:
+            return None
+        return _FreeCAD.ParamGet(NestingPresetManager.PREFS_PATH)
 
     @staticmethod
     def initialize_defaults() -> None:
-        """Inicializa presets por defecto si no existen."""
+        """Inicializa presets por defecto si no existen (no hace nada sin FreeCAD)."""
         prefs = NestingPresetManager.get_prefs()
+        if prefs is None:
+            return
 
         if prefs.GetString("Presets", "") == "":
             presets_data = {
@@ -45,13 +66,14 @@ class NestingPresetManager:
                 "presets": DEFAULT_PRESETS
             }
             prefs.SetString("Presets", json.dumps(presets_data))
-            _get_app().Console.PrintMessage(
-                "[VDO Nesting] Presets inicializados con valores por defecto")
+            _mensaje("[VDO Nesting] Presets inicializados con valores por defecto")
 
     @staticmethod
     def get_all_presets() -> dict[str, Any]:
-        """Obtiene todos los presets disponibles."""
+        """Obtiene todos los presets disponibles (los por defecto si no hay FreeCAD)."""
         prefs = NestingPresetManager.get_prefs()
+        if prefs is None:
+            return dict(DEFAULT_PRESETS)
         presets_json = prefs.GetString("Presets", "{}")
         data = json.loads(presets_json)
         presets: dict[str, Any] = data.get("presets", DEFAULT_PRESETS)
@@ -67,7 +89,7 @@ class NestingPresetManager:
     def save_preset(name: str, width: int, height: int,
                     spacing: int = 15, thickness: int = 3) -> None:
         """Guarda un nuevo preset."""
-        prefs = NestingPresetManager.get_prefs()
+        prefs = _exigir_prefs()
         presets_json = prefs.GetString("Presets", "{}")
         data = json.loads(presets_json)
 
@@ -87,13 +109,12 @@ class NestingPresetManager:
             data["list"].append(name)
 
         prefs.SetString("Presets", json.dumps(data))
-        _get_app().Console.PrintMessage(
-            f"[VDO Nesting] Preset '{name}' guardado")
+        _mensaje(f"[VDO Nesting] Preset '{name}' guardado")
 
     @staticmethod
     def delete_preset(name: str) -> bool:
         """Elimina un preset."""
-        prefs = NestingPresetManager.get_prefs()
+        prefs = _exigir_prefs()
         presets_json = prefs.GetString("Presets", "{}")
         data = json.loads(presets_json)
 
@@ -104,8 +125,7 @@ class NestingPresetManager:
             data["list"].remove(name)
 
         prefs.SetString("Presets", json.dumps(data))
-        _get_app().Console.PrintMessage(
-            f"[VDO Nesting] Preset '{name}' eliminado")
+        _mensaje(f"[VDO Nesting] Preset '{name}' eliminado")
         return True
 
     @staticmethod
@@ -120,8 +140,7 @@ class NestingPresetManager:
         presets = NestingPresetManager.get_all_presets()
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(presets, f, indent=2, ensure_ascii=False)
-        _get_app().Console.PrintMessage(
-            f"[VDO Nesting] Presets exportados a: {filepath}")
+        _mensaje(f"[VDO Nesting] Presets exportados a: {filepath}")
 
     @staticmethod
     def import_presets_from_json(filepath: str) -> bool:
@@ -129,7 +148,7 @@ class NestingPresetManager:
         with open(filepath, encoding='utf-8') as f:
             new_presets = json.load(f)
 
-        prefs = NestingPresetManager.get_prefs()
+        prefs = _exigir_prefs()
         existing_data = json.loads(prefs.GetString("Presets", "{}"))
 
         if "presets" not in existing_data:
@@ -143,10 +162,9 @@ class NestingPresetManager:
                 existing_data["list"].append(name)
 
         prefs.SetString("Presets", json.dumps(existing_data))
-        _get_app().Console.PrintMessage(
-            f"[VDO Nesting] Presets importados desde: {filepath}")
+        _mensaje(f"[VDO Nesting] Presets importados desde: {filepath}")
         return True
 
 
-# Inicializar presets al cargar el módulo
+# Inicializar presets al cargar el módulo (no hace nada sin FreeCAD)
 NestingPresetManager.initialize_defaults()
