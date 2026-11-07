@@ -131,3 +131,4 @@ Fecha objetivo original "M5": ya pasó y los ciclos siguen.
 | F7 y F10 (funciones largas de la UI) | `minimalismo.py tamano`: 0 funciones de más de 60 líneas, 0 de más de 100 (M10). |
 | F14 (anotaciones de tipo) | Parcial: `mypy` a cero en `core/` y `cad/` (C4). |
 | `sys` sin importar en `tests/test_single_dock_convergence.py` | Hay `import sys` en el estado actual. |
+| D4 (`nesting_presets` escribe preferencias al importarse) | D4 resuelto (D-100, commit `8619878`). Importar el módulo ya no escribe; la inicialización es explícita al abrir el workflow de Nesting. |
