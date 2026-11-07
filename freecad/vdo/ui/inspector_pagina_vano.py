@@ -4,7 +4,7 @@ from freecad.vdo.core import hardware_hub as HH
 from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_estilos
 from freecad.vdo.ui.inspector_paginas import _float_seguro, _PaginaBase
 
 
@@ -37,12 +37,12 @@ class PaginaVano(_PaginaBase):
         # Banner de Luz Libre Real
         # -------------------------------------------------------------
         self.banner_luz = QtWidgets.QFrame()
-        tema.aplicar_estilo(self.banner_luz, tema.ESTILO_BANNER_LUZ)
+        tema_estilos.aplicar_estilo(self.banner_luz, tema_estilos.ESTILO_BANNER_LUZ)
         lay_b = QtWidgets.QHBoxLayout(self.banner_luz)
         lay_b.setContentsMargins(6, 3, 6, 3)
 
         self.lbl_luz_banner = QtWidgets.QLabel(f"📐 <b>LUZ LIBRE NETA:</b> 564 {SIMBOLO_MULTIPLICAR} 280 {SIMBOLO_MULTIPLICAR} 550 mm")
-        tema.aplicar_estilo(self.lbl_luz_banner, tema.ESTILO_LUZ_10PX)
+        tema_estilos.aplicar_estilo(self.lbl_luz_banner, tema_estilos.ESTILO_LUZ_10PX)
         lay_b.addWidget(self.lbl_luz_banner)
         self.contenedor_datos.addWidget(self.banner_luz)
 
@@ -51,7 +51,7 @@ class PaginaVano(_PaginaBase):
         # Dock Táctil de Habitantes (4 Acciones)
         # -------------------------------------------------------------
         lbl_dock = QtWidgets.QLabel("HABITANTE DEL VANO:")
-        tema.aplicar_estilo(lbl_dock, tema.ESTILO_TITULO_DOCK)
+        tema_estilos.aplicar_estilo(lbl_dock, tema_estilos.ESTILO_TITULO_DOCK)
         self.contenedor_datos.addWidget(lbl_dock)
 
         fila_dock = QtWidgets.QHBoxLayout()
@@ -70,7 +70,7 @@ class PaginaVano(_PaginaBase):
             btn.setToolTip(tip)
             btn.setFixedHeight(26)
             btn.setCursor(QtCore.Qt.PointingHandCursor)
-            tema.aplicar_estilo(btn, tema.ESTILO_BOTON_VANO)
+            tema_estilos.aplicar_estilo(btn, tema_estilos.ESTILO_BOTON_VANO)
             btn.clicked.connect(lambda _, k=key: self._on_dock_clicked(k))
             fila_dock.addWidget(btn)
             self.btn_dock[key] = btn
@@ -83,7 +83,7 @@ class PaginaVano(_PaginaBase):
         # Sub-paneles Contextuales del Dock
         # -------------------------------------------------------------
         self.stack_dock = QtWidgets.QStackedWidget()
-        tema.aplicar_estilo(self.stack_dock, tema.ESTILO_FONDO_DOCK)
+        tema_estilos.aplicar_estilo(self.stack_dock, tema_estilos.ESTILO_FONDO_DOCK)
         self._crear_panel_subdivision()
         self._crear_panel_cajon()
         self._crear_panel_puerta()
@@ -122,7 +122,7 @@ class PaginaVano(_PaginaBase):
         lay_sub.addLayout(f_modo)
 
         btn_ap_sub = QtWidgets.QPushButton("➗ Aplicar Subdivisión")
-        tema.aplicar_estilo(btn_ap_sub, tema.ESTILO_BOTON_ACENTO_10PX)
+        tema_estilos.aplicar_estilo(btn_ap_sub, tema_estilos.ESTILO_BOTON_ACENTO_10PX)
         btn_ap_sub.clicked.connect(self._aplicar_subdivision)
         lay_sub.addWidget(btn_ap_sub)
         self.stack_dock.addWidget(panel_subdiv)
@@ -143,11 +143,11 @@ class PaginaVano(_PaginaBase):
             lay.addLayout(fila)
 
         lbl_hub = QtWidgets.QLabel(texto_hub)
-        tema.aplicar_estilo(lbl_hub, tema.ESTILO_HUB_9PX)
+        tema_estilos.aplicar_estilo(lbl_hub, tema_estilos.ESTILO_HUB_9PX)
         lay.addWidget(lbl_hub)
 
         btn_ap = QtWidgets.QPushButton(texto_boton)
-        tema.aplicar_estilo(btn_ap, tema.ESTILO_BOTON_ACENTO_10PX)
+        tema_estilos.aplicar_estilo(btn_ap, tema_estilos.ESTILO_BOTON_ACENTO_10PX)
         btn_ap.clicked.connect(al_pulsar)
         lay.addWidget(btn_ap)
         self.stack_dock.addWidget(panel)
@@ -190,10 +190,10 @@ class PaginaVano(_PaginaBase):
         lay_vac = QtWidgets.QVBoxLayout(panel_vacio)
         lay_vac.setContentsMargins(6, 6, 6, 6)
         lbl_v = QtWidgets.QLabel("🔲 Vano libre de almacenamiento útil")
-        tema.aplicar_estilo(lbl_v, tema.ESTILO_ATENUADO_9PX)
+        tema_estilos.aplicar_estilo(lbl_v, tema_estilos.ESTILO_ATENUADO_9PX)
         lay_vac.addWidget(lbl_v)
         btn_ap_vac = QtWidgets.QPushButton("Restaurar Vacío")
-        tema.aplicar_estilo(btn_ap_vac, tema.ESTILO_BOTON_VACIO)
+        tema_estilos.aplicar_estilo(btn_ap_vac, tema_estilos.ESTILO_BOTON_VACIO)
         btn_ap_vac.clicked.connect(self._aplicar_vacio)
         lay_vac.addWidget(btn_ap_vac)
         self.stack_dock.addWidget(panel_vacio)

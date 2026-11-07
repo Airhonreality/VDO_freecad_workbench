@@ -5,7 +5,7 @@
 
 from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.qt_compat import QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_estilos
 
 
 # ---------------------------------------------------------------------
@@ -20,13 +20,13 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
 
     def __init__(self, parent=None):
         super().__init__("Cabecera de pieza", parent)
-        tema.aplicar_estilo(self, tema.ESTILO_PUERTA_GRUPO_CABECERA)
+        tema_estilos.aplicar_estilo(self, tema_estilos.ESTILO_PUERTA_GRUPO_CABECERA)
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(8, 4, 8, 4)
         layout.setSpacing(2)
 
         self.lbl_id = QtWidgets.QLabel("Sin selección")
-        tema.aplicar_estilo(self.lbl_id, tema.ESTILO_NEGRITA)
+        tema_estilos.aplicar_estilo(self.lbl_id, tema_estilos.ESTILO_NEGRITA)
         self.lbl_id.setWordWrap(True)
         layout.addWidget(self.lbl_id)
 
@@ -37,7 +37,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
 
         self.lbl_cantos = QtWidgets.QLabel("")
         self.lbl_cantos.setWordWrap(True)
-        tema.aplicar_estilo(self.lbl_cantos, tema.ESTILO_ETIQUETA_OSCURA_COMPACTA)
+        tema_estilos.aplicar_estilo(self.lbl_cantos, tema_estilos.ESTILO_ETIQUETA_OSCURA_COMPACTA)
         layout.addWidget(self.lbl_cantos)
 
     def set_pieza(self, identificador, largo, ancho, espesor, cantos=None):

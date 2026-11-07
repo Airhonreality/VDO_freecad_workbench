@@ -8,7 +8,7 @@ import FreeCAD as App
 from freecad.vdo.cad.documento import recalcular
 from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_estilos
 from freecad.vdo.ui.inspector_paginas import (
     _float_seguro,
     _PaginaBase,
@@ -37,7 +37,7 @@ class PaginaPieza(_PaginaBase):
 
         self.header = QtWidgets.QGroupBox("PanelHeader")
         self.header.setObjectName("grpPanelHeader")
-        tema.aplicar_estilo(self.header, tema.ESTILO_GRUPO_PANEL_HEADER)
+        tema_estilos.aplicar_estilo(self.header, tema_estilos.ESTILO_GRUPO_PANEL_HEADER)
         h_layout = QtWidgets.QGridLayout(self.header)
         h_layout.setContentsMargins(8, 14, 8, 8)
         h_layout.setHorizontalSpacing(8)
@@ -53,9 +53,9 @@ class PaginaPieza(_PaginaBase):
 
         def _fila(r, clave, lbl_widget, label_txt):
             k = QtWidgets.QLabel(label_txt)
-            tema.aplicar_estilo(k, tema.ESTILO_CLAVE_10PX)
+            tema_estilos.aplicar_estilo(k, tema_estilos.ESTILO_CLAVE_10PX)
             v = lbl_widget
-            tema.aplicar_estilo(v, tema.ESTILO_VALOR_10PX_NEGRITA)
+            tema_estilos.aplicar_estilo(v, tema_estilos.ESTILO_VALOR_10PX_NEGRITA)
             h_layout.addWidget(k, r, 0)
             h_layout.addWidget(v, r, 1)
 

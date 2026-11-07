@@ -2,7 +2,7 @@
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.qt_compat import QtCore, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema, tema_estilos
 from freecad.vdo.ui.box_canvas import _VDOConcentricCenterCanvas
 from freecad.vdo.ui.box_constantes import (
     ENCUENTRO_LABELS,
@@ -158,7 +158,7 @@ class BoxConstruccionMixin:
     def _construir_centro(self, grid, vbox):
         # CENTRO: Canvas Concéntrico (Calibre 1px Canto + Calibre 3px Tiras + Brecha Offset)
         self.center_box = QtWidgets.QFrame()
-        tema.aplicar_estilo(self.center_box, tema.ESTILO_FONDO_TRANSPARENTE)
+        tema_estilos.aplicar_estilo(self.center_box, tema_estilos.ESTILO_FONDO_TRANSPARENTE)
         c_layout = QtWidgets.QVBoxLayout(self.center_box)
         c_layout.setContentsMargins(0, 0, 0, 0)
         c_layout.setAlignment(QtCore.Qt.AlignCenter)
@@ -191,7 +191,7 @@ class BoxConstruccionMixin:
         # 3. Selector Gestáltico de Margen
         bar_margenes = QtWidgets.QHBoxLayout()
         self.lbl_margen_tag = QtWidgets.QLabel("Margen:")
-        tema.aplicar_estilo(self.lbl_margen_tag, tema.ESTILO_ACENTO_NEGRITA)
+        tema_estilos.aplicar_estilo(self.lbl_margen_tag, tema_estilos.ESTILO_ACENTO_NEGRITA)
         bar_margenes.addWidget(self.lbl_margen_tag)
 
         self.btn_margenes = {}
@@ -241,7 +241,7 @@ class BoxConstruccionMixin:
         # 5. Chips de Acceso Rápido para Offset de Taller
         bar_quick_offset = QtWidgets.QHBoxLayout()
         lbl_quick = QtWidgets.QLabel("Offset rápido:")
-        tema.aplicar_estilo(lbl_quick, tema.ESTILO_ATENUADO_10PX)
+        tema_estilos.aplicar_estilo(lbl_quick, tema_estilos.ESTILO_ATENUADO_10PX)
         bar_quick_offset.addWidget(lbl_quick)
 
         self.chips_offset = [
@@ -271,7 +271,7 @@ class BoxConstruccionMixin:
         # 6. Resumen compacto
         self.lbl_resumen = QtWidgets.QLabel("Sin reengrose.")
         self.lbl_resumen.setWordWrap(True)
-        tema.aplicar_estilo(self.lbl_resumen, tema.ESTILO_RESUMEN_CAJA)
+        tema_estilos.aplicar_estilo(self.lbl_resumen, tema_estilos.ESTILO_RESUMEN_CAJA)
         vbox.addWidget(self.lbl_resumen)
 
     def resizeEvent(self, event):

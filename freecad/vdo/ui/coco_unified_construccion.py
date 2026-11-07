@@ -18,7 +18,7 @@ from freecad.vdo.datos.formularios import (
     COCO_ROTACION_PASOS,
 )
 from freecad.vdo.qt_compat import QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_estilos
 from freecad.vdo.ui.chassis_widget import VDOChassisControllerWidget
 from freecad.vdo.ui.coco_construccion_widgets import DivisionesEditor
 from freecad.vdo.ui.form_builder import FormBuilder
@@ -160,7 +160,7 @@ class CocoUnifiedConstruccionMixin:
         layout_resumen = QtWidgets.QVBoxLayout(grupo_resumen)
         self.lbl_resumen = QtWidgets.QLabel("Sin configurar.")
         self.lbl_resumen.setWordWrap(True)
-        tema.aplicar_estilo(self.lbl_resumen, tema.ESTILO_RESUMEN_CLARO)
+        tema_estilos.aplicar_estilo(self.lbl_resumen, tema_estilos.ESTILO_RESUMEN_CLARO)
         layout_resumen.addWidget(self.lbl_resumen)
         main_layout.addWidget(grupo_resumen)
 

@@ -19,7 +19,7 @@ from freecad.vdo.core import optimizer_core_resumen as resumen_core
 from freecad.vdo.core import optimizer_lista_corte as lista
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui import optimizer_view as view
-from freecad.vdo.ui import tema, tema_colores
+from freecad.vdo.ui import tema_colores, tema_estilos
 
 
 class OptimizerDialog(QtWidgets.QDialog):
@@ -63,7 +63,7 @@ class OptimizerDialog(QtWidgets.QDialog):
         row.addWidget(btn)
         form.addLayout(row)
         self.lbl_csv = QtWidgets.QLabel("—")
-        tema.aplicar_estilo(self.lbl_csv, tema.ESTILO_GRIS_11PX)
+        tema_estilos.aplicar_estilo(self.lbl_csv, tema_estilos.ESTILO_GRIS_11PX)
         form.addWidget(self.lbl_csv)
         self.edit_csv.textChanged.connect(self._inspect_csv)
 
@@ -93,7 +93,7 @@ class OptimizerDialog(QtWidgets.QDialog):
 
         form.addStretch(1)
         self.btn_run = QtWidgets.QPushButton("▶  Optimizar")
-        tema.aplicar_estilo(self.btn_run, tema.ESTILO_BOTON_AZUL_PAD)
+        tema_estilos.aplicar_estilo(self.btn_run, tema_estilos.ESTILO_BOTON_AZUL_PAD)
         self.btn_run.clicked.connect(self._run)
         form.addWidget(self.btn_run)
 
@@ -124,7 +124,7 @@ class OptimizerDialog(QtWidgets.QDialog):
         scroll = QtWidgets.QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setWidget(self.view)
-        tema.aplicar_estilo(scroll, tema.ESTILO_FONDO_CLARO)
+        tema_estilos.aplicar_estilo(scroll, tema_estilos.ESTILO_FONDO_CLARO)
         split.addWidget(scroll)
         split.setStretchFactor(1, 1)
 
@@ -133,7 +133,7 @@ class OptimizerDialog(QtWidgets.QDialog):
         # ---- Barra inferior: sumatoria ----
         bar = QtWidgets.QHBoxLayout()
         self.lbl_summary = QtWidgets.QLabel("Sin optimizar.")
-        tema.aplicar_estilo(self.lbl_summary, tema.ESTILO_TEXTO_12PX)
+        tema_estilos.aplicar_estilo(self.lbl_summary, tema_estilos.ESTILO_TEXTO_12PX)
         bar.addWidget(self.lbl_summary, 1)
         btn_close = QtWidgets.QPushButton("Cerrar")
         btn_close.clicked.connect(self.accept)

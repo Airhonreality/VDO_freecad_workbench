@@ -7,18 +7,18 @@
 
 from freecad.vdo.datos.formularios import PUERTA_BLOQUES
 from freecad.vdo.qt_compat import QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_estilos
 from freecad.vdo.ui.form_builder import FormBuilder
 from freecad.vdo.ui.puerta_task_cabecera import PanelHeaderWidget
 
 # Estilos de presentacion referenciados por clave desde la especificacion.
 ESTILOS_PUERTA = {
-    "texto": tema.ESTILO_PUERTA_TEXTO,
-    "info": tema.ESTILO_ETIQUETA_OSCURA,
-    "piston": tema.ESTILO_PUERTA_PISTON,
+    "texto": tema_estilos.ESTILO_PUERTA_TEXTO,
+    "info": tema_estilos.ESTILO_ETIQUETA_OSCURA,
+    "piston": tema_estilos.ESTILO_PUERTA_PISTON,
 }
 
-ESTILO_GRUPO_PUERTA = tema.ESTILO_PUERTA_GRUPO
+ESTILO_GRUPO_PUERTA = tema_estilos.ESTILO_PUERTA_GRUPO
 
 
 class PuertaTaskConstruccionMixin:
@@ -26,7 +26,7 @@ class PuertaTaskConstruccionMixin:
 
     def _crear_widget(self):
         widget = QtWidgets.QWidget()
-        tema.aplicar_estilo(widget, tema.ESTILO_PUERTA_FONDO)
+        tema_estilos.aplicar_estilo(widget, tema_estilos.ESTILO_PUERTA_FONDO)
         main = QtWidgets.QVBoxLayout(widget)
         main.setContentsMargins(8, 8, 8, 8)
         main.setSpacing(8)

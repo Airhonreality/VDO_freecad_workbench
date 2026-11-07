@@ -8,7 +8,7 @@
 from freecad.vdo.core.cajon_correderas import listar_marcas
 from freecad.vdo.datos.formularios import cajon_bloques
 from freecad.vdo.qt_compat import QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_estilos
 from freecad.vdo.ui.cajon_task_cabecera import PanelHeaderWidget
 from freecad.vdo.ui.form_builder import FormBuilder
 
@@ -21,7 +21,7 @@ class CajonTaskConstruccionMixin:
     # -----------------------------------------------------------------
     def _crear_widget(self):
         widget = QtWidgets.QWidget()
-        tema.aplicar_estilo(widget, tema.ESTILO_CAJON)
+        tema_estilos.aplicar_estilo(widget, tema_estilos.ESTILO_CAJON)
 
         main_layout = QtWidgets.QVBoxLayout(widget)
         main_layout.setContentsMargins(12, 12, 12, 12)

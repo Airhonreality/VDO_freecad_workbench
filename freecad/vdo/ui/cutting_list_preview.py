@@ -25,7 +25,7 @@ from freecad.vdo.cad import lista_corte
 from freecad.vdo.core import manifest
 from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.qt_compat import QtCore, QtWidgets
-from freecad.vdo.ui import qt, tema
+from freecad.vdo.ui import qt, tema_estilos
 
 _LOG = logging.getLogger(__name__)
 
@@ -55,7 +55,7 @@ class CuttingListPreviewPanel:
         # Header
         header = QtWidgets.QLabel()
         header.setText(f"<b>📊 Preview Exportación - {modo.upper()}</b>")
-        tema.aplicar_estilo(header, tema.ESTILO_TITULO_14PX_OSCURO)
+        tema_estilos.aplicar_estilo(header, tema_estilos.ESTILO_TITULO_14PX_OSCURO)
         layout.addWidget(header)
 
         # Info
@@ -108,7 +108,7 @@ class CuttingListPreviewPanel:
         # Resumen
         resumen = QtWidgets.QLabel()
         resumen.setText(f"<b>💰 Costo total material: ${total_costo:.2f}</b>")
-        tema.aplicar_estilo(resumen, tema.ESTILO_RESUMEN_AZUL)
+        tema_estilos.aplicar_estilo(resumen, tema_estilos.ESTILO_RESUMEN_AZUL)
         layout.addWidget(resumen)
 
         # Instrucciones
@@ -125,7 +125,7 @@ class CuttingListPreviewPanel:
     def _crear_botones(self, layout):
         qt.crear_botonera_cancelar_aceptar(
             layout, "❌ Cancelar", self.cancelar,
-            "✅ Aceptar - Generar CSV", tema.ESTILO_BOTON_EXITO, self.aceptar)
+            "✅ Aceptar - Generar CSV", tema_estilos.ESTILO_BOTON_EXITO, self.aceptar)
 
     def colorear_piezas(self):
         """Colorea en rojo las piezas que se van a exportar"""

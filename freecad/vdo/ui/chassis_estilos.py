@@ -1,4 +1,4 @@
-from freecad.vdo.ui import tema, tema_colores
+from freecad.vdo.ui import tema_colores, tema_estilos
 
 """Hoja de estilos del chasis. Parte de ui/chassis_widget.py (M7, D-45)."""
 
@@ -121,4 +121,4 @@ class ChassisEstilosMixin:
     """Mixin de VDOChassisControllerWidget: hoja de estilos. Sin cambios de codigo (D-45)."""
 
     def _aplicar_estilos(self):
-        tema.aplicar_estilo(self, _ESTILO_CHASSIS)
+        tema_estilos.aplicar_estilo(self, _ESTILO_CHASSIS)

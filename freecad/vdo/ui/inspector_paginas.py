@@ -11,7 +11,7 @@ from freecad.vdo.core import hardware_hub as HH
 from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_estilos
 from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
 
 _LOG = logging.getLogger(__name__)
@@ -99,7 +99,7 @@ class _PaginaBase(QtWidgets.QWidget):
         self.scroll = QtWidgets.QScrollArea(self)
         self.scroll.setWidgetResizable(True)
         self.scroll.setFrameShape(QtWidgets.QFrame.NoFrame)
-        tema.aplicar_estilo(self.scroll, tema.ESTILO_SCROLL_TRANSPARENTE)
+        tema_estilos.aplicar_estilo(self.scroll, tema_estilos.ESTILO_SCROLL_TRANSPARENTE)
 
         self.contenido = QtWidgets.QWidget()
         self._layout = QtWidgets.QVBoxLayout(self.contenido)
@@ -108,7 +108,7 @@ class _PaginaBase(QtWidgets.QWidget):
 
         self.lbl_titulo = QtWidgets.QLabel(titulo)
         self.lbl_titulo.setObjectName("lblPaginaTitulo")
-        tema.aplicar_estilo(self.lbl_titulo, tema.ESTILO_PAGINA_TITULO)
+        tema_estilos.aplicar_estilo(self.lbl_titulo, tema_estilos.ESTILO_PAGINA_TITULO)
         self._layout.addWidget(self.lbl_titulo)
 
         self.contenedor_datos = QtWidgets.QVBoxLayout()
@@ -123,9 +123,9 @@ class _PaginaBase(QtWidgets.QWidget):
         fila = QtWidgets.QHBoxLayout()
         lbl_key = QtWidgets.QLabel(etiqueta)
         lbl_key.setFixedWidth(110)
-        tema.aplicar_estilo(lbl_key, tema.ESTILO_CLAVE_10PX)
+        tema_estilos.aplicar_estilo(lbl_key, tema_estilos.ESTILO_CLAVE_10PX)
         lbl_val = QtWidgets.QLabel(str(valor))
-        tema.aplicar_estilo(lbl_val, tema.ESTILO_VALOR_11PX_NEGRITA)
+        tema_estilos.aplicar_estilo(lbl_val, tema_estilos.ESTILO_VALOR_11PX_NEGRITA)
         fila.addWidget(lbl_key)
         fila.addWidget(lbl_val)
         fila.addStretch()
@@ -232,7 +232,7 @@ class PaginaCierre(_PaginaBase):
         self.lbl_alto_frente = self._add_dato("Alto frente", "—")
 
         self.grp_herraje = QtWidgets.QGroupBox("Herrajes y Fresado CNC (Capa H)")
-        tema.aplicar_estilo(self.grp_herraje, tema.ESTILO_GRUPO_HERRAJE)
+        tema_estilos.aplicar_estilo(self.grp_herraje, tema_estilos.ESTILO_GRUPO_HERRAJE)
         lay_h = QtWidgets.QVBoxLayout(self.grp_herraje)
         lay_h.setContentsMargins(6, 6, 6, 6)
         lay_h.setSpacing(3)
@@ -241,9 +241,9 @@ class PaginaCierre(_PaginaBase):
             f = QtWidgets.QHBoxLayout()
             k = QtWidgets.QLabel(etiqueta)
             k.setFixedWidth(90)
-            tema.aplicar_estilo(k, tema.ESTILO_CLAVE_10PX)
+            tema_estilos.aplicar_estilo(k, tema_estilos.ESTILO_CLAVE_10PX)
             v = QtWidgets.QLabel("—")
-            tema.aplicar_estilo(v, tema.ESTILO_VALOR_BLANCO_10PX)
+            tema_estilos.aplicar_estilo(v, tema_estilos.ESTILO_VALOR_BLANCO_10PX)
             f.addWidget(k)
             f.addWidget(v, 1)
             lay_h.addLayout(f)

@@ -20,7 +20,7 @@ import sys
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui import tema, tema_colores
+from freecad.vdo.ui import tema_colores, tema_estilos
 from freecad.vdo.ui.box_config import BoxConfigMixin
 from freecad.vdo.ui.box_constantes import ESQUINAS
 from freecad.vdo.ui.box_construccion import BoxConstruccionMixin
@@ -54,7 +54,7 @@ class VDOBoxControllerWidget(
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("VDOBoxRoot")
-        tema.aplicar_estilo(self, ESTILO_WIDGET)
+        tema_estilos.aplicar_estilo(self, ESTILO_WIDGET)
 
         self._cargando = False
         self._margen_seleccionado = "frente"

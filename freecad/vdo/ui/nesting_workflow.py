@@ -24,7 +24,7 @@ except ImportError:
 
 from freecad.vdo.core import nesting_presets as presets_mgr
 from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
-from freecad.vdo.ui import qt, tema
+from freecad.vdo.ui import qt, tema_estilos
 
 _presets_inicializados = False
 
@@ -144,7 +144,7 @@ class NestingDialog(QtWidgets.QDialog):
     def _construir_botones(self, layout):
         qt.crear_botonera_cancelar_aceptar(
             layout, "❌ Cancelar", self.reject,
-            "▶️ Ejecutar Nesting", tema.ESTILO_BOTON_AZUL, self.execute_nesting)
+            "▶️ Ejecutar Nesting", tema_estilos.ESTILO_BOTON_AZUL, self.execute_nesting)
 
     def _populate_presets(self):
         """Carga presets disponibles."""

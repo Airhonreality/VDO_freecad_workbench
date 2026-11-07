@@ -1,7 +1,7 @@
 """Construccion de interfaz y senales del chasis. Parte de ui/chassis_widget.py (M7, D-45)."""
 
 from freecad.vdo.qt_compat import QtCore, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema, tema_estilos
 from freecad.vdo.ui.chassis_canvas import _VDOChassisCrossSectionCanvas
 from freecad.vdo.ui.chassis_constantes import (
     TIPOS_FONDO,
@@ -59,13 +59,13 @@ class ChassisConstruccionMixin:
         barra_sup.setSpacing(6)
 
         lbl_titulo = QtWidgets.QLabel("🪵 <b>CHASIS PARAMÉTRICO</b>")
-        tema.aplicar_estilo(lbl_titulo, tema.ESTILO_TITULO_ESPACIADO)
+        tema_estilos.aplicar_estilo(lbl_titulo, tema_estilos.ESTILO_TITULO_ESPACIADO)
         barra_sup.addWidget(lbl_titulo)
 
         barra_sup.addStretch()
 
         lbl_arq = QtWidgets.QLabel("Arquetipos:")
-        tema.aplicar_estilo(lbl_arq, tema.ESTILO_ARQUITECTURA_9PX)
+        tema_estilos.aplicar_estilo(lbl_arq, tema_estilos.ESTILO_ARQUITECTURA_9PX)
         barra_sup.addWidget(lbl_arq)
 
         self.btn_arquetipos = {}
@@ -158,7 +158,7 @@ class ChassisConstruccionMixin:
         layout_fondo.setSpacing(6)
 
         lbl_fondo = QtWidgets.QLabel("Fondo Trasero:")
-        tema.aplicar_estilo(lbl_fondo, tema.ESTILO_ETIQUETA_10PX)
+        tema_estilos.aplicar_estilo(lbl_fondo, tema_estilos.ESTILO_ETIQUETA_10PX)
         layout_fondo.addWidget(lbl_fondo)
 
         self.combo_fondo = QtWidgets.QComboBox()
@@ -241,7 +241,7 @@ class ChassisConstruccionMixin:
         lay_ps.addWidget(self.spin_despegue_piso)
 
         lbl_camar = QtWidgets.QLabel("🧗 Herrajes Camar / Scilm")
-        tema.aplicar_estilo(lbl_camar, tema.ESTILO_AVISO_10PX)
+        tema_estilos.aplicar_estilo(lbl_camar, tema_estilos.ESTILO_AVISO_10PX)
         lay_ps.addWidget(lbl_camar)
         self.stack_params.addWidget(page_susp)
 

@@ -8,7 +8,7 @@ from freecad.vdo.core import defaults as VDO_D
 from freecad.vdo.core.layout_matriz import Layout
 from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y
 from freecad.vdo.qt_compat import QtCore, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_estilos
 from freecad.vdo.ui.coco_arbol_widgets import ArbolDivisionesMixin
 from freecad.vdo.ui.coco_edicion_widgets import EdicionDivisionesMixin
 from freecad.vdo.ui.coco_inspector_widgets import InspectorDivisionesMixin, PanelHeaderWidget
@@ -133,7 +133,7 @@ class DivisionesEditor(
 
         self.lbl_nominal_neto = QtWidgets.QLabel("")
         self.lbl_nominal_neto.setWordWrap(True)
-        tema.aplicar_estilo(self.lbl_nominal_neto, tema.ESTILO_ETIQUETA_OSCURA)
+        tema_estilos.aplicar_estilo(self.lbl_nominal_neto, tema_estilos.ESTILO_ETIQUETA_OSCURA)
         self.form.addRow(self.lbl_nominal_neto)
 
         self.lbl_invasores = QtWidgets.QLabel("")
@@ -176,7 +176,7 @@ class DivisionesEditor(
     def _construir_selector_contenido(self):
         # ---- Selector unificado de contenido de vano ----
         self.lbl_contenido = QtWidgets.QLabel("Contenido del vano:")
-        tema.aplicar_estilo(self.lbl_contenido, tema.ESTILO_NEGRITA_TEXTO)
+        tema_estilos.aplicar_estilo(self.lbl_contenido, tema_estilos.ESTILO_NEGRITA_TEXTO)
         self.form.addRow(self.lbl_contenido)
 
         self.combo_contenido = QtWidgets.QComboBox()
@@ -238,7 +238,7 @@ class DivisionesEditor(
 
         self.lbl_puerta_info = QtWidgets.QLabel(
             "Se creará al aceptar el Task Panel del COCO.")
-        tema.aplicar_estilo(self.lbl_puerta_info, tema.ESTILO_ATENUADO_ITALICA)
+        tema_estilos.aplicar_estilo(self.lbl_puerta_info, tema_estilos.ESTILO_ATENUADO_ITALICA)
         puerta_layout.addRow(self.lbl_puerta_info)
         self.form.addRow(self.widget_puerta)
         self.widget_puerta.setVisible(False)
@@ -267,7 +267,7 @@ class DivisionesEditor(
 
         self.lbl_cajon_info = QtWidgets.QLabel(
             "Se creará al aceptar el Task Panel del COCO.")
-        tema.aplicar_estilo(self.lbl_cajon_info, tema.ESTILO_ATENUADO_ITALICA)
+        tema_estilos.aplicar_estilo(self.lbl_cajon_info, tema_estilos.ESTILO_ATENUADO_ITALICA)
         cajon_layout.addRow(self.lbl_cajon_info)
         self.form.addRow(self.widget_cajon)
         self.widget_cajon.setVisible(False)
@@ -275,7 +275,7 @@ class DivisionesEditor(
     def _construir_aviso_reengrose(self):
         self.lbl_aviso = QtWidgets.QLabel("")
         self.lbl_aviso.setWordWrap(True)
-        tema.aplicar_estilo(self.lbl_aviso, tema.ESTILO_ERROR_TEXTO)
+        tema_estilos.aplicar_estilo(self.lbl_aviso, tema_estilos.ESTILO_ERROR_TEXTO)
         self.form.addRow(self.lbl_aviso)
 
         self.grupo_reengrose = self._crear_grupo_reengrose()
@@ -287,7 +287,7 @@ class DivisionesEditor(
 
         self.lbl_resumen = QtWidgets.QLabel("")
         self.lbl_resumen.setWordWrap(True)
-        tema.aplicar_estilo(self.lbl_resumen, tema.ESTILO_RESUMEN_MONO)
+        tema_estilos.aplicar_estilo(self.lbl_resumen, tema_estilos.ESTILO_RESUMEN_MONO)
         layout.addWidget(self.lbl_resumen)
 
     def _conectar_senales(self):

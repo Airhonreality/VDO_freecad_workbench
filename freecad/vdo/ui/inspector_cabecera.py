@@ -2,7 +2,7 @@
 
 from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR, SIMBOLO_SEPARADOR
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_estilos
 from freecad.vdo.ui.inspector_paginas import PAGE_CHASIS, PAGE_CIERRE, PAGE_PIEZA, PAGE_VANO
 from freecad.vdo.ui.qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
@@ -57,7 +57,7 @@ class _BreadcrumbBar(QtWidgets.QWidget):
         self.lbl_inicio = QtWidgets.QLabel("🏠 Mueble")
         self.lbl_inicio.setObjectName("lblBreadcrumbRoot")
         self.lbl_inicio.setCursor(QtCore.Qt.PointingHandCursor)
-        tema.aplicar_estilo(self.lbl_inicio, tema.ESTILO_BREADCRUMB_RAIZ)
+        tema_estilos.aplicar_estilo(self.lbl_inicio, tema_estilos.ESTILO_BREADCRUMB_RAIZ)
         self.lbl_inicio.mousePressEvent = lambda _e: self.sigNivelClickeado.emit("mueble")
         self.layout.addWidget(self.lbl_inicio)
 
@@ -76,14 +76,14 @@ class _BreadcrumbBar(QtWidgets.QWidget):
 
         for label, clave in niveles:
             sep = QtWidgets.QLabel(f" {SIMBOLO_SEPARADOR} ")
-            tema.aplicar_estilo(sep, tema.ESTILO_SEPARADOR)
+            tema_estilos.aplicar_estilo(sep, tema_estilos.ESTILO_SEPARADOR)
             self.layout.insertWidget(self.layout.count() - 1, sep)
 
             lbl = QtWidgets.QLabel(label)
             lbl.setObjectName(f"lblBreadcrumb_{clave}")
             lbl.setCursor(QtCore.Qt.PointingHandCursor)
             activo_es = (clave == activo)
-            tema.aplicar_estilo(lbl, tema.estilo_breadcrumb(clave, activo_es))
+            tema_estilos.aplicar_estilo(lbl, tema_estilos.estilo_breadcrumb(clave, activo_es))
             lbl.mousePressEvent = (
                 lambda _e, c=clave: self.sigNivelClickeado.emit(c))
             self.layout.insertWidget(self.layout.count() - 1, lbl)
@@ -113,7 +113,7 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
     def _estilizar(self):
         self.setObjectName("VDOMicroHeader")
         self.setFixedHeight(30)
-        tema.aplicar_estilo(self, tema.ESTILO_MICRO_HEADER)
+        tema_estilos.aplicar_estilo(self, tema_estilos.ESTILO_MICRO_HEADER)
 
     def _crear_layout(self):
         layout = QtWidgets.QHBoxLayout(self)
@@ -123,7 +123,7 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
 
     def _crear_icono(self, layout):
         icon_lbl = QtWidgets.QLabel("📐")
-        tema.aplicar_estilo(icon_lbl, tema.ESTILO_TEXTO_11PX)
+        tema_estilos.aplicar_estilo(icon_lbl, tema_estilos.ESTILO_TEXTO_11PX)
         layout.addWidget(icon_lbl)
 
     def _crear_medidas(self, layout):

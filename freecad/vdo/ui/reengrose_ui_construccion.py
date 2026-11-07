@@ -3,7 +3,7 @@
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
 from freecad.vdo.core.simbolos import SIMBOLO_MENOS
 from freecad.vdo.qt_compat import QtCore, QtWidgets
-from freecad.vdo.ui import tema, tema_colores
+from freecad.vdo.ui import tema_colores, tema_estilos
 from freecad.vdo.ui.qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.reengrose_ui_constantes import LABEL_BORDE, LABEL_ESQUINA, OPCIONES_ESQUINA
 from freecad.vdo.ui.reengrose_ui_preview import VDOBoardPreview
@@ -126,7 +126,7 @@ class ReengroseConstruccionMixin:
             f'<span style="color:{tema_colores.COLOR_CATEGORIA_INGLETE}">■</span> Inglete &nbsp;'
             f'<span style="color:{tema_colores.COLOR_CATEGORIA_MARCO}">■</span> Marco')
         leyenda.setTextFormat(QtCore.Qt.RichText)
-        tema.aplicar_estilo(leyenda, tema.ESTILO_TEXTO_10PX)
+        tema_estilos.aplicar_estilo(leyenda, tema_estilos.ESTILO_TEXTO_10PX)
         caja_preview.addWidget(leyenda)
 
         panel = QtWidgets.QHBoxLayout()
@@ -179,7 +179,7 @@ class ReengroseConstruccionMixin:
     def _construir_etiqueta_resumen(self, grid):
         self.lbl_resumen = QtWidgets.QLabel("Sin reengrose.")
         self.lbl_resumen.setWordWrap(True)
-        tema.aplicar_estilo(self.lbl_resumen, tema.ESTILO_ETIQUETA_OSCURA_5PX)
+        tema_estilos.aplicar_estilo(self.lbl_resumen, tema_estilos.ESTILO_ETIQUETA_OSCURA_5PX)
         grid.addWidget(self.lbl_resumen, 10, 0, 1, 4)
 
     def _construir_rejilla_esquinas(self):
@@ -187,7 +187,7 @@ class ReengroseConstruccionMixin:
         grid.setHorizontalSpacing(8)
         grid.setVerticalSpacing(4)
         titulo = QtWidgets.QLabel("Encuentro de esquinas")
-        tema.aplicar_estilo(titulo, tema.ESTILO_NEGRITA)
+        tema_estilos.aplicar_estilo(titulo, tema_estilos.ESTILO_NEGRITA)
         grid.addWidget(titulo, 0, 0, 1, 2)
         posiciones = {
             "frente_izquierda": (1, 0),
@@ -201,7 +201,7 @@ class ReengroseConstruccionMixin:
             caja = QtWidgets.QVBoxLayout()
             caja.setSpacing(1)
             etiqueta = QtWidgets.QLabel(LABEL_ESQUINA[esquina])
-            tema.aplicar_estilo(etiqueta, tema.ESTILO_TEXTO_11PX)
+            tema_estilos.aplicar_estilo(etiqueta, tema_estilos.ESTILO_TEXTO_11PX)
             combo = QtWidgets.QComboBox()
             for texto, dato in OPCIONES_ESQUINA:
                 combo.addItem(texto, dato)
@@ -227,7 +227,7 @@ class ReengroseConstruccionMixin:
         grid.addWidget(QtWidgets.QLabel(""), 0, 0)
         for col, borde in enumerate(VDO_RE_MODELO.BORDES_2D, start=1):
             etiqueta = QtWidgets.QLabel(LABEL_BORDE[borde])
-            tema.aplicar_estilo(etiqueta, tema.ESTILO_NEGRITA_11PX)
+            tema_estilos.aplicar_estilo(etiqueta, tema_estilos.ESTILO_NEGRITA_11PX)
             grid.addWidget(etiqueta, 0, col)
             ancho = self._spin(70.0)
             ancho.setMaximumWidth(96)
@@ -268,9 +268,9 @@ class ReengroseConstruccionMixin:
             border: 1px solid {tema_colores.FONDO3};
         }}
         """
-        tema.aplicar_estilo(self.btn_all, estilo)
+        tema_estilos.aplicar_estilo(self.btn_all, estilo)
         for btn in self.btn_borde.values():
-            tema.aplicar_estilo(btn, estilo)
+            tema_estilos.aplicar_estilo(btn, estilo)
 
     def _conectar(self):
         self.chk_activo.toggled.connect(self._on_activo)

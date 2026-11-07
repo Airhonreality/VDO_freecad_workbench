@@ -7,7 +7,7 @@
 import logging
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_estilos
 
 _LOG = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ def crear_botonera_cancelar_aceptar(layout, texto_cancelar, al_cancelar,
     btn_layout.addWidget(btn_cancelar)
 
     btn_aceptar = QtWidgets.QPushButton(texto_aceptar)
-    tema.aplicar_estilo(btn_aceptar, estilo_aceptar)
+    tema_estilos.aplicar_estilo(btn_aceptar, estilo_aceptar)
     btn_aceptar.clicked.connect(al_aceptar)
     btn_layout.addWidget(btn_aceptar)
 

@@ -22,7 +22,7 @@ from freecad.vdo.core.facade_contract import (
 from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y
 from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
 from freecad.vdo.qt_compat import QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_estilos
 from freecad.vdo.ui.qt import seleccionar_por_dato
 
 _LOG = logging.getLogger(__name__)
@@ -41,7 +41,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
         layout.setSpacing(2)
 
         self.lbl_nombre = QtWidgets.QLabel("Sin selección")
-        tema.aplicar_estilo(self.lbl_nombre, tema.ESTILO_NEGRITA)
+        tema_estilos.aplicar_estilo(self.lbl_nombre, tema_estilos.ESTILO_NEGRITA)
         self.lbl_nombre.setWordWrap(True)
         layout.addWidget(self.lbl_nombre)
 
@@ -52,7 +52,7 @@ class PanelHeaderWidget(QtWidgets.QGroupBox):
 
         self.lbl_cantos = QtWidgets.QLabel("")
         self.lbl_cantos.setWordWrap(True)
-        tema.aplicar_estilo(self.lbl_cantos, tema.ESTILO_ETIQUETA_OSCURA_COMPACTA)
+        tema_estilos.aplicar_estilo(self.lbl_cantos, tema_estilos.ESTILO_ETIQUETA_OSCURA_COMPACTA)
         layout.addWidget(self.lbl_cantos)
 
         self._cantos_labels = {}

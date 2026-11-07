@@ -12,7 +12,7 @@ import os
 from freecad.vdo.core import hardware_hub as H
 from freecad.vdo.core.simbolos import SIMBOLO_MAS
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui import tema, tema_colores
+from freecad.vdo.ui import tema_colores, tema_estilos
 from freecad.vdo.ui.hardware_constantes import CLAVES_BOOL, ETIQUETAS, FAMILIAS
 from freecad.vdo.ui.hardware_resumen import _resumen_cotas
 from freecad.vdo.ui.qt import VDO_DoubleSpinBox
@@ -73,7 +73,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
         # ---- Selector de familia ----
         fila_familia = QtWidgets.QHBoxLayout()
         lbl = QtWidgets.QLabel("Familia de herraje:")
-        tema.aplicar_estilo(lbl, tema.ESTILO_NEGRITA_TEXTO)
+        tema_estilos.aplicar_estilo(lbl, tema_estilos.ESTILO_NEGRITA_TEXTO)
         fila_familia.addWidget(lbl)
         self.combo_familia = QtWidgets.QComboBox()
         for clave, etiqueta in FAMILIAS.items():
@@ -105,14 +105,14 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
     def _crear_panel_detalle(self, layout):
         # ---- Panel de detalle / edicion tecnica ----
         grupo = QtWidgets.QGroupBox("Inspeccion y edicion tecnica (parametros_tecnicos)")
-        tema.aplicar_estilo(grupo, tema.ESTILO_GRUPO_CABECERA)
+        tema_estilos.aplicar_estilo(grupo, tema_estilos.ESTILO_GRUPO_CABECERA)
         self.grid_detalle = QtWidgets.QGridLayout(grupo)
         self.grid_detalle.setHorizontalSpacing(12)
         self.grid_detalle.setVerticalSpacing(6)
         layout.addWidget(grupo, stretch=1)
 
         self.lbl_sku_detalle = QtWidgets.QLabel("SKU: -")
-        tema.aplicar_estilo(self.lbl_sku_detalle, tema.ESTILO_TITULO_ACENTO_12PX)
+        tema_estilos.aplicar_estilo(self.lbl_sku_detalle, tema_estilos.ESTILO_TITULO_ACENTO_12PX)
         self.grid_detalle.addWidget(self.lbl_sku_detalle, 0, 0, 1, 4)
 
         self.scroll_detalle = QtWidgets.QScrollArea()
@@ -190,7 +190,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
         QGroupBox {{ color: {tema_colores.TEXTO}; }}
         QScrollArea {{ background-color: {tema_colores.COLOR_FONDO_BOTON}; border: none; }}
         """
-        tema.aplicar_estilo(self, estilo)
+        tema_estilos.aplicar_estilo(self, estilo)
 
     def _conectar_senales(self):
         self.combo_familia.currentIndexChanged.connect(self._cargar_familia_actual)
@@ -267,7 +267,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
 
         if not self._editores:
             lbl = QtWidgets.QLabel("(Sin parámetros técnicos registrados)")
-            tema.aplicar_estilo(lbl, tema.ESTILO_ATENUADO_ITALICA)
+            tema_estilos.aplicar_estilo(lbl, tema_estilos.ESTILO_ATENUADO_ITALICA)
             self.form_detalle.addRow(lbl)
 
         self._cargando = False

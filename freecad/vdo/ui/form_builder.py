@@ -31,7 +31,7 @@
 # =====================================================================
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_estilos
 from freecad.vdo.ui.qt import VDO_DoubleSpinBox, VDO_ExpressionInput
 
 # tipos cuyo widget es numerico (value(), interpretText())
@@ -197,14 +197,14 @@ class FormBuilder:
         if espec.get("ajustar_texto"):
             w.setWordWrap(True)
         if espec.get("estilo"):
-            tema.aplicar_estilo(w, estilos[espec["estilo"]])
+            tema_estilos.aplicar_estilo(w, estilos[espec["estilo"]])
         return campo, w
 
     def construir_grupo(self, main_layout, titulo, filas, estilos=None, estilo_grupo=None):
         """Crea un QGroupBox con una fila de rejilla por campo (etiqueta + widget)."""
         grupo = QtWidgets.QGroupBox(titulo)
         if estilo_grupo:
-            tema.aplicar_estilo(grupo, estilo_grupo)
+            tema_estilos.aplicar_estilo(grupo, estilo_grupo)
         grid = QtWidgets.QGridLayout(grupo)
         for fila, espec in enumerate(filas):
             campo, w = self._crear_campo_ui(espec, estilos)

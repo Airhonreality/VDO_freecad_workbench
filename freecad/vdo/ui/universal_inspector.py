@@ -19,7 +19,7 @@ import logging
 import FreeCAD as App
 
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
-from freecad.vdo.ui import tema
+from freecad.vdo.ui import tema_estilos
 from freecad.vdo.ui.inspector_acciones import AccionesInspectorMixin
 from freecad.vdo.ui.inspector_arbol import ArbolInspectorMixin
 from freecad.vdo.ui.inspector_cabecera import _BreadcrumbBar, _MicroHeaderWidget
@@ -127,7 +127,7 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
         # 4. QSplitter Horizontal Inferior
         self.splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal, self)
         self.splitter.setChildrenCollapsible(False)
-        tema.aplicar_estilo(self.splitter, tema.ESTILO_SPLITTER)
+        tema_estilos.aplicar_estilo(self.splitter, tema_estilos.ESTILO_SPLITTER)
 
     def _crear_arbol_maestro(self):
         # Panel Izquierdo: QTreeWidget Maestro
@@ -136,7 +136,7 @@ class VDOUniversalInspectorWidget(ArbolInspectorMixin, AccionesInspectorMixin, Q
         self.master_tree.setIndentation(12)
         self.master_tree.setUniformRowHeights(True)
         self.master_tree.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        tema.aplicar_estilo(self.master_tree, tema.ESTILO_ARBOL_MAESTRO)
+        tema_estilos.aplicar_estilo(self.master_tree, tema_estilos.ESTILO_ARBOL_MAESTRO)
         self.master_tree.itemClicked.connect(self._on_tree_item_clicked)
         self.splitter.addWidget(self.master_tree)
 
