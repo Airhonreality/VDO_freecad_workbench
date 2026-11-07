@@ -25,7 +25,8 @@ try:
 except NameError as exc:
     _LOG.debug("hardware_hub: __file__ no disponible, usa cwd: %s", exc)
     _HERE = os.getcwd()
-CATALOGO_PATH: Final[str] = os.path.join(_HERE, "vdo_hardware_catalog.json")
+CATALOGO_PATH: Final[str] = os.path.join(
+    os.path.dirname(_HERE), "datos", "hardware_catalog.json")
 
 _FAMILIAS: Final[tuple[str, ...]] = (
     "bisagra_cazoleta",
@@ -47,7 +48,7 @@ _DEFAULT_SLIDING_BY_MUEBLE: Final[Mapping[str, str]] = {
     "alacena": "DUC-AL-1535-MAD",
 }
 
-# Mapeo de claves del manifest (vdo_manifest.json → correderas_ocultas)
+# Mapeo de claves del manifest (datos/manifest.json → correderas_ocultas)
 # hacia los SKU del catálogo de Capa H. Permite consumir el catálogo desde
 # vdo_cajon_despiece sin romper configuraciones existentes.
 _MARCA_A_SKU: Final[Mapping[str, str]] = {

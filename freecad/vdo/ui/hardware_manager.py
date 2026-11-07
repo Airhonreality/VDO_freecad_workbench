@@ -1,7 +1,7 @@
 """Gestor visual de herrajes VDO (Capa H - UI).
 
 Diálogo flotante en PySide para inspeccionar y editar el catálogo de
-herrajes (vdo_hardware_catalog.json). 100% compatible con el tema oscuro
+herrajes (datos/hardware_catalog.json). 100% compatible con el tema oscuro
 de FreeCAD.
 """
 
@@ -338,7 +338,7 @@ class VDOHardwareManagerDialog(QtWidgets.QDialog):
             item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
             self.tabla.setItem(fila, 4, item)
         QtWidgets.QMessageBox.information(
-            self, "Guardado", "Cambios guardados en vdo_hardware_catalog.json")
+            self, "Guardado", "Cambios guardados en hardware_catalog.json")
 
     def _nuevo_herraje(self):
         clave = self._clave_familia_actual()

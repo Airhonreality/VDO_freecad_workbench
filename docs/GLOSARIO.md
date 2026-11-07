@@ -34,7 +34,7 @@ Estado de la fuente: `docs/ARQUITECTURA.md` (capas) y `docs/PLAN_MINIMALISMO_VDO
 | Plan | Dataclass inmutable que devuelve un cálculo de `core/`; `cad/` lo escribe en el documento. | `core/dto.py`, `cad/*.py` | confirmado |
 | Nesting | Colocación automática de piezas sobre el tablero. | `core/nesting.py`, `core/nesting_presets.py` | confirmado |
 | Lista de corte | Piezas agrupadas para el optimizador de corte. | `core/optimizer_lista_corte.py`, `core/optimizar_corte.py` | confirmado |
-| Catálogo de herrajes | Datos de bisagras, correderas y demás herrajes. Único origen: `core/vdo_hardware_catalog.json`. Consulta con `core/hardware_hub.py`. | `core/hardware_hub.py` | confirmado |
+| Catálogo de herrajes | Datos de bisagras, correderas y demás herrajes. Único origen: `datos/hardware_catalog.json`. Consulta con `core/hardware_hub.py`. | `core/hardware_hub.py` | confirmado |
 | Anclaje | Tipo de fijación de la pieza. Su tabla está en `datos/anclajes.json`. | `datos/anclajes.json`, `core/module_props.py` | confirmado |
 
 ## Interfaz y workbench

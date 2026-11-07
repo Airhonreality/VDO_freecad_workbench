@@ -13,12 +13,12 @@ from typing import Any
 
 
 def _obtener_json() -> Any:  # Any: JSON del manifiesto, sin esquema fijo en código
-    """Carga vdo_manifest.json directamente, sin caché de módulo."""
-    macro_dir = os.path.dirname(os.path.abspath(__file__))
-    json_path = os.path.join(macro_dir, "vdo_manifest.json")
+    """Carga datos/manifest.json directamente, sin caché de módulo."""
+    paquete = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    json_path = os.path.join(paquete, "datos", "manifest.json")
 
     if not os.path.exists(json_path):
-        raise FileNotFoundError(f"vdo_manifest.json no encontrado en: {json_path}")
+        raise FileNotFoundError(f"manifest.json no encontrado en: {json_path}")
 
     with open(json_path, encoding='utf-8') as f:
         return json.load(f)

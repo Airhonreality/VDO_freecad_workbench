@@ -80,7 +80,7 @@ def obtener_marca(marca_id: Any) -> Any:  # Any: definicion de marca leida del c
     """Devuelve la definición de una corredera oculta.
 
     Fuente primaria: catálogo de Capa H (hardware_hub).
-    Fallback graceful: vdo_manifest.json para configuraciones antiguas.
+    Fallback graceful: datos/manifest.json para configuraciones antiguas.
 
     Returns:
         dict con la misma forma que las entradas de

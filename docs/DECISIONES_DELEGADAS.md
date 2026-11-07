@@ -727,3 +727,7 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 ## D-97
 
 - D-97: duplicados B7a y B7b resueltos: una definición cada uno. Revertir: git revert de los dos commits.
+
+## D-98
+
+- D-98: B8 resuelto. Movidos: `freecad/vdo/core/vdo_hardware_catalog.json` -> `freecad/vdo/datos/hardware_catalog.json`; `freecad/vdo/core/vdo_manifest.json` -> `freecad/vdo/datos/manifest.json` (`git mv`, contenido idéntico byte a byte). Rutas actualizadas en: `core/hardware_hub.py` (`CATALOGO_PATH`, calculada desde `datos/` a partir de `core/`), `core/manifest.py` (`_obtener_json`, desde `__file__` hacia `datos/`), `ui/hardware_manager.py` (mensaje de guardado y docstring), y comentarios o docstrings en `core/defaults.py`, `core/cajon_correderas.py`, `cad/coco.py`, `ui/export_cutting_list.py`, y `docs/GLOSARIO.md`. Sin cambios en `pyproject.toml` (no lista datos) ni en `MANIFEST.in` (no existe). Verificado: carga de `CATALOGO_PATH` 4 familias y 11 SKU, igual que antes; `manifest` 12 claves raíz y 268 recursivas, igual que antes; nivel 1 `fallos=0`; nivel 2 `fallos=0`; ruff, mypy strict y `ARISTAS core->cad: 0`. Fuera de alcance, sin tocar: `tools/erp_sync/src/sync_pull_catalog.ts` escribe `tools/erp_sync/vdo_hardware_catalog.json` y ningún código del paquete lee ese fichero. Revertir: `git revert --no-edit <hash>` del commit de D-98.

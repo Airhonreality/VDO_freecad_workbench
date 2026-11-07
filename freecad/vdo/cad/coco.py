@@ -175,7 +175,7 @@ def make_coco(doc: Any, configuracion: dict[str, Any]) -> Any:  # Any: documento
         # La vista se adjunta desde app/ (F5/F6), no desde core.
         pass
 
-    # Aplicar configuración (valores por defecto desde vdo_manifest.json)
+    # Aplicar configuración (valores por defecto desde datos/manifest.json)
     obj.Alto = configuracion.get("alto", VDO_D.ALTO_DEFAULT)
     obj.Ancho = configuracion.get("ancho", VDO_D.ANCHO_DEFAULT)
     obj.FondoModulo = configuracion.get("fondo_modulo", VDO_D.FONDO_DEFAULT)

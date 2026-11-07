@@ -1,6 +1,6 @@
 # =====================================================================
 # defaults.py
-# Proveedor único de valores por defecto desde vdo_manifest.json.
+# Proveedor único de valores por defecto desde datos/manifest.json.
 # Sin estado mutable de módulo (M-08): el manifiesto se pasa como parámetro
 # o se carga fresco por llamada (sin caché en _MANIFEST).
 # =====================================================================

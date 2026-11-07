@@ -3,7 +3,7 @@
 export_cutting_list.py
 Exporta lista de corte desde modelo VDO a CSV para OpenCutList
 
-Sin hardcode: Lee especificaciones desde vdo_manifest.json
+Sin hardcode: Lee especificaciones desde datos/manifest.json
 Filtro: Solo exporta paneles de melamina (excluye muros, paneles BIM, etc)
 """
 
