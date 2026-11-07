@@ -8,20 +8,24 @@ más un Part::Box nativo, y valida:
   3. Seleccionar/deseleccionar repetidamente no produce bloqueos.
 """
 
+try:
+    from tests.soporte import entorno as _entorno
+except ImportError:
+    from soporte import entorno as _entorno
+
 import contextlib
 import importlib.util
 import os
 import sys
 import unittest
 
+from tests.soporte.requisitos import requiere_gui
+
 try:
     _AQUI = os.path.dirname(os.path.abspath(__file__))
 except NameError:
     _AQUI = os.getcwd()
-_RAIZ = os.path.dirname(_AQUI)
-
-from tests.soporte.requisitos import requiere_gui  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-
+_RAIZ = _entorno.RAIZ
 
 @requiere_gui
 class SelectionBridgeTests(unittest.TestCase):
@@ -188,7 +192,6 @@ class SelectionBridgeTests(unittest.TestCase):
         self.bridge.detach()
         self.bridge.detach()  # segundo desregistro no debe fallar
         self.assertFalse(self.bridge.esta_activo)
-
 
 if __name__ == "__main__":
     resultado = unittest.TextTestRunner(verbosity=2).run(

@@ -1,3 +1,5 @@
+
+
 # =============================================================================
 # tests/test_smoke_l3_desk_assembly.py
 # Smoke Test automatizado - Módulo Compuesto L3
@@ -14,38 +16,42 @@
 # Cadena 5: Lista de Materiales y Despiece Unificado (export_cutting_list)
 # =============================================================================
 
+try:
+    from tests.soporte import entorno as _entorno
+except ImportError:
+    from soporte import entorno as _entorno
+
 import json
 import math
 import os
 import sys
 import unittest
 
+import FreeCAD as App
+import Part
+
+from freecad.vdo.cad import cajon as VCJ
+from freecad.vdo.cad import coco as VCC
+from freecad.vdo.cad import panel as VP
+from freecad.vdo.cad.geometria import forma_ref as VRS
+from freecad.vdo.core import cajon_correderas as VCD
+from freecad.vdo.core import coco_spaces as VCS
+from freecad.vdo.core import defaults as VD
+from freecad.vdo.core import facade_contract as VFC
+from freecad.vdo.core import frames as VFR
+from freecad.vdo.core import hardware_hub as HH
+from freecad.vdo.core import layout_matriz as VL_MATRIZ
+from freecad.vdo.core import layout_modelo as VL_MODELO
+from freecad.vdo.core import layout_resolucion as VL_RESOLUCION
+from freecad.vdo.core import module_props as VMOD
+from freecad.vdo.core.errores import VDOError
 from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
+from tests.soporte.requisitos import requiere_freecad
 
 _MACRO_DIR = os.environ.get(
     "FREECAD_USER_MACRO_DIR",
     os.path.join(os.path.expanduser("~"), ".local", "share", "FreeCAD", "Macro"),
 )
-
-import FreeCAD as App  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-import Part  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-
-from freecad.vdo.cad import cajon as VCJ  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.cad import coco as VCC  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.cad import panel as VP  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.cad.geometria import forma_ref as VRS  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import cajon_correderas as VCD  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import coco_spaces as VCS  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import defaults as VD  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import facade_contract as VFC  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import frames as VFR  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import hardware_hub as HH  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import layout_matriz as VL_MATRIZ  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import layout_modelo as VL_MODELO  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import layout_resolucion as VL_RESOLUCION  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import module_props as VMOD  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core.errores import VDOError  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from tests.soporte.requisitos import requiere_freecad  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
 
 try:
     from freecad.vdo.cad import lista_corte as VEL
@@ -65,7 +71,6 @@ MATRIX = []
 
 ESP = 18.0  # espesor melamina
 
-
 def record(cadena, punto, ok, motivo, gap=False):
     resultado = "GAP" if gap else ("PASS" if ok else "FAIL")
     MATRIX.append({
@@ -76,10 +81,8 @@ def record(cadena, punto, ok, motivo, gap=False):
     })
     return ok
 
-
 def is_gap(mod, name):
     return not hasattr(mod, name)
-
 
 def top_edges(shape):
     """Aristas en la cara superior (Z max)."""
@@ -90,7 +93,6 @@ def top_edges(shape):
                for v in e.Vertexes):
             out.append(e)
     return out
-
 
 def front_top_edge(shape):
     """Arista superior-frente (Z max, Y min)."""
@@ -103,13 +105,11 @@ def front_top_edge(shape):
             out.append(e)
     return out
 
-
 def common_vol(a, b):
     try:
         return float(a.common(b).Volume)
     except _ERRORES_ESPERADOS:
         return float("nan")
-
 
 def stable_placement(translation, rot_z_deg=0.0):
     """Placement estable (evita App.Placement(App.Matrix) que falla en esta
@@ -117,7 +117,6 @@ def stable_placement(translation, rot_z_deg=0.0):
     return App.Placement(
         App.Vector(*translation),
         App.Rotation(App.Vector(0.0, 0.0, 1.0), float(rot_z_deg)))
-
 
 def world_box_from_panel(largo, ancho, espesor, translation, rot_z_deg=0.0):
     """Devuelve la caja del panel ya posicionada en coordenadas mundiales,
@@ -137,7 +136,6 @@ def world_box_from_panel(largo, ancho, espesor, translation, rot_z_deg=0.0):
     return Part.makeBox(max(xs) - min(xs), max(ys) - min(ys),
                         max(zs) - min(zs),
                         App.Vector(min(xs), min(ys), min(zs)))
-
 
 # =============================================================================
 # 0. Cobertura de API (detección de gaps)
@@ -172,7 +170,6 @@ REQUIRED_API = [
     ("freecad.vdo.core.facade_contract", "APERTURA_GOLA"),
     ("freecad.vdo.core.facade_contract", "APERTURA_45_GRADOS"),
 ]
-
 
 @requiere_freecad
 class TestSmokeL3DeskAssembly(unittest.TestCase):
@@ -554,7 +551,6 @@ class TestSmokeL3DeskAssembly(unittest.TestCase):
             raise AssertionError(
                 f"Smoke test L3 no superado: FAIL={fails}, GAP={gaps}")
 
-
 def main():
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(
         TestSmokeL3DeskAssembly)
@@ -562,7 +558,6 @@ def main():
     result = runner.run(suite)
     code = 0 if result.wasSuccessful() else 1
     sys.exit(code)
-
 
 if __name__ == "__main__":
     main()

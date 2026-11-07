@@ -46,7 +46,7 @@ sys.modules["freecad"] = pkg
 
 # Arranque del workbench: fase de consola (Init.py) y primer import del paquete.
 runpy.run_path(raiz + "/Init.py", run_name="Init")
-import freecad.vdo.core  # noqa: F401
+import freecad.vdo.core  # import por efecto del paquete; el nombre no se usa
 n_arranque = len(llamadas)
 
 logging.getLogger("freecad.vdo.core.x").warning("prueba")

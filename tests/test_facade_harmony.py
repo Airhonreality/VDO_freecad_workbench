@@ -1,3 +1,5 @@
+
+
 # =====================================================================
 # tests/test_facade_harmony.py
 # Suite de validación cruzada del Contrato Universal de Fachadas.
@@ -5,18 +7,17 @@
 # mediante facade_contract.py como Fuente Única de Verdad.
 # =====================================================================
 
+try:
+    from tests.soporte import entorno as _entorno
+except ImportError:
+    from soporte import entorno as _entorno
+
 import os
 import sys
 import unittest
 
-try:
-    _AQUI = os.path.dirname(os.path.abspath(__file__))
-except NameError:
-    _AQUI = os.getcwd()
-_RAIZ = os.path.dirname(_AQUI)
-
-from freecad.vdo.core import puerta_despiece as D_PUERTA  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core.facade_contract import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import puerta_despiece as D_PUERTA
+from freecad.vdo.core.facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
@@ -41,6 +42,11 @@ from freecad.vdo.core.facade_contract import (  # noqa: E402 - rutas, entorno o 
     necesita_expulsor_magnetico,
 )
 
+try:
+    _AQUI = os.path.dirname(os.path.abspath(__file__))
+except NameError:
+    _AQUI = os.getcwd()
+_RAIZ = _entorno.RAIZ
 
 class TestContratoFachadas(unittest.TestCase):
     """Pruebas del contrato central de fachadas."""
@@ -77,7 +83,6 @@ class TestContratoFachadas(unittest.TestCase):
         self.assertIn(APERTURA_PUSH_OPEN, SISTEMAS_APERTURA_VALIDOS)
         self.assertEqual(len(SISTEMAS_APERTURA_VALIDOS), 4)
 
-
 class TestCalculoFachadaBase(unittest.TestCase):
     """Pruebas de calcular_fachada_base para montajes."""
 
@@ -109,7 +114,6 @@ class TestCalculoFachadaBase(unittest.TestCase):
     def test_montaje_invalido(self):
         with self.assertRaises(ValueError):
             calcular_fachada_base(500, 700, "montaje_inexistente")
-
 
 class TestAplicarSistemaApertura(unittest.TestCase):
     """Pruebas de aplicar_sistema_apertura."""
@@ -143,7 +147,6 @@ class TestAplicarSistemaApertura(unittest.TestCase):
     def test_sistema_invalido(self):
         with self.assertRaises(ValueError):
             aplicar_sistema_apertura(700.0, "sistema_inexistente")
-
 
 class TestSimetriaGolaPuertaVsCajon(unittest.TestCase):
     """Test de Simetría Gola: Puerta vs. Cajón en vanos idénticos."""
@@ -184,7 +187,6 @@ class TestSimetriaGolaPuertaVsCajon(unittest.TestCase):
         self.assertEqual(op_p, op_c)
         self.assertEqual(op_p, OPERACION_CANTO_GOLA)
 
-
 class TestInglete45(unittest.TestCase):
     """Test de Inglete a 45°."""
 
@@ -198,7 +200,6 @@ class TestInglete45(unittest.TestCase):
         _h_aj, op = aplicar_sistema_apertura(700.0, APERTURA_45_GRADOS)
         self.assertEqual(op, OPERACION_CANTO_45)
         self.assertEqual(op, "BISEL_45")
-
 
 class TestImportacionYEnums(unittest.TestCase):
     """Test de importación y consistencia de enums entre módulos."""
@@ -230,7 +231,6 @@ class TestImportacionYEnums(unittest.TestCase):
             self.assertEqual(v_puerta, v_contrato,
                              f"Discrepancia en {attr}: puerta={v_puerta}, "
                              f"contrato={v_contrato}")
-
 
 class TestFuncionesAuxiliares(unittest.TestCase):
     """Pruebas de funciones auxiliares del contrato."""
@@ -270,7 +270,6 @@ class TestFuncionesAuxiliares(unittest.TestCase):
 
         cantos_gola = cantos_por_sistema_apertura(APERTURA_GOLA)
         self.assertEqual(cantos_gola["norte"], OPERACION_CANTO_GOLA)
-
 
 if __name__ == "__main__":
     resultado = unittest.TextTestRunner(verbosity=2).run(

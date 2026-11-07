@@ -1,17 +1,21 @@
 """Pruebas de la Capa H - Catalogo de herrajes VDO."""
 
+try:
+    from tests.soporte import entorno as _entorno
+except ImportError:
+    from soporte import entorno as _entorno
+
 import os
 import sys
 import unittest
+
+from freecad.vdo.core import hardware_hub as H
 
 try:
     _AQUI = os.path.dirname(os.path.abspath(__file__))
 except NameError:
     _AQUI = os.getcwd()
-_RAIZ = os.path.dirname(_AQUI)
-
-from freecad.vdo.core import hardware_hub as H  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-
+_RAIZ = _entorno.RAIZ
 
 class HardwareHubTests(unittest.TestCase):
     def test_get_hardware_ducasse_d52(self):
@@ -127,7 +131,6 @@ class HardwareHubTests(unittest.TestCase):
         for nombre in ("FreeCADGui", "PySide", "PySide2", "PySide6"):
             patron = re.compile(rf"^\s*(?:import|from)\s+{re.escape(nombre)}\b", re.MULTILINE)
             self.assertIsNone(patron.search(fuente), f"{nombre} importado en Capa H")
-
 
 if __name__ == "__main__":
     resultado = unittest.TextTestRunner(verbosity=2).run(

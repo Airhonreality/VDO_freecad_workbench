@@ -1,3 +1,5 @@
+
+
 # =====================================================================
 # tests/test_despiece_snapshots.py
 # Tests de snapshot del motor de despiece (F5, paso 1).
@@ -8,30 +10,35 @@
 # lo que obliga a revertir la fase (§0.7 del plan).
 # =====================================================================
 
+try:
+    from tests.soporte import entorno as _entorno
+except ImportError:
+    from soporte import entorno as _entorno
+
 import json
 import os
 import sys
 import unittest
 
-try:
-    _AQUI = os.path.dirname(os.path.abspath(__file__))
-except NameError:
-    _AQUI = os.getcwd()
-_RAIZ = os.path.dirname(_AQUI)
-
-from freecad.vdo.core import puerta_despiece as D  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core.cajon_calculo import calcular_despiece  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core.cajon_correderas import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import puerta_despiece as D
+from freecad.vdo.core.cajon_calculo import calcular_despiece
+from freecad.vdo.core.cajon_correderas import (
     CAJA_METALICA,
     CORREDERA_OCULTA,
     CORREDERA_TELESCOPICA,
 )
-from freecad.vdo.core.facade_contract import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core.facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
 )
+
+try:
+    _AQUI = os.path.dirname(os.path.abspath(__file__))
+except NameError:
+    _AQUI = os.getcwd()
+_RAIZ = _entorno.RAIZ
 
 FIXTURES = os.path.join(_RAIZ, "tests", "fixtures")
 
@@ -45,11 +52,9 @@ CONFIG_BASE = {
     "holgura_inferior_fachada": 2.0, "material_ref": "melamina_standar",
 }
 
-
 def _cargar(nombre):
     with open(os.path.join(FIXTURES, nombre), encoding="utf-8") as f:
         return json.load(f)
-
 
 class TestDespieceSnapshotsCajon(unittest.TestCase):
     """Snapshot del despiece de cajon por tipologia y sistema de apertura."""
@@ -93,7 +98,6 @@ class TestDespieceSnapshotsCajon(unittest.TestCase):
     def test_tirador(self):
         self._ejecutar("tirador", CORREDERA_OCULTA, sistema_apertura=APERTURA_TIRADOR)
 
-
 class TestDespieceSnapshotsPuerta(unittest.TestCase):
     """Snapshot del despiece / mediciones de puerta."""
 
@@ -116,7 +120,6 @@ class TestDespieceSnapshotsPuerta(unittest.TestCase):
     def test_bisagras_para_puerta_800(self):
         actual = D.bisagras_para_puerta(800)
         self.assertEqual(actual, _cargar("puerta_bisagras_para_puerta_800.json"))
-
 
 if __name__ == "__main__":
     resultado = unittest.TextTestRunner(verbosity=2).run(

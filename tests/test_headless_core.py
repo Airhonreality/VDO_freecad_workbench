@@ -27,7 +27,7 @@ def _freecad_real_en_hijo():
 _SCRIPT_HIJO = r"""
 import importlib, json, os, sys
 raiz = {raiz!r}
-import FreeCAD  # noqa
+import FreeCAD  # arranque real del binario: parte de lo que se mide
 antes = set(sys.modules)
 carpeta = os.path.join(raiz, "freecad", "vdo", "core")
 for f in sorted(os.listdir(carpeta)):

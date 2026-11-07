@@ -1,15 +1,18 @@
 """Test de humo para tools/vdo_optimizador_cli.py (nivel 1)."""
 
+try:
+    from tests.soporte import entorno as _entorno
+except ImportError:
+    from soporte import entorno as _entorno
+
 import os
 import sys
 import tempfile
 import unittest
 
+from tools.vdo_optimizador_cli import _parse_board
+
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, RAIZ)
-
-from tools.vdo_optimizador_cli import _parse_board  # noqa: E402
-
 
 class TestOptimizadorCLI(unittest.TestCase):
     """Pruebas de humo del CLI del optimizador."""
@@ -31,7 +34,6 @@ class TestOptimizadorCLI(unittest.TestCase):
         from argparse import ArgumentTypeError
         with self.assertRaises(ArgumentTypeError):
             _parse_board("invalido")
-
 
 if __name__ == "__main__":
     unittest.main()

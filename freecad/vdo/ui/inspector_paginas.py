@@ -5,7 +5,12 @@ import logging
 
 import FreeCAD as App
 
+from freecad.vdo.cad.documento import recalcular
+from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades
+from freecad.vdo.core import hardware_hub as HH
+from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui import tema
 from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
 
 _LOG = logging.getLogger(__name__)
@@ -15,11 +20,7 @@ try:
 except ImportError as exc:  # pragma: no cover
     _LOG.debug("inspector_paginas: controlador de chasis no disponible: %s", exc)
     VDOChassisControllerWidget = None
-from freecad.vdo.cad.documento import recalcular  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
-from freecad.vdo.cad.propiedades import anadir_propiedad_texto, asignar_propiedades  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
-from freecad.vdo.core import hardware_hub as HH  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
-from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
-from freecad.vdo.ui import tema  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
+
 
 # ----------------------------------------------------------------------
 # Constantes de navegación del QStackedWidget

@@ -15,23 +15,42 @@ Verifica:
   3. Desconexión y ciclo de vida de observadores FreeCAD limpios e idempotentes.
 """
 
+try:
+    from tests.soporte import entorno as _entorno
+except ImportError:
+    from soporte import entorno as _entorno
+try:
+    from tests.soporte import qt_offscreen
+except ImportError:
+    from soporte import qt_offscreen
+
+import contextlib
 import os
 import unittest
 
-from tests.soporte.qt import qapplication
+import FreeCAD as App
 
-os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+from freecad.vdo.cad.cajon import CajonFeature
+from freecad.vdo.cad.coco import CocoFeature
+from freecad.vdo.cad.panel import PanelFeature
+from freecad.vdo.cad.puerta import PuertaFeature
+from freecad.vdo.core import hardware_hub as HH
+from freecad.vdo.ui.inspector_paginas import (
+    PAGE_CHASIS,
+    PAGE_CIERRE,
+    PAGE_PIEZA,
+    PAGE_VANO,
+)
+from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
+from freecad.vdo.ui.universal_inspector import VDOUniversalInspectorWidget
+from tests.soporte.qt import qapplication
+from tests.soporte.requisitos import requiere_gui
 
 try:
     _AQUI = os.path.dirname(os.path.abspath(__file__))
 except NameError:
     _AQUI = os.getcwd()
-_RAIZ = os.path.dirname(_AQUI)
-
-import FreeCAD as App  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-
-from tests.soporte.requisitos import requiere_gui  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-
+_RAIZ = _entorno.RAIZ
 try:
     from PySide6 import QtWidgets
 except ImportError:
@@ -40,26 +59,8 @@ except ImportError:
     except ImportError:
         from PySide import QtWidgets
 
-import contextlib  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-
-from freecad.vdo.cad.cajon import CajonFeature  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.cad.coco import CocoFeature  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.cad.panel import PanelFeature  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.cad.puerta import PuertaFeature  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import hardware_hub as HH  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.ui.inspector_paginas import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-    PAGE_CHASIS,
-    PAGE_CIERRE,
-    PAGE_PIEZA,
-    PAGE_VANO,
-)
-from freecad.vdo.ui.selection_bridge import VDOSelectionBridge  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.ui.universal_inspector import VDOUniversalInspectorWidget  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-
-
 def _get_qapp():
     return qapplication()
-
 
 @requiere_gui
 class TestWorkbenchConvergence(unittest.TestCase):
@@ -289,7 +290,6 @@ class TestWorkbenchConvergence(unittest.TestCase):
             self.assertIsNotNone(insp.puente())
         # Al salir del bloque with, cerrar_inspector debió ejecutarse
         self.assertIsNone(insp.puente())
-
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,3 +1,5 @@
+
+
 # =====================================================================
 # tests/test_cajon_core.py
 # Suite de pruebas del CajonFeature (Trinidad de Cajones v2).
@@ -13,57 +15,61 @@
 # geometría 3D usan mocks para validar la lógica de coordenadas.
 # =====================================================================
 
+try:
+    from tests.soporte import entorno as _entorno
+except ImportError:
+    from soporte import entorno as _entorno
+try:
+    from tests.soporte import con_mock
+except ImportError:
+    from soporte import con_mock
+
 import os
 import sys
 import unittest
 from unittest.mock import MagicMock, patch
 
-try:
-    _AQUI = os.path.dirname(os.path.abspath(__file__))
-except NameError:
-    _AQUI = os.getcwd()
-_RAIZ = os.path.dirname(_AQUI)
-
-from tests.soporte.freecad_falso import instalado  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-
 # Instalar mocks de FreeCAD/Part antes de importar core (que los necesita a nivel
 # de módulo). Se restauran al terminar el proceso.
-_instalado_ctx = instalado()
-_instalado_ctx.__enter__()
-
-from freecad.vdo.cad.cajon import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.cad.cajon import (
     CAJA_METALICA as CC_MET,
 )
-from freecad.vdo.cad.cajon import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.cad.cajon import (
     CORREDERA_OCULTA as CC_OCU,
 )
-from freecad.vdo.cad.cajon import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.cad.cajon import (
     CORREDERA_TELESCOPICA as CC_TEL,
 )
-from freecad.vdo.cad.cajon_geometria import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.cad.cajon_geometria import (
     _aplicar_bisel_45_fachada,
     _aplicar_corte,
     _corte_notch_lateral,
     _corte_pin_trasero,
     _corte_ranura_piso,
 )
-from freecad.vdo.core import facade_contract as FC  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import hardware_hub as H  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core.cajon_calculo import calcular_despiece  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core.cajon_correderas import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core import facade_contract as FC
+from freecad.vdo.core import hardware_hub as H
+from freecad.vdo.core.cajon_calculo import calcular_despiece
+from freecad.vdo.core.cajon_correderas import (
     CAJA_METALICA,
     CORREDERA_OCULTA,
     CORREDERA_TELESCOPICA,
     listar_marcas,
     obtener_marca,
 )
-from freecad.vdo.core.facade_contract import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from freecad.vdo.core.facade_contract import (
     APERTURA_45_GRADOS,
     APERTURA_GOLA,
     APERTURA_PUSH_OPEN,
     APERTURA_TIRADOR,
 )
-from tests.soporte.freecad_falso import instalado  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+from tests.soporte.freecad_falso import instalado
+
+try:
+    _AQUI = os.path.dirname(os.path.abspath(__file__))
+except NameError:
+    _AQUI = os.getcwd()
+_RAIZ = _entorno.RAIZ
 
 # ---------------------------------------------------------------------
 # Configuración base de prueba
@@ -88,7 +94,6 @@ CONFIG_BASE = {
     "holgura_inferior_fachada": 2.0,
     "material_ref": "melamina_standar",
 }
-
 
 # ---------------------------------------------------------------------
 # Tests de despiece por tipología
@@ -144,7 +149,6 @@ class TestDespieceTipologias(unittest.TestCase):
         self.assertIn("generica", marcas)
         self.assertIn("hafele", marcas)
         self.assertIn("ducasse", marcas)
-
 
 # ---------------------------------------------------------------------
 # Tests de integración con facade_contract
@@ -213,7 +217,6 @@ class TestFacadeContractIntegracion(unittest.TestCase):
         cantos2 = d2["fachada"]["cantos"]
         self.assertEqual(cantos2["norte"], FC.OPERACION_CANTO_GOLA)
 
-
 # ---------------------------------------------------------------------
 # Tests de integración con hardware_hub
 # ---------------------------------------------------------------------
@@ -250,7 +253,6 @@ class TestHardwareHubIntegracion(unittest.TestCase):
         """Marca inexistente lanza KeyError descriptivo."""
         with self.assertRaises(KeyError):
             H.resolve_drawer_slide(tipo="oculta", marca="no_existe")
-
 
 # ---------------------------------------------------------------------
 # Tests de lógica de booleanos (mock de Part)
@@ -349,7 +351,6 @@ class TestBooleanLogicMocked(unittest.TestCase):
         resultado = _aplicar_corte(solido_original, herramienta)
         self.assertEqual(resultado, solido_original)
 
-
 # ---------------------------------------------------------------------
 # Tests de validación de coordenadas calculadas (sin face indexing)
 # ---------------------------------------------------------------------
@@ -391,7 +392,6 @@ class TestCoordenadasCalculadas(unittest.TestCase):
         alto_nominal = d["fachada"]["alto_nominal"]
         alto_final = d["fachada"]["alto"]
         self.assertAlmostEqual(alto_final, alto_nominal - 35.0)
-
 
 # ---------------------------------------------------------------------
 # Runner

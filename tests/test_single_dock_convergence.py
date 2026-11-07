@@ -1,3 +1,5 @@
+
+
 # =====================================================================
 # tests/test_single_dock_convergence.py
 # Pruebas de integración del Dock Lateral Único Consolidado:
@@ -8,23 +10,45 @@
 # - Erradicación de diálogos modales en edición y doble clic
 # =====================================================================
 
+try:
+    from tests.soporte import entorno as _entorno
+except ImportError:
+    from soporte import entorno as _entorno
+try:
+    from tests.soporte import qt_offscreen
+except ImportError:
+    from soporte import qt_offscreen
+
+import contextlib
 import os
 import sys
 import unittest
 
+import FreeCAD as App
+
+from freecad.vdo.cad.coco import CocoFeature
+from freecad.vdo.cad.panel import PanelFeature
+from freecad.vdo.ui.inspector_dock import (
+    PAGE_CHASIS,
+    PAGE_CIERRE,
+    PAGE_PIEZA,
+    PAGE_VANO,
+    VDOUniversalInspectorWidget,
+    obtener_o_crear_dock_inspector,
+)
+from freecad.vdo.ui.view_provider_base import enfocar_inspector_universal
+from freecad.vdo.ui.view_providers import (
+    ViewProviderCoco,
+    abrir_panel_objeto,
+)
 from tests.soporte.qt import qapplication
 from tests.soporte.requisitos import requiere_freecad, requiere_qt
-
-os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 try:
     _AQUI = os.path.dirname(os.path.abspath(__file__))
 except NameError:
     _AQUI = os.getcwd()
-_RAIZ = os.path.dirname(_AQUI)
-
-import FreeCAD as App  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-
+_RAIZ = _entorno.RAIZ
 try:
     from PySide6 import QtCore, QtWidgets
 except ImportError:
@@ -33,28 +57,8 @@ except ImportError:
     except ImportError:
         from PySide import QtCore, QtWidgets
 
-import contextlib  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-
-from freecad.vdo.cad.coco import CocoFeature  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.cad.panel import PanelFeature  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.ui.inspector_dock import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-    PAGE_CHASIS,
-    PAGE_CIERRE,
-    PAGE_PIEZA,
-    PAGE_VANO,
-    VDOUniversalInspectorWidget,
-    obtener_o_crear_dock_inspector,
-)
-from freecad.vdo.ui.view_provider_base import enfocar_inspector_universal  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.ui.view_providers import (  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-    ViewProviderCoco,
-    abrir_panel_objeto,
-)
-
-
 def _get_qapp():
     return qapplication()
-
 
 @requiere_freecad
 @requiere_qt
@@ -209,7 +213,6 @@ class TestSingleDockConvergence(unittest.TestCase):
         res = abrir_panel_objeto(self.obj_coco)
         # Si no hay GUI completo levantado devuelve True o False de forma segura sin excepciones
         self.assertIsInstance(res, bool)
-
 
 if __name__ == "__main__":
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestSingleDockConvergence)

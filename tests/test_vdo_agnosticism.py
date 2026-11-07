@@ -4,37 +4,41 @@ Comprueba que ``vdo_layout``, ``vdo_reengrose`` y la resolucion de vanos
 funcionan exclusivamente con datos y geometria 2D/3D, sin GUI.
 """
 
+try:
+    from tests.soporte import entorno as _entorno
+except ImportError:
+    from soporte import entorno as _entorno
+
 import os
 import re
 import sys
 import unittest
 
+from freecad.vdo.core import layout_matriz as VDO_LAYOUT_MATRIZ
+from freecad.vdo.core import layout_modelo as VDO_LAYOUT_MODELO
+from freecad.vdo.core import layout_resolucion as VDO_LAYOUT_RESOLUCION
+from freecad.vdo.core import layout_resuelto as VDO_LAYOUT_RESUELTO
+from freecad.vdo.core import reengrose_despiece as VDO_RE_DESPIECE
+from freecad.vdo.core import reengrose_encuentros as VDO_RE_ENCUENTROS
+from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA
+from freecad.vdo.core import reengrose_interferencias as VDO_RE_INTERFERENCIAS
+from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR
+from freecad.vdo.core import reengrose_tiras as VDO_RE_TIRAS
+from freecad.vdo.core.layout_matriz import Layout
+from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y, Track
+from freecad.vdo.core.layout_resolucion import resolve_layout
+
 try:
     _AQUI = os.path.dirname(os.path.abspath(__file__))
 except NameError:
     _AQUI = os.getcwd()
-_RAIZ = os.path.dirname(_AQUI)
-
-from freecad.vdo.core import layout_matriz as VDO_LAYOUT_MATRIZ  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import layout_modelo as VDO_LAYOUT_MODELO  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import layout_resolucion as VDO_LAYOUT_RESOLUCION  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import layout_resuelto as VDO_LAYOUT_RESUELTO  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import reengrose_despiece as VDO_RE_DESPIECE  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import reengrose_encuentros as VDO_RE_ENCUENTROS  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import reengrose_geometria as VDO_RE_GEOMETRIA  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import reengrose_interferencias as VDO_RE_INTERFERENCIAS  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import reengrose_modificador as VDO_RE_MODIFICADOR  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core import reengrose_tiras as VDO_RE_TIRAS  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core.layout_matriz import Layout  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core.layout_modelo import AXIS_X, AXIS_Y, Track  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from freecad.vdo.core.layout_resolucion import resolve_layout  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
+_RAIZ = _entorno.RAIZ
 
 TOL = 1e-6
 _MODULOS_GUI = (
     "FreeCADGui", "PySide", "PySide2", "PySide6", "shiboken2", "shiboken6",
 )
-
 
 def _aabb_intersection_volume(a, b, tol=TOL):
     """Volumen de interseccion de dos cajas (x, y, z, w, h, d)."""
@@ -47,13 +51,11 @@ def _aabb_intersection_volume(a, b, tol=TOL):
         return 0.0
     return ix * iy * iz
 
-
 def _buscar_celda(resuelto, etiqueta):
     for celda in resuelto.walk_cells():
         if celda.label == etiqueta:
             return celda
     raise AssertionError(f"No se encontro la celda resuelta {etiqueta!r}.")
-
 
 def _escanean_fuente_freecad():
     """Genera el codigo fuente de todos los modulos de freecad/."""
@@ -63,7 +65,6 @@ def _escanean_fuente_freecad():
             if nombre.endswith(".py"):
                 with open(os.path.join(carpeta, nombre), encoding="utf-8") as fh:
                     yield fh.read()
-
 
 class TestReglasCalidadFreecad(unittest.TestCase):
     """Verifica las reglas de calidad D-16 (exceptos visibles) y D-17 (sin print)."""
@@ -84,7 +85,6 @@ class TestReglasCalidadFreecad(unittest.TestCase):
                 patron.search(fuente),
                 "Se encontro 'except:' desnudo en freecad/; usar 'except Exception'.")
 
-
 def _contrato_vano(celda):
     """Adaptador de nombres: contrato publico del Vano para otros modulos."""
     return {
@@ -95,7 +95,6 @@ def _contrato_vano(celda):
         "X0": celda.x,
         "Z0": celda.z,
     }
-
 
 class _DummyDoorMock:
     """Inserto funcional de prueba que consume un Vano, no un mueble."""
@@ -125,7 +124,6 @@ class _DummyDoorMock:
             self.w - 2.0 * self.holgura_inset,
             self.h - 2.0 * self.holgura_inset,
         )
-
 
 class VDOAgnosticismTests(unittest.TestCase):
     def setUp(self):
@@ -356,7 +354,6 @@ class VDOAgnosticismTests(unittest.TestCase):
         self.assertAlmostEqual(embebida_w, 496.0, places=6)
         self.assertAlmostEqual(embebida_h, 696.0, places=6)
 
-
 def _run():
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(
         VDOAgnosticismTests)
@@ -366,7 +363,6 @@ def _run():
         sys.stdout.flush()
         return 0
     return 1
-
 
 if __name__ == "__main__":
     raise SystemExit(_run())

@@ -45,7 +45,7 @@ pkg = types.ModuleType("freecad")
 pkg.__path__ = [raiz + "/freecad"]
 sys.modules["freecad"] = pkg
 
-from freecad.vdo.core import nesting_presets  # noqa: F401
+from freecad.vdo.core import nesting_presets  # import por efecto: no debe escribir preferencias
 
 print("NESTING_SIN_EFECTOS " + json.dumps({{
     "escrituras": len(escrituras),

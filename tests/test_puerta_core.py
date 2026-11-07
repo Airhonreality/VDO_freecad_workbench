@@ -4,20 +4,24 @@ Capa 0 (despiece): fórmulas de corte, Newtons, holguras, cazoletas.
 Capa 2 (core): PuertaFeature (Part::FeaturePython) sin depender de GUI.
 """
 
+try:
+    from tests.soporte import entorno as _entorno
+except ImportError:
+    from soporte import entorno as _entorno
+
 import importlib.util
 import os
 import sys
 import unittest
 
+from freecad.vdo.core import puerta_despiece as D
+from tests.soporte.requisitos import requiere_freecad
+
 try:
     _AQUI = os.path.dirname(os.path.abspath(__file__))
 except NameError:
     _AQUI = os.getcwd()
-_RAIZ = os.path.dirname(_AQUI)
-
-from freecad.vdo.core import puerta_despiece as D  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-from tests.soporte.requisitos import requiere_freecad  # noqa: E402 - rutas, entorno o mocks de FreeCAD preparados antes del import del paquete
-
+_RAIZ = _entorno.RAIZ
 
 class DespieceBatienteTests(unittest.TestCase):
     """Pruebas de fórmulas de corte para puertas batientes."""
@@ -81,7 +85,6 @@ class DespieceBatienteTests(unittest.TestCase):
         self.assertAlmostEqual(bis["profundidad_cazoleta"], 11.5, places=6)
         self.assertEqual(len(bis["posiciones_z"]), 2)
 
-
 class DespieceBasculanteTests(unittest.TestCase):
     """Pruebas de cálculo de Newtons para puertas basculantes."""
 
@@ -105,7 +108,6 @@ class DespieceBasculanteTests(unittest.TestCase):
         self.assertIn("unidades", texto)
         self.assertEqual(comercial, D.piston_recomendado(600, 800)[0])
 
-
 class DespieceCorredizaTests(unittest.TestCase):
     """Pruebas de cálculo de puertas corredizas."""
 
@@ -121,7 +123,6 @@ class DespieceCorredizaTests(unittest.TestCase):
         self.assertEqual(res["sku"], "DUC-AL-1535-MAD")
         self.assertAlmostEqual(res["alto_hoja"], 590.0, places=6)
         self.assertAlmostEqual(res["ancho_hoja"], 412.5, places=6)
-
 
 class SistemasAperturaTests(unittest.TestCase):
     """Pruebas de sistemas de apertura."""
@@ -149,7 +150,6 @@ class SistemasAperturaTests(unittest.TestCase):
         self.assertTrue(D.necesita_cantos_45("inglete_45"))
         self.assertFalse(D.necesita_cantos_45("tirador"))
 
-
 class CoreImportTests(unittest.TestCase):
     """Pruebas de importación del núcleo (sin GUI)."""
 
@@ -161,7 +161,6 @@ class CoreImportTests(unittest.TestCase):
     def test_make_puerta_existe(self):
         from freecad.vdo.cad.puerta import make_puerta
         self.assertTrue(callable(make_puerta))
-
 
 if __name__ == "__main__":
     resultado = unittest.TextTestRunner(verbosity=2).run(

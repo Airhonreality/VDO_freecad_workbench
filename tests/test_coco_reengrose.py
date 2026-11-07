@@ -1,3 +1,10 @@
+
+
+try:
+    from tests.soporte import entorno as _entorno
+except ImportError:
+    from soporte import entorno as _entorno
+
 import csv
 import json
 import os
@@ -5,27 +12,23 @@ import unittest
 
 import FreeCAD as App
 
+from freecad.vdo.cad import coco as C
+from freecad.vdo.core.layout_matriz import Layout
+from freecad.vdo.ui.qt import seleccionar_por_dato
+from tests.soporte.qt import qapplication
+from tests.soporte.requisitos import requiere_freecad, requiere_gui, requiere_qt
+
 try:
     from PySide import QtWidgets
 except BaseException:
     QtWidgets = None
-
 app = None
-
-from freecad.vdo.cad import coco as C  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
-from freecad.vdo.core.layout_matriz import Layout  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
-from freecad.vdo.ui.qt import seleccionar_por_dato  # noqa: E402 - mismo orden de importes que el resto de este archivo
-
 try:
     from freecad.vdo.cad import lista_corte as E
     from freecad.vdo.ui.coco_unified_task import CocoUnifiedTaskPanel
 except ImportError:
     E = None
     CocoUnifiedTaskPanel = None
-
-from tests.soporte.qt import qapplication  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
-from tests.soporte.requisitos import requiere_freecad, requiere_gui, requiere_qt  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
-
 
 def max_common(shape):
     solidos = list(shape.Solids)
@@ -36,13 +39,11 @@ def max_common(shape):
                 maximo, solidos[i].common(solidos[j]).Volume)
     return maximo
 
-
 def layout_2x2():
     layout = Layout()
     layout.add_column()
     layout.add_row()
     return layout
-
 
 @requiere_freecad
 class CocoReengroseTests(unittest.TestCase):

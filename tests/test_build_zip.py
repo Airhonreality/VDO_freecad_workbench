@@ -1,17 +1,20 @@
 """Test para tools/build_zip.py: construye el zip en directorio temporal
 y verifica que contiene solo los archivos permitidos (nivel 1)."""
 
+try:
+    from tests.soporte import entorno as _entorno
+except ImportError:
+    from soporte import entorno as _entorno
+
 import os
 import sys
 import tempfile
 import unittest
 import zipfile
 
+from tools.build_zip import leer_version
+
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, RAIZ)
-
-from tools.build_zip import leer_version  # noqa: E402
-
 
 class TestBuildZip(unittest.TestCase):
     """Pruebas del generador de ZIP de distribución."""
@@ -64,7 +67,6 @@ class TestBuildZip(unittest.TestCase):
             }
             for f in con_permitidos:
                 self.assertIn(f, raiz_archivos, f"Falta {f} en el ZIP")
-
 
 if __name__ == "__main__":
     unittest.main()

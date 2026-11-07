@@ -1,33 +1,36 @@
+
+
+try:
+    from tests.soporte import entorno as _entorno
+except ImportError:
+    from soporte import entorno as _entorno
+
 import json
 import os
 import unittest
 
 import FreeCAD as App
 
+from freecad.vdo.cad import coco as C
+from freecad.vdo.cad import coco_espacios as S
+from freecad.vdo.core import reengrose_despiece as R_DESPIECE
+from freecad.vdo.core import reengrose_geometria as R_GEOMETRIA
+from freecad.vdo.core import reengrose_modelo as R_MODELO
+from freecad.vdo.core import reengrose_modificador as R_MODIFICADOR
+from freecad.vdo.core.layout_matriz import Layout
+from freecad.vdo.ui.qt import seleccionar_por_dato
+from tests.soporte.qt import qapplication
+from tests.soporte.requisitos import requiere_freecad, requiere_gui, requiere_qt
+
 try:
     from PySide import QtWidgets
 except BaseException:
     QtWidgets = None
-
 app = None
-
-from freecad.vdo.cad import coco as C  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
-from freecad.vdo.cad import coco_espacios as S  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
-from freecad.vdo.core import reengrose_despiece as R_DESPIECE  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
-from freecad.vdo.core import reengrose_geometria as R_GEOMETRIA  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
-from freecad.vdo.core import reengrose_modelo as R_MODELO  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
-from freecad.vdo.core import reengrose_modificador as R_MODIFICADOR  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
-from freecad.vdo.core.layout_matriz import Layout  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
-from freecad.vdo.ui.qt import seleccionar_por_dato  # noqa: E402 - mismo orden de importes que el resto de este archivo
-
 try:
     from freecad.vdo.ui.coco_unified_task import CocoUnifiedTaskPanel
 except BaseException:
     CocoUnifiedTaskPanel = None
-
-from tests.soporte.qt import qapplication  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
-from tests.soporte.requisitos import requiere_freecad, requiere_gui, requiere_qt  # noqa: E402 - guarda de import opcional (PySide) y app=None antes del import del paquete
-
 
 def max_common(shape):
     solidos = list(shape.Solids)
@@ -37,13 +40,11 @@ def max_common(shape):
             maximo = max(maximo, solidos[i].common(solidos[j]).Volume)
     return maximo
 
-
 def layout_2x2():
     layout = Layout()
     layout.add_column()
     layout.add_row()
     return layout
-
 
 def mod(**cambios):
     base = {
@@ -56,7 +57,6 @@ def mod(**cambios):
     }
     base.update(cambios)
     return base
-
 
 @requiere_freecad
 class CocoReengroseAvanzadoTests(unittest.TestCase):

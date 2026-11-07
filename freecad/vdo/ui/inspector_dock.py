@@ -11,6 +11,15 @@ import os
 
 import FreeCAD as App
 
+from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
+from freecad.vdo.ui.inspector_paginas import (
+    PAGE_CHASIS,
+    PAGE_CIERRE,
+    PAGE_PIEZA,
+    PAGE_VANO,
+)
+from freecad.vdo.ui.universal_inspector import VDOUniversalInspectorWidget
+
 _LOG = logging.getLogger(__name__)
 
 try:
@@ -18,15 +27,6 @@ try:
 except ImportError as exc:  # pragma: no cover
     _LOG.debug("inspector_dock: Gui no disponible: %s", exc)
     Gui = None
-
-from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
-from freecad.vdo.ui.inspector_paginas import (  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
-    PAGE_CHASIS,
-    PAGE_CIERRE,
-    PAGE_PIEZA,
-    PAGE_VANO,
-)
-from freecad.vdo.ui.universal_inspector import VDOUniversalInspectorWidget  # noqa: E402 - guarda de import opcional con _LOG antes del import: el orden de ejecucion es necesario
 
 
 class VDOInspectorDockWidget(QtWidgets.QDockWidget):
