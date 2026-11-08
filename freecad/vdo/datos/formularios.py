@@ -361,6 +361,16 @@ NESTING_TABLERO = (
     ),
 )
 
+NESTING_ALGORITMO = (
+    "3️⃣ Algoritmo de Optimización",
+    (
+        {"tipo": "combo", "clave": "algoritmo", "etiqueta": "Algoritmo:",
+         "items": [("Minkowski (Preciso)", None), ("Physics (Rápido)", None)]},
+        {"tipo": "spin", "clave": "generaciones", "etiqueta": "Optimización:",
+         "valor_defecto": 2, "rango": (1, 100)},
+    ),
+)
+
 # --- Panel de medidas del box de reengrose (F-UI-2b) ----------------------
 # Filas de campos de la rejilla: cada fila es una tupla de especificaciones.
 BOX_PANEL_MEDIDAS = (

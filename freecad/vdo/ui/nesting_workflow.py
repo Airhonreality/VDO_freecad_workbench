@@ -24,7 +24,7 @@ except ImportError:
 
 from freecad.vdo.core import nesting_presets as presets_mgr
 from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
-from freecad.vdo.datos.formularios import NESTING_TABLERO
+from freecad.vdo.datos.formularios import NESTING_ALGORITMO, NESTING_TABLERO
 from freecad.vdo.ui import qt, tema_estilos
 from freecad.vdo.ui.form_builder import FormBuilder
 
@@ -100,23 +100,12 @@ class NestingDialog(QtWidgets.QDialog):
 
     def _construir_algoritmo(self, layout):
         # === PARÁMETROS DE OPTIMIZACIÓN ===
-        group_algo = QtWidgets.QGroupBox("3️⃣ Algoritmo de Optimización")
-        algo_layout = QtWidgets.QGridLayout()
+        titulo, filas = NESTING_ALGORITMO
+        builder = FormBuilder(self)
+        builder.construir_grupo(layout, titulo, filas)
 
-        algo_layout.addWidget(QtWidgets.QLabel("Algoritmo:"), 0, 0)
-        self.combo_algo = QtWidgets.QComboBox()
-        self.combo_algo.addItems(["Minkowski (Preciso)", "Physics (Rápido)"])
-        algo_layout.addWidget(self.combo_algo, 0, 1)
-
-        algo_layout.addWidget(QtWidgets.QLabel("Optimización:"), 1, 0)
-        self.spin_generations = QtWidgets.QSpinBox()
-        self.spin_generations.setMinimum(1)
-        self.spin_generations.setMaximum(100)
-        self.spin_generations.setValue(2)
-        algo_layout.addWidget(self.spin_generations, 1, 1)
-
-        group_algo.setLayout(algo_layout)
-        layout.addWidget(group_algo)
+        self.combo_algo = builder.widget("algoritmo")
+        self.spin_generations = builder.widget("generaciones")
 
     def _construir_botones(self, layout):
         qt.crear_botonera_cancelar_aceptar(
