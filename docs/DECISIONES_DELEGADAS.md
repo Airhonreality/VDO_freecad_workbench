@@ -821,3 +821,12 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
   - **6. Métricas (A2, A3):** el método oficial es `tools/auditoria/minimalismo.py`, según el plan. Fuente única.
   - Estado en `docs/DEUDA_TECNICA.md`: A1, A2, A3, G1 y H1 marcados "RESUELTO (decisión, D-109)"; I1 queda "PENDIENTE DE REVISIÓN VISUAL (al final)".
   - Revertir: `git revert` del commit de esta sección.
+
+## D-110
+
+- **D-110: tokens de diseño de la UI (F-UI-0).** Los tamaños de tipografía, espaciados, radios y espaciado entre letras viven en `ui/tema_tipografia.py`. Los colores de `ui/tema_estilos.py` pasan a referenciar `ui/tema_colores.py`, que gana 10 tokens nuevos. Las cadenas de estilo resultantes son idénticas byte a byte, verificadas con un snapshot.
+  - **Tokens nuevos:** `TAMANO_MICRO`…`TAMANO_TITULO` (8, 9, 10, 11, 12, 14); `ESPACIO_1`…`ESPACIO_14`; `RADIO_3`, `RADIO_4`, `RADIO_6`; `ESPACIO_LETRA=0.5`. Colores nuevos: `COLOR_AZUL_ACCION`, `COLOR_BANNER_FONDO`, `COLOR_BORDE_HERRAJE`, `COLOR_BORDE_PAPEL`, `COLOR_BORDE_PISTON`, `COLOR_FONDO_PISTON`, `COLOR_FONDO_RESUMEN_PAPEL`, `COLOR_TEXTO_ARBOL`, `COLOR_TEXTO_MEDIO`, `COLOR_VERDE_PISTON_TEXTO`.
+  - **Razón (P1, un valor, un lugar):** elimina literales repetidos de `tema_estilos.py` y prepara F-UI-1, donde tipografía y espaciado se ajustan desde un solo módulo.
+  - **Verificación:** `tests/test_tema_estilos_cadenas.py` compara las cadenas actuales con `tests/fixtures/tema_estilos_snapshot.json` (generado antes del refactor) y comprueba que el fuente no tiene literales `#hex` ni `font-size` numérico. El snapshot no cambió entre `da33798` y `b0d87f2`.
+  - **Cifras medidas (2026-11-07):** `ui/tema_estilos.py` 251 → 306 líneas; nivel 1: 309 ejecutados, 0 fallos (306 en la línea base `f4a2208`); `ruff check . --no-cache`: 0 errores; `mypy --strict`: Success (69 archivos); `CICLOS: 0 componentes`, `ARISTAS core->cad: 0`; 0 archivos > 400 líneas y 0 funciones > 60. Tamaños: `tema_estilos.py` 14 320 B, `tema_colores.py` 5 518 B, `tema_tipografia.py` 729 B.
+  - **Revertir:** `git revert --no-edit b0d87f2` y después `git revert --no-edit da33798` (los dos commits de código, en orden inverso).

@@ -165,3 +165,13 @@ Cada fase tiene objetivo, entregables, criterio de aceptación medido y prueba. 
 - No se levanta el veto de `tools/auditoria/verificar.py` (DEUDA C3) ni se amplía `mypy` a `ui/` (DEUDA C4). Son decisiones del usuario.
 - No se resuelve B4 (`nesting_presets`) ni B8 (catálogos) dentro de esta fase; cada uno tiene su propia decisión.
 - No se hacen cambios de presentación fuera de `ui/tema.py` (P8, P9): la paleta y la tipografía se cambian solo en F-UI-0.
+
+## 8. Estado de la fase de UI (medido 2026-11-07)
+
+- **Rama:** `minimalismo/ui-diseno`.
+- **HEAD de partida:** `f4a2208`.
+- **Construcción a mano:** `grep -rc 'QLabel(\|addWidget(' --include=*.py freecad/vdo/ui | awk -F: '{s+=$2} END {print s}'` = **310** (109 `QLabel(` + 239 `addWidget(`).
+- **`minimalismo.py resumen` (línea base `f4a2208`):** core 7 750 líneas / 337 funciones; cad 3 158 / 120; ui 13 438 / 666; total 24 346 / 1 123.
+- **Nivel 1 (línea base `f4a2208`):** 306 ejecutados, 0 fallos.
+- **Tras F-UI-0 (tokens):** ui 13 562 líneas (`tema_estilos.py` 251 → 306, `tema_colores.py` 168 → 190, `tema_tipografia.py` 46); total 24 470. Nivel 1: 309 ejecutados (3 tests nuevos), 0 fallos.
+- **Nota:** las cifras de §2 son del 2026-11-06. Las de esta sección son la línea base de la fase, medidas de nuevo el 2026-11-07 sobre `f4a2208` con el mismo método.
