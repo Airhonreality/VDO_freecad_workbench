@@ -1,0 +1,82 @@
+{
+  "clase": "QWidget",
+  "objectName": "",
+  "toolTip": "",
+  "visible": false,
+  "layout": {
+    "margenes": [
+      6,
+      6,
+      6,
+      6
+    ],
+    "spacing": 4
+  },
+  "hijos": [
+    {
+      "clase": "QLabel",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "Eje:",
+      "hijos": []
+    },
+    {
+      "clase": "QComboBox",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "currentText": "Horizontal (Repisas en Y)",
+      "currentData": null,
+      "hijos": []
+    },
+    {
+      "clase": "QLabel",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "Partes:",
+      "hijos": []
+    },
+    {
+      "clase": "QSpinBox",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "2",
+      "value": 2,
+      "suffix": "",
+      "minimum": 2,
+      "maximum": 8,
+      "singleStep": 1,
+      "specialValueText": "",
+      "hijos": []
+    },
+    {
+      "clase": "QLabel",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "Modo:",
+      "hijos": []
+    },
+    {
+      "clase": "QComboBox",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "currentText": "Equitativo (1/N)",
+      "currentData": null,
+      "hijos": []
+    },
+    {
+      "clase": "QPushButton",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "➗ Aplicar Subdivisión",
+      "isChecked": false,
+      "hijos": []
+    }
+  ]
+}
