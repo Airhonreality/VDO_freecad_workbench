@@ -408,3 +408,22 @@ CABECERA_MEDIDES = (
      "ancho_fijo": 64, "sin_etiqueta": True},
 )
 
+
+# --- Panel de subdivisión del inspector de vano (F-UI-2e) ---------------
+# Filas (etiqueta, espec) apiladas verticalmente más un botón de acción suelto.
+# Los textos, rangos y valores son idénticos a los que construía a mano
+# ``PaginaVano._crear_panel_subdivision``.
+PANEL_SUBDIVISION = (
+    ("Eje:", {"tipo": "combo", "clave": "eje",
+              "items": [("Horizontal (Repisas en Y)", None),
+                        ("Vertical (Montantes en X)", None)]}),
+    ("Partes:", {"tipo": "spin", "clave": "n_partes",
+                 "valor_defecto": 2, "rango": (2, 8)}),
+    ("Modo:", {"tipo": "combo", "clave": "modo",
+               "items": [("Equitativo (1/N)", None), ("Medida fija", None)]}),
+)
+
+BOTON_APLICAR_SUBDIVISION = {"tipo": "boton", "clave": "aplicar_sub",
+                             "texto": "➗ Aplicar Subdivisión",
+                             "estilo": "ESTILO_BOTON_ACENTO_10PX"}
+

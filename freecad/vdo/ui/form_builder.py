@@ -75,6 +75,8 @@ def _crear_spin(campo, parent):
 
 def _crear_boton(campo, parent):
     w = QtWidgets.QPushButton(campo.texto, parent)
+    if campo.estilo:
+        tema_estilos.aplicar_estilo(w, getattr(tema_estilos, campo.estilo))
     return w
 
 
@@ -209,8 +211,11 @@ class FormBuilder:
             w.setWrapping(True)
         if espec.get("ajustar_texto"):
             w.setWordWrap(True)
+        estilos = estilos or {}
         if espec.get("estilo"):
-            tema_estilos.aplicar_estilo(w, estilos[espec["estilo"]])
+            hoja = estilos.get(espec["estilo"])
+            if hoja:
+                tema_estilos.aplicar_estilo(w, hoja)
         return campo, w
 
     def construir_grupo(self, main_layout, titulo, filas, estilos=None, estilo_grupo=None):

@@ -2,9 +2,11 @@
 
 from freecad.vdo.core import hardware_hub as HH
 from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
+from freecad.vdo.datos.formularios import BOTON_APLICAR_SUBDIVISION, PANEL_SUBDIVISION
 from freecad.vdo.datos.valores import BLUM_TANDEM, OCULTA
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui import tema_estilos
+from freecad.vdo.ui.form_builder import FormBuilder
 from freecad.vdo.ui.inspector_paginas import _float_seguro, _PaginaBase
 
 
@@ -99,32 +101,13 @@ class PaginaVano(_PaginaBase):
         lay_sub.setContentsMargins(6, 6, 6, 6)
         lay_sub.setSpacing(4)
 
-        f_eje = QtWidgets.QHBoxLayout()
-        f_eje.addWidget(QtWidgets.QLabel("Eje:"))
-        self.combo_eje = QtWidgets.QComboBox()
-        self.combo_eje.addItems(["Horizontal (Repisas en Y)", "Vertical (Montantes en X)"])
-        f_eje.addWidget(self.combo_eje, 1)
-        lay_sub.addLayout(f_eje)
-
-        f_n = QtWidgets.QHBoxLayout()
-        f_n.addWidget(QtWidgets.QLabel("Partes:"))
-        self.spin_n_partes = QtWidgets.QSpinBox()
-        self.spin_n_partes.setRange(2, 8)
-        self.spin_n_partes.setValue(2)
-        f_n.addWidget(self.spin_n_partes, 1)
-        lay_sub.addLayout(f_n)
-
-        f_modo = QtWidgets.QHBoxLayout()
-        f_modo.addWidget(QtWidgets.QLabel("Modo:"))
-        self.combo_dist = QtWidgets.QComboBox()
-        self.combo_dist.addItems(["Equitativo (1/N)", "Medida fija"])
-        f_modo.addWidget(self.combo_dist, 1)
-        lay_sub.addLayout(f_modo)
-
-        btn_ap_sub = QtWidgets.QPushButton("➗ Aplicar Subdivisión")
-        tema_estilos.aplicar_estilo(btn_ap_sub, tema_estilos.ESTILO_BOTON_ACENTO_10PX)
+        builder = FormBuilder(self)
+        builder.construir_filas_verticales(lay_sub, PANEL_SUBDIVISION)
+        self.combo_eje = builder.widget("eje")
+        self.spin_n_partes = builder.widget("n_partes")
+        self.combo_dist = builder.widget("modo")
+        btn_ap_sub = builder.construir_suelto(lay_sub, BOTON_APLICAR_SUBDIVISION)
         btn_ap_sub.clicked.connect(self._aplicar_subdivision)
-        lay_sub.addWidget(btn_ap_sub)
         self.stack_dock.addWidget(panel_subdiv)
 
     def _crear_panel_insercion(self, filas, texto_hub, texto_boton, al_pulsar):
