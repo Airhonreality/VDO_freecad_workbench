@@ -216,6 +216,23 @@ class FormBuilder:
         main_layout.addWidget(grupo)
         return grupo
 
+    def construir_rejilla(self, main_layout, filas, margenes=None, espaciado_h=None,
+                          espaciado_v=None):
+        """Crea un QWidget con rejilla de filas (etiqueta + widget) y lo añade a main_layout."""
+        panel = QtWidgets.QWidget()
+        grid = QtWidgets.QGridLayout(panel)
+        if margenes is not None:
+            grid.setContentsMargins(*margenes)
+        if espaciado_h is not None:
+            grid.setHorizontalSpacing(espaciado_h)
+        if espaciado_v is not None:
+            grid.setVerticalSpacing(espaciado_v)
+        for fila, campos in enumerate(filas):
+            for columna, espec in enumerate(campos):
+                self.construir_celda(grid, fila, columna * 2, espec)
+        main_layout.addWidget(panel)
+        return panel
+
     def construir_suelto(self, main_layout, espec, estilos=None):
         """Añade un campo sin grupo ni etiqueta propia (p. ej. una casilla suelta)."""
         _campo, w = self._crear_campo_ui(espec, estilos)

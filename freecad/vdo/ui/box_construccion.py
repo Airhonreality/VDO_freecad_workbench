@@ -1,6 +1,7 @@
 """Construccion visual, senales y redimensionado. Parte de ui/box_controller.py (M7, D-44)."""
 
 from freecad.vdo.core import reengrose_modelo as VDO_RE_MODELO
+from freecad.vdo.datos.formularios import BOX_PANEL_MEDIDAS
 from freecad.vdo.qt_compat import QtCore, QtWidgets
 from freecad.vdo.ui import tema_estilos
 from freecad.vdo.ui.box_canvas import _VDOConcentricCenterCanvas
@@ -9,6 +10,7 @@ from freecad.vdo.ui.box_constantes import (
     ESQUINAS,
     TIPOS_ENCUENTRO,
 )
+from freecad.vdo.ui.form_builder import FormBuilder
 from freecad.vdo.ui.qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.tema_iconos import obtener_svg_icon
 
@@ -206,36 +208,13 @@ class BoxConstruccionMixin:
         vbox.addLayout(bar_margenes)
 
     def _construir_panel_medidas(self, vbox):
-        # 4. Panel de Cotas Numéricas Gestálticas (Ancho 3px & Offset 1px)
-        self.panel_medidas = QtWidgets.QWidget()
-        grid_med = QtWidgets.QGridLayout(self.panel_medidas)
-        grid_med.setContentsMargins(0, 0, 0, 0)
-        grid_med.setHorizontalSpacing(8)
-        grid_med.setVerticalSpacing(4)
-
-        # Cota de Ancho (Calibre 3px)
-        lbl_ancho = QtWidgets.QLabel("Ancho tira (3px):")
-        self.spin_ancho = self._spin(70.0, 1000.0)
-        self.spin_ancho.setToolTip("Ancho del listón de reengrose (3px).")
-        grid_med.addWidget(lbl_ancho, 0, 0)
-        grid_med.addWidget(self.spin_ancho, 0, 1)
-
-        # Cota de Offset / Distancia al Canto (Calibre 1px)
-        lbl_dist = QtWidgets.QLabel("Offset canto (1px):")
-        self.spin_offset = self._spin(0.0, 500.0)
-        self.spin_offset.setToolTip("Distancia de retranqueo desde el canto exterior (1px).")
-        grid_med.addWidget(lbl_dist, 0, 2)
-        grid_med.addWidget(self.spin_offset, 0, 3)
-
-        # Espesor
-        lbl_esp = QtWidgets.QLabel("Espesor:")
-        self.spin_espesor = self._spin(0.0, 100.0)
-        self.spin_espesor.setSpecialValueText("Auto")
-        self.spin_espesor.setToolTip("Espesor de la tira (Auto = espesor del tablero).")
-        grid_med.addWidget(lbl_esp, 1, 0)
-        grid_med.addWidget(self.spin_espesor, 1, 1)
-
-        vbox.addWidget(self.panel_medidas)
+        builder = FormBuilder(self)
+        self.panel_medidas = builder.construir_rejilla(
+            vbox, BOX_PANEL_MEDIDAS, margenes=(0, 0, 0, 0),
+            espaciado_h=8, espaciado_v=4)
+        self.spin_ancho = builder.widget("box_ancho")
+        self.spin_offset = builder.widget("box_offset")
+        self.spin_espesor = builder.widget("box_espesor")
 
     def _construir_chips_offset(self, vbox):
         # 5. Chips de Acceso Rápido para Offset de Taller

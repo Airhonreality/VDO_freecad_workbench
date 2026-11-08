@@ -360,3 +360,26 @@ NESTING_TABLERO = (
          "valor_defecto": 15.0, "rango": (0, 100), "decimales": 2},
     ),
 )
+
+# --- Panel de medidas del box de reengrose (F-UI-2b) ----------------------
+# Filas de campos de la rejilla: cada fila es una tupla de especificaciones.
+BOX_PANEL_MEDIDAS = (
+    (
+        {"tipo": "vdo_double_spin", "clave": "box_ancho",
+         "etiqueta": "Ancho tira (3px):", "valor_defecto": 70.0,
+         "rango": (0.0, 1000.0), "decimales": 1, "sufijo": " mm",
+         "tooltip": "Ancho del listón de reengrose (3px)."},
+        {"tipo": "vdo_double_spin", "clave": "box_offset",
+         "etiqueta": "Offset canto (1px):", "valor_defecto": 0.0,
+         "rango": (0.0, 500.0), "decimales": 1, "sufijo": " mm",
+         "tooltip": "Distancia de retranqueo desde el canto exterior (1px)."},
+    ),
+    (
+        {"tipo": "vdo_double_spin", "clave": "box_espesor",
+         "etiqueta": "Espesor:", "valor_defecto": 0.0,
+         "rango": (0.0, 100.0), "decimales": 1, "sufijo": " mm",
+         "texto_especial": "Auto",
+         "tooltip": "Espesor de la tira (Auto = espesor del tablero)."},
+    ),
+)
+
