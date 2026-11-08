@@ -176,3 +176,9 @@ Cada fase tiene objetivo, entregables, criterio de aceptación medido y prueba. 
 - **Tras F-UI-0 (tokens):** ui 13 562 líneas (`tema_estilos.py` 251 → 306, `tema_colores.py` 168 → 190, `tema_tipografia.py` 46); total 24 470. Nivel 1: 309 ejecutados (3 tests nuevos), 0 fallos.
 - **Tras F-UI-2a (nesting):** `NestingDialog._construir_tablero` migrado a FormBuilder con `NESTING_TABLERO`; árbol de widgets idéntico verificado en nivel 2 con snapshot. ui 13 562 → 13 539 líneas; total 24 470 → 24 447 (−23; `datos/formularios.py` +16 no cuenta en el método por capas). Nivel 1: 311 ejecutados, 0 fallos.
 - **Nota:** las cifras de §2 son del 2026-11-06. Las de esta sección son la línea base de la fase, medidas de nuevo el 2026-11-07 sobre `f4a2208` con el mismo método.
+
+## 8. Regla del usuario sobre el visor 2D y las divisiones (vinculante)
+
+- El visor 2D de coco (`CocoPreview2D`) y el editor de divisiones interactivo **no se eliminan ni se reemplazan por formularios estáticos**. Su interacción (clics, arrastre, selección de celdas) se conserva.
+- Se acepta que la fase pueda dañarlos: si ocurre, se corrige. El daño no es una razón para quitar la función.
+- Solo la construcción de los controles de formulario de esos paneles pasa a especificación. La lógica de clics, el modelo de datos y el dibujo quedan como están.
