@@ -893,4 +893,12 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
 - **(e) Cifras medidas (2026-11-07):** `inspector_pagina_vano.py` 298 → 281 líneas (−17; función `_crear_panel_subdivision` 34 → 15), `freecad/vdo/ui/` 13 472 → 13 460 líneas (−12; `datos/formularios.py` +19 no cuenta en el recuento por capas); total del repo: −12. El estimado era 15.0.
 - **Cómo revertir:** `git revert --no-edit` del commit de documentación (`docs(ui): D-117, METRICAS y estado F-UI-2e`), después del commit de migración (`refactor(ui): inspector_pagina_vano._crear_panel_subdivision desde especificación (F-UI-2)`, 7645619) y después del commit de pruebas (`test(ui): snapshot del árbol de widgets de la subdivisión de vano (F-UI-2)`, 6ab3753), en orden inverso.
 
+## D-118
+
+- **D-118: desclasificación de `box_construccion.py::BoxConstruccionMixin._construir_esquinas` de A a C (presentación/interacción). Sin cambio de código.**
+  - **Motivo:** la función no crea pares etiqueta+campo. Crea 4 botones cuadrados con icono (`QPushButton`, `setFixedSize(36, 36)`, `setIconSize(QSize(20, 20))`, `PointingHandCursor`) en un bucle sobre un `QGridLayout`, más 4 `QComboBox` ocultos (`setVisible(False)`) solo por retrocompatibilidad. Es análogo a `panel_task._crear_grupo_reengrose` (desclasificado en D-111): interacción de presentación, no un formulario migrable.
+  - **Efecto en docs/METRICAS_WIDGETS.md:** la fila de `_construir_esquinas` pasa a C con ahorro 0 y motivo "botones de esquina con icono y combos legacy ocultos; no es un formulario; desclasificada en D-118, no se migra". La tabla de totales queda: A 26 funciones / 514 líneas (bruto 414, neto 207.0), B 7 / 240 (199, 99.5), C 91 funciones / 1633 líneas (0, 0.0); totales 124 funciones / 2387 líneas mantenidos; bruto total 631 → 613, neto total 315.5 → 306.5. Se quita de la tabla de orden recomendado (marcada desclasificada C, ahorro 0, no se migra).
+  - **No se migra a FormBuilder.** No hay cambio de código, solo decisión/documentación.
+  - **Cómo revertir:** `git revert --no-edit` del commit de documentación que aplica esta decisión.
+
 

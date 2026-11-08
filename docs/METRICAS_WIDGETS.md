@@ -13,13 +13,13 @@ Medición de F9 (D-95). **Sin cambio de código.** Solo lectura del árbol y est
 
 | Clase | Funciones | Líneas actuales | Ahorro bruto (líneas) | Ahorro neto estimado (bruto/2) |
 |---|---:|---:|---:|---:|
-| A. Patrón de formulario | 27 | 545 | 432 | 216.0 |
+| A. Patrón de formulario | 26 | 514 | 414 | 207.0 |
 | B. Mixta | 7 | 240 | 199 | 99.5 |
-| C. Presentación | 90 | 1602 | 0 | 0.0 |
-| **Total** | **124** | **2387** | **631** | **315.5** |
+| C. Presentación | 91 | 1633 | 0 | 0.0 |
+| **Total** | **124** | **2387** | **613** | **306.5** |
 
 Líneas totales de `freecad/vdo/ui/*.py`: **13461**. Las funciones medidas suman 2387 líneas (17.7 %).
-Ahorro neto estimado: **315.5 líneas**, es decir **2.34 %** de `freecad/vdo/ui/` (ahorro bruto 631 líneas, 4.69 %). Las líneas de especificación ya están restadas.
+Ahorro neto estimado: **306.5 líneas**, es decir **2.28 %** de `freecad/vdo/ui/` (ahorro bruto **613 líneas**, **4.55 %**). Las líneas de especificación ya están restadas.
 
 ## Tabla por función
 
@@ -27,7 +27,7 @@ Ahorro neto estimado: **315.5 líneas**, es decir **2.34 %** de `freecad/vdo/ui/
 |---|---|:---:|---:|---:|---:|---:|---:|---|
 | box_construccion.py | `BoxConstruccionMixin._spin` | C | 7 | 0 | 1 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | box_construccion.py | `BoxConstruccionMixin._construir_barra_superior` | B | 26 | 2 | 8 | 2 | 11.5 | dos casillas (activar, sincronizar); boton All fuera |
-| box_construccion.py | `BoxConstruccionMixin._construir_esquinas` | B | 31 | 1 | 2 | 1 | 14.5 | combo por esquina dentro de bucle; botones de esquina fuera |
+| box_construccion.py | `BoxConstruccionMixin._construir_esquinas` | C | 31 | 1 | 2 | - | 0.0 | botones de esquina con icono y combos legacy ocultos; no es un formulario; desclasificada en D-118, no se migra |
 | box_construccion.py | `BoxConstruccionMixin._construir_bordes` | C | 46 | 0 | 4 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | box_construccion.py | `BoxConstruccionMixin._construir_centro` | C | 31 | 0 | 4 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | box_construccion.py | `BoxConstruccionMixin._construir_selector_margenes` | C | 17 | 1 | 3 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
@@ -173,7 +173,7 @@ Faltan:
 | 3 | `panel_task.py::PanelTaskPanel._crear_grupo_reengrose` | C | 0.0 | desclasificada (D-111); no se migra |
 | 4 | `nesting_workflow.py::NestingDialog._construir_tablero` | A | 23.0 (real) | migrada (F-UI-2a, D-111); sin tipo nuevo |
 | 5 | `inspector_pagina_vano.py::PaginaVano._crear_panel_subdivision` | B | 15.0 | migrada en F-UI-2e (D-117); árbol de widgets idéntico (snapshot sin cambios); ahorro real 12 líneas en `ui/` y 17 en `inspector_pagina_vano.py`, función 34 → 15; el estimado era 15.0 |
-| 6 | `box_construccion.py::BoxConstruccionMixin._construir_esquinas` | B | 14.5 | bucle y botones |
+| 6 | `box_construccion.py::BoxConstruccionMixin._construir_esquinas` | C | 0.0 | desclasificada en D-118; no es formulario, no se migra |
 | 7 | `reengrose_ui_construccion.py::ReengroseConstruccionMixin._construir_rejilla_esquinas` | A | 14.0 | ninguno |
 | 8 | `box_construccion.py::BoxConstruccionMixin._construir_panel_medidas` | A | 13.5 | ninguno |
 | 9 | `coco_construccion_widgets.py::DivisionesEditor._construir_panel_puerta` | A | 13.5 | ninguno |
@@ -211,3 +211,4 @@ Recomendación: empezar por las A que no requieren tipo nuevo (combos y spins en
 - Los combos de fabricación, choque y cara están duplicados en `reengrose_ui_construccion.py` y `coco_reengrose_widgets.py`. El ahorro se cuenta en ambas funciones, así que el total queda algo sobrestimado en esa parte.
 - No se ejecutaron pruebas ni verificación visual: la medición es estática.
 - **Corrección por lectura real (F-UI-2a, D-111):** `panel_task.py::PanelTaskPanel._crear_grupo_reengrose` estaba clasificada como A por sus llamadas, pero delega en `ReengroseBorderEditor` y sus tres combos son legacy, sin layout. Pasa a C con ahorro 0 y no se migra. En `nesting_workflow.py::NestingDialog._construir_tablero` el ahorro real medido fue de 23 líneas de `ui/` (13 562 → 13 539) y del total (24 470 → 24 447), frente a las 16.5 estimadas; la función pasó de 38 a 13 líneas.
+- **Corrección por lectura real (F-UI-2, D-118):** `box_construccion.py::BoxConstruccionMixin._construir_esquinas` estaba clasificada como B por sus llamadas a widgets, pero crea 4 botones cuadrados con icono (`QPushButton`, `setFixedSize`, `setIconSize`, cursor) en un bucle sobre un `QGridLayout` más 4 `QComboBox` ocultos (`setVisible(False)`) de retrocompatibilidad: no crea pares etiqueta+campo ni layout de formulario. Pasa a C con ahorro 0 y no se migra.

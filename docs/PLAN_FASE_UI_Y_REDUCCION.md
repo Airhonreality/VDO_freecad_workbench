@@ -182,6 +182,7 @@ Cada fase tiene objetivo, entregables, criterio de aceptación medido y prueba. 
 - **Tras F-UI-2e (subdivisión de vano):** `_crear_panel_subdivision` migrado a FormBuilder con `PANEL_SUBDIVISION` y `BOTON_APLICAR_SUBDIVISION` (filas_verticales + boton suelto), árbol idéntico verificado en nivel 2 (snapshot sin cambios entre el commit de pruebas y HEAD). `inspector_pagina_vano.py` 298 → 281 (−17; función 34 → 15), `ui/` 13 472 → 13 460 (−12). Nivel 1: 323 ejecutados, 0 fallos; nivel 2: 321 ejecutados, 0 fallos; el test de árbol se ejecutó (no skip, `subdivision test=2`).
 - **Tras F-UI-1e (filas_verticales):** añadido construir_filas_verticales con prueba unitaria en verde.
 - **Nota:** las cifras de §2 son del 2026-11-06. Las de esta sección son la línea base de la fase, medidas de nuevo el 2026-11-07 sobre `f4a2208` con el mismo método.
+- **Tras F-UI-2f (desclasificación box_esquinas):** _construir_esquinas desclasificada a C (D-118), no es formulario, no se migra.
 
 ## 8. Regla del usuario sobre el visor 2D y las divisiones (vinculante)
 
