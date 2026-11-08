@@ -57,6 +57,34 @@ class FormBuilderTiposTests(unittest.TestCase):
         self.assertIs(self.builder.widget("alto"), widgets[2])
         self.assertIs(self.builder.widget("fondo"), widgets[4])
 
+    def test_construir_filas_verticales(self):
+        layout = QtWidgets.QVBoxLayout()
+        filas = [
+            ("Eje:", {"tipo": "combo", "clave": "eje", "items": [("X", "x"), ("Y", "y"), ("Z", "z")]}),
+            ("Partes:", {"tipo": "spin", "clave": "n_partes", "valor_defecto": 4, "rango": (1, 100)}),
+        ]
+        claves = self.builder.construir_filas_verticales(layout, filas)
+
+        self.assertEqual(claves, ["eje", "n_partes"])
+        self.assertEqual(layout.count(), 2)
+
+        fila0 = layout.itemAt(0).layout()
+        self.assertIsInstance(fila0, QtWidgets.QHBoxLayout)
+        self.assertEqual(fila0.count(), 2)
+        self.assertIsInstance(fila0.itemAt(0).widget(), QtWidgets.QLabel)
+        self.assertEqual(fila0.itemAt(0).widget().text(), "Eje:")
+        self.assertIsInstance(fila0.itemAt(1).widget(), QtWidgets.QComboBox)
+
+        fila1 = layout.itemAt(1).layout()
+        self.assertIsInstance(fila1, QtWidgets.QHBoxLayout)
+        self.assertEqual(fila1.count(), 2)
+        self.assertIsInstance(fila1.itemAt(0).widget(), QtWidgets.QLabel)
+        self.assertEqual(fila1.itemAt(0).widget().text(), "Partes:")
+        self.assertIsInstance(fila1.itemAt(1).widget(), QtWidgets.QSpinBox)
+
+        self.assertIs(self.builder.widget("eje"), fila0.itemAt(1).widget())
+        self.assertIs(self.builder.widget("n_partes"), fila1.itemAt(1).widget())
+
     def test_ancho_fijo(self):
         w = self.builder.crear(
             {"tipo": "double_spin", "clave": "x", "valor_defecto": 0, "ancho_fijo": 64}

@@ -274,6 +274,26 @@ class FormBuilder:
         """Crea el campo y devuelve su widget sin colocarlo en ningun layout."""
         return self._crear_campo_ui(espec, estilos)[1]
 
+    def construir_filas_verticales(self, main_layout, filas):
+        """Construye filas etiqueta+campo apiladas en un QVBoxLayout existente.
+
+        Para cada tupla ``(etiqueta, espec)`` de ``filas``: crea un QHBoxLayout,
+        añade un QLabel(etiqueta), crea el campo con ``self.agregar(espec)`` +
+        ``campo.crear_widget()``, añade el widget al QHBoxLayout y añade el
+        QHBoxLayout a ``main_layout``. Registra los sub-campos para que
+        builder.widget(clave) los devuelva. Devuelve la lista de claves creadas.
+        """
+        claves = []
+        for etiqueta, espec in filas:
+            fila = QtWidgets.QHBoxLayout()
+            fila.addWidget(QtWidgets.QLabel(etiqueta))
+            campo = self.agregar(espec)
+            w = campo.crear_widget()
+            fila.addWidget(w)
+            main_layout.addLayout(fila)
+            claves.append(campo.clave)
+        return claves
+
     def construir_celda(self, grid, fila, col, espec, estilos=None):
         """Coloca etiqueta (columna col) y widget (columna col+1) en una rejilla existente."""
         campo, w = self._crear_campo_ui(espec, estilos)
@@ -303,4 +323,4 @@ class FormBuilder:
                 campo.widget.interpretText()
 
 
-__all__ = ["FormBuilder", "FormField"]
+__all__ = ["FormBuilder", "FormField", "construir_filas_verticales"]  # noqa: F822
