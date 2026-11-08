@@ -120,7 +120,7 @@ Ahorro neto estimado: **315.5 líneas**, es decir **2.34 %** de `freecad/vdo/ui/
 | inspector_paginas.py | `PaginaCierre.__init__._fila_h` | C | 11 | 2 | 4 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | nesting_workflow.py | `NestingDialog._construir_modo` | C | 16 | 0 | 4 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | nesting_workflow.py | `NestingDialog._construir_tablero` | A | 38 | 8 | 17 | 4 | 16.5 | preset, ancho, alto, espaciado; migrada en F-UI-2a: ahorro real 23 líneas en ui/ y en el total (función 38 → 13); el estimado era 16.5 |
-| nesting_workflow.py | `NestingDialog._construir_algoritmo` | A | 19 | 4 | 9 | 2 | 8.0 | algoritmo (combo), generaciones (spin) |
+| nesting_workflow.py | `NestingDialog._construir_algoritmo` | A | 19 | 4 | 9 | 2 | 8.0 | algoritmo (combo), generaciones (spin); migrada en F-UI-2c: árbol de widgets idéntico (snapshot sin cambios, `git diff 0adddb0 -- tests/fixtures/nesting_algoritmo_snapshot.json` vacío); ahorro real 11 líneas en ui/ y en el total (función 19 → 8; `nesting_workflow.py` 306 → 295, `ui/` 13 455 → 13 444); el estimado era 8.0 |
 | optimizer_dialog.py | `OptimizerDialog._build_ui` | C | 14 | 0 | 1 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | optimizer_dialog.py | `OptimizerDialog._construir_panel_config` | B | 55 | 10 | 25 | 5 | 24.5 | CSV, tablero, medidas, rotar; botones Examinar/Optimizar y etiquetas de estado fuera del formulario |
 | optimizer_dialog.py | `OptimizerDialog._construir_bloque_corte` | A | 15 | 5 | 12 | 2 | 6.0 | kerf y margen (double) |
@@ -186,7 +186,7 @@ Faltan:
 | 16 | `coco_reengrose_widgets.py::ReengroseDivisionesMixin._crear_combos_fabricacion` | A | 10.0 | ninguno |
 | 17 | `chassis_construccion.py::ChassisConstruccionMixin._construir_pagina_suspendido` | A | 8.5 | ninguno |
 | 18 | `coco_construccion_widgets.py::DivisionesEditor._construir_panel_subdivision` | A | 8.5 | ninguno |
-| 19 | `nesting_workflow.py::NestingDialog._construir_algoritmo` | A | 8.0 | ninguno |
+| 19 | `nesting_workflow.py::NestingDialog._construir_algoritmo` | A | 8.0 | ninguno (migrada en F-UI-2c; árbol idéntico, real −11 líneas) |
 | 20 | `reengrose_ui_construccion.py::ReengroseConstruccionMixin._construir_tabla_bordes` | A | 8.0 | tabla filas×columnas |
 | 21 | `chassis_construccion.py::ChassisConstruccionMixin._construir_fondo` | A | 7.0 | ninguno |
 | 22 | `coco_construccion_widgets.py::DivisionesEditor._construir_selector_contenido` | A | 6.5 | ninguno |
