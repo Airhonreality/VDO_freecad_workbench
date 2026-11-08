@@ -1,0 +1,60 @@
+{
+  "clase": "QGroupBox",
+  "objectName": "",
+  "toolTip": "",
+  "visible": true,
+  "title": "3️⃣ Algoritmo de Optimización",
+  "isChecked": false,
+  "layout": {
+    "margenes": [
+      9,
+      9,
+      9,
+      9
+    ],
+    "espaciado_h": 6,
+    "espaciado_v": 6,
+    "spacing": 6
+  },
+  "hijos": [
+    {
+      "clase": "QLabel",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "Algoritmo:",
+      "hijos": []
+    },
+    {
+      "clase": "QComboBox",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "currentText": "Minkowski (Preciso)",
+      "currentData": null,
+      "hijos": []
+    },
+    {
+      "clase": "QLabel",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "Optimización:",
+      "hijos": []
+    },
+    {
+      "clase": "QSpinBox",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "2",
+      "value": 2,
+      "suffix": "",
+      "minimum": 1,
+      "maximum": 100,
+      "singleStep": 1,
+      "specialValueText": "",
+      "hijos": []
+    }
+  ]
+}
