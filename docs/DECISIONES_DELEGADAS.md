@@ -901,4 +901,14 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
   - **No se migra a FormBuilder.** No hay cambio de código, solo decisión/documentación.
   - **Cómo revertir:** `git revert --no-edit` del commit de documentación que aplica esta decisión.
 
+## D-119
+
+- **D-119: pruebas de imagen e interacción del visor 2D de coco escritas primero sobre HEAD (F-UI-3a).**
+  - **Hecho:** `tests/test_coco_preview2d_imagen.py` (nuevo) con dos pruebas bajo `@requiere_freecad` + `@requiere_qt` y `qapplication()` en `QT_QPA_PLATFORM=offscreen`:
+    (a) huella de pixeles: `QWidget.grab()` del `CocoPreview2D` (layout 2×1, `resolve_layout(..., inner_w=600, inner_h=500, thickness=18)`, `set_layout(..., outer_w=600, outer_h=500)`, `resize(400, 300)`), serialización a PNG y SHA-256 comparada contra `tests/fixtures/coco_preview2d_huella.json` (clave `"sha256"`).
+    (b) interacción: clic simulado (`QMouseEvent` `MouseButtonPress` izquierdo en `preview.mapFromScene(centro de la primera celda)`) sobre el primer `QGraphicsRectItem` con `data(ROLE_KIND) == "cell"`; se verifica que `cellClicked` emite el label de esa celda (`"(x1, y1)"`).
+  - **Golden:** `tests/fixtures/coco_preview2d_huella.json` (`{"sha256": "066ab47379f866bcee258931c1b75ba3670c1901251f9dff70e9c8ca354b4ac0"}`), generado una vez con un script temporal en /tmp bajo `freecadcmd` sobre HEAD actual (sin cambios en `freecad/`). No se regenera después de escribir el test.
+  - **Razón (regla vinculante):** el visor 2D de coco (`CocoPreview2D`) y el editor de divisiones interactivo no se eliminan ni sustituyen por formularios estáticos; su interacción (clics, selección de celdas) se conserva. Se escriben pruebas antes de cualquier cambio de código en `coco_preview2d.py` o `coco_construccion_widgets.py` para proteger el visor durante la migración de sus formularios (F-UI-3 / F-UI-4). Si el visor cambia de comportamiento después, se corrige, no se elimina.
+  - **Cómo revertir:** `git revert 53dbd5e` (elimina prueba y fixture); `git revert` del commit de documentación de esta entrada. El visor 2D queda sin cambios de código en ambos commits.
+
 

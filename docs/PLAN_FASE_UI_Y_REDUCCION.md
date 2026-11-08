@@ -183,6 +183,7 @@ Cada fase tiene objetivo, entregables, criterio de aceptación medido y prueba. 
 - **Tras F-UI-1e (filas_verticales):** añadido construir_filas_verticales con prueba unitaria en verde.
 - **Nota:** las cifras de §2 son del 2026-11-06. Las de esta sección son la línea base de la fase, medidas de nuevo el 2026-11-07 sobre `f4a2208` con el mismo método.
 - **Tras F-UI-2f (desclasificación box_esquinas):** _construir_esquinas desclasificada a C (D-118), no es formulario, no se migra.
+- **Tras F-UI-3a (coco visor 2D):** pruebas de imagen (grab + SHA-256) y de interacción (clic → cellClicked) escritas y en verde en nivel 2; visor 2D sin cambios de código.
 
 ## 8. Regla del usuario sobre el visor 2D y las divisiones (vinculante)
 
