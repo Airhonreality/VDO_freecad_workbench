@@ -1,0 +1,88 @@
+{
+  "clase": "QWidget",
+  "objectName": "",
+  "toolTip": "",
+  "visible": true,
+  "layout": {
+    "margenes": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "espaciado_h": 8,
+    "espaciado_v": 4,
+    "spacing": -1
+  },
+  "hijos": [
+    {
+      "clase": "QLabel",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "Ancho tira (3px):",
+      "hijos": []
+    },
+    {
+      "clase": "VDO_DoubleSpinBox",
+      "objectName": "",
+      "toolTip": "Ancho del listón de reengrose (3px).",
+      "visible": true,
+      "text": "70.0 mm",
+      "value": 70.0,
+      "suffix": " mm",
+      "decimals": 1,
+      "minimum": 0.0,
+      "maximum": 1000.0,
+      "singleStep": 1.0,
+      "specialValueText": "",
+      "hijos": []
+    },
+    {
+      "clase": "QLabel",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "Offset canto (1px):",
+      "hijos": []
+    },
+    {
+      "clase": "VDO_DoubleSpinBox",
+      "objectName": "",
+      "toolTip": "Distancia de retranqueo desde el canto exterior (1px).",
+      "visible": true,
+      "text": "0.0 mm",
+      "value": 0.0,
+      "suffix": " mm",
+      "decimals": 1,
+      "minimum": 0.0,
+      "maximum": 500.0,
+      "singleStep": 1.0,
+      "specialValueText": "",
+      "hijos": []
+    },
+    {
+      "clase": "QLabel",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "Espesor:",
+      "hijos": []
+    },
+    {
+      "clase": "VDO_DoubleSpinBox",
+      "objectName": "",
+      "toolTip": "Espesor de la tira (Auto = espesor del tablero).",
+      "visible": true,
+      "text": "Auto",
+      "value": 0.0,
+      "suffix": " mm",
+      "decimals": 1,
+      "minimum": 0.0,
+      "maximum": 100.0,
+      "singleStep": 1.0,
+      "specialValueText": "Auto",
+      "hijos": []
+    }
+  ]
+}

@@ -1,15 +1,21 @@
 """Volcado serializable del árbol de widgets Qt (F-UI-2).
 
-Genérico y sin FreeCAD: captura clases, textos, valores, rangos, tooltips,
-visibilidad y orden de layout para comparar un formulario antes y después de
-migrarlo a FormBuilder.
+Genérico: captura clases, textos, valores, rangos, tooltips, visibilidad y
+orden de layout para comparar un formulario antes y después de migrarlo a
+FormBuilder. Fija el locale del proceso para que el texto de los spinners sea
+reproducible entre nivel 1 y nivel 2.
 """
 
 from __future__ import annotations
 
 from typing import Any
 
+from freecad.vdo.qt_compat import QtCore
+
 __all__ = ["volcar_arbol"]
+
+if QtCore.QLocale().name() == "C":
+    QtCore.QLocale.setDefault(QtCore.QLocale("es_CO"))
 
 _PROPIEDADES = (
     "text",
@@ -22,6 +28,8 @@ _PROPIEDADES = (
     "decimals",
     "minimum",
     "maximum",
+    "singleStep",
+    "specialValueText",
 )
 
 
@@ -80,6 +88,26 @@ def _visible(widget: Any, padre: Any) -> bool:
         return widget.isVisible()
 
 
+def _layout(widget: Any) -> dict[str, Any] | None:
+    """Margenes y espaciados del layout del widget; None si no tiene layout."""
+    layout = widget.layout()
+    if layout is None:
+        return None
+    datos: dict[str, Any] = {}
+    margenes, existe = _leer(layout, "getContentsMargins")
+    if existe:
+        datos["margenes"] = _serializable(list(margenes))
+    for clave, nombre in (
+        ("espaciado_h", "horizontalSpacing"),
+        ("espaciado_v", "verticalSpacing"),
+        ("spacing", "spacing"),
+    ):
+        valor, existe = _leer(layout, nombre)
+        if existe:
+            datos[clave] = _serializable(valor)
+    return datos
+
+
 def _nodo(widget: Any, padre: Any) -> dict[str, Any]:
     nodo: dict[str, Any] = {
         "clase": type(widget).__name__,
@@ -91,6 +119,9 @@ def _nodo(widget: Any, padre: Any) -> dict[str, Any]:
         valor, existe = _leer(widget, nombre)
         if existe:
             nodo[nombre] = _serializable(valor)
+    layout = _layout(widget)
+    if layout is not None:
+        nodo["layout"] = layout
     nodo["hijos"] = [_nodo(hijo, widget) for hijo in _hijos(widget)]
     return nodo
 

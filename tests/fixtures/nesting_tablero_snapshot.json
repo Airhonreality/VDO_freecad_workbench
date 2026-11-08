@@ -1,88 +1,105 @@
 {
   "clase": "QGroupBox",
+  "objectName": "",
+  "toolTip": "",
+  "visible": true,
+  "title": "2️⃣ Configuración de Tablero",
+  "isChecked": false,
+  "layout": {
+    "margenes": [
+      9,
+      9,
+      9,
+      9
+    ],
+    "espaciado_h": 6,
+    "espaciado_v": 6,
+    "spacing": 6
+  },
   "hijos": [
     {
       "clase": "QLabel",
-      "hijos": [],
       "objectName": "",
-      "text": "Tamaño predefinido:",
       "toolTip": "",
-      "visible": true
+      "visible": true,
+      "text": "Tamaño predefinido:",
+      "hijos": []
     },
     {
       "clase": "QComboBox",
-      "currentData": null,
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
       "currentText": "Estándar EN",
-      "hijos": [],
-      "objectName": "",
-      "toolTip": "",
-      "visible": true
+      "currentData": null,
+      "hijos": []
     },
     {
       "clase": "QLabel",
-      "hijos": [],
       "objectName": "",
+      "toolTip": "",
+      "visible": true,
       "text": "Ancho (mm):",
-      "toolTip": "",
-      "visible": true
+      "hijos": []
     },
     {
       "clase": "QSpinBox",
-      "hijos": [],
-      "maximum": 10000,
-      "minimum": 100,
       "objectName": "",
-      "suffix": "",
+      "toolTip": "",
+      "visible": true,
       "text": "2440",
-      "toolTip": "",
       "value": 2440,
-      "visible": true
+      "suffix": "",
+      "minimum": 100,
+      "maximum": 10000,
+      "singleStep": 1,
+      "specialValueText": "",
+      "hijos": []
     },
     {
       "clase": "QLabel",
-      "hijos": [],
       "objectName": "",
-      "text": "Alto (mm):",
       "toolTip": "",
-      "visible": true
+      "visible": true,
+      "text": "Alto (mm):",
+      "hijos": []
     },
     {
       "clase": "QSpinBox",
-      "hijos": [],
-      "maximum": 10000,
-      "minimum": 100,
       "objectName": "",
-      "suffix": "",
-      "text": "1830",
       "toolTip": "",
+      "visible": true,
+      "text": "1830",
       "value": 1830,
-      "visible": true
+      "suffix": "",
+      "minimum": 100,
+      "maximum": 10000,
+      "singleStep": 1,
+      "specialValueText": "",
+      "hijos": []
     },
     {
       "clase": "QLabel",
-      "hijos": [],
       "objectName": "",
-      "text": "Espaciado (mm):",
       "toolTip": "",
-      "visible": true
+      "visible": true,
+      "text": "Espaciado (mm):",
+      "hijos": []
     },
     {
       "clase": "QDoubleSpinBox",
-      "decimals": 2,
-      "hijos": [],
-      "maximum": 100.0,
-      "minimum": 0.0,
       "objectName": "",
-      "suffix": "",
-      "text": "15,00",
       "toolTip": "",
+      "visible": true,
+      "text": "15,00",
       "value": 15.0,
-      "visible": true
+      "suffix": "",
+      "decimals": 2,
+      "minimum": 0.0,
+      "maximum": 100.0,
+      "singleStep": 1.0,
+      "specialValueText": "",
+      "hijos": []
     }
-  ],
-  "isChecked": false,
-  "objectName": "",
-  "title": "2️⃣ Configuración de Tablero",
-  "toolTip": "",
-  "visible": true
+  ]
 }
