@@ -911,4 +911,11 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
   - **Razón (regla vinculante):** el visor 2D de coco (`CocoPreview2D`) y el editor de divisiones interactivo no se eliminan ni sustituyen por formularios estáticos; su interacción (clics, selección de celdas) se conserva. Se escriben pruebas antes de cualquier cambio de código en `coco_preview2d.py` o `coco_construccion_widgets.py` para proteger el visor durante la migración de sus formularios (F-UI-3 / F-UI-4). Si el visor cambia de comportamiento después, se corrige, no se elimina.
   - **Cómo revertir:** `git revert 53dbd5e` (elimina prueba y fixture); `git revert` del commit de documentación de esta entrada. El visor 2D queda sin cambios de código en ambos commits.
 
+## D-120
+
+- **D-120: no migración de los formularios reactivos de coco a FormBuilder (F-UI-3, bloqueo de sección 8).** Sin cambio de código ni de pruebas.
+  - **Motivo:** `DivisionesEditor._construir_panel_subdivision`, `_construir_panel_puerta`, `_construir_panel_cajon` y `_construir_selector_contenido` en `freecad/vdo/ui/coco_construccion_widgets.py` están acoplados al modelo de datos del COCO y al visor 2D (`CocoPreview2D`, `freecad/vdo/ui/coco_preview2d.py`), ya protegido por pruebas de imagen e interacción en F-UI-3a (D-119, `tests/test_coco_preview2d_imagen.py` y `tests/fixtures/coco_preview2d_huella.json`). Migrar esos controles a FormBuilder arriesgaría el comportamiento del visor y de las divisiones (clics, selección de celdas, reengroses, árbol de vanos, inspector).
+  - **Qué se deja:** los controles de formulario reactivos de coco (paneles de subdivisión, puerta, cajón y selector de contenido) quedan como presentación interactiva; el visor 2D, el árbol de vanos, el inspector y la lógica de clics quedan intactos (regla vinculante, sección 8 del plan `docs/PLAN_FASE_UI_Y_REDUCCION.md`).
+  - **Cómo revertir:** no aplica; es solo documentación. Si en una fase futura se quisiera migrar, es una decisión nueva (D-xx) con sus propias pruebas de árbol de widgets idéntico y de imagen del visor, y su propio commit revertible con `git revert`.
+
 
