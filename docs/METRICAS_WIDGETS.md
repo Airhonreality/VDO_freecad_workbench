@@ -108,7 +108,7 @@ Ahorro neto estimado: **315.5 líneas**, es decir **2.34 %** de `freecad/vdo/ui/
 | inspector_pagina_vano.py | `PaginaVano._crear_banner_luz` | C | 13 | 1 | 3 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | inspector_pagina_vano.py | `PaginaVano._crear_dock_habitantes` | C | 31 | 1 | 4 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | inspector_pagina_vano.py | `PaginaVano._crear_stack_dock` | C | 13 | 0 | 1 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
-| inspector_pagina_vano.py | `PaginaVano._crear_panel_subdivision` | B | 34 | 6 | 15 | 3 | 15.0 | eje, partes, modo; boton Aplicar |
+| inspector_pagina_vano.py | `PaginaVano._crear_panel_subdivision` | B | 34 | 6 | 15 | 3 | 15.0 | eje, partes, modo; boton Aplicar; migrada en F-UI-2e (D-117): árbol de widgets idéntico (snapshot sin cambios, `git diff 6ab3753 -- tests/fixtures/inspector_pagina_vano_subdivision_snapshot.json` vacío); ahorro real 17 líneas en `inspector_pagina_vano.py` (298 → 281) y 12 en `ui/` (13 472 → 13 460), función 34 → 15; el estimado era 15.0 |
 | inspector_pagina_vano.py | `PaginaVano._crear_panel_insercion` | C | 25 | 2 | 7 | - | 0.0 | contenedor de presentacion: recibe widgets ya creados |
 | inspector_pagina_vano.py | `PaginaVano._crear_panel_cajon` | A | 15 | 3 | 4 | 3 | 5.5 | cajones (spin), corredera, agarre (combos) |
 | inspector_pagina_vano.py | `PaginaVano._crear_panel_puerta` | A | 14 | 3 | 3 | 3 | 5.0 | sistema, sentido, agarre (combos) |
@@ -172,7 +172,7 @@ Faltan:
 | 2 | `coco_construccion_widgets.py::DivisionesEditor._construir_inspector_base` | B | 22.5 | señales; fila cabecera |
 | 3 | `panel_task.py::PanelTaskPanel._crear_grupo_reengrose` | C | 0.0 | desclasificada (D-111); no se migra |
 | 4 | `nesting_workflow.py::NestingDialog._construir_tablero` | A | 23.0 (real) | migrada (F-UI-2a, D-111); sin tipo nuevo |
-| 5 | `inspector_pagina_vano.py::PaginaVano._crear_panel_subdivision` | B | 15.0 | botón de acción |
+| 5 | `inspector_pagina_vano.py::PaginaVano._crear_panel_subdivision` | B | 15.0 | migrada en F-UI-2e (D-117); árbol de widgets idéntico (snapshot sin cambios); ahorro real 12 líneas en `ui/` y 17 en `inspector_pagina_vano.py`, función 34 → 15; el estimado era 15.0 |
 | 6 | `box_construccion.py::BoxConstruccionMixin._construir_esquinas` | B | 14.5 | bucle y botones |
 | 7 | `reengrose_ui_construccion.py::ReengroseConstruccionMixin._construir_rejilla_esquinas` | A | 14.0 | ninguno |
 | 8 | `box_construccion.py::BoxConstruccionMixin._construir_panel_medidas` | A | 13.5 | ninguno |
