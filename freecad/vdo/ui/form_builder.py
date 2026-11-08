@@ -56,6 +56,8 @@ def _crear_double_spin(campo, parent, clase=None):
     if campo.texto_especial:
         w.setSpecialValueText(campo.texto_especial)
     w.setValue(float(campo.valor_defecto or 0.0))
+    if campo.ancho_fijo is not None:
+        w.setFixedWidth(int(campo.ancho_fijo))
     return w
 
 
@@ -66,6 +68,13 @@ def _crear_spin(campo, parent):
     w.setValue(int(campo.valor_defecto or 0))
     if campo.sufijo:
         w.setSuffix(campo.sufijo)
+    if campo.ancho_fijo is not None:
+        w.setFixedWidth(int(campo.ancho_fijo))
+    return w
+
+
+def _crear_boton(campo, parent):
+    w = QtWidgets.QPushButton(campo.texto, parent)
     return w
 
 
@@ -111,6 +120,7 @@ _CONSTRUCTORES_WIDGET = {
     "label": _crear_label,
     "texto": _crear_texto,
     "expresion": _crear_expresion,
+    "boton": _crear_boton,
 }
 
 
@@ -129,6 +139,9 @@ class FormField:
         self.items = espec.get("items")
         self.editable = espec.get("editable", False)
         self.texto_especial = espec.get("texto_especial")
+        self.texto = espec.get("texto")
+        self.ancho_fijo = espec.get("ancho_fijo")
+        self.estilo = espec.get("estilo")
         self.widget = None
 
     def crear_widget(self, parent=None):
@@ -238,6 +251,24 @@ class FormBuilder:
         _campo, w = self._crear_campo_ui(espec, estilos)
         main_layout.addWidget(w)
         return w
+
+    def construir_fila(self, main_layout, campos, separador="×"):  # noqa: RUF001
+        """Añade widgets directamente a main_layout (QHBoxLayout existente), sin QWidget contenedor.
+
+        Para cada sub-especificación en ``campos``: si no es la primera y ``separador`` está definido,
+        añade un QLabel(separador); luego crea el campo con la lógica existente (agregar + crear_widget)
+        y lo añade al layout. Registra los sub-campos para que builder.widget(clave) los devuelva.
+        Devuelve la lista de claves creadas.
+        """
+        claves = []
+        for indice, espec in enumerate(campos):
+            if indice > 0 and separador:
+                main_layout.addWidget(QtWidgets.QLabel(separador))
+            campo = self.agregar(espec)
+            w = campo.crear_widget()
+            main_layout.addWidget(w)
+            claves.append(campo.clave)
+        return claves
 
     def crear(self, espec, estilos=None):
         """Crea el campo y devuelve su widget sin colocarlo en ningun layout."""
