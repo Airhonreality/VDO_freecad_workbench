@@ -1,0 +1,46 @@
+"""Tokens de tipografía, espaciado y radios de la UI VDO (F-UI-0)."""
+
+TAMANO_MICRO = 8
+TAMANO_PEQUENO = 9
+TAMANO_BASE = 10
+TAMANO_MEDIO = 11
+TAMANO_GRANDE = 12
+TAMANO_TITULO = 14
+
+ESPACIO_1 = 1
+ESPACIO_2 = 2
+ESPACIO_3 = 3
+ESPACIO_4 = 4
+ESPACIO_5 = 5
+ESPACIO_6 = 6
+ESPACIO_8 = 8
+ESPACIO_10 = 10
+ESPACIO_14 = 14
+
+RADIO_3 = 3
+RADIO_4 = 4
+RADIO_6 = 6
+
+ESPACIO_LETRA = 0.5
+
+__all__ = [
+    "ESPACIO_1",
+    "ESPACIO_2",
+    "ESPACIO_3",
+    "ESPACIO_4",
+    "ESPACIO_5",
+    "ESPACIO_6",
+    "ESPACIO_8",
+    "ESPACIO_10",
+    "ESPACIO_14",
+    "ESPACIO_LETRA",
+    "RADIO_3",
+    "RADIO_4",
+    "RADIO_6",
+    "TAMANO_BASE",
+    "TAMANO_GRANDE",
+    "TAMANO_MEDIO",
+    "TAMANO_MICRO",
+    "TAMANO_PEQUENO",
+    "TAMANO_TITULO",
+]

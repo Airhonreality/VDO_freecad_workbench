@@ -2,12 +2,67 @@
 
 from freecad.vdo.ui.tema_colores import (
     ACEINTO,
+    AVISO,
     BORDE,
     BORDE_ACTIVO,
+    BORDE_CLARO,
+    BORDE_SUAVE,
+    COLOR_AZUL_ACCION,
+    COLOR_BANNER_FONDO,
+    COLOR_BORDE_GRIS,
+    COLOR_BORDE_HERRAJE,
+    COLOR_BORDE_MEDIO,
+    COLOR_BORDE_MEDIO_OSCURO,
+    COLOR_BORDE_OSCURO,
+    COLOR_BORDE_PAPEL,
+    COLOR_BORDE_PISTON,
+    COLOR_CIAN_VIVO,
+    COLOR_FONDO_BASE,
+    COLOR_FONDO_BOTON,
+    COLOR_FONDO_CHASIS_OSCURO,
+    COLOR_FONDO_CLARO,
+    COLOR_FONDO_MEDIO,
+    COLOR_FONDO_PISTON,
+    COLOR_FONDO_RESUMEN_PAPEL,
+    COLOR_OPT_EJE,
+    COLOR_OPT_REGLA,
+    COLOR_OPT_TRAZO,
+    COLOR_TEXTO_ARBOL,
+    COLOR_TEXTO_ATENUADO,
+    COLOR_TEXTO_MEDIO,
+    COLOR_TEXTO_SECUNDARIO,
+    COLOR_TRAZO_NEUTRO,
+    COLOR_VERDE_HERRAJE,
+    COLOR_VERDE_PISTON_TEXTO,
+    ERROR,
+    EXITO,
+    FONDO,
     FONDO2,
     FONDO3,
     TEXTO,
     TEXTO_CLARO,
+    TEXTO_SUAVE,
+    TEXTO_SUAVE2,
+)
+from freecad.vdo.ui.tema_tipografia import (
+    ESPACIO_1,
+    ESPACIO_2,
+    ESPACIO_3,
+    ESPACIO_4,
+    ESPACIO_5,
+    ESPACIO_6,
+    ESPACIO_8,
+    ESPACIO_10,
+    ESPACIO_14,
+    ESPACIO_LETRA,
+    RADIO_3,
+    RADIO_4,
+    RADIO_6,
+    TAMANO_BASE,
+    TAMANO_GRANDE,
+    TAMANO_MEDIO,
+    TAMANO_PEQUENO,
+    TAMANO_TITULO,
 )
 
 # --- Estilos de botón / control (ensamblados a partir de tokens) ---
@@ -35,135 +90,135 @@ def estilo_boton(acento=ACEINTO, texto=TEXTO_CLARO, borde=BORDE_ACTIVO):
 
 
 # --- Estilos de la UI (MN-07, D-76): literales de ui/ movidos aquí ---
-ESTILO_ACENTO_NEGRITA = "font-weight: bold; color: #007acc;"
-ESTILO_ARBOL_MAESTRO = """
-            QTreeWidget {
-                background-color: #1a1a1a;
-                border: 1px solid #2d2d2d;
-                color: #dcdcdc;
-                font-size: 10px;
-            }
-            QTreeWidget::item:selected {
-                background-color: #007acc;
-                color: #ffffff;
+ESTILO_ACENTO_NEGRITA = f"font-weight: bold; color: {ACEINTO};"
+ESTILO_ARBOL_MAESTRO = f"""
+            QTreeWidget {{
+                background-color: {COLOR_FONDO_CHASIS_OSCURO};
+                border: 1px solid {COLOR_BORDE_OSCURO};
+                color: {COLOR_TEXTO_ARBOL};
+                font-size: {TAMANO_BASE}px;
+            }}
+            QTreeWidget::item:selected {{
+                background-color: {ACEINTO};
+                color: {TEXTO_CLARO};
                 font-weight: bold;
-            }
-            QTreeWidget::item:hover:!selected {
-                background-color: #262626;
-            }
+            }}
+            QTreeWidget::item:hover:!selected {{
+                background-color: {FONDO2};
+            }}
         """
-ESTILO_ARQUITECTURA_9PX = "font-size: 9px; color: #888888;"
-ESTILO_ATENUADO_10PX = "color: #888888; font-size: 10px;"
-ESTILO_ATENUADO_9PX = "color: #888888; font-size: 9px;"
-ESTILO_ATENUADO_ITALICA = "color: #8a8a8a; font-style: italic;"
-ESTILO_AVISO_10PX = "color: #ffaa00; font-size: 10px;"
-ESTILO_BANNER_LUZ = "QFrame { background-color: #22252a; border: 1px solid #007acc; border-radius: 4px; padding: 3px; }"
-ESTILO_BOTON_ACENTO_10PX = "background-color: #007acc; color: white; font-weight: bold; padding: 4px; font-size: 10px;"
-ESTILO_BOTON_AZUL = "background-color: #0066cc; color: white; font-weight: bold;"
-ESTILO_BOTON_AZUL_PAD = "background:#0066cc; color:white; font-weight:bold; padding:6px;"
-ESTILO_BOTON_EXITO = "background-color: #00cc00; color: white; font-weight: bold;"
-ESTILO_BOTON_VACIO = "background-color: #333333; color: #cccccc; padding: 4px; font-size: 10px;"
-ESTILO_BOTON_VANO = """
-                QPushButton {
-                    background-color: #282828;
-                    border: 1px solid #3d3d3d;
-                    border-radius: 4px;
-                    font-size: 9px;
-                    color: #cccccc;
-                    padding: 2px 4px;
-                }
-                QPushButton:checked {
-                    background-color: #007acc;
-                    border-color: #007acc;
-                    color: #ffffff;
+ESTILO_ARQUITECTURA_9PX = f"font-size: {TAMANO_PEQUENO}px; color: {TEXTO_SUAVE};"
+ESTILO_ATENUADO_10PX = f"color: {TEXTO_SUAVE}; font-size: {TAMANO_BASE}px;"
+ESTILO_ATENUADO_9PX = f"color: {TEXTO_SUAVE}; font-size: {TAMANO_PEQUENO}px;"
+ESTILO_ATENUADO_ITALICA = f"color: {COLOR_TRAZO_NEUTRO}; font-style: italic;"
+ESTILO_AVISO_10PX = f"color: {AVISO}; font-size: {TAMANO_BASE}px;"
+ESTILO_BANNER_LUZ = f"QFrame {{ background-color: {COLOR_BANNER_FONDO}; border: 1px solid {ACEINTO}; border-radius: {RADIO_4}px; padding: {ESPACIO_3}px; }}"
+ESTILO_BOTON_ACENTO_10PX = f"background-color: {ACEINTO}; color: white; font-weight: bold; padding: {ESPACIO_4}px; font-size: {TAMANO_BASE}px;"
+ESTILO_BOTON_AZUL = f"background-color: {COLOR_AZUL_ACCION}; color: white; font-weight: bold;"
+ESTILO_BOTON_AZUL_PAD = f"background:{COLOR_AZUL_ACCION}; color:white; font-weight:bold; padding:{ESPACIO_6}px;"
+ESTILO_BOTON_EXITO = f"background-color: {EXITO}; color: white; font-weight: bold;"
+ESTILO_BOTON_VACIO = f"background-color: {FONDO3}; color: {TEXTO_SUAVE2}; padding: {ESPACIO_4}px; font-size: {TAMANO_BASE}px;"
+ESTILO_BOTON_VANO = f"""
+                QPushButton {{
+                    background-color: {COLOR_FONDO_MEDIO};
+                    border: 1px solid {COLOR_BORDE_MEDIO_OSCURO};
+                    border-radius: {RADIO_4}px;
+                    font-size: {TAMANO_PEQUENO}px;
+                    color: {TEXTO_SUAVE2};
+                    padding: {ESPACIO_2}px {ESPACIO_4}px;
+                }}
+                QPushButton:checked {{
+                    background-color: {ACEINTO};
+                    border-color: {ACEINTO};
+                    color: {TEXTO_CLARO};
                     font-weight: bold;
-                }
-                QPushButton:hover:!checked {
-                    background-color: #333333;
-                    color: #ffffff;
-                }
+                }}
+                QPushButton:hover:!checked {{
+                    background-color: {FONDO3};
+                    color: {TEXTO_CLARO};
+                }}
             """
-ESTILO_BREADCRUMB_RAIZ = "QLabel#lblBreadcrumbRoot { color: #007acc; font-weight: bold; font-size: 11px; }"
-ESTILO_CLAVE_10PX = "color: #aaaaaa; font-size: 10px;"
-ESTILO_CLAVE_11PX = "color: #b0b0b0; font-size: 11px;"
-ESTILO_ERROR_TEXTO = "QLabel { color: #b03a2e; }"
-ESTILO_ETIQUETA_10PX = "font-size: 10px; color: #aaaaaa;"
-ESTILO_ETIQUETA_OSCURA = "QLabel { background: #2b2b2b; color: #e0e0e0; padding: 4px; border: 1px solid #4a4a4a; }"
-ESTILO_ETIQUETA_OSCURA_5PX = "QLabel { background: #2b2b2b; color: #e0e0e0; padding: 5px; border: 1px solid #4a4a4a; }"
-ESTILO_ETIQUETA_OSCURA_COMPACTA = "QLabel { background: #2b2b2b; color: #e0e0e0; padding: 3px; border: 1px solid #4a4a4a; }"
-ESTILO_FONDO_CLARO = "background:#fafafa;"
-ESTILO_FONDO_DOCK = "background-color: #1a1a1a; border-radius: 4px;"
+ESTILO_BREADCRUMB_RAIZ = f"QLabel#lblBreadcrumbRoot {{ color: {ACEINTO}; font-weight: bold; font-size: {TAMANO_MEDIO}px; }}"
+ESTILO_CLAVE_10PX = f"color: {COLOR_TEXTO_ATENUADO}; font-size: {TAMANO_BASE}px;"
+ESTILO_CLAVE_11PX = f"color: {COLOR_TEXTO_MEDIO}; font-size: {TAMANO_MEDIO}px;"
+ESTILO_ERROR_TEXTO = f"QLabel {{ color: {ERROR}; }}"
+ESTILO_ETIQUETA_10PX = f"font-size: {TAMANO_BASE}px; color: {COLOR_TEXTO_ATENUADO};"
+ESTILO_ETIQUETA_OSCURA = f"QLabel {{ background: {COLOR_FONDO_BOTON}; color: {TEXTO}; padding: {ESPACIO_4}px; border: 1px solid {COLOR_BORDE_GRIS}; }}"
+ESTILO_ETIQUETA_OSCURA_5PX = f"QLabel {{ background: {COLOR_FONDO_BOTON}; color: {TEXTO}; padding: {ESPACIO_5}px; border: 1px solid {COLOR_BORDE_GRIS}; }}"
+ESTILO_ETIQUETA_OSCURA_COMPACTA = f"QLabel {{ background: {COLOR_FONDO_BOTON}; color: {TEXTO}; padding: {ESPACIO_3}px; border: 1px solid {COLOR_BORDE_GRIS}; }}"
+ESTILO_FONDO_CLARO = f"background:{COLOR_FONDO_CLARO};"
+ESTILO_FONDO_DOCK = f"background-color: {COLOR_FONDO_CHASIS_OSCURO}; border-radius: {RADIO_4}px;"
 ESTILO_FONDO_TRANSPARENTE = "background: transparent;"
-ESTILO_GRIS_11PX = "color:#777; font-size:11px;"
-ESTILO_GRUPO_CABECERA = "QGroupBox { font-weight: bold; color: #e0e0e0; border: 1px solid #555555; border-radius: 6px; margin-top: 10px; padding-top: 8px; }QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 4px; }"
-ESTILO_GRUPO_HERRAJE = "QGroupBox { color: #28a745; font-weight: bold; border: 1px solid #334d38; border-radius: 4px; margin-top: 6px; padding-top: 10px; }"
-ESTILO_GRUPO_PANEL_HEADER = "QGroupBox#grpPanelHeader { color: #e0e0e0; font-weight: bold; border: 1px solid #444444; border-radius: 4px; margin-top: 6px; }QGroupBox#grpPanelHeader::title { subcontrol-origin: margin; left: 8px; padding: 0 4px; color: #007acc; }"
-ESTILO_HUB_9PX = "color: #28a745; font-size: 9px;"
-ESTILO_INFO_11PX = "color: #666; font-size: 11px;"
-ESTILO_LUZ_10PX = "color: #00d4ff; font-size: 10px;"
-ESTILO_MICRO_HEADER = """
-            QFrame#VDOMicroHeader {
-                background-color: #1e1e1e;
-                border-top: 1px solid #2d2d2d;
-                border-bottom: 1px solid #2d2d2d;
-                padding: 1px 4px;
-            }
-            QLabel {
-                color: #888888;
-                font-size: 10px;
+ESTILO_GRIS_11PX = f"color:{COLOR_OPT_REGLA}; font-size:{TAMANO_MEDIO}px;"
+ESTILO_GRUPO_CABECERA = f"QGroupBox {{ font-weight: bold; color: {TEXTO}; border: 1px solid {COLOR_BORDE_MEDIO}; border-radius: {RADIO_6}px; margin-top: {ESPACIO_10}px; padding-top: {ESPACIO_8}px; }}QGroupBox::title {{ subcontrol-origin: margin; left: 10px; padding: 0 {ESPACIO_4}px; }}"
+ESTILO_GRUPO_HERRAJE = f"QGroupBox {{ color: {COLOR_VERDE_HERRAJE}; font-weight: bold; border: 1px solid {COLOR_BORDE_HERRAJE}; border-radius: {RADIO_4}px; margin-top: {ESPACIO_6}px; padding-top: {ESPACIO_10}px; }}"
+ESTILO_GRUPO_PANEL_HEADER = f"QGroupBox#grpPanelHeader {{ color: {TEXTO}; font-weight: bold; border: 1px solid {BORDE}; border-radius: {RADIO_4}px; margin-top: {ESPACIO_6}px; }}QGroupBox#grpPanelHeader::title {{ subcontrol-origin: margin; left: 8px; padding: 0 {ESPACIO_4}px; color: {ACEINTO}; }}"
+ESTILO_HUB_9PX = f"color: {COLOR_VERDE_HERRAJE}; font-size: {TAMANO_PEQUENO}px;"
+ESTILO_INFO_11PX = f"color: {COLOR_OPT_EJE}; font-size: {TAMANO_MEDIO}px;"
+ESTILO_LUZ_10PX = f"color: {COLOR_CIAN_VIVO}; font-size: {TAMANO_BASE}px;"
+ESTILO_MICRO_HEADER = f"""
+            QFrame#VDOMicroHeader {{
+                background-color: {FONDO};
+                border-top: 1px solid {COLOR_BORDE_OSCURO};
+                border-bottom: 1px solid {COLOR_BORDE_OSCURO};
+                padding: {ESPACIO_1}px {ESPACIO_4}px;
+            }}
+            QLabel {{
+                color: {TEXTO_SUAVE};
+                font-size: {TAMANO_BASE}px;
                 font-weight: bold;
-            }
-            QDoubleSpinBox {
-                background-color: #282828;
-                color: #00d4ff;
-                border: 1px solid #3d3d3d;
-                border-radius: 3px;
-                padding: 1px 2px;
-                font-size: 10px;
+            }}
+            QDoubleSpinBox {{
+                background-color: {COLOR_FONDO_MEDIO};
+                color: {COLOR_CIAN_VIVO};
+                border: 1px solid {COLOR_BORDE_MEDIO_OSCURO};
+                border-radius: {RADIO_3}px;
+                padding: {ESPACIO_1}px {ESPACIO_2}px;
+                font-size: {TAMANO_BASE}px;
                 font-weight: bold;
-            }
-            QDoubleSpinBox:focus {
-                border-color: #007acc;
-                background-color: #333333;
-            }
+            }}
+            QDoubleSpinBox:focus {{
+                border-color: {ACEINTO};
+                background-color: {FONDO3};
+            }}
         """
 ESTILO_NEGRITA = "font-weight: bold;"
-ESTILO_NEGRITA_11PX = "font-weight: bold; font-size: 11px;"
-ESTILO_NEGRITA_TEXTO = "font-weight: bold; color: #e0e0e0;"
-ESTILO_PAGINA_TITULO = "QLabel#lblPaginaTitulo { color: #007acc; font-size: 11px; font-weight: bold; padding-bottom: 2px; }"
-ESTILO_RESUMEN_AZUL = "color: #0066cc; font-weight: bold;"
-ESTILO_RESUMEN_CAJA = "QLabel { background: #252525; color: #d0d0d0; padding: 4px 6px; border: 1px solid #3a3a3a; border-radius: 4px; font-size: 11px; }"
-ESTILO_RESUMEN_CLARO = "QLabel { background-color: #f0f0f0; padding: 8px; border: 1px solid #ccc; font-family: monospace; }"
-ESTILO_RESUMEN_MONO = "QLabel { background: #2b2b2b; color: #e0e0e0; padding: 6px; border: 1px solid #4a4a4a; font-family: monospace; }"
+ESTILO_NEGRITA_11PX = f"font-weight: bold; font-size: {TAMANO_MEDIO}px;"
+ESTILO_NEGRITA_TEXTO = f"font-weight: bold; color: {TEXTO};"
+ESTILO_PAGINA_TITULO = f"QLabel#lblPaginaTitulo {{ color: {ACEINTO}; font-size: {TAMANO_MEDIO}px; font-weight: bold; padding-bottom: {ESPACIO_2}px; }}"
+ESTILO_RESUMEN_AZUL = f"color: {COLOR_AZUL_ACCION}; font-weight: bold;"
+ESTILO_RESUMEN_CAJA = f"QLabel {{ background: {COLOR_FONDO_BASE}; color: {COLOR_TEXTO_SECUNDARIO}; padding: {ESPACIO_4}px {ESPACIO_6}px; border: 1px solid {BORDE_SUAVE}; border-radius: {RADIO_4}px; font-size: {TAMANO_MEDIO}px; }}"
+ESTILO_RESUMEN_CLARO = f"QLabel {{ background-color: {COLOR_FONDO_RESUMEN_PAPEL}; padding: {ESPACIO_8}px; border: 1px solid {COLOR_BORDE_PAPEL}; font-family: monospace; }}"
+ESTILO_RESUMEN_MONO = f"QLabel {{ background: {COLOR_FONDO_BOTON}; color: {TEXTO}; padding: {ESPACIO_6}px; border: 1px solid {COLOR_BORDE_GRIS}; font-family: monospace; }}"
 ESTILO_SCROLL_TRANSPARENTE = "QScrollArea { background-color: transparent; }"
-ESTILO_SEPARADOR = "color: #666666; font-size: 10px;"
-ESTILO_SPLITTER = """
-            QSplitter::handle {
-                background-color: #2b2b2b;
+ESTILO_SEPARADOR = f"color: {BORDE_CLARO}; font-size: {TAMANO_BASE}px;"
+ESTILO_SPLITTER = f"""
+            QSplitter::handle {{
+                background-color: {COLOR_FONDO_BOTON};
                 width: 3px;
-            }
-            QSplitter::handle:hover {
-                background-color: #007acc;
-            }
+            }}
+            QSplitter::handle:hover {{
+                background-color: {ACEINTO};
+            }}
         """
-ESTILO_TEXTO_10PX = "font-size: 10px;"
-ESTILO_TEXTO_11PX = "font-size: 11px;"
-ESTILO_TEXTO_12PX = "font-size:12px;"
-ESTILO_TITULO_14PX = "font-size: 14px; font-weight: bold;"
-ESTILO_TITULO_14PX_OSCURO = "font-size: 14px; color: #333;"
-ESTILO_TITULO_ACENTO_12PX = "font-weight: bold; color: #007acc; font-size: 12px;"
-ESTILO_TITULO_DOCK = "color: #888888; font-size: 9px; font-weight: bold; margin-top: 4px;"
-ESTILO_TITULO_ESPACIADO = "font-size: 11px; color: #e0e0e0; letter-spacing: 0.5px;"
-ESTILO_VALOR_10PX_NEGRITA = "color: #e0e0e0; font-size: 10px; font-weight: bold;"
-ESTILO_VALOR_11PX = "color: #e0e0e0; font-size: 11px;"
-ESTILO_VALOR_11PX_NEGRITA = "color: #e0e0e0; font-size: 11px; font-weight: bold;"
-ESTILO_VALOR_BLANCO_10PX = "color: #ffffff; font-size: 10px; font-weight: bold;"
-ESTILO_CAJON = 'QWidget { background-color: #2b2b2b; color: #e0e0e0; }QGroupBox { font-weight: bold; color: #e0e0e0; border: 1px solid #555555; border-radius: 6px; margin-top: 10px; padding-top: 8px; }QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 4px; }QLabel { color: #e0e0e0; }QComboBox, QDoubleSpinBox, QSpinBox {  background-color: #3a3a3a; color: #e0e0e0;  border: 1px solid #555555; border-radius: 3px; padding: 3px;}QPushButton {  background-color: #3a3a3a; color: #e0e0e0;  border: 1px solid #555555; border-radius: 4px;  padding: 6px 14px; font-weight: bold;}QPushButton:hover { background-color: #444444; }'
-ESTILO_PUERTA_GRUPO_CABECERA = "QGroupBox { background: #1e1e1e; color: #e0e0e0; border: 1px solid #4a4a4a; border-radius: 4px; margin-top: 8px; padding-top: 4px; }QGroupBox::title { subcontrol-origin: margin; left: 8px; }"
-ESTILO_PUERTA_GRUPO = "QGroupBox { color: #e0e0e0; border: 1px solid #4a4a4a; border-radius: 4px; margin-top: 8px; }QGroupBox::title { subcontrol-origin: margin; left: 8px; }"
-ESTILO_PUERTA_FONDO = "QWidget { background: #1e1e1e; color: #e0e0e0; }"
-ESTILO_PUERTA_TEXTO = "color: #e0e0e0;"
-ESTILO_PUERTA_PISTON = "QLabel { background: #1e4a1e; color: #8fbc8f; padding: 6px; border: 1px solid #3a7a3a; font-weight: bold; }"
+ESTILO_TEXTO_10PX = f"font-size: {TAMANO_BASE}px;"
+ESTILO_TEXTO_11PX = f"font-size: {TAMANO_MEDIO}px;"
+ESTILO_TEXTO_12PX = f"font-size:{TAMANO_GRANDE}px;"
+ESTILO_TITULO_14PX = f"font-size: {TAMANO_TITULO}px; font-weight: bold;"
+ESTILO_TITULO_14PX_OSCURO = f"font-size: {TAMANO_TITULO}px; color: {COLOR_OPT_TRAZO};"
+ESTILO_TITULO_ACENTO_12PX = f"font-weight: bold; color: {ACEINTO}; font-size: {TAMANO_GRANDE}px;"
+ESTILO_TITULO_DOCK = f"color: {TEXTO_SUAVE}; font-size: {TAMANO_PEQUENO}px; font-weight: bold; margin-top: {ESPACIO_4}px;"
+ESTILO_TITULO_ESPACIADO = f"font-size: {TAMANO_MEDIO}px; color: {TEXTO}; letter-spacing: {ESPACIO_LETRA}px;"
+ESTILO_VALOR_10PX_NEGRITA = f"color: {TEXTO}; font-size: {TAMANO_BASE}px; font-weight: bold;"
+ESTILO_VALOR_11PX = f"color: {TEXTO}; font-size: {TAMANO_MEDIO}px;"
+ESTILO_VALOR_11PX_NEGRITA = f"color: {TEXTO}; font-size: {TAMANO_MEDIO}px; font-weight: bold;"
+ESTILO_VALOR_BLANCO_10PX = f"color: {TEXTO_CLARO}; font-size: {TAMANO_BASE}px; font-weight: bold;"
+ESTILO_CAJON = f'QWidget {{ background-color: {COLOR_FONDO_BOTON}; color: {TEXTO}; }}QGroupBox {{ font-weight: bold; color: {TEXTO}; border: 1px solid {COLOR_BORDE_MEDIO}; border-radius: {RADIO_6}px; margin-top: {ESPACIO_10}px; padding-top: {ESPACIO_8}px; }}QGroupBox::title {{ subcontrol-origin: margin; left: 10px; padding: 0 {ESPACIO_4}px; }}QLabel {{ color: {TEXTO}; }}QComboBox, QDoubleSpinBox, QSpinBox {{  background-color: {BORDE_SUAVE}; color: {TEXTO};  border: 1px solid {COLOR_BORDE_MEDIO}; border-radius: {RADIO_3}px; padding: {ESPACIO_3}px;}}QPushButton {{  background-color: {BORDE_SUAVE}; color: {TEXTO};  border: 1px solid {COLOR_BORDE_MEDIO}; border-radius: {RADIO_4}px;  padding: {ESPACIO_6}px {ESPACIO_14}px; font-weight: bold;}}QPushButton:hover {{ background-color: {BORDE}; }}'
+ESTILO_PUERTA_GRUPO_CABECERA = f"QGroupBox {{ background: {FONDO}; color: {TEXTO}; border: 1px solid {COLOR_BORDE_GRIS}; border-radius: {RADIO_4}px; margin-top: {ESPACIO_8}px; padding-top: {ESPACIO_4}px; }}QGroupBox::title {{ subcontrol-origin: margin; left: 8px; }}"
+ESTILO_PUERTA_GRUPO = f"QGroupBox {{ color: {TEXTO}; border: 1px solid {COLOR_BORDE_GRIS}; border-radius: {RADIO_4}px; margin-top: {ESPACIO_8}px; }}QGroupBox::title {{ subcontrol-origin: margin; left: 8px; }}"
+ESTILO_PUERTA_FONDO = f"QWidget {{ background: {FONDO}; color: {TEXTO}; }}"
+ESTILO_PUERTA_TEXTO = f"color: {TEXTO};"
+ESTILO_PUERTA_PISTON = f"QLabel {{ background: {COLOR_FONDO_PISTON}; color: {COLOR_VERDE_PISTON_TEXTO}; padding: {ESPACIO_6}px; border: 1px solid {COLOR_BORDE_PISTON}; font-weight: bold; }}"
 
 
 def aplicar_estilo(widget, hoja):
@@ -174,9 +229,9 @@ def aplicar_estilo(widget, hoja):
 def estilo_breadcrumb(clave, activo_es):
     """Hoja de la miga de pan del inspector: activa en blanco y negrita."""
     return (f"QLabel#lblBreadcrumb_{clave} {{ "
-            f"color: {'#ffffff' if activo_es else '#aaaaaa'}; "
+            f"color: {TEXTO_CLARO if activo_es else COLOR_TEXTO_ATENUADO}; "
             f"font-weight: {'bold' if activo_es else 'normal'}; "
-            f"font-size: 10px; }}")
+            f"font-size: {TAMANO_BASE}px; }}")
 
 __all__ = [
     "ESTILO_ACENTO_NEGRITA",

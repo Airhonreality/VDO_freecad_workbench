@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import unittest
 from pathlib import Path
 
@@ -30,6 +31,15 @@ class TemaEstilosCadenasTests(unittest.TestCase):
         for nombre, real in casos.items():
             with self.subTest(cadena=nombre):
                 self.assertEqual(real, datos[nombre])
+
+    def test_fuente_sin_literales_de_color_ni_tamano(self):
+        fuente = (RAIZ / "freecad" / "vdo" / "ui" / "tema_estilos.py").read_text(encoding="utf-8")
+        self.assertIsNone(re.search(r"#[0-9a-fA-F]{3,6}\b", fuente))
+        self.assertIsNone(re.search(r"font-size:\s*\d+px", fuente))
+
+    def test_fuente_como_maximo_400_lineas(self):
+        fuente = (RAIZ / "freecad" / "vdo" / "ui" / "tema_estilos.py").read_text(encoding="utf-8")
+        self.assertLessEqual(len(fuente.splitlines()), 400)
 
 
 if __name__ == "__main__":
