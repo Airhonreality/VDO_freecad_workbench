@@ -31,7 +31,7 @@ Ahorro neto estimado: **315.5 líneas**, es decir **2.34 %** de `freecad/vdo/ui/
 | box_construccion.py | `BoxConstruccionMixin._construir_bordes` | C | 46 | 0 | 4 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | box_construccion.py | `BoxConstruccionMixin._construir_centro` | C | 31 | 0 | 4 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | box_construccion.py | `BoxConstruccionMixin._construir_selector_margenes` | C | 17 | 1 | 3 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
-| box_construccion.py | `BoxConstruccionMixin._construir_panel_medidas` | A | 31 | 3 | 13 | 3 | 13.5 | ancho, offset, espesor |
+| box_construccion.py | `BoxConstruccionMixin._construir_panel_medidas` | A | 31 | 3 | 13 | 3 | 13.5 | ancho, offset, espesor; migrada en F-UI-2b: árbol de widgets idéntico (snapshot de box sin cambios entre commits, `git diff <commit1> -- tests/fixtures/box_panel_medidas_snapshot.json` vacío), `FormBuilder.construir_rejilla` con `BOX_PANEL_MEDIDES` y 3 campos en `datos/formularios.py` (incl. `texto_especial: "Auto"`); ahorro real 21 líneas en `box_construccion.py` (325 → 304; función 31 → 8), parcialmente compensado por +17 en `form_builder.py` por `construir_rejilla` (`ui/` 13 459 → 13 455, −4); el estimado era 13.5 |
 | box_construccion.py | `BoxConstruccionMixin._construir_chips_offset` | C | 21 | 1 | 3 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | box_construccion.py | `BoxConstruccionMixin._construir_resumen` | C | 6 | 1 | 2 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | box_esquinas.py | `BoxEsquinasMixin._actualizar_iconos_esquinas` | C | 6 | 0 | 1 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |

@@ -175,6 +175,7 @@ Cada fase tiene objetivo, entregables, criterio de aceptación medido y prueba. 
 - **Nivel 1 (línea base `f4a2208`):** 306 ejecutados, 0 fallos.
 - **Tras F-UI-0 (tokens):** ui 13 562 líneas (`tema_estilos.py` 251 → 306, `tema_colores.py` 168 → 190, `tema_tipografia.py` 46); total 24 470. Nivel 1: 309 ejecutados (3 tests nuevos), 0 fallos.
 - **Tras F-UI-2a (nesting):** `NestingDialog._construir_tablero` migrado a FormBuilder con `NESTING_TABLERO`; árbol de widgets idéntico verificado en nivel 2 con snapshot. ui 13 562 → 13 539 líneas; total 24 470 → 24 447 (−23; `datos/formularios.py` +16 no cuenta en el método por capas). Nivel 1: 311 ejecutados, 0 fallos.
+- **Tras F-UI-2b (box medidas):** `BoxConstruccionMixin._construir_panel_medidas` migrado a `FormBuilder.construir_rejilla` con `BOX_PANEL_MEDIDES` (3 campos en `datos/formularios.py`); árbol de widgets idéntico: el snapshot de box no cambió entre commits (`git diff <commit1> -- tests/fixtures/box_panel_medidas_snapshot.json` vacío). `box_construccion.py` 325 → 304 líneas (−21; función 31 → 8), `form_builder.py` 258 → 275 (+17 por `construir_rejilla`); `ui/` total 13 459 → 13 455 (−4). Nivel 1: 0 fallos; nivel 2: 0 fallos; los dos tests de árbol se ejecutaron (no skip).
 - **Nota:** las cifras de §2 son del 2026-11-06. Las de esta sección son la línea base de la fase, medidas de nuevo el 2026-11-07 sobre `f4a2208` con el mismo método.
 
 ## 8. Regla del usuario sobre el visor 2D y las divisiones (vinculante)
