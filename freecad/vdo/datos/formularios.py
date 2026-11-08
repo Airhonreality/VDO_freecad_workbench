@@ -344,3 +344,19 @@ COCO_PESTANAS = (
     {"clave": "estructura", "titulo": "Estructura"},
     {"clave": "divisiones", "titulo": "Divisiones"},
 )
+
+# --- Diálogo de nesting (F-UI-2) ------------------------------------------
+# El combo de presets se puebla en tiempo de ejecución con _populate_presets.
+NESTING_TABLERO = (
+    "2️⃣ Configuración de Tablero",
+    (
+        {"tipo": "combo", "clave": "preset", "etiqueta": "Tamaño predefinido:",
+         "items": []},
+        {"tipo": "spin", "clave": "ancho", "etiqueta": "Ancho (mm):",
+         "valor_defecto": 2440, "rango": (100, 10000)},
+        {"tipo": "spin", "clave": "alto", "etiqueta": "Alto (mm):",
+         "valor_defecto": 1830, "rango": (100, 10000)},
+        {"tipo": "double_spin", "clave": "espaciado", "etiqueta": "Espaciado (mm):",
+         "valor_defecto": 15.0, "rango": (0, 100), "decimales": 2},
+    ),
+)

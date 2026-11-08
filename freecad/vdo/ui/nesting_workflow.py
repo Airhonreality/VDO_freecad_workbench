@@ -24,7 +24,9 @@ except ImportError:
 
 from freecad.vdo.core import nesting_presets as presets_mgr
 from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR
+from freecad.vdo.datos.formularios import NESTING_TABLERO
 from freecad.vdo.ui import qt, tema_estilos
+from freecad.vdo.ui.form_builder import FormBuilder
 
 _presets_inicializados = False
 
@@ -84,42 +86,17 @@ class NestingDialog(QtWidgets.QDialog):
 
     def _construir_tablero(self, layout):
         # === CONFIGURACIÓN DE TABLERO ===
-        group_tablero = QtWidgets.QGroupBox("2️⃣ Configuración de Tablero")
-        tablero_layout = QtWidgets.QGridLayout()
+        titulo, filas = NESTING_TABLERO
+        builder = FormBuilder(self)
+        builder.construir_grupo(layout, titulo, filas)
 
-        # Presets
-        tablero_layout.addWidget(QtWidgets.QLabel("Tamaño predefinido:"), 0, 0)
-        self.combo_preset = QtWidgets.QComboBox()
+        self.combo_preset = builder.widget("preset")
+        self.spin_width = builder.widget("ancho")
+        self.spin_height = builder.widget("alto")
+        self.spin_spacing = builder.widget("espaciado")
+
         self._populate_presets()
         self.combo_preset.currentTextChanged.connect(self._on_preset_changed)
-        tablero_layout.addWidget(self.combo_preset, 0, 1)
-
-        # Ancho
-        tablero_layout.addWidget(QtWidgets.QLabel("Ancho (mm):"), 1, 0)
-        self.spin_width = QtWidgets.QSpinBox()
-        self.spin_width.setMinimum(100)
-        self.spin_width.setMaximum(10000)
-        self.spin_width.setValue(2440)
-        tablero_layout.addWidget(self.spin_width, 1, 1)
-
-        # Alto
-        tablero_layout.addWidget(QtWidgets.QLabel("Alto (mm):"), 2, 0)
-        self.spin_height = QtWidgets.QSpinBox()
-        self.spin_height.setMinimum(100)
-        self.spin_height.setMaximum(10000)
-        self.spin_height.setValue(1830)
-        tablero_layout.addWidget(self.spin_height, 2, 1)
-
-        # Espaciado
-        tablero_layout.addWidget(QtWidgets.QLabel("Espaciado (mm):"), 3, 0)
-        self.spin_spacing = QtWidgets.QDoubleSpinBox()
-        self.spin_spacing.setMinimum(0)
-        self.spin_spacing.setMaximum(100)
-        self.spin_spacing.setValue(15)
-        tablero_layout.addWidget(self.spin_spacing, 3, 1)
-
-        group_tablero.setLayout(tablero_layout)
-        layout.addWidget(group_tablero)
 
     def _construir_algoritmo(self, layout):
         # === PARÁMETROS DE OPTIMIZACIÓN ===
