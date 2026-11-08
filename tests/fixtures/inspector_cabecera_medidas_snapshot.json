@@ -1,0 +1,109 @@
+{
+  "clase": "_MicroHeaderWidget",
+  "objectName": "VDOMicroHeader",
+  "toolTip": "",
+  "visible": false,
+  "layout": {
+    "margenes": [
+      6,
+      2,
+      6,
+      2
+    ],
+    "spacing": 4
+  },
+  "hijos": [
+    {
+      "clase": "QLabel",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "📐",
+      "hijos": []
+    },
+    {
+      "clase": "VDO_DoubleSpinBox",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "600.0 W",
+      "value": 600.0,
+      "suffix": " W",
+      "decimals": 1,
+      "minimum": 50.0,
+      "maximum": 5000.0,
+      "singleStep": 1.0,
+      "specialValueText": "",
+      "hijos": []
+    },
+    {
+      "clase": "QLabel",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "×",
+      "hijos": []
+    },
+    {
+      "clase": "VDO_DoubleSpinBox",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "720.0 H",
+      "value": 720.0,
+      "suffix": " H",
+      "decimals": 1,
+      "minimum": 50.0,
+      "maximum": 5000.0,
+      "singleStep": 1.0,
+      "specialValueText": "",
+      "hijos": []
+    },
+    {
+      "clase": "QLabel",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "×",
+      "hijos": []
+    },
+    {
+      "clase": "VDO_DoubleSpinBox",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "580.0 D",
+      "value": 580.0,
+      "suffix": " D",
+      "decimals": 1,
+      "minimum": 50.0,
+      "maximum": 5000.0,
+      "singleStep": 1.0,
+      "specialValueText": "",
+      "hijos": []
+    },
+    {
+      "clase": "QLabel",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "mm │ Esp:",
+      "hijos": []
+    },
+    {
+      "clase": "VDO_DoubleSpinBox",
+      "objectName": "",
+      "toolTip": "",
+      "visible": true,
+      "text": "18.0 mm",
+      "value": 18.0,
+      "suffix": " mm",
+      "decimals": 1,
+      "minimum": 3.0,
+      "maximum": 100.0,
+      "singleStep": 1.0,
+      "specialValueText": "",
+      "hijos": []
+    }
+  ]
+}
