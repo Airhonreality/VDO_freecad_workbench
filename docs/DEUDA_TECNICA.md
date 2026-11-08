@@ -103,7 +103,7 @@ Fecha objetivo original "M5": ya pasó y los ciclos siguen.
 
 | ID | Ítem | Estado | Responsable | Fecha |
 |---|---|---|---|---|
-| I1 | **Verificación visual en FreeCAD GUI** de los paneles cambiados en M6 y M7 (zócalo, panel, puerta, cajón y coco; D-70 a D-75), del panel de coco en M7 (D-40) y del icono de M4. Incluye las capturas comparadas contra M0 del paso 3 de M10. | **PENDIENTE DE REVISIÓN VISUAL (al final)** (D-109): se hace cuando no quede deuda técnica, por el usuario. Pendiente. Nivel 3 de la verificación. Sin sesión gráfica revisada por una persona, la fase no se da por cerrada en este punto. | usuario | 2026-11-13 (propuesta) |
+| I1 | **Verificación visual en FreeCAD GUI** de los paneles cambiados en M6 y M7 (zócalo, panel, puerta, cajón y coco; D-70 a D-75), del panel de coco en M7 (D-40) y del icono de M4. Incluye las capturas comparadas contra M0 del paso 3 de M10. | **PENDIENTE DE REVISIÓN VISUAL (al final)** (D-109): se hace cuando no quede deuda técnica, por el usuario. Pendiente (ahora lista en `docs/REVISION_VISUAL.md`). Nivel 3 de la verificación. Sin sesión gráfica revisada por una persona, la fase no se da por cerrada en este punto. | usuario | 2026-11-13 (propuesta) |
 
 ---
 

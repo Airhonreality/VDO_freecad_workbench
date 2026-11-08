@@ -18,6 +18,8 @@ Medición de F9 (D-95). **Sin cambio de código.** Solo lectura del árbol y est
 | C. Presentación | 91 | 1633 | 0 | 0.0 |
 | **Total** | **124** | **2387** | **613** | **306.5** |
 
+Verificación D-121 (F-UI-6, sin cambio de código): los totales se mantienen (A=26, C=91, total 124/2387, bruto 613, neto 306.5). `panel_task` (desclasificado A→C en D-111) y `box_esquinas` (A→C en D-118) ya figuran como C con ahorro 0. `ui/inspector_*`, `ui/universal_inspector.py`, `ui/cutting_list_*` y `ui/hardware_manager.py` permanecen en C (presentación pura: árboles, tablas, cabeceras, etiquetas de estado); no se migran a FormBuilder.
+
 Líneas totales de `freecad/vdo/ui/*.py`: **13461**. Las funciones medidas suman 2387 líneas (17.7 %).
 Ahorro neto estimado: **306.5 líneas**, es decir **2.28 %** de `freecad/vdo/ui/` (ahorro bruto **613 líneas**, **4.55 %**). Las líneas de especificación ya están restadas.
 

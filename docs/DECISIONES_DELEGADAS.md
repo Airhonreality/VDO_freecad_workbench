@@ -918,4 +918,13 @@ Ola 42: bloques movidos a core/cajon_calculo_bloques.py para cumplir P5.
   - **Qué se deja:** los controles de formulario reactivos de coco (paneles de subdivisión, puerta, cajón y selector de contenido) quedan como presentación interactiva; el visor 2D, el árbol de vanos, el inspector y la lógica de clics quedan intactos (regla vinculante, sección 8 del plan `docs/PLAN_FASE_UI_Y_REDUCCION.md`).
   - **Cómo revertir:** no aplica; es solo documentación. Si en una fase futura se quisiera migrar, es una decisión nueva (D-xx) con sus propias pruebas de árbol de widgets idéntico y de imagen del visor, y su propio commit revertible con `git revert`.
 
+## D-121
+
+- **D-121: F-UI-4 cerrado — inspector y listas = presentación pura clase C, no se migra a FormBuilder.** Sin cambio de código ni de pruebas.
+  - **Alcance:** `ui/inspector_*`, `ui/universal_inspector.py`, `ui/cutting_list_*` y `ui/hardware_manager.py` quedan como presentación pura (árboles, tablas, cabeceras, etiquetas de estado) = clase C de `docs/METRICAS_WIDGETS.md`. No son formularios puros y no se migran a FormBuilder.
+  - **F-UI-4:** cerrado sin migración de esas funciones. Los formularios de alto valor de la fase ya se migraron: nesting tablero (F-UI-2a, D-111), nesting algoritmo (F-UI-2c, D-113), box medidas (F-UI-2b, D-112), cabecera medidas (F-UI-2d, D-115) y vano subdivisión (F-UI-2e, D-117) — 5 formularios en total.
+  - **Construcción a mano:** se redujo de **310** (línea base `f4a2208`, `grep -rc 'QLabel(\|addWidget('`) a **281** medidos en HEAD `8e7b1f2` con el mismo comando.
+  - **Cifras finales de la fase:** core 7 750 líneas / 337 funciones; ui 13 540 / 670; cad 3 158 / 120; app 0 / 0; total 24 448 líneas / 1 127 funciones (`minimalismo.py resumen`). Nivel 1: ejecutados=325, fallos=0. Nivel 2: ejecutados=323, fallos=0, 0 `FALLO golden`. `ruff check . --no-cache`: 0 errores.
+  - **Cómo revertir:** no aplica; D-121 es solo documentación y no tiene commits de código asociados. Los commits de código de la fase (migraciones F-UI-2a a F-UI-2e, D-111 a D-117) se deshacen con `git revert` en orden inverso (D-117 → D-116 → D-115 → D-114 → D-113 → D-112 → D-111).
+
 

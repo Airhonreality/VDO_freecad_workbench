@@ -190,3 +190,14 @@ Cada fase tiene objetivo, entregables, criterio de aceptación medido y prueba. 
 - El visor 2D de coco (`CocoPreview2D`) y el editor de divisiones interactivo **no se eliminan ni se reemplazan por formularios estáticos**. Su interacción (clics, arrastre, selección de celdas) se conserva.
 - Se acepta que la fase pueda dañarlos: si ocurre, se corrige. El daño no es una razón para quitar la función.
 - Solo la construcción de los controles de formulario de esos paneles pasa a especificación. La lógica de clics, el modelo de datos y el dibujo quedan como están.
+
+## 8. Cierre de la fase (F-UI-6) — cifras finales (medido 2026-11-08, HEAD `8e7b1f2`)
+
+- **Construcción a mano (widgets a mano finales):** `grep -rc 'QLabel(\|addWidget(' --include=*.py freecad/vdo/ui | awk -F: '{s+=$2} END {print s}'` = **281** (baseline 310 en `f4a2208`; −29).
+- **Líneas finales por capa (`minimalismo.py resumen`):** core 7 750 / 337 funciones; ui 13 540 / 670 funciones; cad 3 158 / 120 funciones; app 0 / 0; **total 24 448 líneas / 1 127 funciones**.
+- **Nivel 1 final:** ejecutados=325, fallos=0, errores=0, skip=41.
+- **Nivel 2 final:** ejecutados=323, fallos=0, errores=0, skip=26; 0 `FALLO golden`.
+- **F-UI-3 (COCO: divisiones, espacios y estructura):** **hecho** — visor 2D protegido con pruebas de imagen e interacción (D-119) y sin cambios de código; controles reactivos de coco dejados como presentación interactiva (D-120).
+- **F-UI-4 (inspector y listas):** **hecho** — `ui/inspector_*`, `ui/universal_inspector.py`, `ui/cutting_list_*` y `ui/hardware_manager.py` son presentación pura clase C; no se migran a FormBuilder (D-121).
+- **F-UI-5 (verificación visual completa):** **hecho como cierre de fase** — la revisión visual por panel queda pendiente del usuario (DEUDA I1, ahora lista en `docs/REVISION_VISUAL.md`); sin su aprobación no hay fusión a `main`.
+- **Formularios migrados en la fase (5):** nesting tablero (D-111), nesting algoritmo (D-113), box medidas (D-112), cabecera medidas (D-115), vano subdivisión (D-117).
