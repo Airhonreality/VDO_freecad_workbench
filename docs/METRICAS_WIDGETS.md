@@ -101,7 +101,7 @@ Ahorro neto estimado: **315.5 líneas**, es decir **2.34 %** de `freecad/vdo/ui/
 | inspector_cabecera.py | `_BreadcrumbBar.__init__` | C | 19 | 1 | 2 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | inspector_cabecera.py | `_BreadcrumbBar.set_ruta` | C | 24 | 2 | 2 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | inspector_cabecera.py | `_MicroHeaderWidget._crear_icono` | C | 4 | 1 | 2 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
-| inspector_cabecera.py | `_MicroHeaderWidget._crear_medidas` | A | 31 | 2 | 10 | 3 | 13.5 | W, H, D en fila con '×' intercalada; ancho fijo 64 px no soportado |
+| inspector_cabecera.py | `_MicroHeaderWidget._crear_medidas` | A | 31 | 2 | 10 | 3 | 13.5 | W, H, D en fila con '×' intercalada; migrada en F-UI-2: ahorro real 23 líneas en inspector_cabecera.py y en el total (función 31 → 6; `inspector_cabecera.py` 200 → 177, `ui/` 13 475 → 13 452); árbol de widgets idéntico (snapshot sin cambios entre commits, `git diff 1561a5e -- tests/fixtures/inspector_cabecera_medidas_snapshot.json` vacío); `CABECERA_MEDIDES` en `datos/formularios.py`, `FormBuilder.construir_fila` con `ancho_fijo` 64 y `sin_etiqueta`; el estimado era 13.5 |
 | inspector_cabecera.py | `_MicroHeaderWidget._crear_espesor` | A | 12 | 1 | 4 | 1 | 5.0 | espesor (spin, rango 3-100) + etiqueta |
 | inspector_pagina_pieza.py | `PaginaPieza.__init__` | C | 44 | 8 | 12 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | inspector_pagina_pieza.py | `PaginaPieza.__init__._fila` | C | 7 | 1 | 3 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
