@@ -13,13 +13,13 @@ Medición de F9 (D-95). **Sin cambio de código.** Solo lectura del árbol y est
 
 | Clase | Funciones | Líneas actuales | Ahorro bruto (líneas) | Ahorro neto estimado (bruto/2) |
 |---|---:|---:|---:|---:|
-| A. Patrón de formulario | 28 | 584 | 467 | 233.5 |
+| A. Patrón de formulario | 27 | 545 | 432 | 216.0 |
 | B. Mixta | 7 | 240 | 199 | 99.5 |
-| C. Presentación | 89 | 1563 | 0 | 0.0 |
-| **Total** | **124** | **2387** | **666** | **333.0** |
+| C. Presentación | 90 | 1602 | 0 | 0.0 |
+| **Total** | **124** | **2387** | **631** | **315.5** |
 
 Líneas totales de `freecad/vdo/ui/*.py`: **13461**. Las funciones medidas suman 2387 líneas (17.7 %).
-Ahorro neto estimado: **333.0 líneas**, es decir **2.47 %** de `freecad/vdo/ui/` (ahorro bruto 666 líneas, 4.95 %). Las líneas de especificación ya están restadas.
+Ahorro neto estimado: **315.5 líneas**, es decir **2.34 %** de `freecad/vdo/ui/` (ahorro bruto 631 líneas, 4.69 %). Las líneas de especificación ya están restadas.
 
 ## Tabla por función
 
@@ -119,7 +119,7 @@ Ahorro neto estimado: **333.0 líneas**, es decir **2.47 %** de `freecad/vdo/ui/
 | inspector_paginas.py | `PaginaCierre.__init__` | C | 34 | 2 | 5 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | inspector_paginas.py | `PaginaCierre.__init__._fila_h` | C | 11 | 2 | 4 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | nesting_workflow.py | `NestingDialog._construir_modo` | C | 16 | 0 | 4 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
-| nesting_workflow.py | `NestingDialog._construir_tablero` | A | 38 | 8 | 17 | 4 | 16.5 | preset, ancho, alto, espaciado; usa setMinimum/setMaximum |
+| nesting_workflow.py | `NestingDialog._construir_tablero` | A | 38 | 8 | 17 | 4 | 16.5 | preset, ancho, alto, espaciado; migrada en F-UI-2a: ahorro real 23 líneas en ui/ y en el total (función 38 → 13); el estimado era 16.5 |
 | nesting_workflow.py | `NestingDialog._construir_algoritmo` | A | 19 | 4 | 9 | 2 | 8.0 | algoritmo (combo), generaciones (spin) |
 | optimizer_dialog.py | `OptimizerDialog._build_ui` | C | 14 | 0 | 1 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | optimizer_dialog.py | `OptimizerDialog._construir_panel_config` | B | 55 | 10 | 25 | 5 | 24.5 | CSV, tablero, medidas, rotar; botones Examinar/Optimizar y etiquetas de estado fuera del formulario |
@@ -127,7 +127,7 @@ Ahorro neto estimado: **333.0 líneas**, es decir **2.47 %** de `freecad/vdo/ui/
 | optimizer_dialog.py | `OptimizerDialog._construir_panel_preview` | C | 9 | 0 | 1 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | optimizer_dialog.py | `OptimizerDialog._construir_barra` | C | 10 | 1 | 3 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | panel_task.py | `PanelTaskPanel._crear_widget` | C | 21 | 0 | 1 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
-| panel_task.py | `PanelTaskPanel._crear_grupo_reengrose` | A | 39 | 3 | 3 | 3 | 17.5 | orientacion, alineacion, alcance (combos) |
+| panel_task.py | `PanelTaskPanel._crear_grupo_reengrose` | C | 39 | 3 | 3 | - | 0.0 | delega en ReengroseBorderEditor y crea combos legacy sin layout; desclasificada en D-111, no se migra |
 | puerta_task_cabecera.py | `PanelHeaderWidget.__init__` | C | 21 | 3 | 7 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | puerta_task_construccion.py | `PuertaTaskConstruccionMixin._crear_widget` | C | 21 | 0 | 1 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
 | qt.py | `crear_botonera_cancelar_aceptar` | C | 14 | 0 | 2 | - | 0.0 | presentacion, botones, etiquetas o widgets propios |
@@ -170,8 +170,8 @@ Faltan:
 |---:|---|:---:|---:|---|
 | 1 | `optimizer_dialog.py::OptimizerDialog._construir_panel_config` | B | 24.5 | botón de acción |
 | 2 | `coco_construccion_widgets.py::DivisionesEditor._construir_inspector_base` | B | 22.5 | señales; fila cabecera |
-| 3 | `panel_task.py::PanelTaskPanel._crear_grupo_reengrose` | A | 17.5 | ninguno |
-| 4 | `nesting_workflow.py::NestingDialog._construir_tablero` | A | 16.5 | ninguno |
+| 3 | `panel_task.py::PanelTaskPanel._crear_grupo_reengrose` | C | 0.0 | desclasificada (D-111); no se migra |
+| 4 | `nesting_workflow.py::NestingDialog._construir_tablero` | A | 23.0 (real) | migrada (F-UI-2a, D-111); sin tipo nuevo |
 | 5 | `inspector_pagina_vano.py::PaginaVano._crear_panel_subdivision` | B | 15.0 | botón de acción |
 | 6 | `box_construccion.py::BoxConstruccionMixin._construir_esquinas` | B | 14.5 | bucle y botones |
 | 7 | `reengrose_ui_construccion.py::ReengroseConstruccionMixin._construir_rejilla_esquinas` | A | 14.0 | ninguno |
@@ -210,3 +210,4 @@ Recomendación: empezar por las A que no requieren tipo nuevo (combos y spins en
 - `_crear_pagina_parametros` recibe sus filas de fuera, así que su conteo de campos no está fijado en la función; se le asignó ahorro 0. `_crear_editor` depende del tipo de valor, y su conteo (3) es una referencia.
 - Los combos de fabricación, choque y cara están duplicados en `reengrose_ui_construccion.py` y `coco_reengrose_widgets.py`. El ahorro se cuenta en ambas funciones, así que el total queda algo sobrestimado en esa parte.
 - No se ejecutaron pruebas ni verificación visual: la medición es estática.
+- **Corrección por lectura real (F-UI-2a, D-111):** `panel_task.py::PanelTaskPanel._crear_grupo_reengrose` estaba clasificada como A por sus llamadas, pero delega en `ReengroseBorderEditor` y sus tres combos son legacy, sin layout. Pasa a C con ahorro 0 y no se migra. En `nesting_workflow.py::NestingDialog._construir_tablero` el ahorro real medido fue de 23 líneas de `ui/` (13 562 → 13 539) y del total (24 470 → 24 447), frente a las 16.5 estimadas; la función pasó de 38 a 13 líneas.
