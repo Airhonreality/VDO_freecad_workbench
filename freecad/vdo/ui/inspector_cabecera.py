@@ -1,8 +1,10 @@
 """Cabecera del inspector: migas de pan y micro-cabecera de dimensiones."""
 
 from freecad.vdo.core.simbolos import SIMBOLO_MULTIPLICAR, SIMBOLO_SEPARADOR
+from freecad.vdo.datos.formularios import CABECERA_MEDIDES
 from freecad.vdo.qt_compat import QtCore, QtGui, QtWidgets
 from freecad.vdo.ui import tema_estilos
+from freecad.vdo.ui.form_builder import FormBuilder
 from freecad.vdo.ui.inspector_paginas import PAGE_CHASIS, PAGE_CIERRE, PAGE_PIEZA, PAGE_VANO
 from freecad.vdo.ui.qt import VDO_DoubleSpinBox
 from freecad.vdo.ui.selection_bridge import VDOSelectionBridge
@@ -127,36 +129,11 @@ class _MicroHeaderWidget(QtWidgets.QFrame):
         layout.addWidget(icon_lbl)
 
     def _crear_medidas(self, layout):
-        # Ancho (W)
-        self.spin_w = VDO_DoubleSpinBox()
-        self.spin_w.setDecimals(1)
-        self.spin_w.setRange(50.0, 5000.0)
-        self.spin_w.setValue(600.0)
-        self.spin_w.setSuffix(" W")
-        self.spin_w.setFixedWidth(64)
-        layout.addWidget(self.spin_w)
-
-        layout.addWidget(QtWidgets.QLabel(f"{SIMBOLO_MULTIPLICAR}"))
-
-        # Alto (H)
-        self.spin_h = VDO_DoubleSpinBox()
-        self.spin_h.setDecimals(1)
-        self.spin_h.setRange(50.0, 5000.0)
-        self.spin_h.setValue(720.0)
-        self.spin_h.setSuffix(" H")
-        self.spin_h.setFixedWidth(64)
-        layout.addWidget(self.spin_h)
-
-        layout.addWidget(QtWidgets.QLabel(f"{SIMBOLO_MULTIPLICAR}"))
-
-        # Fondo (D)
-        self.spin_d = VDO_DoubleSpinBox()
-        self.spin_d.setDecimals(1)
-        self.spin_d.setRange(50.0, 5000.0)
-        self.spin_d.setValue(580.0)
-        self.spin_d.setSuffix(" D")
-        self.spin_d.setFixedWidth(64)
-        layout.addWidget(self.spin_d)
+        builder = FormBuilder(self)
+        builder.construir_fila(layout, CABECERA_MEDIDES, separador=str(SIMBOLO_MULTIPLICAR))
+        self.spin_w = builder.widget("ancho")
+        self.spin_h = builder.widget("alto")
+        self.spin_d = builder.widget("fondo")
 
     def _crear_espesor(self, layout):
         lbl_sep = QtWidgets.QLabel("mm │ Esp:")

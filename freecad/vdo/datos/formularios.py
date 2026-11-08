@@ -393,3 +393,18 @@ BOX_PANEL_MEDIDAS = (
     ),
 )
 
+# --- Medidas de la micro-cabecera del inspector (F-UI-2d) -------------------
+# Fila horizontal sin grupo: especificación de los tres campos (ancho, alto,
+# fondo) con sufijo y ancho fijo. Sin título porque no hay QGroupBox.
+CABECERA_MEDIDES = (
+    {"tipo": "vdo_double_spin", "clave": "ancho", "valor_defecto": 600.0,
+     "rango": (50.0, 5000.0), "decimales": 1, "sufijo": " W",
+     "ancho_fijo": 64, "sin_etiqueta": True},
+    {"tipo": "vdo_double_spin", "clave": "alto", "valor_defecto": 720.0,
+     "rango": (50.0, 5000.0), "decimales": 1, "sufijo": " H",
+     "ancho_fijo": 64, "sin_etiqueta": True},
+    {"tipo": "vdo_double_spin", "clave": "fondo", "valor_defecto": 580.0,
+     "rango": (50.0, 5000.0), "decimales": 1, "sufijo": " D",
+     "ancho_fijo": 64, "sin_etiqueta": True},
+)
+

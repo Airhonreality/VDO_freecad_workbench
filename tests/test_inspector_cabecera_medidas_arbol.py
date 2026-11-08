@@ -21,7 +21,6 @@ from tests.soporte.requisitos import requiere_freecad, requiere_qt
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from freecad.vdo import qt_compat  # noqa: E402  (requiere QApplication después de qt_compat)
 from freecad.vdo.qt_compat import QtWidgets
 
 RAIZ = Path(__file__).resolve().parent.parent
